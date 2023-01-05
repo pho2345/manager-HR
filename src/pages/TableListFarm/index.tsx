@@ -16,11 +16,7 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
+
 const handleAdd = async (fields: API.RuleListItem) => {
   console.log(fields);
   const hide = message.loading('Waiting...');
@@ -36,12 +32,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Configuring');
   try {
@@ -61,12 +52,7 @@ const handleUpdate = async (fields: any, id: any) => {
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
+
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
   const hide = message.loading('Waiting...');
@@ -103,10 +89,7 @@ const TableList: React.FC = () => {
   const [accountNumber, setAccountNumber] = useState<any>();
 
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
+ 
   const intl = useIntl();
 
   const columns: ProColumns<API.RuleListItem>[] = [

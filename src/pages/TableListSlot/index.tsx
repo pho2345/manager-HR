@@ -97,10 +97,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  // const [codeProvince, setCodeProvince] = useState<any>();
-  // const [nameProvince, setNameProvince] = useState<any>();
-  // const [fullName, setFullName] = useState<any>();
-  // const [fsmCode, setFsmCode] = useState<any>();
+
   const [cow, setCow] = useState<any>();
 
   const refAutoTransfer = useRef<any>();
@@ -126,7 +123,7 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
+      tip: 'Mã là duy nhất',
       render: (_, entity: any) => {
         ;
         return (
@@ -143,7 +140,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: <FormattedMessage id='pages.searchTable.column.slot' defaultMessage='Đợt mở bán' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'fair',

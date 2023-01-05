@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The rule name is the unique key',
+      tip: 'Mã là duy nhất',
       render: (_, entity: any) => {
         return (
           <a
@@ -115,7 +115,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
+      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
@@ -125,19 +125,17 @@ const TableList: React.FC = () => {
       title: (
         <FormattedMessage
           id='pages.searchTable.column.shortName'
-          defaultMessage='Number of service calls'
+          defaultMessage='Tên viết tắt'
         />
       ),
       key: 'shortName',
       dataIndex: 'shortName',
-      sorter: true,
-      hideInForm: true,
       renderText: (_, val: any) => val?.attributes?.shortName
     }
     ,
 
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Descriptiond' />,
+      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
@@ -155,7 +153,7 @@ const TableList: React.FC = () => {
 
           }}
         >
-          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+          <FormattedMessage id='pages.searchTable.update' defaultMessage='Mới' />
         </Button>)
       }
     },
@@ -198,15 +196,12 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Đã chọn' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='item' />
+              <FormattedMessage id='pages.searchTable.item' defaultMessage='hàng' />
               &nbsp;&nbsp;
               <span>
-                {/* <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '} */}
+               
                
               </span>
             </div>
@@ -215,7 +210,7 @@ const TableList: React.FC = () => {
           <Button 
           
           style={{
-            backgroundColor: 'red'
+           // backgroundColor: 'red'
           }}
             onClick={async () => {
               await handleRemove(selectedRowsState);
@@ -235,7 +230,7 @@ const TableList: React.FC = () => {
         form={form}
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newBank',
-          defaultMessage: 'New rule',
+          defaultMessage: 'Tạo mới ngân hàng',
         })}
         width='400px'
         open={createModalOpen}
@@ -258,14 +253,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập code!'
                 />
               ),
             },
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -275,14 +270,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Name'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập tên'
                 />
               ),
             },
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -292,14 +287,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.shortName'
-                  defaultMessage='Rule name is required'
+                  defaultMessage=''
                 />
               ),
             },
           ]}
           width='md'
           name='shortName'
-          placeholder='Short Name'
+          placeholder='Tên viết tắt'
         />
 
       </ModalForm>
@@ -308,7 +303,7 @@ const TableList: React.FC = () => {
 <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.updateBank',
-          defaultMessage: 'New rule',
+          defaultMessage: '',
         })}
         width='400px'
         open={updateModalOpen}
@@ -349,7 +344,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -372,7 +367,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -395,7 +390,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='shortName'
-          placeholder='Short Name'
+          placeholder='Tên viết tắt'
         />
 
       </ModalForm>

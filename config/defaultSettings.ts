@@ -15,9 +15,9 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Logo',
+  title: false,
   pwa: false,
-  logo: '',
+  logo: 'https://aleger-server.process.vn/uploads/logo_orange_cde4afb2bf.png',
   iconfontUrl: '',
 };
 

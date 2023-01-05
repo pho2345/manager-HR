@@ -16,58 +16,44 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
+
 const handleAdd = async (fields: API.RuleListItem) => {
   console.log(fields);
-  const hide = message.loading('正在添加');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'categories');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       ...fields
     },'categories', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại!');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
+
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('正在删除');
+  const hide = message.loading('Đang xóa');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -76,29 +62,19 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại!');
     return false;
   }
 };
 
 const TableList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
@@ -106,16 +82,7 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [codeCategory, setCodeCategory] = useState<any>();
   const [nameCategory, setNameCategory] = useState<any>();
-
-  console.log('render');
-
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
   const intl = useIntl();
-
   const columns: ProColumns<API.RuleListItem>[] = [
     {
       title: (
@@ -290,7 +257,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -307,7 +274,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
 
@@ -357,7 +324,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -380,7 +347,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />       
       </ModalForm>
 

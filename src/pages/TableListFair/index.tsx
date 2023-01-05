@@ -23,65 +23,55 @@ import moment from 'moment';
  */
 const handleAdd = async (fields: any) => {
   console.log(fields);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'wards');
+    await customAPIAdd({ ...fields }, 'fairs');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields);
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
     ...fields
-    }, 'wards', id.current);
+    }, 'fairs', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại!');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
+
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'wards')
+      return customAPIDelete(e.id, 'fairs')
     })
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại');
     return false;
   }
 };
@@ -102,10 +92,7 @@ const TableList: React.FC = () => {
   const [fsmCode, setFsmCode] = useState<any>();
 
 
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
+
   const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
@@ -118,7 +105,7 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
+     
       render: (_, entity: any) => {
         ;
         return (
@@ -174,14 +161,24 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'totalSell',
-      renderText: (_, text: any) => `${text?.attributes?.totalSell} VNĐ`
+      renderText: (_, text: any) => {
+        if(text.attributes.totalSell){
+         return `${text?.attributes?.totalSell} VNĐ`
+        }
+        return null
+      }
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.totalRemain' defaultMessage='Tổng số tiền còn lại' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'totalRemain',
-      renderText: (_, text: any) => `${text?.attributes?.totalRemain} VNĐ`
+      renderText: (_, text: any) => {
+        if(text.attributes.totalRemain){
+         return `${text?.attributes?.totalRemain} VNĐ`
+        }
+        return null 
+      }
     },
     {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,

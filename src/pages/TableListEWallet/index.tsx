@@ -16,59 +16,43 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
 const handleAdd = async (fields: any) => {
   console.log(fields);
-  const hide = message.loading('正在添加');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'e-wallets');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       ...fields
     }, 'e-wallets', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại!');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
 const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
-  const hide = message.loading('正在删除');
+  
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -77,11 +61,11 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại');
     return false;
   }
 };
@@ -100,14 +84,7 @@ const TableList: React.FC = () => {
   const [nameEWallet, setNameEWallet] = useState<any>();
   const [owner, setOwner] = useState<any>();
   const [accountNumber, setAccountNumber] = useState<any>();
-
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
   const intl = useIntl();
-
   const columns: ProColumns<any>[] = [
     {
       title: (
@@ -231,21 +208,19 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chọn' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
+              <FormattedMessage id='pages.searchTable.item' defaultMessage='item' />
               &nbsp;&nbsp;
               <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
+              
 
               </span>
             </div>
           }
         >
           <Button
+         
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -257,12 +232,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+            
         </FooterToolbar>
       )}
       <ModalForm
@@ -292,14 +262,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Nhập mã'
                 />
               ),
             },
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -309,14 +279,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Name'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập tên E-Wallet'
                 />
               ),
             },
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên E-Wallet'
         />
 
         <ProFormText
@@ -326,14 +296,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Owner'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập tên người sở hữu!'
                 />
               ),
             },
           ]}
           width='md'
           name='owner'
-          placeholder='Owner'
+          placeholder='Tên người sở hữu'
         />
 
         <ProFormText
@@ -343,17 +313,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.accountNumber'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập số tài khoản!'
                 />
               ),
             },
           ]}
           width='md'
           name='accountNumber'
-          placeholder='Account Number'
+          placeholder='Số tài khoản'
         />
-
-
       </ModalForm>
 
 
@@ -403,7 +371,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -426,7 +394,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên E-Wallet'
         />
 
 
@@ -450,7 +418,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='owner'
-          placeholder='Owner'
+          placeholder='Tên người sở hữu'
         />
 
         <ProFormText
@@ -473,7 +441,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='accountNumber'
-          placeholder='Account Number'
+          placeholder='Số tài khoản'
         />
 
 

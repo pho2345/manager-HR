@@ -97,10 +97,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  // const [codeProvince, setCodeProvince] = useState<any>();
-  // const [nameProvince, setNameProvince] = useState<any>();
-  // const [fullName, setFullName] = useState<any>();
-  // const [fsmCode, setFsmCode] = useState<any>();
+
   const [cow, setCow] = useState<any>();
 
   const refAutoTransfer = useRef<any>();
@@ -176,7 +173,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.attributes?.cow?.data?.attributes?.name
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='Cân nặng ban đầu' />,
+      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='Cân nặng P0' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'pZero',
@@ -288,11 +285,6 @@ const TableList: React.FC = () => {
           onClick={() => {
             handleUpdateModalOpen(true);
             refIdProvince.current = entity.id;
-            // setCodeProvince(entity?.attributes?.code);
-            // setNameProvince(entity?.attributes?.name);
-            // setFullName(entity?.attributes?.fullname);
-            // setFsmCode(entity?.attributes?.fsmCode);
-
           }}
         >
           <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
@@ -441,6 +433,7 @@ const TableList: React.FC = () => {
             options={cow}
             name="cow"
             label="Bò"
+            placeholder="Chọn bò"
           />
 
           
@@ -498,6 +491,7 @@ const TableList: React.FC = () => {
             options={cow}
             name="cow"
             label="Bò"
+            placeholder="Chọn bò"
           />
 
           

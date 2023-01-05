@@ -1,7 +1,7 @@
 
 import { request } from '@umijs/max';
 
-const serverUrl = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
+const serverUrl = 'https://aleger-server.process.vn';
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(serverUrl + '/api/users/me', {
@@ -147,7 +147,7 @@ export async function customAPIDelete(values?: { [key: string]: any }, collectio
   });
 }
 
-export async function customAPIGetOne(values?: any, collection?: string) {
+export async function customAPIGetOne(values?: any, collection?: string, params?: { [key: string]: any }) {
 
   return request<any>(serverUrl+'/api/'+collection +'/'+ values, {
     method: "GET",
@@ -155,19 +155,21 @@ export async function customAPIGetOne(values?: any, collection?: string) {
       'Content-Type': 'application/json',
       "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
     },
+    params: {
+      ...params
+    }
   });
 }
 
 export async function customAPIUpload(values?: { [key: string]: any }) {
   console.log(values);
+ 
   return request<any>(serverUrl+'/api/upload', {
     method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
       "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
     },
-    data : {
-      data : values
-    }
+    data : values?.data
   });
 }

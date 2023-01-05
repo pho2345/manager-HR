@@ -1,15 +1,15 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
-import { LinkOutlined } from '@ant-design/icons';
+//import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 // import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import { history, } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import React from 'react';
-const isDev = process.env.NODE_ENV === 'development';
+//const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
 /**

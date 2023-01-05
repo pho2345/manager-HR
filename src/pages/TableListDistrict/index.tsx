@@ -16,11 +16,7 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
+
 const handleAdd = async (fields: any) => {
   const getProvince = await customAPIGetOne(fields.province, 'provinces');
   let setFields = {
@@ -28,25 +24,20 @@ const handleAdd = async (fields: any) => {
     pathName: `${fields.name}, ${getProvince?.data?.attributes?.name}`,
     pathFullName: `${fields.fullname}, ${getProvince?.data?.attributes?.fullname}`
   }
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...setFields }, 'districts');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại');    
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields);
   const getProvince = await customAPIGetOne(fields.province, 'provinces');
@@ -56,31 +47,25 @@ const handleUpdate = async (fields: any, id: any) => {
     pathName: `${fields.name}, ${getProvince?.data?.attributes?.name}`,
     pathFullName: `${fields.fullname}, ${getProvince?.data?.attributes?.fullname}`
   }
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Cập nhật...');
   try {
     await customAPIUpdate({
       ...setFields
     }, 'districts', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại!');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -89,11 +74,11 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại');
     return false;
   }
 };
@@ -124,16 +109,8 @@ const TableList: React.FC = () => {
   const [nameDistrict, setNameDistrict] = useState<any>();
   const [fullName, setFullName] = useState<any>();  
   const [province, setProvince] = useState<any>();
-
-
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
   const intl = useIntl();
-
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<any>[] = [
     {
       title: (
         <FormattedMessage
@@ -277,13 +254,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
+              
             </div>
           }
         >
@@ -299,12 +270,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+        
         </FooterToolbar>
       )}
       <ModalForm
@@ -334,14 +300,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Code'
-                  defaultMessage='Code is required'
+                  defaultMessage='Yêu cầu nhập mã'
                 />
               ),
             },
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -351,14 +317,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Name'
-                  defaultMessage='Name is required'
+                  defaultMessage='Yêu cầu nhập tên'
                 />
               ),
             },
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -368,22 +334,22 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.fullName'
-                  defaultMessage='Fullname is required'
+                  defaultMessage='Yêu cầu nhập tên đầy đủ'
                 />
               ),
             },
           ]}
           width='md'
           name='fullname'
-          placeholder='Full Name'
+          placeholder='Tên đầy đủ'
         />
 
         <ProFormSelect
           name="province"
-          label="Select"
+          label="Quận huyện"
           request={getProvinces}
-          placeholder="Please select a country"
-          rules={[{ required: true, message: 'Please select your country!' }]}
+          placeholder="Chọn quận huyện"
+          rules={[{ required: true, message: 'Chọn quận huyện!' }]}
           fieldProps={{
             onChange : (value) => {
               console.log(value)
@@ -397,7 +363,7 @@ const TableList: React.FC = () => {
       <ModalForm
         form={form}
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newProvince',
+          id: 'pages.searchTable.createForm.updateDis',
           defaultMessage: 'New rule',
         })}
         width='400px'
@@ -441,7 +407,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -464,7 +430,8 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          label='Tên'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -487,15 +454,16 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='fullname'
-          placeholder='Full Name'
+          label='Tên đầy đủ'
+          placeholder='Tên đầy đủ'
         />
 
         <ProFormSelect
           name="province"
-          label="Select"
+          label="Tỉnh thành"
           request={getProvinces}
-          placeholder="Please select a country"
-          rules={[{ required: true, message: 'Please select your country!' }]}
+          placeholder="Chọn tỉnh thành"
+          rules={[{ required: true, message: 'Chọn tỉnh thành!' }]}
           fieldProps={{
             value: province,
             onChange : (value) => {

@@ -149,13 +149,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.attributes?.fullname
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fsmCode' defaultMessage='FSM Code' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'fsmCode',
-      renderText: (_, text: any) => text?.attributes?.fsmCode
-    },
-    {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -335,22 +328,7 @@ const TableList: React.FC = () => {
           placeholder='Full Name'
         />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.fsmCode'
-                  defaultMessage='FSM Code is required'
-                />
-              ),
-            },
-          ]}
-          width='md'
-          name='fsmCode'
-          placeholder='FSM Code'
-        />
+       
 
 
       </ModalForm>
@@ -451,28 +429,7 @@ const TableList: React.FC = () => {
           placeholder='Fullname'
         />
 
-        <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.accountNumber'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
-          fieldProps={{
-            value: fsmCode,
-            onChange: (e) => {
-              setFsmCode(e.target.value);
-            }
-          }}
-          width='md'
-          name='fsmCode'
-          placeholder='FSM Code'
-        />
+     
 
 
       </ModalForm>

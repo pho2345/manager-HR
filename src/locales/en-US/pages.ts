@@ -61,30 +61,30 @@ export default {
   'pages.searchTable.new': 'Mới',
   'pages.searchTable.chosen': 'Đã chọn',
   'pages.searchTable.item': 'item',
-  'pages.searchTable.totalServiceCalls': 'Total Number of Service Calls',
+  'pages.searchTable.totalServiceCalls': '',
   'pages.searchTable.tenThousand': '0000',
   'pages.searchTable.batchDeletion': 'Xóa',
   'pages.searchTable.batchApproval': 'batch approval',
 
 
-  'pages.searchTable.Bank.column.createAt': 'createAt',
+  'pages.searchTable.Bank.column.createAt': 'Ngày tạo',
   ///bank
-  'pages.searchTable.createForm.newBank': 'New Bank',
-  'pages.searchTable.column.code': 'Code',
+  'pages.searchTable.createForm.newBank': 'Tạo mới ngân hàng',
+  'pages.searchTable.column.code': 'Mã',
   'pages.searchTable.column.name': 'Tên',
-  'pages.searchTable.column.shortName': 'Short Name',
+  'pages.searchTable.column.shortName': 'Tên viết tắt',
   'pages.searchTable.update': 'Cập nhật',
-  'pages.searchTable.Code': 'Code is required',
-  'pages.searchTable.Name': 'Name is required',
-  'pages.searchTable.shortName': 'Short Name is required',
-  'pages.searchTable.createForm.updateBank' : 'Update Bank',
-  'menu.Bank': 'Bank',
+  'pages.searchTable.Code': 'Yêu cầu nhập Mã!',
+  'pages.searchTable.Name': 'Yêu cầu nhập Tên!',
+  'pages.searchTable.shortName': 'Yêu cầu nhập Tên viết tắt!',
+  'pages.searchTable.createForm.updateBank' : 'Cập nhật ngân hàng',
+  'menu.Bank': 'Ngân hàng',
 
 /// category
 
-'pages.searchTable.createForm.newCategory': 'New Category',
-'pages.searchTable.createForm.updateCategory' : 'Update Category',
-'menu.Category': 'Category',
+'pages.searchTable.createForm.newCategory': 'Tạo mới giống bò',
+'pages.searchTable.createForm.updateCategory' : 'Cập nhật giống bò',
+'menu.Category': 'Giống bò',
 'pages.searchTable.column.createAt': 'Ngày tạo',
 
 /// E-Wallet
@@ -92,41 +92,42 @@ export default {
 'pages.searchTable.column.onwer': 'Chủ sở hữu',
 'pages.searchTable.Owner': 'Yêu cầu nhập',
 'pages.searchTable.column.accountNumber': 'Số tài khoản', 
-'pages.searchTable.accountNumber': 'Account Number is required',
-'pages.searchTable.createForm.updateEWallet': 'Update E-Wallet',
-'pages.searchTable.createForm.newEWallet': 'New E-Wallet',
+'pages.searchTable.accountNumber': 'Yêu cầu nhập số tài khoản!',
+'pages.searchTable.createForm.updateEWallet': 'Cập nhật E-Wallet',
+'pages.searchTable.createForm.newEWallet': 'Tạo mới E-Wallet',
 
 /// Farm
 'menu.Farm': "Farm",
-'pages.searchTable.column.phone': 'Number Phone',
+'pages.searchTable.column.phone': 'Số điện thoải',
 'pages.searchTable.column.taxId': 'MST',
-'pages.searchTable.column.address': 'Address',
-'pages.searchTable.column.owner': 'Owner',
+'pages.searchTable.column.address': 'Địa chỉ',
+'pages.searchTable.column.owner': 'Chủ sỡ hửu',
 
 /// Province
-'pages.searchTable.column.fullName': 'Fullname',
-'pages.searchTable.column.fsmCode': 'FSM Code',
-'pages.searchTable.createForm.newProvince': 'New Province',
-'pages.searchTable.fsmCode': 'FSM Code is required',
-'pages.searchTable.fullName': 'Fullname is required',
-'pages.searchTable.name': 'Name is required',
-'menu.Province': 'Province',
+'pages.searchTable.column.fullName': 'Tên đây đủ',
+
+'pages.searchTable.createForm.newProvince': 'Tạo mới tỉnh thành',
+'pages.searchTable.fullName': 'Yêu cầu nhập tên!',
+'pages.searchTable.name': 'Yêu cầu nhập tên!',
+'menu.Province': 'Tỉnh thành',
 
 /// Plan
-'pages.searchTable.column.profit': 'Profit',
-'pages.searchTable.profit': 'Profit is required',
+'pages.searchTable.column.profit': 'Lợi nhuận',
+'pages.searchTable.profit': 'Cần nhập',
 'menu.Plan': 'Plan',
 
 /// District
 'menu.District': 'District',
-'pages.searchTable.column.province': 'Province',
-'pages.searchTable.column.pathName': 'Path Name',
-'pages.searchTable.column.pathFullName': 'Path Fullname',
+'pages.searchTable.createForm.updateDis': 'Cập nhật quận huyện',
+'pages.searchTable.createForm.newDis': 'Tạo mới Quận huyện',
+'pages.searchTable.column.province': 'Quận huyện',
+'pages.searchTable.column.pathName': 'Tên đường dẫn',
+'pages.searchTable.column.pathFullName': 'Tên đường dẫn đầy đủ',
 
 ///Ward
-'menu.Ward': 'Ward',
+'menu.Ward': 'Xã phường',
 
 ///Address
-'menu.Address': 'Address'
+'menu.Address': 'Địa chỉ'
 
 };

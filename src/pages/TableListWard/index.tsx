@@ -155,7 +155,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
       render: (_, entity: any) => {
         ;
         return (
@@ -305,13 +304,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
+              
             </div>
           }
         >
@@ -325,12 +318,6 @@ const TableList: React.FC = () => {
             <FormattedMessage
               id='pages.searchTable.batchDeletion'
               defaultMessage='Batch deletion'
-            />
-          </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
             />
           </Button>
         </FooterToolbar>

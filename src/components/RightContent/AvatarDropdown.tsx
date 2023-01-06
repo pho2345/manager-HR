@@ -51,7 +51,7 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size="small" className={avatarClassName} src="https://1337-innoria-aleger-n6eaffn9h78.ws-us80.gitpod.io/uploads/sarahbaker_strapi_8623ac80da.jpg?updated_at=2022-12-26T11:16:45.281Z" alt="avatar" />;
+  return <Avatar size="small" className={avatarClassName} src={ '/uploads/sarahbaker_strapi_8623ac80da.jpg?updated_at=2022-12-26T11:16:45.281Z'} alt="avatar" />;
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {

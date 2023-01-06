@@ -123,7 +123,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'Mã là duy nhất',
       render: (_, entity: any) => {
         ;
         return (

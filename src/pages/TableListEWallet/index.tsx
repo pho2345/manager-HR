@@ -95,7 +95,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The rule name is the unique key',
       render: (_, entity: any) => {
         ;
         return (

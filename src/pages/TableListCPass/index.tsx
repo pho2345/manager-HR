@@ -123,7 +123,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
       render: (_, entity: any) => {
         ;
         return (
@@ -238,9 +237,6 @@ const TableList: React.FC = () => {
       key: 'wgs',
       renderText: (_, text: any) => text?.attributes?.wgs
     },
-    
-   
-    
     {
       title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega' />,
       dataIndex: 'atrributes',

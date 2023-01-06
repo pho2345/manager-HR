@@ -33,18 +33,21 @@ import moment from 'moment';
 
 
 const handleAdd = async (fields: any) => {
-  
-  // let formdata = new FormData();
-  // formdata.append('files',fields.upload[0]?.originFileObj);
-  // const fetch = await customAPIUpload({
-  //   data: formdata
-  // })
-  
-
   const hide = message.loading('Đang thêm...');
   try {
     const cow = await customAPIAdd({ ...fields }, 'cows');
-    console.log(cow);
+
+    const uploadImages = fields?.upload.map((e: any) => {
+      let formdata = new FormData();
+      formdata.append('files', e?.originFileObj);
+      formdata.append('ref', 'api::cow.cow');
+      formdata.append('refId', cow?.data?.id);
+      formdata.append('field', 'photos');
+      return customAPIUpload({
+        data: formdata
+      })
+    });
+    await Promise.all(uploadImages);
     hide();
     message.success('Thêm thành công');
     return true;
@@ -57,8 +60,26 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
+  console.log(id);
+ 
   const hide = message.loading('Đang cập nhật...');
   try {
+
+    
+    
+    const uploadImages = fields?.upload.map((e: any) => {
+      if(e.originFileObj){
+      let formdata = new FormData();
+      formdata.append('files', e?.originFileObj);
+      formdata.append('ref', 'api::cow.cow');
+      formdata.append('refId', id.current);
+      formdata.append('field', 'photos');
+      return customAPIUpload({
+        data: formdata
+      })}
+      return null;
+    });
+    await Promise.all(uploadImages);
     await customAPIUpdate(
       {
         ...fields,
@@ -79,7 +100,7 @@ const handleUpdate = async (fields: any, id: any) => {
 
 
 const handleRemove = async (selectedRows: any) => {
-  
+
   const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
@@ -128,8 +149,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
- 
-
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
 
@@ -150,7 +169,6 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
       render: (_, entity: any) => {
         return (
           <a
@@ -201,7 +219,7 @@ const TableList: React.FC = () => {
                 <Avatar
                   key={index}
                   src={
-                    `https://1337-innoria-aleger-n6eaffn9h78.ws-us80.gitpod.io/` +
+                    SERVERURL +
                     e?.attributes?.url
                   }
                 />
@@ -261,11 +279,18 @@ const TableList: React.FC = () => {
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCow.current = entity.id;
-              const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm'});
+              const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
+              const photos = cow.data?.attributes?.photos?.data;
+              console.log(photos);
+              const photoCow = photos.map((e: any) => {
+                return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
+              })
+              //console.log(photoCow);
               form.setFieldsValue({
                 ...cow.data?.attributes,
                 category: cow.data?.attributes?.category?.data?.id,
                 farm: cow.data?.attributes?.farm?.data?.id,
+                upload: photoCow
 
               })
             }}
@@ -396,15 +421,10 @@ const TableList: React.FC = () => {
           <ProFormText
             width='md'
             name='firstWeight'
-            label='Cân nặng ban đầu'
-            placeholder='Cân nặng ban đầu'
+            label='Cân nặng P0'
+            placeholder='Cân nặng P0'
           />
-          <ProFormText
-            width='md'
-            name='nowWeight'
-            label='Cân nặng hiện tại'
-            placeholder='Cân nặng hiện tại'
-          />
+
         </ProForm.Group>
         <ProForm.Group>
           <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
@@ -416,15 +436,15 @@ const TableList: React.FC = () => {
           <ProFormSelect
             width='xs'
             name='sex'
-          
+
             label='Giới tính'
             options={[
               {
-                label: 'Male',
+                label: 'Đực',
                 value: 'male',
               },
               {
-                label: 'Female',
+                label: 'Cái',
                 value: 'female',
               },
             ]}
@@ -480,7 +500,7 @@ const TableList: React.FC = () => {
         </ProForm.Group>
 
         <ProFormUploadButton
-          title= 'Up load'
+          title='Up load'
           name='upload'
           label='Upload'
           max={2}
@@ -488,9 +508,10 @@ const TableList: React.FC = () => {
             name: 'file',
             listType: 'picture-card',
           }}
-          //ction={() => customAPIUpload({})}
+
+        //ction={() => customAPIUpload({})}
         />
-        
+
         <ProFormTextArea width='xl' label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
       </ModalForm>
 
@@ -529,20 +550,14 @@ const TableList: React.FC = () => {
           <ProFormText
             width='md'
             name='firstWeight'
-            label='Cân nặng ban đầu'
-            placeholder='Cân nặng ban đầu'
-            required
+            label='Cân nặng P0'
+            placeholder='Cân nặng P0'
+            disabled
           />
-          <ProFormText
-            width='md'
-            name='nowWeight'
-            label='Cân nặng hiện tại'
-            required
-            placeholder='Cân nặng hiện tại'
-          />
+
         </ProForm.Group>
         <ProForm.Group>
-          <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required  />
+          <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
           <ProFormSelect width='md' options={farm} name='farm' label='Trang trại' placeholder='Chọn trang trại' required />
         </ProForm.Group>
         <ProForm.Group>
@@ -555,11 +570,11 @@ const TableList: React.FC = () => {
             label='Giới tính'
             options={[
               {
-                label: 'Male',
+                label: 'Đực',
                 value: 'male',
               },
               {
-                label: 'Female',
+                label: 'Cái',
                 value: 'female',
               },
             ]}
@@ -618,17 +633,23 @@ const TableList: React.FC = () => {
           name='upload'
           label='Upload'
           title='Upload'
-          max={2}
+
           fieldProps={{
             name: 'file',
             listType: 'picture-card',
+            onRemove(file) {
+              customAPIDelete(file.uid as any, 'upload/files')
+            }
           }}
-          action={() => customAPIUpload({})}
+
+
+
+        //action={() => customAPIUpload({})}
         />
         <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
       </ModalForm>
 
-     
+
       <Drawer
         width={600}
         open={showDetail}

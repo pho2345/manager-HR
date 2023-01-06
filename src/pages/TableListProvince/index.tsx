@@ -87,11 +87,6 @@ const TableList: React.FC = () => {
   const [fullName, setFullName] = useState<any>();
   const [fsmCode, setFsmCode] = useState<any>();
 
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
   const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
@@ -104,7 +99,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The code is the unique key',
       render: (_, entity: any) => {
         ;
         return (
@@ -302,10 +296,6 @@ const TableList: React.FC = () => {
           name='fullname'
           placeholder='Tên đầy đủ'
         />
-
-       
-
-
       </ModalForm>
 
 

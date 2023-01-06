@@ -7,7 +7,6 @@ import {
   PageContainer,
   ProDescriptions,
   ProFormText,
-
   ProTable,
 } from '@ant-design/pro-components';
 
@@ -16,59 +15,44 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
+
+
 const handleAdd = async (fields: API.RuleListItem) => {
-  console.log(fields);
-  const hide = message.loading('正在添加');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'plans');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields);
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       ...fields
     }, 'plans', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất!');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('正在删除');
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -77,26 +61,18 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại!!');
     return false;
   }
 };
 
 const TableList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
@@ -108,14 +84,6 @@ const TableList: React.FC = () => {
   const [codePlan, setCodePlan] = useState<any>();
   const [namePlan, setNamePlan] = useState<any>();
   const [profit, setProfit] = useState<any>();
-
-
-
-
-  /**
-   * @en-US International configuration
-   * @zh-CN 国际化配置
-   * */
   const intl = useIntl();
 
   const columns: ProColumns<API.RuleListItem>[] = [
@@ -128,7 +96,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The rule name is the unique key',
       render: (_, entity: any) => {
         ;
         return (
@@ -238,13 +205,6 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
             </div>
           }
         >

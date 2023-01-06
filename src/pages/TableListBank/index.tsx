@@ -99,7 +99,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'Mã là duy nhất',
       render: (_, entity: any) => {
         return (
           <a
@@ -133,7 +132,7 @@ const TableList: React.FC = () => {
       renderText: (_, val: any) => val?.attributes?.shortName
     }
     ,
-
+    
     {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       dataIndex: 'atrributes',

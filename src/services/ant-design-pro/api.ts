@@ -1,10 +1,10 @@
 
 import { request } from '@umijs/max';
 
-const serverUrl = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
+//const process.env.REACT_APP_SERVERURL = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
 
 export async function currentUser(options?: { [key: string]: any }) {
-  const data = await request<API.CurrentUser>(serverUrl + '/api/users/me', {
+  const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {
     method: 'GET',
     ...(options || {}),
     headers: {
@@ -27,14 +27,14 @@ export async function outLogin() {
 
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  console.log(body);
-  return request<API.LoginResult>(serverUrl + '/api/auth/local', {
+
+  return request<API.LoginResult>(SERVERURL + '/api/auth/local', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     data: body,
-    ...(options || {}),
+    ...(options || {}), 
   });
 }
 
@@ -90,7 +90,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 
 export async function customAPIGet(values?: { [key: string]: any }, collection?: string) {
 
-  const data = await request<any>(serverUrl+'/api/'+collection, {
+  const data = await request<any>(SERVERURL+'/api/'+collection, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
 
 export async function customAPIAdd(values?: { [key: string]: any }, collection?: string) {
   
-  return request<any>(serverUrl+'/api/'+collection, {
+  return request<any>(SERVERURL+'/api/'+collection, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export async function customAPIAdd(values?: { [key: string]: any }, collection?:
 }
 
 export async function customAPIUpdate(values?: { [key: string]: any }, collection?: string, id?: any) {
-  return request<any>(serverUrl+'/api/'+collection + `/${id}`, {
+  return request<any>(SERVERURL +'/api/'+collection + `/${id}`, {
     method: "PUT",
     headers: {
       'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export async function customAPIUpdate(values?: { [key: string]: any }, collectio
 
 export async function customAPIDelete(values?: { [key: string]: any }, collection?: string) {
  
-  return request<any>(serverUrl+'/api/'+collection +'/'+ values, {
+  return request<any>(SERVERURL +'/api/'+collection +'/'+ values, {
     method: "DELETE",
     headers: {
       'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ export async function customAPIDelete(values?: { [key: string]: any }, collectio
 
 export async function customAPIGetOne(values?: any, collection?: string, params?: { [key: string]: any }) {
 
-  return request<any>(serverUrl+'/api/'+collection +'/'+ values, {
+  return request<any>( SERVERURL +'/api/'+ collection +'/'+ values, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export async function customAPIGetOne(values?: any, collection?: string, params?
 export async function customAPIUpload(values?: { [key: string]: any }) {
   console.log(values);
  
-  return request<any>(serverUrl+'/api/upload', {
+  return request<any>( SERVERURL +'/api/upload', {
     method: "POST",
     headers: {
       'Content-Type': 'multipart/form-data',

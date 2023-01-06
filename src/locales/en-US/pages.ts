@@ -64,9 +64,10 @@ export default {
   'pages.searchTable.totalServiceCalls': '',
   'pages.searchTable.tenThousand': '0000',
   'pages.searchTable.batchDeletion': 'Xóa',
-  'pages.searchTable.batchApproval': 'batch approval',
+  'pages.searchTable.batchApproval': 'Xóa',
 
-
+  'pages.searchTable.createForm.update': 'Cập nhật',
+  'pages.searchTable.createForm.new': 'Tạo mới',
   'pages.searchTable.Bank.column.createAt': 'Ngày tạo',
   ///bank
   'pages.searchTable.createForm.newBank': 'Tạo mới ngân hàng',
@@ -102,6 +103,8 @@ export default {
 'pages.searchTable.column.taxId': 'MST',
 'pages.searchTable.column.address': 'Địa chỉ',
 'pages.searchTable.column.owner': 'Chủ sỡ hửu',
+'pages.searchTable.createForm.updateFarm': 'Cập nhật nông trại',
+'pages.searchTable.createForm.newFarm': 'Tạo mới trang trại',
 
 /// Province
 'pages.searchTable.column.fullName': 'Tên đây đủ',

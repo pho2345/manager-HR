@@ -19,7 +19,7 @@ import moment from 'moment';
 
 const { Title } = Typography;
 const  handleAdd = async (fields: any) => {
-  
+  console.log(fields);
 
   const hide = message.loading('Đang chờ...');
   try {

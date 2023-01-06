@@ -271,7 +271,7 @@ const TableList: React.FC = () => {
       <ModalForm
         form={form}
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newCategory',
+          id: 'pages.searchTable.createForm.new',
           defaultMessage: 'New rule',
         })}
         width='400px'
@@ -302,7 +302,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -319,7 +319,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -336,7 +336,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='profit'
-          placeholder='Profit'
+          placeholder='Lợi nhuận (%)'
         />
 
 
@@ -346,8 +346,8 @@ const TableList: React.FC = () => {
       <ModalForm
       form={form}
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.updateCategory',
-          defaultMessage: 'New rule',
+          id: 'pages.searchTable.createForm.update',
+          defaultMessage: '',
         })}
         width='400px'
         open={updateModalOpen}
@@ -388,7 +388,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -411,7 +411,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -435,7 +435,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='profit'
-          placeholder='Profit'
+          placeholder='Lợi nhuận (%)'
         />    
       </ModalForm>
 

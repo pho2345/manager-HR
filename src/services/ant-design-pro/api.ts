@@ -1,7 +1,7 @@
 
 import { request } from '@umijs/max';
 
-const serverUrl = 'https://aleger-server.process.vn';
+const serverUrl = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(serverUrl + '/api/users/me', {
@@ -110,6 +110,7 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
 }
 
 export async function customAPIAdd(values?: { [key: string]: any }, collection?: string) {
+  
   return request<any>(serverUrl+'/api/'+collection, {
     method: "POST",
     headers: {

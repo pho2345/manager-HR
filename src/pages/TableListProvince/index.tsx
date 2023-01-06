@@ -16,59 +16,45 @@ import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
+
 const handleAdd = async (fields: any) => {
   console.log(fields);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'provinces');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
+
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields);
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật');
   try {
     await customAPIUpdate({
     ...fields
     }, 'provinces', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại');
     return false;
   }
 };
 
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
+
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -77,11 +63,11 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công!');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại');
     return false;
   }
 };
@@ -224,15 +210,9 @@ const TableList: React.FC = () => {
             <div>
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
+              <FormattedMessage id='pages.searchTable.item' defaultMessage='item' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
+             
             </div>
           }
         >
@@ -248,12 +228,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+         
         </FooterToolbar>
       )}
       <ModalForm
@@ -291,7 +266,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -308,7 +283,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên tỉnh thành'
         />
 
         <ProFormText
@@ -325,7 +300,7 @@ const TableList: React.FC = () => {
           ]}
           width='md'
           name='fullname'
-          placeholder='Full Name'
+          placeholder='Tên đầy đủ'
         />
 
        
@@ -336,7 +311,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.updateCategory',
+          id: 'pages.searchTable.createForm.update',
           defaultMessage: 'New rule',
         })}
         width='400px'
@@ -379,7 +354,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -402,7 +377,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
 
@@ -426,12 +401,8 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='fullname'
-          placeholder='Fullname'
+          placeholder='Tên đầy đủ'
         />
-
-     
-
-
       </ModalForm>
 
       <Drawer

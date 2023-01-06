@@ -79,7 +79,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const refIdEWallet= useRef<any>();
+  const refIdEWallet = useRef<any>();
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
@@ -89,7 +89,7 @@ const TableList: React.FC = () => {
   const [accountNumber, setAccountNumber] = useState<any>();
 
 
- 
+
   const intl = useIntl();
 
   const columns: ProColumns<API.RuleListItem>[] = [
@@ -122,9 +122,9 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
-      renderText: (_, text: any) => 
+      renderText: (_, text: any) =>
         text?.attributes?.name
-      
+
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.phone' defaultMessage='Phone' />,
@@ -146,15 +146,15 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'address',
       renderText: (_, text: any) => {
-        if(text.attributes.address){
+        if (text.attributes.address) {
           let address = text?.attributes?.address?.data?.attributes.address;
           let pathAddress = text?.attributes?.address?.data?.attributes?.ward?.data?.attributes?.pathFullName;
-         if(typeof address !== 'undefined' && typeof pathAddress !== 'undefined'){
-          return `${address}, ${pathAddress}`;
-         }
+          if (typeof address !== 'undefined' && typeof pathAddress !== 'undefined') {
+            return `${address}, ${pathAddress}`;
+          }
         }
         return null;
-      } 
+      }
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.owner' defaultMessage='Code Tax' />,
@@ -162,10 +162,10 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'owner',
       renderText: (_, text: any) => {
-       let fullName = text?.attributes?.owner?.data?.attributes?.fullname;
-       if(typeof fullName !== 'undefined' && fullName){
-        return fullName;
-       }
+        let fullName = text?.attributes?.owner?.data?.attributes?.fullname;
+        if (typeof fullName !== 'undefined' && fullName) {
+          return fullName;
+        }
         return null;
       }
     },
@@ -239,7 +239,7 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
-        
+
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -249,7 +249,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
               &nbsp;&nbsp;
-             
+
             </div>
           }
         >
@@ -265,13 +265,13 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-            
+
         </FooterToolbar>
       )}
       <ModalForm
         form={form}
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newCategory',
+          id: 'pages.searchTable.createForm.newFarm',
           defaultMessage: 'New rule',
         })}
         width='400px'
@@ -356,13 +356,30 @@ const TableList: React.FC = () => {
           placeholder='Số điện thoại'
         />
 
+    <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.searchTable.column.phone'
+                  defaultMessage='Số điện thoại!'
+                />
+              ),
+            },
+          ]}
+          width='md'
+          name='taxId'
+          placeholder='Mã số thuế'
+        />
+
 
       </ModalForm>
 
 
       <ModalForm
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.updateCategory',
+          id: 'pages.searchTable.createForm.updateFarm',
           defaultMessage: 'New rule',
         })}
         width='400px'
@@ -470,6 +487,29 @@ const TableList: React.FC = () => {
           width='md'
           name='phone'
           placeholder='Số điện thoại'
+        />
+
+        <ProFormText
+          // rules={[
+          //   {
+          //     required: true,
+          //     message: (
+          //       <FormattedMessage
+          //         id='pages.searchTable.Owner'
+          //         defaultMessage='Rule name is required'
+          //       />
+          //     ),
+          //   },
+          // ]}
+          fieldProps={{
+            value: owner,
+            onChange: (e) => {
+              setOwner(e.target.value);
+            }
+          }}
+          width='md'
+          name='taxId'
+          placeholder='Mã số thuế'
         />
 
 

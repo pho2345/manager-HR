@@ -1,5 +1,5 @@
 export default {
-  'menu.welcome': 'Welcome',
+  'menu.welcome': 'Xin Chào',
   'menu.more-blocks': 'More Blocks',
   'menu.home': 'Início',
   'menu.admin': 'Admin',

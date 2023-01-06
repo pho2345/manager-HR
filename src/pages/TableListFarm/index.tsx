@@ -19,22 +19,22 @@ import moment from 'moment';
 
 const handleAdd = async (fields: API.RuleListItem) => {
   console.log(fields);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'e-wallets');
     hide();
-    message.success('Added successfully');
+    message.success('Thêm thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Adding failed, please try again!');
+    message.error('Thêm thất bại');
     return false;
   }
 };
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  const hide = message.loading('Configuring');
+  const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       name: fields.name,
@@ -43,11 +43,11 @@ const handleUpdate = async (fields: any, id: any) => {
     }, 'e-wallets', id.current);
     hide();
 
-    message.success('Configuration is successful');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Configuration failed, please try again!');
+    message.error('Cập nhật thất bại  !');
     return false;
   }
 };
@@ -55,7 +55,7 @@ const handleUpdate = async (fields: any, id: any) => {
 
 const handleRemove = async (selectedRows: any) => {
   console.log(selectedRows);
-  const hide = message.loading('Waiting...');
+  const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
@@ -64,11 +64,11 @@ const handleRemove = async (selectedRows: any) => {
 
     await Promise.all(deleteRowss);
     hide();
-    message.success('Deleted successfully and will refresh soon');
+    message.success('Xóa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Delete failed, please try again');
+    message.error('Xóa thất bại!');
     return false;
   }
 };
@@ -102,7 +102,6 @@ const TableList: React.FC = () => {
       ),
       key: 'code',
       dataIndex: 'atrributes',
-      tip: 'The rule name is the unique key',
       render: (_, entity: any) => {
         ;
         return (
@@ -250,13 +249,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
+             
             </div>
           }
         >
@@ -272,12 +265,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+            
         </FooterToolbar>
       )}
       <ModalForm
@@ -307,14 +295,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập mã!'
                 />
               ),
             },
           ]}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -324,14 +312,14 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Name'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập tên!'
                 />
               ),
             },
           ]}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
         <ProFormText
@@ -357,15 +345,15 @@ const TableList: React.FC = () => {
               required: true,
               message: (
                 <FormattedMessage
-                  id='pages.searchTable.accountNumber'
-                  defaultMessage='Rule name is required'
+                  id='pages.searchTable.column.phone'
+                  defaultMessage='Số điện thoại!'
                 />
               ),
             },
           ]}
           width='md'
-          name='accountNumber'
-          placeholder='Account Number'
+          name='phone'
+          placeholder='Số điện thoại'
         />
 
 
@@ -411,7 +399,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='code'
-          placeholder='Code'
+          placeholder='Mã'
         />
 
         <ProFormText
@@ -434,7 +422,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='name'
-          placeholder='Name'
+          placeholder='Tên'
         />
 
 
@@ -458,7 +446,7 @@ const TableList: React.FC = () => {
           }}
           width='md'
           name='owner'
-          placeholder='Owner'
+          placeholder='Chủ sở hữu'
         />
 
         <ProFormText
@@ -480,8 +468,8 @@ const TableList: React.FC = () => {
             }
           }}
           width='md'
-          name='accountNumber'
-          placeholder='Account Number'
+          name='phone'
+          placeholder='Số điện thoại'
         />
 
 

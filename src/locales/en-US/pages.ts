@@ -98,7 +98,7 @@ export default {
 
 /// Farm
 'menu.Farm': "Farm",
-'pages.searchTable.column.phone': 'Số điện thoải',
+'pages.searchTable.column.phone': 'Số điện thoại',
 'pages.searchTable.column.taxId': 'MST',
 'pages.searchTable.column.address': 'Địa chỉ',
 'pages.searchTable.column.owner': 'Chủ sỡ hửu',

@@ -131,6 +131,11 @@ export default {
 'menu.Ward': 'Xã phường',
 
 ///Address
-'menu.Address': 'Địa chỉ'
+'menu.Address': 'Địa chỉ',
+
+
+//// CPass
+ 'pages.Cpass.chosenCow': 'Vui lòng chọn Bò!',
+ 'pages.Cpass.pZero': 'Nhập trọng lượng bò thời điểm tính lợi nhuận'
 
 };

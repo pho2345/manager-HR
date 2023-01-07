@@ -287,11 +287,12 @@ const TableList: React.FC = () => {
               refIdCow.current = entity.id;
               const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
               const photos = cow.data?.attributes?.photos?.data;
-              
-              const photoCow = photos.map((e: any) => {
-                return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
-              })
-              
+              console.log(photos);
+              if(photos){
+                const photoCow = photos.map((e: any) => {
+                  return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
+                })
+
               form.setFieldsValue({
                 ...cow.data?.attributes,
                 category: cow.data?.attributes?.category?.data?.id,
@@ -299,6 +300,16 @@ const TableList: React.FC = () => {
                 upload: photoCow
 
               })
+            }
+            else {
+              form.setFieldsValue({
+                ...cow.data?.attributes,
+                category: cow.data?.attributes?.category?.data?.id,
+                farm: cow.data?.attributes?.farm?.data?.id,
+                //upload: photoCow
+
+              })
+            }
             }}
           >
             <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />

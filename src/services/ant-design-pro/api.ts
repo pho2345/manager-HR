@@ -2,8 +2,7 @@
 import { request } from '@umijs/max';
 
  
-//const process.env.REACT_APP_SERVERURL = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
-//const SERVERURL = 'https://aleger-server.process.vn';
+
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {

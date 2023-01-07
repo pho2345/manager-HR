@@ -141,7 +141,6 @@ const getFarm = async () => {
   return data;
 };
 
-const SERVERURL = 'https://aleger-server.process.vn';
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -236,7 +235,12 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'sex',
-      renderText: (_, text: any) => text?.attributes?.sex,
+      renderText: (_, text: any) => {
+        if(text?.attributes?.sex === 'male'){
+          return 'Đực';
+        }
+        return 'Cái';
+      },
     },
 
     {
@@ -283,11 +287,11 @@ const TableList: React.FC = () => {
               refIdCow.current = entity.id;
               const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
               const photos = cow.data?.attributes?.photos?.data;
-              console.log(photos);
+              
               const photoCow = photos.map((e: any) => {
                 return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
               })
-              //console.log(photoCow);
+              
               form.setFieldsValue({
                 ...cow.data?.attributes,
                 category: cow.data?.attributes?.category?.data?.id,

@@ -1,5 +1,5 @@
-import { customAPIGet, customAPIAdd, customAPIDelete,  } from '@/services/ant-design-pro/api';
-import {  PlusOutlined } from '@ant-design/icons';
+import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -12,13 +12,13 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import {  Button, Drawer, Form, message, Switch, Typography  } from 'antd';
+import { Button, Drawer, Form, message, Switch, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 
 const { Title } = Typography;
-const  handleAdd = async (fields: any) => {
+const handleAdd = async (fields: any) => {
   console.log(fields);
 
   const hide = message.loading('Đang chờ...');
@@ -35,23 +35,23 @@ const  handleAdd = async (fields: any) => {
 };
 
 
-// const handleUpdate = async (fields: any, id: any) => {
-//   console.log(fields);
-//   const hide = message.loading('Đang sửa...');
-//   try {
-//     await customAPIUpdate({
-//       ...fields
-//     }, 'c_passes', id.current);
-//     hide();
+const handleUpdate = async (fields: any, id: any) => {
+  console.log(fields);
+  const hide = message.loading('Đang sửa...');
+  try {
+    await customAPIUpdate({
+      ...fields
+    }, 'c_passes', id.current);
+    hide();
 
-//     message.success('Sửa thành công');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Sửa thất bại!');
-//     return false;
-//   }
-// };
+    message.success('Sửa thành công');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Sửa thất bại!');
+    return false;
+  }
+};
 
 
 const handleRemove = async (selectedRows: any) => {
@@ -78,7 +78,7 @@ const handleRemove = async (selectedRows: any) => {
 
 
 const getCownotInCpass = async () => {
-  const categories = await customAPIGet({'filters[c_pass][id][$null]': true}, 'cows');
+  const categories = await customAPIGet({ 'filters[c_pass][id][$null]': true }, 'cows');
   let data = categories.data.map((e: any) => {
     return {
       value: e?.id,
@@ -93,7 +93,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const refIdProvince = useRef<any>();
+  const refIdCpass = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
@@ -158,10 +158,10 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'plan',
       renderText: (_, text: any) => {
-        if(text.attributes.plan.data){
+        if (text.attributes.plan.data) {
           return `${text?.attributes?.plan?.data?.attributes?.name} - ${text?.attributes?.plan?.data?.attributes?.profit}%`
         }
-        
+
       }
     },
     {
@@ -206,7 +206,7 @@ const TableList: React.FC = () => {
       key: 'wgePercent',
       renderText: (_, text: any) => text?.attributes?.wgePercent
     },
-    
+
     {
       title: <FormattedMessage id='pages.searchTable.column.wge' defaultMessage='Hiệu quả tăng trọng(WGE)' />,
       dataIndex: 'atrributes',
@@ -278,9 +278,32 @@ const TableList: React.FC = () => {
         return (<Button
           type='primary'
           key='primary'
-          onClick={() => {
+          onClick={async () => {
             handleUpdateModalOpen(true);
-            refIdProvince.current = entity.id;
+            refIdCpass.current = entity.id;
+            const cPass = await customAPIGetOne(entity.id, 'c-passes', { 'populate[0]': 'cow.category', 'populate[1]': 'fair', 'populate[2]': 'plan', 'populate[3]': 'owner' });
+            const cowNotCpass = await getCownotInCpass();
+            const cowForm = [
+              ...cowNotCpass,
+              {
+                value: cPass?.data?.attributes?.cow?.data?.id,
+                label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
+              }
+            ]
+
+            form.setFieldsValue({
+              cow: {
+                value: cPass?.data?.attributes?.cow?.data?.id,
+                label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
+              },
+              code: cPass?.data?.attributes?.code,
+              pZero: cPass?.data?.attributes?.pZero,
+              nowWeigth:cPass?.data?.attributes?.pZero,
+              price:  cPass?.data?.attributes?.price
+            })
+            console.log(cowForm);
+
+
           }}
         >
           <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
@@ -313,7 +336,7 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        
+
         toolBarRender={() => [
           <Button
             type='primary'
@@ -329,7 +352,6 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-
             setSelectedRows(selectedRows);
           },
         }}
@@ -373,7 +395,7 @@ const TableList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-     
+
 
       <ModalForm
         title="Tạo mới"
@@ -394,11 +416,11 @@ const TableList: React.FC = () => {
           if (success) {
             handleModalOpen(false);
             form.resetFields();
-           const getCow = await getCownotInCpass();
-           setCow(getCow);
+            const getCow = await getCownotInCpass();
+            setCow(getCow);
             if (actionRef.current) {
               actionRef.current.reload();
-              
+
             }
           }
           //message.success('Success');
@@ -424,7 +446,7 @@ const TableList: React.FC = () => {
             ]}
           />
 
-        <ProFormSelect
+          <ProFormSelect
             width="md"
             options={cow}
             name="cow"
@@ -432,20 +454,20 @@ const TableList: React.FC = () => {
             placeholder="Chọn bò"
           />
 
-          
+
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
-          <ProFormText width="xs" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
+          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
           <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
         </ProForm.Group>
         <Title level={5}>Tự động chuyển đổi Ale</Title>
-        <Switch defaultChecked={refAutoTransfer.current} onChange={() => {refAutoTransfer.current = !refAutoTransfer.current}} />
+        <Switch defaultChecked={refAutoTransfer.current} onChange={() => { refAutoTransfer.current = !refAutoTransfer.current }} />
       </ModalForm>
 
 
       <ModalForm
-        title="Tạo mới"
+        title="Cập nhật"
         open={updateModalOpen}
         form={form}
         autoFocusFirstInput
@@ -459,15 +481,15 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           //await waitTime(2000);
           console.log(values);
-          const success = await handleAdd(values as any);
+          const success = await handleUpdate(values as any, refIdCpass);
           if (success) {
             handleModalOpen(false);
             form.resetFields();
-           const getCow = await getCownotInCpass();
-           setCow(getCow);
+            const getCow = await getCownotInCpass();
+            setCow(getCow);
             if (actionRef.current) {
               actionRef.current.reload();
-              
+
             }
           }
           //message.success('Success');
@@ -482,7 +504,7 @@ const TableList: React.FC = () => {
             placeholder="Mã"
           />
 
-        <ProFormSelect
+          <ProFormSelect
             width="md"
             options={cow}
             name="cow"
@@ -490,7 +512,7 @@ const TableList: React.FC = () => {
             placeholder="Chọn bò"
           />
 
-          
+
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
@@ -498,10 +520,10 @@ const TableList: React.FC = () => {
           <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
         </ProForm.Group>
         <Title level={5}>Tự động chuyển đổi Ale</Title>
-        <Switch defaultChecked={refAutoTransfer.current} onChange={() => {refAutoTransfer.current = !refAutoTransfer.current}} />
+        <Switch defaultChecked={refAutoTransfer.current} onChange={() => { refAutoTransfer.current = !refAutoTransfer.current }} />
       </ModalForm>
 
-      
+
 
       <Drawer
         width={600}
@@ -527,7 +549,7 @@ const TableList: React.FC = () => {
         )}
       </Drawer>
     </PageContainer>
-    
+
   );
 };
 

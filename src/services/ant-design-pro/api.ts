@@ -1,7 +1,9 @@
 
 import { request } from '@umijs/max';
 
+ 
 //const process.env.REACT_APP_SERVERURL = 'https://1337-innoria-aleger-n6eaffn9h78.ws-us81.gitpod.io';
+//const SERVERURL = 'https://aleger-server.process.vn';
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {
@@ -12,7 +14,6 @@ export async function currentUser(options?: { [key: string]: any }) {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   });
-
   return data;
 }
 
@@ -27,7 +28,6 @@ export async function outLogin() {
 
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-
   return request<API.LoginResult>(SERVERURL + '/api/auth/local', {
     method: 'POST',
     headers: {

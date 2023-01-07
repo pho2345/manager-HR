@@ -4,10 +4,16 @@ import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const { REACT_APP_ENV = 'dev' } = process.env;
+const { REACT_APP_ENV = 'dev',SERVERURL } = process.env;
 
 export default defineConfig({
+
+  define: {
+    SERVERURL: SERVERURL,
+  },
 
   hash: true,
 

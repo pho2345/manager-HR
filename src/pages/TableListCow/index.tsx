@@ -140,6 +140,8 @@ const getFarm = async () => {
   });
   return data;
 };
+
+const SERVERURL = 'https://aleger-server.process.vn';
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);

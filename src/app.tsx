@@ -1,9 +1,9 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
-//import { LinkOutlined } from '@ant-design/icons';
+import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-// import type { RunTimeLayoutConfig } from '@umijs/max';
+ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
@@ -99,17 +99,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       return (
         <>
           {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
+          {/* <SettingDrawer
+            //disableUrlParams
+            //enableDarkTheme
+            //settings={initialState?.settings}
+            // onSettingChange={(settings) => {
+            //   setInitialState((preInitialState) => ({
+            //     ...preInitialState,
+            //     settings,
+            //   }));
+            // }}
+         /> */}
         </>
       );
     

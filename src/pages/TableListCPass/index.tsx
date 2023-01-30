@@ -12,12 +12,11 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message, Switch, Typography } from 'antd';
+import { Button, Drawer, Form, message, Switch } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
 
-const { Title } = Typography;
 const handleAdd = async (fields: any) => {
   console.log(fields);
 
@@ -161,6 +160,7 @@ const TableList: React.FC = () => {
         if (text.attributes.plan.data) {
           return `${text?.attributes?.plan?.data?.attributes?.name} - ${text?.attributes?.plan?.data?.attributes?.profit}%`
         }
+        return null;
 
       }
     },
@@ -474,7 +474,18 @@ const TableList: React.FC = () => {
                 ),
               },
             ]}/>
-          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" required/>
+          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" 
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.Cpass.pZero'
+                  defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
+                />
+              ),
+            },
+          ]}/>
           <ProFormText width="md" name="price" label="Giá" placeholder="Giá" required />
           <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale"  />
         </ProForm.Group>

@@ -93,6 +93,9 @@ export default [
     icon: 'table',
     path: '/cows',
     component: './TableListCow',
+    routes: [
+      { path: '/cows/:id', hideInMenu: true, name: 'chi tiết', component: './TableListCow' }
+    ],
   },
   {
     name: 'CPass',
@@ -115,6 +118,12 @@ export default [
     component: './TableListSlot',
   },
 
+  {
+    name: 'Giao dịch',
+    icon: 'table',
+    path: '/transactions',
+    component: './TableListTransaction',
+  },
   {
     path: '/',
     redirect: '/welcome',

@@ -89,7 +89,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 
 export async function customAPIGet(values?: { [key: string]: any }, collection?: string) {
 
-  const data = await request<any>(SERVERURL+'/api/'+collection, {
+  const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -99,12 +99,11 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
       ...values,
     },
   });
-
  
   return {
-    data : data.data,
+    data : fetchData.data ? fetchData.data : fetchData,
     success: true,
-    total : data.meta.pagination.total
+    total : fetchData?.meta?.pagination?.total
   }
 }
 
@@ -171,5 +170,18 @@ export async function customAPIUpload(values?: { [key: string]: any }) {
       "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
     },
     data : values?.data
+  });
+}
+
+export async function customAPIUpdateMany(values?: { [key: string]: any }, collection?: string) {
+  return request<any>(SERVERURL +'/api/'+collection , {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+    },
+    data : {
+      transaction : values
+    }
   });
 }

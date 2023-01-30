@@ -136,6 +136,27 @@ export default {
 
 //// CPass
  'pages.Cpass.chosenCow': 'Vui lòng chọn Bò!',
- 'pages.Cpass.pZero': 'Nhập trọng lượng bò thời điểm tính lợi nhuận'
+ 'pages.Cpass.pZero': 'Nhập trọng lượng bò thời điểm tính lợi nhuận',
+ 'menu.Ngân hàng': 'Ngân hàng',
+ 'menu.Giống bò': 'Giống bò',
+ 'menu.Nông trại': 'Nông trại',
+ 'menu.Tỉnh thành': 'Tỉnh thành',
+ 'menu.Phương án hợp tác': 'Phương án hợp tác',
+ 'menu.Quận huyện': 'Quận huyện',
+ 'menu.Xã phường': 'Xã phường',
+ 'menu.Địa chỉ': 'Địa chỉ',
+ 'menu.Bò': 'Bò',
+ 'menu.CPass': 'CPass',
+ 'menu.Phiên mở bán': 'Phiên mở bán',
+ 'menu.Slot': 'Slot',
+ 'menu.Giao dịch': 'Giao dịch',
+ 'pages.searchTable.column.fair': 'Đợt mở bán',
+ 'pages.searchTable.column.users_permissions_user': 'Người sở hữu(Mega)',
+ 'pages.searchTable.column.plan':'Phương án',
+ 'pages.searchTable.column.plan': 'Phương án',
+ 'pages.searchTable.column.users_permissions_user': 'Người sở hữu(Mega)',
+ 
+ 
+
 
 };

@@ -26,10 +26,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
 import { Avatar, Button, Drawer, Form, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
+import Field from '@ant-design/pro-field';
 
 
 const handleAdd = async (fields: any) => {
@@ -61,22 +62,23 @@ const handleAdd = async (fields: any) => {
 
 const handleUpdate = async (fields: any, id: any) => {
   console.log(id);
- 
+
   const hide = message.loading('Đang cập nhật...');
   try {
 
-    
-    
+
+
     const uploadImages = fields?.upload.map((e: any) => {
-      if(e.originFileObj){
-      let formdata = new FormData();
-      formdata.append('files', e?.originFileObj);
-      formdata.append('ref', 'api::cow.cow');
-      formdata.append('refId', id.current);
-      formdata.append('field', 'photos');
-      return customAPIUpload({
-        data: formdata
-      })}
+      if (e.originFileObj) {
+        let formdata = new FormData();
+        formdata.append('files', e?.originFileObj);
+        formdata.append('ref', 'api::cow.cow');
+        formdata.append('refId', id.current);
+        formdata.append('field', 'photos');
+        return customAPIUpload({
+          data: formdata
+        })
+      }
       return null;
     });
     await Promise.all(uploadImages);
@@ -152,7 +154,8 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
-
+  const params = useParams();
+  const refIdPicture = useRef<any>();
   useEffect(() => {
     const getValues = async () => {
       let getCate = await getCategory();
@@ -172,15 +175,11 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
-              setShowDetail(true);
-            }}
-          >
+          <Link to={`/cows/` + entity.id}>
             {entity?.attributes?.code}
-          </a>
+          </Link>
         );
+
       },
     },
     {
@@ -230,13 +229,14 @@ const TableList: React.FC = () => {
         );
       },
     },
+
     {
       title: <FormattedMessage id='pages.searchTable.column.sex' defaultMessage='Giới tính' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'sex',
       renderText: (_, text: any) => {
-        if(text?.attributes?.sex === 'male'){
+        if (text?.attributes?.sex === 'male') {
           return 'Đực';
         }
         return 'Cái';
@@ -288,28 +288,28 @@ const TableList: React.FC = () => {
               const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
               const photos = cow.data?.attributes?.photos?.data;
               console.log(photos);
-              if(photos){
+              if (photos) {
                 const photoCow = photos.map((e: any) => {
                   return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
                 })
 
-              form.setFieldsValue({
-                ...cow.data?.attributes,
-                category: cow.data?.attributes?.category?.data?.id,
-                farm: cow.data?.attributes?.farm?.data?.id,
-                upload: photoCow
+                form.setFieldsValue({
+                  ...cow.data?.attributes,
+                  category: cow.data?.attributes?.category?.data?.id,
+                  farm: cow.data?.attributes?.farm?.data?.id,
+                  upload: photoCow
 
-              })
-            }
-            else {
-              form.setFieldsValue({
-                ...cow.data?.attributes,
-                category: cow.data?.attributes?.category?.data?.id,
-                farm: cow.data?.attributes?.farm?.data?.id,
-                //upload: photoCow
+                })
+              }
+              else {
+                form.setFieldsValue({
+                  ...cow.data?.attributes,
+                  category: cow.data?.attributes?.category?.data?.id,
+                  farm: cow.data?.attributes?.farm?.data?.id,
+                  //upload: photoCow
 
-              })
-            }
+                })
+              }
             }}
           >
             <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
@@ -330,367 +330,492 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
-        actionRef={actionRef}
-        rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
-          </Button>,
-        ]}
-        request={() =>
-          customAPIGet(
-            { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' },
-            'cows',
-          )
-        }
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
-          </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
-        </FooterToolbar>
-      )}
+    !params.id ? (
 
-      <ModalForm
-        title='Tạo mới'
-        open={createModalOpen}
-        form={form}
-        autoFocusFirstInput
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleModalOpen(false);
-          },
-        }}
-        submitTimeout={2000}
-        onFinish={async (values) => {
-          //await waitTime(2000);
-          const success = await handleAdd(values as any);
-          if (success) {
-            handleModalOpen(false);
-            form.resetFields();
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-          //message.success('Success');
-          return true;
-        }}
-      >
-        <ProForm.Group>
-          <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
-
-          <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            width='md'
-            name='firstWeight'
-            label='Cân nặng P0'
-            placeholder='Cân nặng P0'
-          />
-
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
-          <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormDatePicker name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
-          <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
-          <ProFormSelect
-            width='xs'
-            name='sex'
-
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
-            placeholder='Chọn giới tính'
-            rules={[{ required: true, message: 'Chọn giới tính!' }]}
-          />
-          <ProFormSelect
-            width='xl'
-            name='status'
-            label='Trạng thái'
-            options={[
-              {
-                label: 'Mới',
-                value: 'new',
-              },
-              {
-                label: 'Sẳn sàng',
-                value: 'ready',
-              },
-              {
-                label: 'Đã thêm vào CPass',
-                value: 'cpassAdded',
-              },
-
-              {
-                label: 'Đã thêm vào phiên',
-                value: 'fairAdded',
-              },
-              {
-                label: 'Đã ở trong phiên mở bán',
-                value: 'fairOpen',
-              },
-              {
-                label: 'Trong đặt hàng của phiên',
-                value: 'fairOrder',
-              },
-              {
-                label: 'Đã thanh toán',
-                value: 'paid',
-              },
-              {
-                label: 'Sẵn sàng nuôi',
-                value: 'readyFeed',
-              },
-              {
-                label: 'Chờ nuôi',
-                value: 'waitingFeed',
-              },
-            ]}
-            placeholder='Trạng thái'
-            rules={[{ required: true, message: 'Trạng thái!' }]}
-          />
-        </ProForm.Group>
-
-        <ProFormUploadButton
-          title='Up load'
-          name='upload'
-          label='Upload'
-          max={2}
-          fieldProps={{
-            name: 'file',
-            listType: 'picture-card',
+      <PageContainer>
+        <ProTable
+          headerTitle={intl.formatMessage({
+            id: 'pages.searchTable.title',
+            defaultMessage: 'Enquiry form',
+          })}
+          actionRef={actionRef}
+          rowKey='id'
+          search={{
+            labelWidth: 120,
           }}
-
-        //ction={() => customAPIUpload({})}
-        />
-
-        <ProFormTextArea width='xl' label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
-      </ModalForm>
-
-      <ModalForm
-        title='Cập nhật'
-        open={updateModalOpen}
-        form={form}
-        autoFocusFirstInput
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleUpdateModalOpen(false);
-          },
-        }}
-        submitTimeout={2000}
-        onFinish={async (values) => {
-          console.log(values);
-          const success = await handleUpdate(values as any, refIdCow as any);
-          if (success) {
-            handleUpdateModalOpen(false);
-            form.resetFields();
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+          toolBarRender={() => [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            </Button>,
+          ]}
+          request={() =>
+            customAPIGet(
+              { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' },
+              'cows',
+            )
           }
-          message.success('Success');
-          return true;
-        }}
-      >
-        <ProForm.Group>
-          <ProFormText width='md' name='code' label='Mã' required placeholder='Mã' />
-
-          <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            width='md'
-            name='firstWeight'
-            label='Cân nặng P0'
-            placeholder='Cân nặng P0'
-            disabled
-          />
-
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
-          <ProFormSelect width='md' options={farm} name='farm' label='Trang trại' placeholder='Chọn trang trại' required />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormDatePicker name='birthdate' label='Ngày sinh' />
-          <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
-          <ProFormSelect
-            required
-            width='xs'
-            name='sex'
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
-            placeholder='Please select a country'
-            rules={[{ required: true, message: 'Please select your country!' }]}
-          />
-          <ProFormSelect
-            width='xl'
-            name='status'
-            label='Trạng thái'
-            options={[
-              {
-                label: 'Mới',
-                value: 'new',
-              },
-              {
-                label: 'Sẳn sàng',
-                value: 'ready',
-              },
-              {
-                label: 'Đã thêm vào CPass',
-                value: 'cpassAdded',
-              },
-
-              {
-                label: 'Đã thêm vào phiên',
-                value: 'fairAdded',
-              },
-              {
-                label: 'Đã ở trong phiên mở bán',
-                value: 'fairOpen',
-              },
-              {
-                label: 'Trong đặt hàng của phiên',
-                value: 'fairOrder',
-              },
-              {
-                label: 'Đã thanh toán',
-                value: 'paid',
-              },
-              {
-                label: 'Sẵn sàng nuôi',
-                value: 'readyFeed',
-              },
-              {
-                label: 'Chờ nuôi',
-                value: 'waitingFeed',
-              },
-            ]}
-            placeholder='Trạng thái'
-            rules={[{ required: true, message: 'Trạng thái!' }]}
-          />
-        </ProForm.Group>
-
-        <ProFormUploadButton
-          name='upload'
-          label='Upload'
-          title='Upload'
-
-          fieldProps={{
-            name: 'file',
-            listType: 'picture-card',
-            onRemove(file) {
-              customAPIDelete(file.uid as any, 'upload/files')
-            }
+          columns={columns}
+          rowSelection={{
+            onChange: (_, selectedRows: any) => {
+              setSelectedRows(selectedRows);
+            },
           }}
-
-
-
-        //action={() => customAPIUpload({})}
         />
-        <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
-      </ModalForm>
-
-
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
+        {selectedRowsState?.length > 0 && (
+          <FooterToolbar
+            extra={
+              <div>
+                <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+                <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
+                &nbsp;&nbsp;
+                <span>
+                  <FormattedMessage
+                    id='pages.searchTable.totalServiceCalls'
+                    defaultMessage='Total number of service calls'
+                  />{' '}
+                </span>
+              </div>
+            }
+          >
+            <Button
+              onClick={async () => {
+                await handleRemove(selectedRowsState);
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              }}
+            >
+              <FormattedMessage
+                id='pages.searchTable.batchDeletion'
+                defaultMessage='Batch deletion'
+              />
+            </Button>
+            <Button type='primary'>
+              <FormattedMessage
+                id='pages.searchTable.batchApproval'
+                defaultMessage='Batch approval'
+              />
+            </Button>
+          </FooterToolbar>
         )}
-      </Drawer>
-    </PageContainer>
+
+        <ModalForm
+          title='Tạo mới'
+          open={createModalOpen}
+          form={form}
+          autoFocusFirstInput
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+              handleModalOpen(false);
+            },
+          }}
+          submitTimeout={2000}
+          onFinish={async (values) => {
+            //await waitTime(2000);
+            const success = await handleAdd(values as any);
+            if (success) {
+              handleModalOpen(false);
+              form.resetFields();
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+            //message.success('Success');
+            return true;
+          }}
+        >
+          <ProForm.Group>
+            <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
+
+            <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormText
+              width='md'
+              name='firstWeight'
+              label='Cân nặng P0'
+              placeholder='Cân nặng P0'
+            />
+
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
+            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormDatePicker name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
+            <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
+            <ProFormSelect
+              width='xs'
+              name='sex'
+
+              label='Giới tính'
+              options={[
+                {
+                  label: 'Đực',
+                  value: 'male',
+                },
+                {
+                  label: 'Cái',
+                  value: 'female',
+                },
+              ]}
+              placeholder='Chọn giới tính'
+              rules={[{ required: true, message: 'Chọn giới tính!' }]}
+            />
+            <ProFormSelect
+              width='xl'
+              name='status'
+              label='Trạng thái'
+              options={[
+                {
+                  label: 'Mới',
+                  value: 'new',
+                },
+                {
+                  label: 'Sẳn sàng',
+                  value: 'ready',
+                },
+                {
+                  label: 'Đã thêm vào CPass',
+                  value: 'cpassAdded',
+                },
+
+                {
+                  label: 'Đã thêm vào phiên',
+                  value: 'fairAdded',
+                },
+                {
+                  label: 'Đã ở trong phiên mở bán',
+                  value: 'fairOpen',
+                },
+                {
+                  label: 'Trong đặt hàng của phiên',
+                  value: 'fairOrder',
+                },
+                {
+                  label: 'Đã thanh toán',
+                  value: 'paid',
+                },
+                {
+                  label: 'Sẵn sàng nuôi',
+                  value: 'readyFeed',
+                },
+                {
+                  label: 'Chờ nuôi',
+                  value: 'waitingFeed',
+                },
+              ]}
+              placeholder='Trạng thái'
+              rules={[{ required: true, message: 'Trạng thái!' }]}
+            />
+          </ProForm.Group>
+
+          <ProFormUploadButton
+            title='Up load'
+            name='upload'
+            label='Upload'
+            max={2}
+            fieldProps={{
+              name: 'file',
+              listType: 'picture-card',
+            }}
+
+          //ction={() => customAPIUpload({})}
+          />
+
+          <ProFormTextArea width='xl' label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
+        </ModalForm>
+
+        <ModalForm
+          title='Cập nhật'
+          open={updateModalOpen}
+          form={form}
+          autoFocusFirstInput
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+              handleUpdateModalOpen(false);
+              refIdPicture.current = null;
+              
+            },
+          }}
+          submitTimeout={2000}
+          onFinish={async (values) => {
+      
+            const deletePicture = refIdPicture.current.map((e: any) => {
+              return customAPIDelete(e as any, 'upload/files');
+            })
+
+            
+            const success = await handleUpdate(values as any, refIdCow as any);
+
+            if (success) {
+              await Promise.all(deletePicture);
+              handleUpdateModalOpen(false);
+              form.resetFields();
+              if (actionRef.current) {
+                actionRef.current.reload();
+                refIdPicture.current = null;
+              }
+            }
+           
+            return true;
+          }}
+        >
+          <ProForm.Group>
+            <ProFormText width='md' name='code' label='Mã' required placeholder='Mã' />
+
+            <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' />
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormText
+              width='md'
+              name='firstWeight'
+              label='Cân nặng P0'
+              placeholder='Cân nặng P0'
+              disabled
+            />
+
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
+            <ProFormSelect width='md' options={farm} name='farm' label='Trang trại' placeholder='Chọn trang trại' required />
+          </ProForm.Group>
+          <ProForm.Group>
+            <ProFormDatePicker name='birthdate' label='Ngày sinh' />
+            <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
+            <ProFormSelect
+              required
+              width='xs'
+              name='sex'
+              label='Giới tính'
+              options={[
+                {
+                  label: 'Đực',
+                  value: 'male',
+                },
+                {
+                  label: 'Cái',
+                  value: 'female',
+                },
+              ]}
+              placeholder='Please select a country'
+              rules={[{ required: true, message: 'Please select your country!' }]}
+            />
+            <ProFormSelect
+              width='xl'
+              name='status'
+              label='Trạng thái'
+              options={[
+                {
+                  label: 'Mới',
+                  value: 'new',
+                },
+                {
+                  label: 'Sẳn sàng',
+                  value: 'ready',
+                },
+                {
+                  label: 'Đã thêm vào CPass',
+                  value: 'cpassAdded',
+                },
+
+                {
+                  label: 'Đã thêm vào phiên',
+                  value: 'fairAdded',
+                },
+                {
+                  label: 'Đã ở trong phiên mở bán',
+                  value: 'fairOpen',
+                },
+                {
+                  label: 'Trong đặt hàng của phiên',
+                  value: 'fairOrder',
+                },
+                {
+                  label: 'Đã thanh toán',
+                  value: 'paid',
+                },
+                {
+                  label: 'Sẵn sàng nuôi',
+                  value: 'readyFeed',
+                },
+                {
+                  label: 'Chờ nuôi',
+                  value: 'waitingFeed',
+                },
+              ]}
+              placeholder='Trạng thái'
+              rules={[{ required: true, message: 'Trạng thái!' }]}
+            />
+          </ProForm.Group>
+
+          <ProFormUploadButton
+            name='upload'
+            label='Upload'
+            title='Upload'
+
+            fieldProps={{
+              name: 'file',
+              listType: 'picture-card',
+              onRemove(file) {
+                if (!file.lastModified) {
+                  if(refIdPicture.current){
+                    refIdPicture.current = [...refIdPicture.current, file.uid];
+                  }
+                  else {
+                    refIdPicture.current = [file.uid];
+                  }
+                  
+                  
+                }
+              }
+            }}
+
+
+
+          //action={() => customAPIUpload({})}
+          />
+          <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
+        </ModalForm>
+
+
+        <Drawer
+          width={600}
+          open={showDetail}
+          onClose={() => {
+            setCurrentRow(undefined);
+            setShowDetail(false);
+          }}
+          closable={false}
+        >
+          {currentRow?.name && (
+            <ProDescriptions<API.RuleListItem>
+              column={2}
+              title={currentRow?.name}
+              request={async () => ({
+                data: currentRow || {},
+              })}
+              params={{
+                id: currentRow?.name,
+              }}
+              columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            />
+          )}
+        </Drawer>
+      </PageContainer>) :
+      (
+        <ProDescriptions
+          style={{
+            fontSize: 50
+          }}
+          title="Chi tiết bò"
+          column={2}
+          layout='horizontal'
+          size='middle'
+          request={async () => {
+            let cowDetail = await customAPIGetOne(params?.id, 'cows', { 'populate[0]': 'photos', 'populate[1]': 'farm', 'populate[2]': 'category', });
+            
+
+            const photo = cowDetail?.data.attributes.photos?.data?.map((e: any) => {
+              return e.attributes.url;
+            })
+            let data = {
+              code: cowDetail?.data.attributes.code,
+              name: cowDetail?.data.attributes.name,
+              age: cowDetail?.data.attributes.age,
+              birthdate: cowDetail?.data.attributes.birthdate,
+              firstWeight: cowDetail?.data.attributes.firstWeight,
+              sex: cowDetail?.data.attributes.sex,
+              farm: cowDetail?.data.attributes.farm?.data.attributes.name,
+              photo: photo
+
+            }
+
+            return Promise.resolve({
+              success: true,
+              data: data
+            });
+          }}
+          columns={[
+            {
+              title: () => {
+                return <div style={{ color: 'red', fontSize: '20px' }}> Mã</div>
+              },
+              
+              key: 'code',
+              dataIndex: 'code',
+              render: (_, record)=> {
+                return <div style={{ color: 'red', fontSize: '20px' }}> {record.code}</div>
+              }
+            },
+            {
+              title: 'Tên',
+              key: 'name',
+              dataIndex: 'name',
+            },
+            {
+              title: 'Tuổi',
+              key: 'age',
+              dataIndex: 'age',
+            },
+            {
+              title: 'Ngày sinh',
+              key: 'birthdate',
+              dataIndex: 'birthdate',
+              valueType: 'date',
+            },
+            {
+              title: 'Cân nặng sơ sinh',
+              key: 'firstWeight',
+              dataIndex: 'firstWeight',
+            },
+            {
+              title: 'Giới tính',
+              key: 'sex',
+              dataIndex: 'sex',
+            },
+            {
+              title: 'Trang trại',
+              key: 'farm',
+              dataIndex: 'farm',
+
+            },
+            {
+              title: 'Ảnh',
+              key: 'photo',
+              render: (_, entity) => {
+                console.log(entity);
+                const photo = entity.photo.map(e => {
+                  return (
+                    <><Field
+                      text={SERVERURL + e}
+                      valueType="image"
+
+                    />
+                    </>
+                  )
+                })
+                return photo;
+              }
+            }
+
+
+
+          ]}
+        >
+
+
+        </ProDescriptions>
+      )
   );
 };
 

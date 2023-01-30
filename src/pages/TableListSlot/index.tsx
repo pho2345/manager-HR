@@ -1,6 +1,6 @@
-import { customAPIGet, customAPIAdd, customAPIDelete } from '@/services/ant-design-pro/api';
-import {  PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormSelect } from '@ant-design/pro-components';
+import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
+import { PlusOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -12,14 +12,14 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import {  Button, Drawer, Form, message, Switch, Typography  } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, Drawer, Form, message, Switch, Typography } from 'antd';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
 
 const { Title } = Typography;
-const  handleAdd = async (fields: any) => {
-  
+const handleAdd = async (fields: any) => {
+
 
   const hide = message.loading('Đang chờ...');
   try {
@@ -35,81 +35,60 @@ const  handleAdd = async (fields: any) => {
 };
 
 
-// const handleUpdate = async (fields: any, id: any) => {
-//   console.log(fields);
-//   const hide = message.loading('Đang sửa...');
-//   try {
-//     await customAPIUpdate({
-//       ...fields
-//     }, 'c_passes', id.current);
-//     hide();
-
-//     message.success('Sửa thành công');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Sửa thất bại!');
-//     return false;
-//   }
-// };
-
-
-const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
-  const hide = message.loading('Đang xóa...');
-  if (!selectedRows) return true;
+const handleUpdate = async (fields: any, id: any) => {
+  const hide = message.loading('Đang sửa...');
   try {
-    const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'c_passes')
-    })
-
-    await Promise.all(deleteRowss);
+    await customAPIUpdate({
+      ...fields
+    }, 'slots/currentweight', id.current);
     hide();
-    message.success('Xóa thành công');
+
+    message.success('Sửa thành công');
     return true;
   } catch (error) {
     hide();
-    message.error('Xóa thất bại');
+    message.error('Sửa thất bại!');
     return false;
   }
 };
 
 
+// const handleRemove = async (selectedRows: any) => {
+//   console.log(selectedRows);
+//   const hide = message.loading('Đang xóa...');
+//   if (!selectedRows) return true;
+//   try {
+//     const deleteRowss = selectedRows.map((e: any) => {
+//       return customAPIDelete(e.id, 'c_passes')
+//     })
+
+//     await Promise.all(deleteRowss);
+//     hide();
+//     message.success('Xóa thành công');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Xóa thất bại');
+//     return false;
+//   }
+// };
 
 
-const getCownotInCpass = async () => {
-  const categories = await customAPIGet({'filters[c_pass][id][$null]': true}, 'cows');
-  let data = categories.data.map((e: any) => {
-    return {
-      value: e?.id,
-      label: e?.attributes?.name,
-    }
-  })
-  return data;
-}
+
+
+
 const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const refIdProvince = useRef<any>();
+  const refIdSlot  = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
 
-  const [cow, setCow] = useState<any>();
-
   const refAutoTransfer = useRef<any>();
-
-  useEffect(() => {
-    const getValues = async () => {
-      let getCow = await getCownotInCpass();
-      setCow(getCow);
-
-    }
-    getValues();
-  }, [])
 
   const intl = useIntl();
 
@@ -139,107 +118,32 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.slot' defaultMessage='Đợt mở bán' />,
+      title: <FormattedMessage id='pages.searchTable.column.preWeight' defaultMessage='Cân nặng trước' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
-      key: 'fair',
-      renderText: (_, text: any) => text?.attributes?.fair?.data?.attributes?.code
+      key: 'preWeight',
+      renderText: (_, text: any) => text?.attributes?.preWeight,
+      sorter: (a, b) => a?.attributes?.preWeight - b?.attributes?.preWeight,
     },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.users_permissions_user' defaultMessage='Người sở hữu(Mega)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'users_permissions_user',
-      renderText: (_, text: any) => text?.attributes?.owner?.data?.attributes?.username
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='Phương án' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'plan',
-      renderText: (_, text: any) => {
-        if(text.attributes.plan.data){
-          return `${text?.attributes?.plan?.data?.attributes?.name} - ${text?.attributes?.plan?.data?.attributes?.profit}%`
-        }
-        
-      }
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.bo' defaultMessage='Bò' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'cow',
-      renderText: (_, text: any) => text?.attributes?.cow?.data?.attributes?.name
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='Cân nặng ban đầu' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'pZero',
-      renderText: (_, text: any) => text?.attributes?.pZero
-    },
+
     {
       title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'nowWeight',
-      renderText: (_, text: any) => text?.attributes?.nowWeight
+      renderText: (_, text: any) => text?.attributes?.currentWeight
+
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Tăng trọng cân nặng' />,
+      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Chênh lệch cân nặng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'deltaWeight',
       renderText: (_, text: any) => text?.attributes?.deltaWeight
     },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'bodyCondition',
-      renderText: (_, text: any) => text?.attributes?.bodyCondition
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng(%)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'wgePercent',
-      renderText: (_, text: any) => text?.attributes?.wgePercent
-    },
-    
-    {
-      title: <FormattedMessage id='pages.searchTable.column.wge' defaultMessage='Hiệu quả tăng trọng(WGE)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'wge',
-      renderText: (_, text: any) => text?.attributes?.wge
-    },
 
-    {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng trung bình(kg)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'awgAvg',
-      renderText: (_, text: any) => text?.attributes?.awgAvg
-    },
 
-    {
-      title: <FormattedMessage id='pages.searchTable.column.awg' defaultMessage='Tăng trọng TB(AWG)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'awg',
-      renderText: (_, text: any) => text?.attributes?.awg
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.wgs' defaultMessage='Tăng trọng tiêu chuẩn(WGS)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'wgs',
-      renderText: (_, text: any) => text?.attributes?.wgs
-    },
-    
-   
-    
+
     {
       title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega' />,
       dataIndex: 'atrributes',
@@ -257,11 +161,19 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.activeAleTransfer' defaultMessage='Tự động chuyển đổi' />,
+      title: <FormattedMessage id='pages.searchTable.column.indexSlot' defaultMessage='Thứ tự Slot' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
-      key: 'activeAleTransfer',
-      render: (_, text: any) => (<Switch defaultChecked={text?.attributes.activeAleTransfer} />)
+      key: 'indexSlot',
+      renderText: (_, text: any) => text?.attributes?.indexSlot
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'c_pass',
+      renderText: (_, text: any) => text?.attributes?.c_pass
     },
 
     {
@@ -273,26 +185,69 @@ const TableList: React.FC = () => {
     },
 
     {
+      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='PHAT' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'plan',
+      renderText: (_, text: any) => text?.attributes?.plan
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Thời gian bắt đầu' />,
+      dataIndex: 'timeStart',
+      valueType: 'textarea',
+      key: 'timeStart',
+      renderText: (_, text: any) => moment(text?.attributes.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss')
+
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Thời gian kết thúc' />,
+      dataIndex: 'timeEnd',
+      valueType: 'textarea',
+      key: 'timeEnd',
+      renderText: (_, text: any) => moment(text?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss')
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.activeSlot' defaultMessage='Trạng thái' />,
+      dataIndex: 'activeSlot',
+      valueType: 'textarea',
+      key: 'activeSlot',
+      renderText: (_, text: any) => {
+        if (text?.attributes.activeSlot) {
+          return 'true'
+        }
+        return 'false'
+      }
+    },
+
+    {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
-        return (<Button
-          type='primary'
-          key='primary'
-          onClick={() => {
-            handleUpdateModalOpen(true);
-            refIdProvince.current = entity.id;
-            // setCodeProvince(entity?.attributes?.code);
-            // setNameProvince(entity?.attributes?.name);
-            // setFullName(entity?.attributes?.fullname);
-            // setFsmCode(entity?.attributes?.fsmCode);
+        let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
+        let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
+        if (!entity?.attributes.activeSlot && dateEnd === currentDate) {
+          return (<Button
+            type='primary'
+            key='primary'
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              refIdSlot .current = entity.id;
+              // setCodeProvince(entity?.attributes?.code);
+              // setNameProvince(entity?.attributes?.name);
+              // setFullName(entity?.attributes?.fullname);
+              // setFsmCode(entity?.attributes?.fsmCode);
 
-          }}
-        >
-          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-        </Button>)
+            }}
+          >
+            <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+          </Button>)
+        }
+        return null
       }
     },
 
@@ -303,8 +258,7 @@ const TableList: React.FC = () => {
       key: 'create',
       renderText: (_, text: any) => {
         return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
-      }
-
+      },
     },
 
   ];
@@ -321,7 +275,9 @@ const TableList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        
+        pagination={{
+          pageSize: 5
+        }}
         toolBarRender={() => [
           <Button
             type='primary'
@@ -333,7 +289,8 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
           </Button>,
         ]}
-        request={() => customAPIGet({ 'populate[0]': 'cow.category', 'populate[1]': 'fair', 'populate[2]': 'plan', 'populate[3]': 'owner' }, 'c-passes')}
+
+        request={() => customAPIGet({}, 'slots')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -381,7 +338,7 @@ const TableList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-     
+
 
       <ModalForm
         title="Tạo mới"
@@ -402,11 +359,10 @@ const TableList: React.FC = () => {
           if (success) {
             handleModalOpen(false);
             form.resetFields();
-           const getCow = await getCownotInCpass();
-           setCow(getCow);
+           
             if (actionRef.current) {
               actionRef.current.reload();
-              
+
             }
           }
           //message.success('Success');
@@ -432,14 +388,14 @@ const TableList: React.FC = () => {
             ]}
           />
 
-        <ProFormSelect
+          <ProFormSelect
             width="md"
-            options={cow}
+  
             name="cow"
             label="Bò"
           />
 
-          
+
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
@@ -447,12 +403,12 @@ const TableList: React.FC = () => {
           <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
         </ProForm.Group>
         <Title level={5}>Tự động chuyển đổi Ale</Title>
-        <Switch defaultChecked={refAutoTransfer.current} onChange={() => {refAutoTransfer.current = !refAutoTransfer.current}} />
+        <Switch defaultChecked={refAutoTransfer.current} onChange={() => { refAutoTransfer.current = !refAutoTransfer.current }} />
       </ModalForm>
 
 
       <ModalForm
-        title="Tạo mới"
+        title="Cập nhật Slot"
         open={updateModalOpen}
         form={form}
         autoFocusFirstInput
@@ -466,48 +422,32 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           //await waitTime(2000);
           console.log(values);
-          const success = await handleAdd(values as any);
+         const success = await handleUpdate(values as any, refIdSlot);
           if (success) {
-            handleModalOpen(false);
+            handleUpdateModalOpen(false);
             form.resetFields();
-           const getCow = await getCownotInCpass();
-           setCow(getCow);
+
             if (actionRef.current) {
               actionRef.current.reload();
-              
+
             }
           }
           //message.success('Success');
           return true;
         }}
       >
-        <ProForm.Group>
-          <ProFormText
-            width="md"
-            name="code"
-            label="Mã"
-            placeholder="Mã"
-          />
-
-        <ProFormSelect
-            width="md"
-            options={cow}
-            name="cow"
-            label="Bò"
-          />
-
-          
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
-          <ProFormText width="xs" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
-          <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
-        </ProForm.Group>
-        <Title level={5}>Tự động chuyển đổi Ale</Title>
-        <Switch defaultChecked={refAutoTransfer.current} onChange={() => {refAutoTransfer.current = !refAutoTransfer.current}} />
-      </ModalForm>
-
       
+    
+          <ProFormDigit
+          
+            width="md"
+            name="currentWeight"
+            label="Nhập cân nặng hiện tại"
+            placeholder="Cân nặng hiện tại"
+          />
+      </ModalForm>
+        
+
 
       <Drawer
         width={600}
@@ -533,7 +473,7 @@ const TableList: React.FC = () => {
         )}
       </Drawer>
     </PageContainer>
-    
+
   );
 };
 

@@ -439,7 +439,7 @@ const TableList: React.FC = () => {
       
     
           <ProFormDigit
-          
+           
             width="md"
             name="currentWeight"
             label="Nhập cân nặng hiện tại"

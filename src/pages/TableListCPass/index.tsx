@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -22,7 +22,7 @@ const handleAdd = async (fields: any) => {
 
   const hide = message.loading('Đang chờ...');
   try {
-    await customAPIAdd({ ...fields }, 'c-passes');
+    await customAPIAdd({ ...fields }, 'c-passes/create');
     hide();
     message.success('Thêm thành công');
     return true;
@@ -35,8 +35,8 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  
-  if(fields.cow.value){
+
+  if (fields.cow.value) {
     fields.cow = fields.cow.value;
   }
   console.log(fields);
@@ -291,7 +291,7 @@ const TableList: React.FC = () => {
             //     label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
             //   }
             // ]
-           
+
             form.setFieldsValue({
               cow: {
                 value: cPass?.data?.attributes?.cow?.data?.id,
@@ -299,12 +299,12 @@ const TableList: React.FC = () => {
               },
               code: cPass?.data?.attributes?.code,
               pZero: cPass?.data?.attributes?.pZero,
-              
-              price:  cPass?.data?.attributes?.price,
+
+              price: cPass?.data?.attributes?.price,
               nowWeight: cPass?.data?.attributes?.nowWeight,
               activeAleTransfer: cPass?.data?.attributes?.activeAleTransfer
             })
-            
+
 
 
           }}
@@ -368,7 +368,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
               &nbsp;&nbsp;
-             
+
             </div>
           }
         >
@@ -386,7 +386,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-        
+
         </FooterToolbar>
       )}
 
@@ -422,7 +422,7 @@ const TableList: React.FC = () => {
         }}
       >
         <ProForm.Group>
-          <ProFormText
+          {/* <ProFormText
             width="md"
             name="code"
             label="Mã"
@@ -438,7 +438,7 @@ const TableList: React.FC = () => {
                 ),
               },
             ]}
-          />
+          /> */}
 
           <ProFormSelect
             width="md"
@@ -460,10 +460,8 @@ const TableList: React.FC = () => {
           />
 
 
-        </ProForm.Group>
         
-        <ProForm.Group>
-          <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
+          {/* <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
               {
                 required: true,
                 message: (
@@ -473,23 +471,53 @@ const TableList: React.FC = () => {
                   />
                 ),
               },
-            ]}/>
-          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" 
-          rules={[
+            ]}/> */}
+
+          <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.pZero'
+                    defaultMessage='Nhập cân nặng hiện tại'
+                  />
+                ),
+              },
+            ]}
+             />
+
+
+          {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.pZero'
+                    defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
+                  />
+                ),
+              },
+            ]} /> */}
+
+
+
+          <ProFormDigit  min={1} width="md" name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
             {
               required: true,
               message: (
                 <FormattedMessage
                   id='pages.Cpass.pZero'
-                  defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
+                  defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
                 />
               ),
             },
-          ]}/>
-          <ProFormText width="md" name="price" label="Giá" placeholder="Giá" required />
-          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale"  />
+          ]} />
+          <ProFormDigit min={1} width="md" name="vZero" label="Giá trị con bò của Mega" placeholder="Giá trị con bò của Mega" required />
+          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
         </ProForm.Group>
-        
+
 
       </ModalForm>
 
@@ -546,9 +574,9 @@ const TableList: React.FC = () => {
           <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
           <ProFormText width="xs" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
           <ProFormText width="sm" name="price" label="Giá" placeholder="Giá" />
-          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale"  />
+          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
         </ProForm.Group>
-        
+
       </ModalForm>
 
 

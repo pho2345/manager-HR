@@ -13,6 +13,7 @@ import {
   ProDescriptionsItemProps,
   ProForm,
   ProFormDatePicker,
+  ProFormDigit,
   ProFormSelect,
   ProFormTextArea,
   ProFormUploadButton,
@@ -36,37 +37,40 @@ import Field from '@ant-design/pro-field';
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
-    const cow = await customAPIAdd({ ...fields }, 'cows');
-
-    const uploadImages = fields?.upload.map((e: any) => {
-      let formdata = new FormData();
-      formdata.append('files', e?.originFileObj);
-      formdata.append('ref', 'api::cow.cow');
-      formdata.append('refId', cow?.data?.id);
-      formdata.append('field', 'photos');
-      return customAPIUpload({
-        data: formdata
-      })
-    });
-    await Promise.all(uploadImages);
     hide();
+    const cow = await customAPIAdd({ ...fields }, 'cows');
+    console.log(cow);
+    if(fields?.upload){
+      console.log('vào');
+      const uploadImages = fields?.upload.map((e: any) => {
+        let formdata = new FormData();
+        formdata.append('files', e?.originFileObj);
+        formdata.append('ref', 'api::cow.cow');
+        formdata.append('refId', cow?.id);
+        formdata.append('field', 'photos');
+        return customAPIUpload({
+          data: formdata
+        })
+      });
+      await Promise.all(uploadImages);
+    }
+    
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
-    hide();
-    message.error('Thêm thất bại!');
+  } catch (error : any) {
+    //hide();
+    console.log(error);
+   // message.error('poi')
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(id);
 
   const hide = message.loading('Đang cập nhật...');
   try {
-
-
 
     const uploadImages = fields?.upload.map((e: any) => {
       if (e.originFileObj) {
@@ -287,7 +291,6 @@ const TableList: React.FC = () => {
               refIdCow.current = entity.id;
               const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
               const photos = cow.data?.attributes?.photos?.data;
-              console.log(photos);
               if (photos) {
                 const photoCow = photos.map((e: any) => {
                   return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
@@ -432,12 +435,12 @@ const TableList: React.FC = () => {
           }}
         >
           <ProForm.Group>
-            <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
+            {/* <ProFormText width='md' name='code' label='Mã' placeholder='Mã' /> */}
 
             <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
+          
+            <ProFormDigit
+              min={1}
               width='md'
               name='firstWeight'
               label='Cân nặng P0'
@@ -470,52 +473,7 @@ const TableList: React.FC = () => {
               placeholder='Chọn giới tính'
               rules={[{ required: true, message: 'Chọn giới tính!' }]}
             />
-            <ProFormSelect
-              width='xl'
-              name='status'
-              label='Trạng thái'
-              options={[
-                {
-                  label: 'Mới',
-                  value: 'new',
-                },
-                {
-                  label: 'Sẳn sàng',
-                  value: 'ready',
-                },
-                {
-                  label: 'Đã thêm vào CPass',
-                  value: 'cpassAdded',
-                },
-
-                {
-                  label: 'Đã thêm vào phiên',
-                  value: 'fairAdded',
-                },
-                {
-                  label: 'Đã ở trong phiên mở bán',
-                  value: 'fairOpen',
-                },
-                {
-                  label: 'Trong đặt hàng của phiên',
-                  value: 'fairOrder',
-                },
-                {
-                  label: 'Đã thanh toán',
-                  value: 'paid',
-                },
-                {
-                  label: 'Sẵn sàng nuôi',
-                  value: 'readyFeed',
-                },
-                {
-                  label: 'Chờ nuôi',
-                  value: 'waitingFeed',
-                },
-              ]}
-              placeholder='Trạng thái'
-              rules={[{ required: true, message: 'Trạng thái!' }]}
-            />
+            
           </ProForm.Group>
 
           <ProFormUploadButton
@@ -549,16 +507,21 @@ const TableList: React.FC = () => {
           }}
           submitTimeout={2000}
           onFinish={async (values) => {
-      
-            const deletePicture = refIdPicture.current.map((e: any) => {
-              return customAPIDelete(e as any, 'upload/files');
-            })
+          const success = await handleUpdate(values as any, refIdCow as any);
 
-            
-            const success = await handleUpdate(values as any, refIdCow as any);
 
             if (success) {
-              await Promise.all(deletePicture);
+              if(typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0){
+                console.log('refIdPicture',refIdPicture.current);
+                 if(refIdPicture.current !== null){
+                  const  deletePicture = refIdPicture?.current.map((e: any) => {
+                    return customAPIDelete(e as any, 'upload/files');
+                  })
+                  await Promise.all(deletePicture);
+                 }
+               
+              }
+             
               handleUpdateModalOpen(false);
               form.resetFields();
               if (actionRef.current) {
@@ -594,6 +557,7 @@ const TableList: React.FC = () => {
             <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
             <ProFormSelect
               required
+              
               width='xs'
               name='sex'
               label='Giới tính'
@@ -667,15 +631,13 @@ const TableList: React.FC = () => {
               name: 'file',
               listType: 'picture-card',
               onRemove(file) {
-                if (!file.lastModified) {
+                if (!file.lastModified) { 
                   if(refIdPicture.current){
                     refIdPicture.current = [...refIdPicture.current, file.uid];
                   }
                   else {
                     refIdPicture.current = [file.uid];
                   }
-                  
-                  
                 }
               }
             }}
@@ -794,7 +756,7 @@ const TableList: React.FC = () => {
               key: 'photo',
               render: (_, entity) => {
                 console.log(entity);
-                const photo = entity.photo.map(e => {
+                const photo = entity.photo.map((e: any) => {
                   return (
                     <><Field
                       text={SERVERURL + e}

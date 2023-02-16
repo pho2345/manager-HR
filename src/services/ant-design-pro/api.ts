@@ -173,7 +173,7 @@ export async function customAPIUpload(values?: { [key: string]: any }) {
   });
 }
 
-export async function customAPIUpdateMany(values?: { [key: string]: any }, collection?: string) {
+export async function customAPIUpdateMany(values?: any, collection?: string) {
   return request<any>(SERVERURL +'/api/'+collection , {
     method: "PUT",
     headers: {
@@ -181,7 +181,8 @@ export async function customAPIUpdateMany(values?: { [key: string]: any }, colle
       "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
     },
     data : {
-      transaction : values
+      transaction : values.data,
+      types: values.types
     }
   });
 }

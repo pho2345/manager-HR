@@ -65,9 +65,8 @@ const handleUpdateMany = async (fields: any) => {
   try {
    
     const updateTransaction = await  customAPIUpdateMany(
-       [...fields],
+      fields,
         'transactions/done',
-        
       );
   
     hide();
@@ -133,7 +132,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const refIdCow = useRef<any>();
+  //const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
@@ -141,7 +140,7 @@ const TableList: React.FC = () => {
   const [farm, setFarm] = useState<any>();
 
   const confirm = (entity : any) => {
-    
+    console.log(entity)
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
@@ -149,9 +148,13 @@ const TableList: React.FC = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        
-       const data = await handleUpdateMany([entity.id]);
-       console.log(data);
+        if(entity.attributes.status === 'waitRefund'){
+
+        }
+       const data = await handleUpdateMany({
+        data: [entity.id],
+        types: entity.attributes.types
+       });
         if (actionRef.current && data) {
           actionRef.current.reload();
         }
@@ -200,7 +203,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'firstWeight',
-      renderText: (_, text: any) => text?.attributes?.sender?.data?.attributes?.fullname,
+      renderText: (_, text: any) => text?.attributes?.sender?.data?.attributes?.fullname ||  text?.attributes?.sender?.data?.attributes?.email  ,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.reveicer' defaultMessage='Người nhận' />,
@@ -227,7 +230,16 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
-      renderText: (_, text: any) => text?.attributes?.cPass?.data?.attributes?.code,
+      renderText: (_, text: any) => text?.attributes?.c_pass?.data?.attributes?.code,
+    },
+    {
+      title: (
+        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
+      ),
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'method',
+      renderText: (_, text: any) => text?.attributes?.method,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại' />,
@@ -278,6 +290,8 @@ const TableList: React.FC = () => {
           case 'cancel':
             return (<div style={{ color: 'red' }}>Đã hủy</div>);
 
+          case 'waitRefund':
+            return (<div style={{ color: 'red' }}>Chờ xác nhận hoàn trả</div>);
         
           default:
 
@@ -292,9 +306,14 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
-        if(entity?.attributes?.status === 'inProgress') {
+        if(entity?.attributes?.status === 'inProgress' ) {
           return (
             <Button onClick={() => confirm(entity as any)}>Xác nhận</Button>
+          );
+        }
+        if(entity?.attributes?.status === 'waitRefund' ) {
+          return (
+            <Button onClick={() => confirm(entity as any)}>Xác nhận hoàn trả</Button>
           );
         }
         return null;
@@ -337,7 +356,7 @@ const TableList: React.FC = () => {
         ]}
         request={() =>
           customAPIGet(
-            { 'populate[0]': 'sender', 'populate[1]': 'receiver', 'populate[2]': 'cPass' },
+            { 'populate[0]': 'sender', 'populate[1]': 'receiver', 'populate[2]': 'c_pass' },
             'transactions',
           )
         }
@@ -529,14 +548,14 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values) => {
           
-          const success = await handleUpdate(values as any, refIdCow as any);
-          if (success) {
-            handleUpdateModalOpen(false);
-            form.resetFields();
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
+          //const success = await handleUpdate(values as any, refIdCow as any);
+          // if (success) {
+          //   handleUpdateModalOpen(false);
+          //   form.resetFields();
+          //   if (actionRef.current) {
+          //     actionRef.current.reload();
+          //   }
+          // }
           message.success('Success');
           return true;
         }}

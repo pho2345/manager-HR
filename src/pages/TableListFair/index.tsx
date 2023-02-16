@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect, ProFormUploadButton } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -289,17 +289,17 @@ const TableList: React.FC = () => {
               const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', { });
               fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
               fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-              fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+              fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour')  .format('YYYY-MM-DD HH:mm:ss');
               fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
             
 
-              const c_passes = fair?.c_passes.map(e => {
+              const c_passes = fair?.c_passes.map((e: any) => {
                 return {
                   label: e?.cow?.name,
                   value: e?.id
                 }
               })
-              const plans = fair.plans.map(e => {
+              const plans = fair.plans.map((e: any) => {
                 return  e?.id
                   //label: e?.name + '-' + e?.profit,
                 
@@ -428,7 +428,7 @@ const TableList: React.FC = () => {
         }}
       >
         <ProForm.Group>
-          <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
+          {/* <ProFormText width='md' name='code' label='Mã' placeholder='Mã' /> */}
         </ProForm.Group>
         <ProForm.Group>
 
@@ -454,13 +454,16 @@ const TableList: React.FC = () => {
               },
             ]}
             placeholder='Trạng thái'
-            rules={[{ required: true, message: 'Chọn Trạng thái!' }]}
+           // rules={[{ required: true, message: 'Chọn Trạng thái!' }]}
           />
         </ProForm.Group>
         <ProForm.Group>
-        <ProFormDateTimePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
-        <ProFormDateTimePicker name="dateEndFeed" label="Thời gian kết thúc nuôi" />          
+        {/* <ProFormDateTimePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" /> */}
+        <ProFormDatePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
         <ProFormText width='xs' name='timeFeed' label='Thời gian nuôi(Tuần)' placeholder='Thời gian nuôi' />
+        <ProFormDatePicker name="dateEndFeed" label="Thời gian kết thúc nuôi" disabled/>
+        {/* <ProFormDateTimePicker name="dateEndFeed" label="Thời gian kết thúc nuôi" />           */}
+        
         <ProFormText width='xs' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)' placeholder='Đơn giá thịt' />
         <ProFormText width='xs' name='nameFarm' label='Tên trang trại' placeholder='Tên trang trại' />
 
@@ -492,9 +495,9 @@ const TableList: React.FC = () => {
             }}
             width='md'
             placeholder="Chọn cPass"
-            rules={[
-              { required: true, message: 'Vui lòng chọn cPass!', type: 'array' },
-            ]}
+            // rules={[
+            //   { required: true, message: 'Vui lòng chọn cPass!', type: 'array' },
+            // ]}
           />
         </ProForm.Group>
 

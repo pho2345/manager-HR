@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -177,7 +177,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Lợi nhuận Ale' />,
+      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='produceAle' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'produceAle',
@@ -230,7 +230,7 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
         let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
-        if (!entity?.attributes.activeSlot && dateEnd === currentDate) {
+        if (dateEnd === currentDate) {
           return (<Button
             type='primary'
             key='primary'
@@ -320,7 +320,7 @@ const TableList: React.FC = () => {
         >
           <Button
             onClick={async () => {
-              await handleRemove(selectedRowsState);
+             // await handleRemove(selectedRowsState);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}

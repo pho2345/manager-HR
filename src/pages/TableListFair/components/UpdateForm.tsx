@@ -1,14 +1,14 @@
+import { customAPIAdd, customAPIGet, customAPIGetOne, customAPIUpdate } from '@/services/ant-design-pro/api';
 import {
+  ModalForm,
+  ProForm,
   ProFormDateTimePicker,
-  ProFormRadio,
   ProFormSelect,
   ProFormText,
-  ProFormTextArea,
-  StepsForm,
 } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Modal } from 'antd';
-import React from 'react';
+import { Form, message } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useRef } from 'react';
 
 export type FormValueType = {
   target?: string;
@@ -18,191 +18,229 @@ export type FormValueType = {
   frequency?: string;
 } & Partial<API.RuleListItem>;
 
-export type UpdateFormProps = {
-  onCancel: (flag?: boolean, formVals?: FormValueType) => void;
-  onSubmit: (values: FormValueType) => Promise<void>;
-  updateModalOpen: boolean;
-  values: Partial<API.RuleListItem>;
+// export type UpdateFormProps = {
+//   onCancel: (flag?: boolean, formVals?: FormValueType) => void;
+//   onSubmit: (values: FormValueType) => Promise<void>;
+//   updateModalOpen: boolean;
+//   values: Partial<API.RuleListItem>;
+// };
+
+const handleAdd = async (fields: any) => {
+
+  fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.dateEndFeed = moment(fields.dateEndFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+
+  const hide = message.loading('Đang thêm...');
+  try {
+    await customAPIAdd({ ...fields }, 'fairs');
+    hide();
+    message.success('Thêm thành công');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Thêm thất bại!');
+    return false;
+  }
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = (props) => {
-  const intl = useIntl();
+
+const handleUpdate = async (fields: any, id: any) => {
+  console.log(fields);
+  if (fields?.c_passes[0]?.value) {
+    const configCPass = fields?.c_passes.map((e: any) => {
+      return e.value;
+    });
+    fields.c_passes = configCPass;
+  }
+
+  fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  fields.dateEndFeed = moment(fields.dateEndFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+
+
+  const hide = message.loading('Đang cập nhật...');
+  try {
+    await customAPIUpdate({
+      ...fields
+    }, 'fairs', id.current);
+    hide();
+
+    message.success('Cập nhật thành công');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('Cập nhật thất bại!');
+    return false;
+  }
+};
+
+const getCPassNotFair = async () => {
+  const cPass = await customAPIGet({}, 'c-passes/get/cpassnotfair');
+  let data = cPass.data.map((e: any) => {
+    return {
+      value: e?.id,
+      label: e?.cow?.name,
+    };
+  });
+  return data;
+};
+
+
+const getPlans = async () => {
+  const plans = await customAPIGet({ 'fields[0]': 'name', 'fields[1]': 'profit' }, 'plans');
+
+  let data = plans.data.map((e: any) => {
+    return {
+      value: e?.id,
+      label: e?.attributes?.name + '-' + e?.attributes?.profit + '%',
+    };
+  });
+  return data;
+};
+const UpdateForm: React.FC<any> = (props) => {
+  //const intl = useIntl();
+  const [form] = Form.useForm<any>();
+  const actionRef = useRef<any>();
+  //const refFlag = useRef<any>();
+  const getFair = async (id: any) => {
+    const fair = await customAPIGetOne(id, 'fairs/fairadmin', {});
+    fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    const c_passes = fair?.c_passes.map((e: any) => {
+      return {
+        label: e?.cow?.name,
+        value: e?.id
+      }
+    })
+    const plans = fair.plans.map((e: any) => {
+      return e?.id
+
+    })
+    form.setFieldsValue({
+      ...fair,
+      c_passes,
+      plans
+    })
+  }
+  useEffect(() => {
+    // Update the document title using the browser API
+    getFair(props.id);
+
+  },);
+
   return (
-    <StepsForm
-      stepsProps={{
-        size: 'small',
+    <ModalForm
+      title={`${props.types === 'update' ? 'Cập nhật' : 'Sao chép'} Phiên mở bán`}
+      open={props.updateModalOpen}
+      form={form}
+      autoFocusFirstInput
+      modalProps={{
+        destroyOnClose: true,
+        onCancel: () => {
+          props.onCloseModal();
+        },
       }}
-      stepsFormRender={(dom, submitter) => {
-        return (
-          <Modal
-            width={640}
-            bodyStyle={{ padding: '32px 40px 48px' }}
-            destroyOnClose
-            title={intl.formatMessage({
-              id: 'pages.searchTable.updateForm.ruleConfig',
-              defaultMessage: '规则配置',
-            })}
-            open={props.updateModalOpen}
-            footer={submitter}
-            onCancel={() => {
-              props.onCancel();
-            }}
-          >
-            {dom}
-          </Modal>
-        );
+      submitTimeout={2000}
+      onFinish={async (values) => {
+
+        if (props.types === 'update') {
+          const success = await handleUpdate(values as any, props.id as any);
+          if (success) {
+            form.resetFields();
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }
+        else {
+          const success = await handleAdd(values as any);
+          if (success) {
+            form.resetFields();
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }
+        //message.success('Success');
+
+        props.onCloseModal();
+        return true;
       }}
-      onFinish={props.onSubmit}
     >
-      <StepsForm.StepForm
-        initialValues={{
-          name: props.values.name,
-          desc: props.values.desc,
-        }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.basicConfig',
-          defaultMessage: '基本信息',
-        })}
-      >
-        <ProFormText
-          name="name"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleName.nameLabel',
-            defaultMessage: '规则名称',
-          })}
-          width="md"
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleName.nameRules"
-                  defaultMessage="请输入规则名称！"
-                />
-              ),
-            },
-          ]}
-        />
-        <ProFormTextArea
-          name="desc"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descLabel',
-            defaultMessage: '规则描述',
-          })}
-          placeholder={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleDesc.descPlaceholder',
-            defaultMessage: '请输入至少五个字符',
-          })}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.ruleDesc.descRules"
-                  defaultMessage="请输入至少五个字符的规则描述！"
-                />
-              ),
-              min: 5,
-            },
-          ]}
-        />
-      </StepsForm.StepForm>
-      <StepsForm.StepForm
-        initialValues={{
-          target: '0',
-          template: '0',
-        }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.ruleProps.title',
-          defaultMessage: '配置规则属性',
-        })}
-      >
+      <ProForm.Group>
+        <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
+      </ProForm.Group>
+      <ProForm.Group>
+
+
+        <ProFormDateTimePicker name="timeStart" label="Thời gian mở" />
+        <ProFormDateTimePicker name="timeEnd" label="Thời gian đóng" />
         <ProFormSelect
-          name="target"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
-          })}
-          valueEnum={{
-            0: '表一',
-            1: '表二',
-          }}
-        />
-        <ProFormSelect
-          name="template"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.templateLabel',
-            defaultMessage: '规则模板',
-          })}
-          valueEnum={{
-            0: '规则模板一',
-            1: '规则模板二',
-          }}
-        />
-        <ProFormRadio.Group
-          name="type"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.ruleProps.typeLabel',
-            defaultMessage: '规则类型',
-          })}
+          width='xs'
+          name='status'
+          label='Trạng thái'
           options={[
             {
-              value: '0',
-              label: '强',
+              label: 'Chưa mở',
+              value: 'noOpen',
             },
             {
-              value: '1',
-              label: '弱',
+              label: 'Đang mở',
+              value: 'Opening',
             },
-          ]}
-        />
-      </StepsForm.StepForm>
-      <StepsForm.StepForm
-        initialValues={{
-          type: '1',
-          frequency: 'month',
-        }}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.schedulingPeriod.title',
-          defaultMessage: '设定调度周期',
-        })}
-      >
-        <ProFormDateTimePicker
-          name="time"
-          width="md"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.schedulingPeriod.timeLabel',
-            defaultMessage: '开始时间',
-          })}
-          rules={[
             {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.updateForm.schedulingPeriod.timeRules"
-                  defaultMessage="请选择开始时间！"
-                />
-              ),
+              label: 'Đã đóng',
+              value: 'closed',
             },
           ]}
+          placeholder='Trạng thái'
+          rules={[{ required: true, message: 'Chọn Trạng thái!' }]}
         />
+      </ProForm.Group>
+      <ProForm.Group>
+        <ProFormDateTimePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
+        <ProFormDateTimePicker name="dateEndFeed" label="Thời gian kết thúc nuôi" />
+        <ProFormText width='xs' name='timeFeed' label='Thời gian nuôi(Tuần)' placeholder='Thời gian nuôi' />
+        <ProFormText width='xs' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)' placeholder='Đơn giá thịt' />
+        <ProFormText width='xs' name='nameFarm' label='Tên trang trại' placeholder='Tên trang trại' />
+
         <ProFormSelect
-          name="frequency"
-          label={intl.formatMessage({
-            id: 'pages.searchTable.updateForm.object',
-            defaultMessage: '监控对象',
-          })}
-          width="md"
-          valueEnum={{
-            month: '月',
-            week: '周',
+          name="c_passes"
+          label="Chọn cPass"
+          // valueEnum={}
+          request={getCPassNotFair}
+          fieldProps={{
+            mode: 'multiple',
           }}
+          width='md'
+          placeholder="Chọn cPass"
+
         />
-      </StepsForm.StepForm>
-    </StepsForm>
+
+
+        <ProFormSelect
+          name="plans"
+          label="Chọn Plans"
+          // valueEnum={}
+          request={getPlans}
+          fieldProps={{
+            mode: 'multiple',
+          }}
+          width='md'
+          placeholder="Chọn cPass"
+          rules={[
+            { required: true, message: 'Vui lòng chọn cPass!', type: 'array' },
+          ]}
+        />
+      </ProForm.Group>
+
+    </ModalForm>
+
   );
 };
 

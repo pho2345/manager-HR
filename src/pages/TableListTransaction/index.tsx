@@ -59,8 +59,6 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdateMany = async (fields: any) => {
-
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
    
@@ -132,7 +130,6 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  //const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
@@ -152,7 +149,7 @@ const TableList: React.FC = () => {
 
         }
        const data = await handleUpdateMany({
-        data: [entity.id],
+        transaction: [entity.id],
         types: entity.attributes.types
        });
         if (actionRef.current && data) {
@@ -210,7 +207,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'receiver',
-      renderText: (_, text: any) => text?.attributes?.receiver?.data?.attributes?.fullname,
+      renderText: (_, text: any) => text?.attributes?.receiver?.data?.attributes?.fullname ||  text?.attributes?.receiver?.data?.attributes?.username ,
     },
 
     {

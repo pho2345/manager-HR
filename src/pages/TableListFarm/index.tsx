@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -92,7 +92,7 @@ const TableList: React.FC = () => {
 
   const intl = useIntl();
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<any>[] = [
     {
       title: (
         <FormattedMessage
@@ -103,7 +103,7 @@ const TableList: React.FC = () => {
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
-        ;
+        
         return (
           <a
             onClick={() => {
@@ -208,6 +208,122 @@ const TableList: React.FC = () => {
 
   ];
 
+  const columnsDetail: ProColumns<any>[] = [
+    {
+      title: (
+        <FormattedMessage
+          id='pages.searchTable.column.code'
+          defaultMessage='Rule name'
+        />
+      ),
+      key: 'code',
+      dataIndex: 'atrributes',
+      render: (_, entity: any) => {
+        
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(entity?.attributes?.code);
+              setShowDetail(true);
+            }}
+          >
+            {entity?.attributes?.code}
+
+          </a>
+        );
+      },
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'name',
+      renderText: (_, text: any) =>
+        text?.attributes?.name
+
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.phone' defaultMessage='Phone' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'phone',
+      renderText: (_, text: any) => text?.attributes?.phone
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.taxId' defaultMessage='Code Tax' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'mst',
+      renderText: (_, text: any) => text?.attributes?.taxId
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.address' defaultMessage='Address' />,
+      dataIndex: 'atrributes.address',
+      valueType: 'textarea',
+      key: 'address',
+      renderText: (_, text: any) => {
+        if (text.attributes.address) {
+          let address = text?.attributes?.address?.data?.attributes.address;
+          let pathAddress = text?.attributes?.address?.data?.attributes?.ward?.data?.attributes?.pathFullName;
+          if (typeof address !== 'undefined' && typeof pathAddress !== 'undefined') {
+            return `${address}, ${pathAddress}`;
+          }
+        }
+        return null;
+      }
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.owner' defaultMessage='Code Tax' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'owner',
+      renderText: (_, text: any) => {
+        let fullName = text?.attributes?.owner?.data?.attributes?.fullname;
+        if (typeof fullName !== 'undefined' && fullName) {
+          return fullName;
+        }
+        return null;
+      }
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Descriptiond' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'option',
+      render: (_, entity: any) => {
+        return (<Button
+          type='primary'
+          key='primary'
+          onClick={() => {
+            handleUpdateModalOpen(true);
+            refIdEWallet.current = entity.id;
+            setCodeEWallet(entity?.attributes?.code);
+            setNameEWallet(entity?.attributes?.name);
+            setAccountNumber(entity?.attributes?.accountNumber);
+            setOwner(entity?.attributes?.owner);
+
+
+
+          }}
+        >
+          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+        </Button>)
+      }
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'create',
+      renderText: (_, text: any) => {
+        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      }
+
+    },
+
+  ];
+ 
   return (
     <PageContainer>
       <ProTable
@@ -534,7 +650,7 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.name,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            columns={columnsDetail}
           />
         )}
       </Drawer>

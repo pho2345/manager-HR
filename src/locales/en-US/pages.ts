@@ -54,7 +54,7 @@ export default {
   'pages.searchTable.nameStatus.abnormal': 'abnormal',
   'pages.searchTable.titleUpdatedAt': 'Last Scheduled at',
   'pages.searchTable.exception': 'Please enter the reason for the exception!',
-  'pages.searchTable.titleOption': 'Tùy chọn',
+  'pages.searchTable.titleOption': 'Thao tác',
   'pages.searchTable.config': 'Configuration',
   'pages.searchTable.subscribeAlert': 'Subscribe to alerts',
   'pages.searchTable.title': 'Danh sách',
@@ -65,7 +65,7 @@ export default {
   'pages.searchTable.tenThousand': '0000',
   'pages.searchTable.batchDeletion': 'Xóa',
   'pages.searchTable.batchApproval': 'Xóa',
-
+ 'pages.searchTable.payment': 'Thanh toán',
   'pages.searchTable.createForm.update': 'Cập nhật',
   'pages.searchTable.createForm.new': 'Tạo mới',
   'pages.searchTable.Bank.column.createAt': 'Ngày tạo',
@@ -148,15 +148,24 @@ export default {
  'menu.Bò': 'Bò',
  'menu.CPass': 'CPass',
  'menu.Phiên mở bán': 'Phiên mở bán',
+ 'menu.Phiên mở bán.chi tiết': 'Chi tiết Phiên mở bán',
  'menu.Slot': 'Slot',
+ 'menu.Bò.chi tiết': 'Chi tiết bò',
  'menu.Giao dịch': 'Giao dịch',
  'pages.searchTable.column.fair': 'Đợt mở bán',
  'pages.searchTable.column.users_permissions_user': 'Người sở hữu(Mega)',
  'pages.searchTable.column.plan':'Phương án',
- 'pages.searchTable.column.plan': 'Phương án',
- 'pages.searchTable.column.users_permissions_user': 'Người sở hữu(Mega)',
- 
- 
+ 'pages.searchTable.column.users_permissions_': 'Người sở hữu(Mega)',
+ 'pages.searchTable.column.timeStart': 'Ngày giờ mở bán',
+ 'pages.searchTable.column.timeEnd': 'Ngày giờ đóng bán',
+'pages.searchTable.column.dateStartFeed': 'Ngày bắt đầu nuôi',
+'pages.searchTable.column.timeFeed': 'Thời gian nuôi(Tuần)',
+'pages.searchTable.column.plans': 'PAHT Mega/PL',
+'pages.searchTable.column.cPassPublished': 'cPass phát hành/Đã bán',
+'pages.searchTable.column.status': 'Trạng thái',
+'pages.searchTable.column.unitPriceMeat': 'Đơn giá thịt',
+'pages.searchTable.column.nameFarm': 'Tên trang trại',
+
 
 
 };

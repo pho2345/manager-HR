@@ -158,6 +158,7 @@ export async function customAPIGetOne(values?: any, collection?: string, params?
       ...params
     }
   });
+
 }
 
 export async function customAPIUpload(values?: { [key: string]: any }) {
@@ -173,16 +174,15 @@ export async function customAPIUpload(values?: { [key: string]: any }) {
   });
 }
 
-export async function customAPIUpdateMany(values?: any, collection?: string) {
-  return request<any>(SERVERURL +'/api/'+collection , {
+export async function customAPIUpdateMany(values?: any, collection?: string, id?: any) {
+  return request<any>(`${SERVERURL}/api/${collection}${id ?`/${id}` : null }`, {
     method: "PUT",
     headers: {
       'Content-Type': 'application/json',
       "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
     },
     data : {
-      transaction : values.data,
-      types: values.types
+     ...values
     }
   });
 }

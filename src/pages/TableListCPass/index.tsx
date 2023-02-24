@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -11,7 +11,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+import { FormattedMessage, Link, useIntl } from '@umijs/max';
 import { Button, Drawer, Form, message, Switch } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
@@ -127,13 +127,16 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
+              setCurrentRow(entity?.code);
               setShowDetail(true);
             }}
           >
-            {entity?.attributes?.code}
+            {entity?.code}
 
           </a>
+        //   <Link to={`/cows/` + entity.id}>
+        //   {entity?.code}
+        // </Link>
         );
       },
     },
@@ -142,14 +145,14 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'fair',
-      renderText: (_, text: any) => text?.attributes?.fair?.data?.attributes?.code
+      renderText: (_, text: any) => text?.fair?.code
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.users_permissions_user' defaultMessage='Người sở hữu(Mega)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'users_permissions_user',
-      renderText: (_, text: any) => text?.attributes?.owner?.data?.attributes?.username
+      renderText: (_, text: any) => text?.owner?.username
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='Phương án' />,
@@ -157,8 +160,8 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'plan',
       renderText: (_, text: any) => {
-        if (text.attributes.plan.data) {
-          return `${text?.attributes?.plan?.data?.attributes?.name} - ${text?.attributes?.plan?.data?.attributes?.profit}%`
+        if (text?.plan) {
+          return `${text?.plan?.name} - ${text?.plan?.profit}%`
         }
         return null;
 
@@ -169,42 +172,42 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'cow',
-      renderText: (_, text: any) => text?.attributes?.cow?.data?.attributes?.name
+      renderText: (_, text: any) => text?.cow?.name
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='Cân nặng P0' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'pZero',
-      renderText: (_, text: any) => text?.attributes?.pZero
+      renderText: (_, text: any) => text?.pZero
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'nowWeight',
-      renderText: (_, text: any) => text?.attributes?.nowWeight
+      renderText: (_, text: any) => text?.nowWeight
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Tăng trọng cân nặng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'deltaWeight',
-      renderText: (_, text: any) => text?.attributes?.deltaWeight
+      renderText: (_, text: any) => text?.deltaWeight
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'bodyCondition',
-      renderText: (_, text: any) => text?.attributes?.bodyCondition
+      renderText: (_, text: any) => text?.bodyCondition
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng(%)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgePercent',
-      renderText: (_, text: any) => text?.attributes?.wgePercent
+      renderText: (_, text: any) => text?.wgePercent
     },
 
     {
@@ -212,7 +215,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wge',
-      renderText: (_, text: any) => text?.attributes?.wge
+      renderText: (_, text: any) => text?.wge
     },
 
     {
@@ -220,7 +223,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awgAvg',
-      renderText: (_, text: any) => text?.attributes?.awgAvg
+      renderText: (_, text: any) => text?.awgAvg
     },
 
     {
@@ -228,21 +231,21 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awg',
-      renderText: (_, text: any) => text?.attributes?.awg
+      renderText: (_, text: any) => text?.awg
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.wgs' defaultMessage='Tăng trọng tiêu chuẩn(WGS)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgs',
-      renderText: (_, text: any) => text?.attributes?.wgs
+      renderText: (_, text: any) => text?.wgs
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'megaDeltaWeight',
-      renderText: (_, text: any) => text?.attributes?.megaDeltaWeight
+      renderText: (_, text: any) => text?.megaDeltaWeight
     },
 
     {
@@ -250,7 +253,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'nanoDeltaWeight',
-      renderText: (_, text: any) => text?.attributes?.nanoDeltaWeight
+      renderText: (_, text: any) => text?.nanoDeltaWeight
     },
 
     {
@@ -258,7 +261,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'activeAleTransfer',
-      render: (_, text: any) => (<Switch checked={text?.attributes.activeAleTransfer} disabled />)
+      render: (_, text: any) => (<Switch checked={text?.activeAleTransfer} disabled />)
     },
 
     {
@@ -281,7 +284,7 @@ const TableList: React.FC = () => {
           onClick={async () => {
             handleUpdateModalOpen(true);
             refIdCpass.current = entity.id;
-            const cPass = await customAPIGetOne(entity.id, 'c-passes', { 'populate[0]': 'cow.category', 'populate[1]': 'fair', 'populate[2]': 'plan', 'populate[3]': 'owner' });
+            const cPass = await customAPIGetOne(entity.id, 'c-passes/get/find-admin', { });
             //const cowNotCpass = await getCownotInCpass();
             console.log(cPass);
             // const cowForm = [
@@ -294,19 +297,15 @@ const TableList: React.FC = () => {
 
             form.setFieldsValue({
               cow: {
-                value: cPass?.data?.attributes?.cow?.data?.id,
-                label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
+                value: cPass?.cow?.id,
+                label: cPass?.cow?.name,
               },
-              code: cPass?.data?.attributes?.code,
-              pZero: cPass?.data?.attributes?.pZero,
-
-              price: cPass?.data?.attributes?.price,
-              nowWeight: cPass?.data?.attributes?.nowWeight,
-              activeAleTransfer: cPass?.data?.attributes?.activeAleTransfer
+              code: cPass?.code,
+              pZero: cPass?.pZero,
+              price: cPass?.price,
+              nowWeight: cPass?.nowWeight,
+              activeAleTransfer: cPass?.activeAleTransfer
             })
-
-
-
           }}
         >
           <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
@@ -320,7 +319,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+        return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss')
       }
 
     },
@@ -351,7 +350,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
           </Button>,
         ]}
-        request={() => customAPIGet({ 'populate[0]': 'cow.category', 'populate[1]': 'fair', 'populate[2]': 'plan', 'populate[3]': 'owner' }, 'c-passes')}
+        request={() => customAPIGet({  }, 'c-passes/get/find-admin')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -487,6 +486,21 @@ const TableList: React.FC = () => {
             ]}
              />
 
+    <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.pZero'
+                    defaultMessage='Nhập nân nặng nhập chuồng'
+                  />
+                ),
+              },
+            ]}
+             /> 
+
+         <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" />
 
           {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
             rules={[

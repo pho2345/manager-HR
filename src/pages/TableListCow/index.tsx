@@ -180,7 +180,7 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (
           <Link to={`/cows/` + entity.id}>
-            {entity?.attributes?.code}
+            {entity?.code}
           </Link>
         );
 
@@ -191,7 +191,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
-      renderText: (_, text: any) => text?.attributes?.name,
+      renderText: (_, text: any) => text?.name,
     },
     {
       title: (
@@ -203,7 +203,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'firstWeight',
-      renderText: (_, text: any) => text?.attributes?.firstWeight,
+      renderText: (_, text: any) => text?.firstWeight,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.photos' defaultMessage='Hình ảnh' />,
@@ -218,13 +218,13 @@ const TableList: React.FC = () => {
             size='large'
             maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
           >
-            {text?.attributes?.photos?.data?.map((e: any, index: any) => {
+            {text?.photos?.map((e: any, index: any) => {
               return (
                 <Avatar
                   key={index}
                   src={
                     SERVERURL +
-                    e?.attributes?.url
+                    e?.url
                   }
                 />
               );
@@ -240,7 +240,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'sex',
       renderText: (_, text: any) => {
-        if (text?.attributes?.sex === 'male') {
+        if (text?.sex === 'male') {
           return 'Đực';
         }
         return 'Cái';
@@ -254,14 +254,14 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
-      renderText: (_, text: any) => text?.attributes?.category?.data?.attributes?.name,
+      renderText: (_, text: any) => text?.category?.name,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
-      renderText: (_, text: any) => text?.attributes?.age,
+      renderText: (_, text: any) => text?.age,
     },
 
     {
@@ -272,7 +272,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
-        return moment(text?.attributes?.birthdate).format('YYYY-MM-DD HH:mm:ss');
+        return moment(text?.birthdate).format('YYYY-MM-DD HH:mm:ss');
       },
     },
 
@@ -289,26 +289,26 @@ const TableList: React.FC = () => {
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCow.current = entity.id;
-              const cow = await customAPIGetOne(entity.id, 'cows', { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' });
-              const photos = cow.data?.attributes?.photos?.data;
+              const cow = await customAPIGetOne(entity.id, 'cows/find', {  });
+              const photos = cow.photos;
               if (photos) {
                 const photoCow = photos.map((e: any) => {
-                  return { uid: e.id, name: e.attributes.name, status: 'done', url: SERVERURL + e.attributes.url }
+                  return { uid: e.id, status: 'done', url: SERVERURL + e.url }
                 })
 
                 form.setFieldsValue({
-                  ...cow.data?.attributes,
-                  category: cow.data?.attributes?.category?.data?.id,
-                  farm: cow.data?.attributes?.farm?.data?.id,
+                  ...cow,
+                  category: cow.category?.id,
+                  farm: cow.farm?.id,
                   upload: photoCow
 
                 })
               }
               else {
                 form.setFieldsValue({
-                  ...cow.data?.attributes,
-                  category: cow.data?.attributes?.category?.data?.id,
-                  farm: cow.data?.attributes?.farm?.data?.id,
+                  ...cow.data,
+                  category: cow.category?.id,
+                  farm: cow.farm?.id,
                   //upload: photoCow
 
                 })
@@ -327,7 +327,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss');
+        return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss');
       },
     },
   ];
@@ -359,8 +359,8 @@ const TableList: React.FC = () => {
           ]}
           request={() =>
             customAPIGet(
-              { 'populate[0]': 'category', 'populate[1]': 'farm', 'populate[2]': 'photos' },
-              'cows',
+              { },
+              'cows/find',
             )
           }
           columns={columns}

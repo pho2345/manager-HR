@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
@@ -12,10 +12,11 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message, Switch } from 'antd';
+import { Avatar, Button, Checkbox, Drawer, Form, message, Switch, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-
+import DetailUser from '../components/DetailUser';
+const {Text} = Typography;
 
 const handleAdd = async (fields: any) => {
   console.log(fields);
@@ -101,6 +102,9 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
+
+  const [currentRowUser, setCurrentRowUser] = useState<any>();
+  const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   useEffect(() => {
     const getValues = async () => {
       let getCow = await getCownotInCpass();
@@ -113,6 +117,20 @@ const TableList: React.FC = () => {
   const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
+    {
+      title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br/>Ngày hết hạn hợp tác</>)} />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'fair',
+      render: (_, text: any) => {
+        return (<>
+          {text?.fair?.code}
+          <br/> {moment(text?.fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')}
+
+
+        </>)
+      }
+    },
     {
       title: (
         <FormattedMessage
@@ -141,85 +159,130 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      dataIndex: 'atrributes',
+      title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
+      Giống bò-Giới tính</>)} />,
+      width: 200,
+      dataIndex: 'farmAndCategory',
       valueType: 'textarea',
-      key: 'fair',
-      renderText: (_, text: any) => text?.fair?.code
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.users_permissions_user' defaultMessage='Người sở hữu(Mega)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'users_permissions_user',
-      renderText: (_, text: any) => text?.owner?.username
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='Phương án' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'plan',
-      renderText: (_, text: any) => {
-        if (text?.plan) {
-          return `${text?.plan?.name} - ${text?.plan?.profit}%`
+      key: 'farmAndCategory',
+      render: (_, text: any) => {
+        let sex = 'Đực';
+        if(text?.cow?.sex === 'female'){
+          sex = 'Cái';
         }
-        return null;
+        return (<>
+        {text?.cow?.farm?.name}<br />
+        {`${text?.cow?.category?.name}-${sex}`}
+        </>)
+      }
+    },
 
+    {
+      title: <FormattedMessage id='pages.searchTable.column.image' defaultMessage='Hình' />,
+      dataIndex: 'image',
+      valueType: 'textarea',
+      key: 'image',
+      render: (_, text: any) => {
+        return (
+          <Avatar.Group
+            maxCount={2}
+            maxPopoverTrigger='click'
+            size='large'
+            maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
+          >
+            {text?.cow?.photos?.map((e: any, index: any) => {
+              return (
+                <Avatar
+                  key={index}
+                  src={
+                    SERVERURL +
+                    e?.url
+                  }
+                />
+              );
+            })}
+          </Avatar.Group>
+        );
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.bo' defaultMessage='Bò' />,
-      dataIndex: 'atrributes',
+      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      dataIndex: 'age',
       valueType: 'textarea',
-      key: 'cow',
-      renderText: (_, text: any) => text?.cow?.name
-    },
+      key: 'age',
+      renderText: (_, text: any) => {
+        let age = `${text?.cow?.age / 4 >= 1 ? `${text?.cow?.age / 4}Th` : ''} ${text?.cow?.age % 4 !== 0 ? (text?.cow?.age % 4) + 'T' : ''}`;
+        return age;
+
+      }
+    },  
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='Cân nặng P0' />,
-      dataIndex: 'atrributes',
+      title: 'P0(kg)/Pnow@Snow (kg)',
+      dataIndex: 'P0andPnow',
       valueType: 'textarea',
-      key: 'pZero',
-      renderText: (_, text: any) => text?.pZero
+      key: 'P0andPnow',
+      render: (_, text: any) => {
+        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot}`
+      }
     },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'nowWeight',
-      renderText: (_, text: any) => text?.nowWeight
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Tăng trọng cân nặng' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'deltaWeight',
-      renderText: (_, text: any) => text?.deltaWeight
-    },
+
     {
       title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
-      dataIndex: 'atrributes',
+      dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
-      renderText: (_, text: any) => text?.bodyCondition
+      render: (_, text: any) => {
+        switch (text?.bodyCondition) {
+          case 'good':
+            return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
+          case 'malnourished':
+            return (<Text>Suy dinh dưỡng</Text>);
+          case 'weak':
+            return (<Text style={{ color: '#FF9900' }}>Yếu</Text>);
+          case 'sick':
+            return (<Text style={{ color: '#FF3333' }}>Bệnh</Text>);
+          case 'dead':
+            return (<Text style={{ color: '#FF0000' }}>Chết</Text>)
+          default:
+            break;
+        }
+        return '';
+      },
+      filters: true,
+      onFilter: true,
+      valueEnum: {
+        good: {
+          text: 'Tốt',
+          value: 'good'
+        },
+        malnourished: {
+          text: 'Suy dinh dưỡng',
+          value: 'malnourished'
+        },
+        weak: {
+          text: 'Yếu',
+          value: 'weak'
+        },
+        sick: {
+          text: 'Bệnh',
+          value: 'sick'
+        },
+        dead: {
+          text: 'Chết',
+          value: 'dead'
+        },
+      },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng(%)' />,
+      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgePercent',
-      renderText: (_, text: any) => text?.wgePercent
+      renderText: (_, text: any) => `${text?.wgePercent}%`
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.wge' defaultMessage='Hiệu quả tăng trọng(WGE)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'wge',
-      renderText: (_, text: any) => text?.wge
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng trung bình(kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB(kg/tuần)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -227,117 +290,162 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.awg' defaultMessage='Tăng trọng TB(AWG)' />,
+      title: <FormattedMessage id='pages.searchTable.column.users_permissions_user' defaultMessage='Mega đang sở hữu' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
-      key: 'awg',
-      renderText: (_, text: any) => text?.awg
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.wgs' defaultMessage='Tăng trọng tiêu chuẩn(WGS)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'wgs',
-      renderText: (_, text: any) => text?.wgs
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'megaDeltaWeight',
-      renderText: (_, text: any) => text?.megaDeltaWeight
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.nanoDeltaWeight' defaultMessage='Tăng trọng Nano' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'nanoDeltaWeight',
-      renderText: (_, text: any) => text?.nanoDeltaWeight
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.activeAleTransfer' defaultMessage='Tự động chuyển đổi' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'activeAleTransfer',
-      render: (_, text: any) => (<Switch checked={text?.activeAleTransfer} disabled />)
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Lợi nhuận Ale' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'produceAle',
-      renderText: (_, text: any) => text?.attributes?.produceAle
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'option',
-      render: (_, entity: any) => {
-        return (<Button
-          type='primary'
-          key='primary'
-          onClick={async () => {
-            handleUpdateModalOpen(true);
-            refIdCpass.current = entity.id;
-            const cPass = await customAPIGetOne(entity.id, 'c-passes/get/find-admin', { });
-            //const cowNotCpass = await getCownotInCpass();
-            console.log(cPass);
-            // const cowForm = [
-            //   ...cowNotCpass,
-            //   {
-            //     value: cPass?.data?.attributes?.cow?.data?.id,
-            //     label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
-            //   }
-            // ]
-
-            form.setFieldsValue({
-              cow: {
-                value: cPass?.cow?.id,
-                label: cPass?.cow?.name,
-              },
-              code: cPass?.code,
-              pZero: cPass?.pZero,
-              price: cPass?.price,
-              nowWeight: cPass?.nowWeight,
-              activeAleTransfer: cPass?.activeAleTransfer
-            })
+      key: 'users_permissions_user',
+      render: (_, text: any) => {
+        if(text?.owner?.id){
+          return (<>
+          <a 
+          onClick={() => {
+            setCurrentRowUser(text.owner.id);
+            setShowDetailUser(true);
           }}
-        >
-          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-        </Button>)
+          >
+                {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner?.id}`}</a>
+            </>)
+        }else {
+          return null;
+        }
+          
+        }
+       
+      
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)| MegaE(VNĐ)<br/>MegaCPR</>)} />,
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'plan',
+      render: (_, text: any) => {
+        return (<>
+          {`${text?.megaP ? text?.megaP : '-'} | ${text?.megaE}`} <br/> {`${text?.megaCPR}%`} 
+        </>)
       }
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
-      dataIndex: 'atrributes',
+      title: <FormattedMessage id='pages.searchTable.column.plansCPass' defaultMessage='PAHT' />,
+      dataIndex: 'plan',
       valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-        return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss')
-      }
-
+      key: 'plan',
+      renderText: (_, text: any) => text?.plan ? `${text?.plan?.profit}` : null 
     },
+
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaDelta<br/>ProduceAle<br/>History</>)} />,
+      dataIndex: 'megaDeltaProduce',
+      valueType: 'textarea',
+      key: 'megaDeltaProduce',
+      render: (_, text: any) => {
+        return (<>
+            {text?.megaDeltaWeight} <br/>
+            {text?.produceAle} <br/>
+            <Button>History</Button>
+        </>)
+      }
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.statusOwner' defaultMessage={(<>Tình trạng sở hữu</>)} />,
+      dataIndex: 'statusOwner',
+      valueType: 'textarea',
+      key: 'statusOwner',
+      render: (_, text: any) => {
+        if(text?.statusTransaction === 'open'){
+          return (<>
+            Đang sở hữu
+        </>)
+        }
+        else {
+          return null;
+        }
+      }
+    },
+
+    {
+      title: <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage={(<>Trạng thái giao dịch</>)} />,
+      dataIndex: 'statusTransaction',
+      valueType: 'textarea',
+      key: 'statusTransaction',
+      render: (_, text: any) => {
+        if(text?.statusTransaction === 'registeringSettlement'){
+          if(text?.reasonSettlement === 'finished'){
+            return (<>
+              Đăng kí quyết toán<br/> Hết hạn hợp tác
+            </>)
+          }
+
+          if(text?.reasonSettlement === 'megaCanceled'){
+            return (<>
+              Đăng kí quyết toán<br/> Mega chấm dứt trước hạn
+            </>)
+          }
+          
+        }
+        else {
+          return null;
+        }
+      }
+    },
+
+
+    // {
+    //   title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'option',
+    //   render: (_, entity: any) => {
+    //     return (<Button
+    //       type='primary'
+    //       key='primary'
+    //       onClick={async () => {
+    //         handleUpdateModalOpen(true);
+    //         refIdCpass.current = entity.id;
+    //         const cPass = await customAPIGetOne(entity.id, 'c-passes/get/find-admin', { });
+    //         //const cowNotCpass = await getCownotInCpass();
+    //         console.log(cPass);
+    //         // const cowForm = [
+    //         //   ...cowNotCpass,
+    //         //   {
+    //         //     value: cPass?.data?.attributes?.cow?.data?.id,
+    //         //     label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
+    //         //   }
+    //         // ]
+
+    //         form.setFieldsValue({
+    //           cow: {
+    //             value: cPass?.cow?.id,
+    //             label: cPass?.cow?.name,
+    //           },
+    //           code: cPass?.code,
+    //           pZero: cPass?.pZero,
+    //           price: cPass?.price,
+    //           nowWeight: cPass?.nowWeight,
+    //           activeAleTransfer: cPass?.activeAleTransfer
+    //         })
+    //       }}
+    //     >
+    //       <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+    //     </Button>)
+    //   }
+    // },
 
   ];
 
   return (
     <PageContainer>
       <ProTable
+      
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
         })}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
 
         toolBarRender={() => [
           <Button
@@ -618,6 +726,15 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
+
+      <DetailUser
+        onDetail={showDetailUser}
+        currentRowUser={currentRowUser}
+        onCloseDetail={() => {
+          setCurrentRowUser(undefined);
+          setShowDetailUser(false);
+        }}
+      />
     </PageContainer>
 
   );

@@ -293,7 +293,7 @@ const TableList: React.FC = () => {
               const photos = cow.photos;
               if (photos) {
                 const photoCow = photos.map((e: any) => {
-                  return { uid: e.id, status: 'done', url: SERVERURL + e.url }
+                  return { uid: e.id, status: 'done', url: SERVERURL + e.url };
                 })
 
                 form.setFieldsValue({
@@ -641,9 +641,6 @@ const TableList: React.FC = () => {
                 }
               }
             }}
-
-
-
           //action={() => customAPIUpload({})}
           />
           <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />

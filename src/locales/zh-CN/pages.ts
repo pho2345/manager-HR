@@ -3,7 +3,7 @@ export default {
     'Ant Design is the most influential web design specification in Xihu district',
   'pages.login.accountLogin.tab': 'Account Login',
   'pages.login.accountLogin.errorMessage': 'Incorrect username/password(admin/ant.design)',
-  'pages.login.failure': 'Login failed, please try again!',
+  'pages.login.failure': 'Đăng nhập thất bại!',
   'pages.login.success': 'Login successful!',
   'pages.login.username.placeholder': 'Username',
   'pages.login.username.required': 'Please input your username!',

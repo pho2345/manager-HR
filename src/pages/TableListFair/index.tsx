@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
-import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect, useFetchData } from '@ant-design/pro-components';
+import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -15,7 +15,9 @@ import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
 import { Button, Drawer, Form, List, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import "./styles.css";
+import TableListAddCPassInFair from '../TableListAddCPassInFair';
+import DetailCPass from '../components/DetailCPass';
+import DetailFair from '../components/DetailFair';
 
 
 const handleAdd = async (fields: any) => {
@@ -130,6 +132,9 @@ const TableList: React.FC = () => {
   const [plan, setPlan] = useState<any>();
   const param = useParams<any>();
 
+  const [currentFair, setCurrentFair] = useState<any>();
+  const [showModalCPass, setShowModalCPass] = useState<boolean>(false);
+
   useEffect(() => {
     const getData = async () => {
       const getPlan = await getPlans();
@@ -165,20 +170,38 @@ const TableList: React.FC = () => {
       title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
       render: (_, entity: any) => {
         return (
-          // <a
-          //   onClick={() => {
-          //     setCurrentRow(entity);
-          //     console.log('currentRow', currentRow);
-          //     setShowDetail(true);
-          //   }}
-          // >
-          //   {entity?.code}
-
-          // </a>
-          <Link to={`/fairs/` + entity.id}>
+          <a
+            onClick={() => {
+              setCurrentRow(entity.id);
+              setShowDetail(true);
+            }}
+          >
             {entity?.code}
-          </Link>
+
+           </a>
+          
         );
+      },
+      filters: [
+        {
+          text: 'Joe',
+          value: 'P-230224-43',
+        },
+        {
+          text: 'fair-1',
+          value: 'fair-1',
+        },
+        {
+          text: 'Category 2',
+          value: 'Category 2',
+        },
+      ],
+      filterSearch: true,
+      onFilter: (value: any, record: any) => {
+        if (value === record.code) {
+          return record;
+        }
+        return false;
       },
     },
     {
@@ -200,7 +223,6 @@ const TableList: React.FC = () => {
         const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
         return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
       }
-
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
@@ -249,17 +271,38 @@ const TableList: React.FC = () => {
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />,
-      dataIndex: 'atrributes',
+      dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
-      renderText: (_, text: any) => text?.status
+      renderText: (_, text: any) => text?.status,
+      filters: true,
+      onFilter: true,
+      valueEnum: (row) => {
+        let data = row?.status;
+        console.log('data', data);
+        return {
+          'noOpen': {
+            text: 'Chưa mở',
+            value: 'noOpen'
+          },
+          'opening': {
+            text: 'Đang mở',
+            value: 'opening'
+          },
+          'closed': {
+            text: 'Đã đóng',
+            value: 'closed'
+          },
+        }
+
+      }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt' />,
+      title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',
-      renderText: (_, text: any) => `${text?.unitPriceMeat}VNĐ`
+      renderText: (_, text: any) => `${text?.unitPriceMeat}`
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
@@ -293,14 +336,66 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
+        let configButton = [];
+       configButton.push( /// button copy
+      <> <CopyTwoTone
+                style={{
+                  fontSize: 20,
+                  paddingLeft: 5
+                }}
+
+                onClick={async () => {
+                  handleCopyModalOpen(true);
+                  const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+                  fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  delete fair.c_passes;
+                  const plans = fair.plans.map((e: any) => {
+                    return e?.id
+                  })
+                  form.setFieldsValue({
+                    ...fair,
+                    plans
+                  })
+                }
+                }
+              />
+
+               <FileAddTwoTone
+           style={{
+             fontSize: 20,
+             paddingLeft: 5
+           }}
+           onClick={() => {
+             setCurrentFair(entity?.id);
+             setShowModalCPass(true);
+           }}
+
+         ></FileAddTwoTone>
+
+         <Link to={`/fairs/add-mega-assign/` + entity.id}>
+           <Button
+             onClick={() => {
+             }}
+           >AddMegaAssign</Button>
+         </Link>
+         <Link to={`/fairs/manager/` + entity.id}>
+                <Button
+                  onClick={() => {
+                  }}
+                >Manager</Button>
+              </Link>
+         </> 
+       )
         if (entity?.status === 'noOpen') {
-          return (
-            <>
-              <EditTwoTone
+          // button edit
+          configButton.push(<>
+           <EditTwoTone
                 style={{
                   fontSize: 20
                 }}
-
                 onClick={async () => {
                   handleUpdateModalOpen(true);
                   refIdFair.current = entity.id;
@@ -317,9 +412,6 @@ const TableList: React.FC = () => {
                   })
                   const plans = fair.plans.map((e: any) => {
                     return e?.id
-                    //label: e?.name + '-' + e?.profit,
-
-
                   })
                   form.setFieldsValue({
                     ...fair,
@@ -328,227 +420,183 @@ const TableList: React.FC = () => {
                   })
                 }}
               />
-
-              <CopyTwoTone
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5
-                }}
-
-                onClick={async () => {
-                  handleCopyModalOpen(true);
-                  const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
-                  fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-
-                  delete fair.c_passes;
-                  // const c_passes = fair?.c_passes.map((e: any) => {
-                  //   return {
-                  //     label: e?.cow?.name,
-                  //     value: e?.id
-                  //   }
-                  // })
-                  const plans = fair.plans.map((e: any) => {
-                    return e?.id
-                    //label: e?.name + '-' + e?.profit,
-
-
-                  })
-                  form.setFieldsValue({
-                    ...fair,
-                    // c_passes,
-                    plans
-                  })
-                }
-                }
-              />
-
-
-            </>
-          )
+          </>);
         }
-
-        return null;
-
-
+        return configButton;
       }
     },
   ];
 
 
-  const columnsDetail: ProColumns<any>[] = [
-    {
-      key: 'code',
-      dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      render: (_, entity: any) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              console.log('currentRow', currentRow);
-              setShowDetail(true);
-            }}
-          >
-            {entity?.code}
+  // const columnsDetail: ProColumns<any>[] = [
+  //   {
+  //     key: 'code',
+  //     dataIndex: 'code',
+  //     title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+  //     render: (_, entity: any) => {
+  //       return (
+  //         <a
+  //           onClick={() => {
+  //             setCurrentRow(entity);
+  //             console.log('currentRow', currentRow);
+  //             setShowDetail(true);
+  //           }}
+  //         >
+  //           {entity?.code}
 
-          </a>
-
-          
-        );
-      },
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'timeStart',
-      renderText: (_, text) => {
-        const weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
-        return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-      }
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'timeEnd',
-      renderText: (_, text: any) => {
-        const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
-        return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-      }
-
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
-      dataIndex: 'dateStartFeed',
-      valueType: 'textarea',
-      key: 'dateStartFeed',
-      renderText: (_, text: any) => {
-        {
-          const weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
-          return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-        }
-      }
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
-      dataIndex: 'timeFeed',
-      valueType: 'textarea',
-      key: 'timeFeed',
-      renderText: (_, text: any) => text?.timeFeed
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT Mega/PL' />,
-      dataIndex: 'plans',
-      valueType: 'dateRange',
-      key: 'plans',
-      render: (_, entity: any) => {
-        return (
-          <>
-            {entity.plans.map((e: any, index: number) => (
-              <React.Fragment key={index}>
-                <div> {e.name}-{e.profit}</div>
-              </React.Fragment>
-            ))}
-
-          </>
-        )
-      }
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
-      dataIndex: 'cPassPublished',
-      valueType: 'textarea',
-      key: 'cPassPublished',
-      renderText: (_, text: any) => `${text?.cPassPublished} / ${text?.quantitySellCpass}`
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'status',
-      renderText: (_, text: any) => text?.status
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt' />,
-      dataIndex: 'unitPriceMeat',
-      valueType: 'textarea',
-      key: 'unitPriceMeat',
-      renderText: (_, text: any) => `${text?.unitPriceMeat}VNĐ`
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
-      dataIndex: 'nameFarm',
-      valueType: 'textarea',
-      key: 'nameFarm',
-      renderText: (_, text: any) => text?.nameFarm
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
-      dataIndex: 'cPass',
-      valueType: 'textarea',
-      key: 'cPass',
-      renderText: (_, text: any) => {
-        if (text?.c_passes.length !== 0) {
-          return (<>
-            <List
-              size="small"
-              bordered
-              dataSource={text.c_passes}
-              renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.code}`}</List.Item>}
-            />
-          </>)
-        }
-        return null;
-      }
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT' />,
-      dataIndex: 'nameFarm',
-      valueType: 'textarea',
-      key: 'nameFarm',
-      renderText: (_, text: any) => {
-        if (text?.plans.length !== 0) {
-          return (<>
-            <List
-              size="small"
-              bordered
-              dataSource={text.plans}
-              renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.name}- ${item.profit}%`}</List.Item>}
-            />
-          </>)
-        }
-        return null;
-      }
-    },
+  //         </a>
 
 
+  //       );
+  //     },
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
+  //     dataIndex: 'atrributes',
+  //     valueType: 'textarea',
+  //     key: 'timeStart',
+  //     renderText: (_, text) => {
+  //       const weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+  //       return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+  //     }
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
+  //     dataIndex: 'atrributes',
+  //     valueType: 'textarea',
+  //     key: 'timeEnd',
+  //     renderText: (_, text: any) => {
+  //       const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
+  //       return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+  //     }
+
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
+  //     dataIndex: 'dateStartFeed',
+  //     valueType: 'textarea',
+  //     key: 'dateStartFeed',
+  //     renderText: (_, text: any) => {
+  //       {
+  //         const weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+  //         return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+  //       }
+  //     }
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
+  //     dataIndex: 'timeFeed',
+  //     valueType: 'textarea',
+  //     key: 'timeFeed',
+  //     renderText: (_, text: any) => text?.timeFeed
+  //   },
+
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT Mega/PL' />,
+  //     dataIndex: 'plans',
+  //     valueType: 'dateRange',
+  //     key: 'plans',
+  //     render: (_, entity: any) => {
+  //       return (
+  //         <>
+  //           {entity.plans.map((e: any, index: number) => (
+  //             <React.Fragment key={index}>
+  //               <div> {e.name}-{e.profit}</div>
+  //             </React.Fragment>
+  //           ))}
+
+  //         </>
+  //       )
+  //     }
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+  //     dataIndex: 'cPassPublished',
+  //     valueType: 'textarea',
+  //     key: 'cPassPublished',
+  //     renderText: (_, text: any) => `${text?.cPassPublished} / ${text?.quantitySellCpass}`
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />,
+  //     dataIndex: 'atrributes',
+  //     valueType: 'textarea',
+  //     key: 'status',
+  //     renderText: (_, text: any) => text?.status
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt' />,
+  //     dataIndex: 'unitPriceMeat',
+  //     valueType: 'textarea',
+  //     key: 'unitPriceMeat',
+  //     renderText: (_, text: any) => `${text?.unitPriceMeat}VNĐ`
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
+  //     dataIndex: 'nameFarm',
+  //     valueType: 'textarea',
+  //     key: 'nameFarm',
+  //     renderText: (_, text: any) => text?.nameFarm
+  //   },
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
+  //     dataIndex: 'cPass',
+  //     valueType: 'textarea',
+  //     key: 'cPass',
+  //     renderText: (_, text: any) => {
+  //       if (text?.c_passes.length !== 0) {
+  //         return (<>
+  //           <List
+  //             size="small"
+  //             bordered
+  //             dataSource={text.c_passes}
+  //             renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.code}`}</List.Item>}
+  //           />
+  //         </>)
+  //       }
+  //       return null;
+  //     }
+  //   },
+
+  //   {
+  //     title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT' />,
+  //     dataIndex: 'nameFarm',
+  //     valueType: 'textarea',
+  //     key: 'nameFarm',
+  //     renderText: (_, text: any) => {
+  //       if (text?.plans.length !== 0) {
+  //         return (<>
+  //           <List
+  //             size="small"
+  //             bordered
+  //             dataSource={text.plans}
+  //             renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.name}- ${item.profit}%`}</List.Item>}
+  //           />
+  //         </>)
+  //       }
+  //       return null;
+  //     }
+  //   },
 
 
-  ];
+
+
+  // ];
 
   return (
+    <>
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle='null'
         search={false}
         actionRef={actionRef}
         rowClassName={record => {
-          if(record.status !== 'Opening'){
+          if (record.status !== 'Opening') {
             return 'disable'
           }
           return '';
         }}
         rowKey='id'
-        
+
         toolBarRender={() => [
           <Button
             type='primary'
@@ -560,7 +608,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
-        request={ async() => {
+        request={async () => {
           const data = await customAPIGet({}, 'fairs/fairadmin');
           console.log('data', data);
           return data
@@ -568,6 +616,7 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
+            console.log('oksdf');
             setSelectedRows(selectedRows);
           },
         }}
@@ -648,8 +697,8 @@ const TableList: React.FC = () => {
 
           <ProFormDateTimePicker name="timeStart" label="Thời gian mở" />
           {/* <ProFormDateTimePicker name="timeEnd" label="Thời gian đóng" /> */}
-         
-       
+
+
           {/* <ProFormDateTimePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" /> */}
           <ProFormDatePicker name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
           <ProFormText width='xs' name='timeFeed' label='Thời gian nuôi(Tuần)' placeholder='Thời gian nuôi' />
@@ -897,7 +946,7 @@ const TableList: React.FC = () => {
       </ModalForm>
 
 
-      <Drawer
+      {/* <Drawer
         width={800}
         open={showDetail}
         onClose={() => {
@@ -919,8 +968,36 @@ const TableList: React.FC = () => {
             columns={columnsDetail}
           />
         )}
-      </Drawer>
+      </Drawer> */}
+      
+      {
+        currentFair && (<>
+          <TableListAddCPassInFair
+            openModal={showModalCPass}
+            currentFair={currentFair}
+            onCloseModal={() => {
+              setCurrentFair(undefined);
+              setShowModalCPass(false);
+            }}
+          />
+        </>)
+      }
+
+
+
     </PageContainer>
+    {currentRow && (
+      <DetailFair
+        openModal={showDetail}
+        fairId={currentRow}
+        closeModal={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+      />
+    )
+    }
+    </>
   );
 };
 

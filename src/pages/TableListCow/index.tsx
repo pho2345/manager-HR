@@ -6,7 +6,7 @@ import {
   customAPIUpload,
   customAPIGetOne,
 } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -28,7 +28,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
-import { Avatar, Button, Drawer, Form, message } from 'antd';
+import { Avatar, Button, Drawer, Form, Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';
@@ -39,9 +39,7 @@ const handleAdd = async (fields: any) => {
   try {
     hide();
     const cow = await customAPIAdd({ ...fields }, 'cows');
-    console.log(cow);
-    if(fields?.upload){
-      console.log('vào');
+    if(fields?.upload && cow){
       const uploadImages = fields?.upload.map((e: any) => {
         let formdata = new FormData();
         formdata.append('files', e?.originFileObj);
@@ -71,7 +69,6 @@ const handleUpdate = async (fields: any, id: any) => {
 
   const hide = message.loading('Đang cập nhật...');
   try {
-
     const uploadImages = fields?.upload.map((e: any) => {
       if (e.originFileObj) {
         let formdata = new FormData();
@@ -147,6 +144,17 @@ const getFarm = async () => {
   return data;
 };
 
+const getGroupFarm = async ( id:number ) => {
+  const fetchDataGroupFarm = await customAPIGetOne( id, 'group-cows/get/find-of-farm', {});
+  const configGroupFarm = fetchDataGroupFarm?.map((e) => {
+    return {
+      label: e?.name,
+      value: e?.id
+    }
+  });
+  return configGroupFarm;
+}
+
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -158,6 +166,11 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
+  const [groupCow, setGroupCow] = useState<any>();
+  const [search, setSearch] = useState<any>();
+
+
+
   const params = useParams();
   const refIdPicture = useRef<any>();
   useEffect(() => {
@@ -169,6 +182,8 @@ const TableList: React.FC = () => {
     };
     getValues();
   }, []);
+
+  
 
   const intl = useIntl();
 
@@ -192,6 +207,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.name,
+      
     },
     {
       title: (
@@ -300,7 +316,11 @@ const TableList: React.FC = () => {
                   ...cow,
                   category: cow.category?.id,
                   farm: cow.farm?.id,
-                  upload: photoCow
+                  upload: photoCow,
+                  group_cow: {
+                    label: cow?.group_cow?.name,
+                    value:  cow?.group_cow?.id
+                  }
 
                 })
               }
@@ -309,6 +329,8 @@ const TableList: React.FC = () => {
                   ...cow.data,
                   category: cow.category?.id,
                   farm: cow.farm?.id,
+                  group_cow: cow?.group_cow?.id
+
                   //upload: photoCow
 
                 })
@@ -426,6 +448,7 @@ const TableList: React.FC = () => {
             if (success) {
               handleModalOpen(false);
               form.resetFields();
+              setGroupCow(null);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -435,10 +458,7 @@ const TableList: React.FC = () => {
           }}
         >
           <ProForm.Group>
-            {/* <ProFormText width='md' name='code' label='Mã' placeholder='Mã' /> */}
-
             <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
-          
             <ProFormDigit
               min={1}
               width='md'
@@ -446,11 +466,20 @@ const TableList: React.FC = () => {
               label='Cân nặng P0'
               placeholder='Cân nặng P0'
             />
-
           </ProForm.Group>
           <ProForm.Group>
-            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
-            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
+            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='xs' name='category' label='Giống bò' />
+            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại'  name='farm' label='Trang trại' 
+              fieldProps={{
+                onChange: async (value) => {
+                  const groupCow = await getGroupFarm(value);
+                  setGroupCow(groupCow);
+                  form.setFieldValue('group_cow', null);
+                }
+              }}
+            />
+            <ProFormSelect width='xs' options={groupCow && groupCow.length ? groupCow : null} disabled={groupCow && groupCow.length !== 0 ? false : true} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'/>
+
           </ProForm.Group>
           <ProForm.Group>
             <ProFormDatePicker name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
@@ -507,6 +536,7 @@ const TableList: React.FC = () => {
           }}
           submitTimeout={2000}
           onFinish={async (values) => {
+            console.log('values update', values);
           const success = await handleUpdate(values as any, refIdCow as any);
 
 
@@ -519,7 +549,6 @@ const TableList: React.FC = () => {
                   })
                   await Promise.all(deletePicture);
                  }
-               
               }
              
               handleUpdateModalOpen(false);
@@ -529,7 +558,6 @@ const TableList: React.FC = () => {
                 refIdPicture.current = null;
               }
             }
-           
             return true;
           }}
         >
@@ -550,7 +578,16 @@ const TableList: React.FC = () => {
           </ProForm.Group>
           <ProForm.Group>
             <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
-            <ProFormSelect width='md' options={farm} name='farm' label='Trang trại' placeholder='Chọn trang trại' required />
+            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại'  name='farm' label='Trang trại' 
+              fieldProps={{
+                onChange: async (value) => {
+                  const groupCow = await getGroupFarm(value);
+                  setGroupCow(groupCow);
+                  form.setFieldValue('group_cow', null);
+                }
+              }}
+            />
+            <ProFormSelect width='xs' options={groupCow?.length !== 0 ? groupCow : null}  required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'/>
           </ProForm.Group>
           <ProForm.Group>
             <ProFormDatePicker name='birthdate' label='Ngày sinh' />

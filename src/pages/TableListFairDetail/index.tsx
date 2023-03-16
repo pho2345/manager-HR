@@ -1,68 +1,20 @@
-import { customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ConsoleSqlOutlined, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, FooterToolbar, ProColumns, ProDescriptions } from '@ant-design/pro-components';
+import {  customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, SearchOutlined,  } from '@ant-design/icons';
+import { ActionType, FooterToolbar, ProColumns } from '@ant-design/pro-components';
 import {
 
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl, useParams } from '@umijs/max';
-import { Button, Checkbox, Drawer, Input, message, Modal, Image } from 'antd';
-import { Typography } from 'antd';
+import { FormattedMessage,  useParams } from '@umijs/max';
+import { Button, Checkbox, Input, message, Modal, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
 import "./styles.css";
 import DetailUser from '../components/DetailUser';
 import DetailCPass from '../components/DetailCPass';
-
-
-// const handleAdd = async (fields: any) => {
-
-//   fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-//   fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-//   fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-//   fields.dateEndFeed = moment(fields.dateEndFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-
-//   const hide = message.loading('Đang thêm...');
-//   try {
-//     await customAPIAdd({ ...fields }, 'fairs');
-//     hide();
-//     message.success('Thêm thành công');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Thêm thất bại!');
-//     return false;
-//   }
-// };
-
-
-// const handleUpdate = async (fields: any, id: any) => {
-//   if (fields?.c_passes[0]?.value) {
-//     const configCPass = fields?.c_passes.map((e: any) => {
-//       return e.value;
-//     });
-//     fields.c_passes = configCPass;
-//   }
-
-//   const hide = message.loading('Đang cập nhật...');
-//   try {
-//     await customAPIUpdate({
-//       ...fields
-//     }, 'fairs', id.current);
-//     hide();
-
-//     message.success('Cập nhật thành công');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Cập nhật thất bại!');
-//     return false;
-//   }
-// };
-
-
+import TableListAssignCPass from '../TableListAssignCPass';
 
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
@@ -84,16 +36,7 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
   }
 };
 
-const ListImage = (image: any) => {
-  return image?.length !== 0 ? (<>
-    {image?.map((e: any, index: number) => (<Image
-      key={index}
-      width={100}
-      src={SERVERURL + e.url}
-    />
-    ))}
-  </>) : null
-}
+
 
 
 
@@ -107,10 +50,12 @@ const TableListFairDetail: React.FC = () => {
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
-  const [image, setImage] = useState<any>();
 
+  const [currentCPass, setCurrentCPass] = useState<any>();
+  const [showModalMega, setShowModalMega] = useState<boolean>(false);
   const [fair, setFair] = useState<any>();
   const params = useParams();
+
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
       title: 'Confirm',
@@ -129,7 +74,6 @@ const TableListFairDetail: React.FC = () => {
     });
   };
 
-  const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -150,15 +94,32 @@ const TableListFairDetail: React.FC = () => {
 
         );
       },
+
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
-          <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} />
+          <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} 
+          />
         </div>
       ),
       filterIcon: (filtered) => {
         return (
           <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
         )
+      },
+      filterSearch:(input, record) =>{
+        console.log(input, record);
+        // if (input === record?.code) {
+        //   return record;
+        // }
+        return true;
+      },
+       filters:true,
+    
+      onFilter: (value: any, record: any) => {
+        if (value === record.code) {
+          return record;
+        }
+        return false;
       },
     },
     {
@@ -219,7 +180,7 @@ const TableListFairDetail: React.FC = () => {
           default:
             break;
         }
-        return 'abc';
+        return '';
       },
       filters: true,
       onFilter: true,
@@ -329,7 +290,10 @@ const TableListFairDetail: React.FC = () => {
 
         if (entity.check === 'none') {
           return (<>
-            <Button onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'c-passes/update/removemega', null as any)}>Assign Mega </Button>
+           <Button onClick={() => {
+              setCurrentCPass(entity.id);
+              setShowModalMega(true)
+            }}>Assign Mega </Button>
             <Button onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)}>Remove cPass </Button>
           </>);
         }
@@ -338,7 +302,7 @@ const TableListFairDetail: React.FC = () => {
     },
   ];
 
- 
+
 
 
   return (
@@ -348,15 +312,10 @@ const TableListFairDetail: React.FC = () => {
       <Text>{`Ngày đóng bán: ${fair?.timeEnd ? `${moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
       <Text>{`Ngày bắt đầu nuôi: ${fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle={(<>Danh sách cPass</>)}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         rowClassName={
           (entity) => {
             return entity.classColor
@@ -373,11 +332,11 @@ const TableListFairDetail: React.FC = () => {
           //   <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           // </Button>,
         ]}
+       
         // request={() => customAPIGet({}, 'banks')}
         request={async () => {
 
-          const data = await customAPIGetOne(params.id, 'fairs/cpassoffair', {});
-          console.log('fair', data);
+          const data = await customAPIPostOne(params.id, 'fairs/cpassoffair', {});
           const { c_passes, ...other } = data;
           setFair({
             ...other
@@ -403,15 +362,9 @@ const TableListFairDetail: React.FC = () => {
           extra={
             <div>
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-              </span>
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length} hàng</a>{' '}
+            
+            
             </div>
           }
         >
@@ -436,64 +389,53 @@ const TableListFairDetail: React.FC = () => {
         </FooterToolbar>
       )}
 
-{currentRow && (
-
-      <DetailCPass
-        openModal={showDetail}
-        idCPass={currentRow}
-        closeModal={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-      />
- )
-}
-
-{currentRowUser && (
-      <DetailUser
-        onDetail={showDetailUser}
-        currentRowUser={currentRowUser}
-        onCloseDetail={() => {
-          setCurrentRowUser(undefined);
-          setShowDetailUser(false);
-        }}
-      />
+      {currentRow && (
+        <DetailCPass
+          openModal={showDetail}
+          idCPass={currentRow}
+          closeModal={() => {
+            setCurrentRow(undefined);
+            setShowDetail(false);
+          }}
+        />
       )
-    }
-      {/* <Drawer
-        width={600}
-        open={showDetailUser}
-        onClose={() => {
-          setCurrentRowUser(undefined);
-          setShowDetailUser(false);
-        }}
-        closable={false}
-      >
-        {currentRowUser && (
-          <><ProDescriptions
-            column={2}
-            title='Thông tin Mega'
-            request={async () => {
-              console.log('thong tin user');
-            const getUser = await customAPIGetOne(currentRowUser, 'users/find-admin');
-              //setImage(getCPass?.photos);
-              return {
-                data: getUser,
-                success: true
-              }
-            }}
-            params={{
-              id: currentRowUser, 
-            }}
-            columns={columnDetailUser}
-          ></ProDescriptions>
-           
-          </>
-        )
-        }
-      </Drawer> */}
+      }
 
+      {currentRowUser && (
+        <DetailUser
+          onDetail={showDetailUser}
+          currentRowUser={currentRowUser}
+          onCloseDetail={() => {
+            setCurrentRowUser(undefined);
+            setShowDetailUser(false);
+          }}
+        />
+      )
+      }
+
+      
+{
+        currentCPass && (<>
+          <TableListAssignCPass
+            openModal={showModalMega}
+            currentCPass={currentCPass}
+            fairId={params?.id}
+            onReload={
+              () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }
+            onCloseModal={() => {
+              setCurrentCPass(undefined);
+              setShowModalMega(false);
+            }}
+          />
+        </>)
+      }
     </>
+
   );
 };
 

@@ -4,6 +4,7 @@ import {
   customAPIUpdateMany,
   customAPIDelete,
   customAPIUpload,
+  customAPIPost
 } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
@@ -27,6 +28,7 @@ import {
 
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Drawer, Form, message, Modal } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 
 
@@ -63,7 +65,7 @@ const handleUpdateMany = async (fields: any, api: any) => {
   try {
 
     const updateTransaction = await customAPIUpdateMany(
-      {...fields},
+      { ...fields },
       api,
     );
 
@@ -171,6 +173,11 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'index',
+    },
+    {
       title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
       key: 'code',
       dataIndex: 'atrributes',
@@ -187,57 +194,17 @@ const TableList: React.FC = () => {
         );
       },
     },
-
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.sender'
-          defaultMessage='Người giao dịch'
-        />
-      ),
-      dataIndex: 'sender',
+      title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      dataIndex: 'createdAt',
       valueType: 'textarea',
-      key: 'sender',
-      renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
+      key: 'createdAt',
+      renderText: (_, text: any) => {
+        return moment(text?.createdAt).format('DD/MM/YYYY HH:MM');
+      }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.reveicer' defaultMessage='Người nhận' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'receiver',
-      renderText: (_, text: any) => text?.receiver?.fullname || text?.receiver?.username,
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Ale' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'ale',
-      renderText: (_, text: any) => text?.ale
-
-      ,
-    },
-
-    {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
-      ),
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'category',
-      renderText: (_, text: any) => text?.c_pass?.code,
-    },
-    {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
-      ),
-      dataIndex: 'method',
-      valueType: 'textarea',
-      key: 'method',
-      renderText: (_, text: any) => text?.method,
-    },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại' />,
+      title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
@@ -279,7 +246,16 @@ const TableList: React.FC = () => {
 
     {
       title: (
-        <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />
+        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
+      ),
+      dataIndex: 'method',
+      valueType: 'textarea',
+      key: 'method',
+      renderText: (_, text: any) => text?.method,
+    },
+    {
+      title: (
+        <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Tình trạng' />
       ),
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -309,6 +285,36 @@ const TableList: React.FC = () => {
     },
 
     {
+      title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      dataIndex: 'priceVnd',
+      valueType: 'textarea',
+      key: 'priceVnd',
+      renderText: (_, text: any) => text?.priceVnd
+    },
+
+    {
+      title: (
+        <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
+      ),
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'category',
+      renderText: (_, text: any) => text?.c_pass?.code,
+    },
+
+    {
+      title: (
+        <FormattedMessage
+          id='pages.searchTable.column.sender'
+          defaultMessage='Người giao dịch'
+        />
+      ),
+      dataIndex: 'sender',
+      valueType: 'textarea',
+      key: 'sender',
+      renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
+    },
+    {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -316,20 +322,20 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         if (entity?.status === 'inProgress') {
           return (
-            <Button onClick={() => confirm([entity.id] , 'xác nhận', 'transactions/done', entity.types)}>Xác nhận</Button>
+            <Button onClick={() => confirm([entity.id], 'xác nhận', 'transactions/done', entity.types)}>Xác nhận</Button>
           );
         }
         if (entity?.status === 'waitRefund') {
           return (
-           
-             <Button onClick={() => confirm([entity.id], 'xác nhận','transactions/done', entity.types )}>Xác nhận hoàn trả</Button>
+
+            <Button onClick={() => confirm([entity.id], 'xác nhận', 'transactions/done', entity.types)}>Xác nhận hoàn trả</Button>
           );
         }
         return null;
       },
     },
 
-    
+
   ];
 
   return (
@@ -343,20 +349,16 @@ const TableList: React.FC = () => {
         rowKey='id'
         search={false}
         toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
-          </Button>,
+
         ]}
         request={() =>
-          customAPIGet(
-            {},
-            'transactions/findadmin',
+          customAPIPost(
+            {
+              method: 'vnd'
+            },
+            'transactions/findadmin', {
+              fields:  ['id', 'code', 'types', 'method', 'status', 'priceVnd', 'c_pass', 'sender', 'createdAt']
+            }
           )
         }
         columns={columns}
@@ -365,6 +367,9 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        rowClassName={() => 
+        'bac'
+      }
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -404,163 +409,9 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
 
-      <ModalForm
-        title='Tạo mới'
-        open={createModalOpen}
-        form={form}
-        autoFocusFirstInput
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleModalOpen(false);
-          },
-        }}
-        submitTimeout={2000}
-        onFinish={async (values) => {
-          //await waitTime(2000);
-          const success = await handleAdd(values as any);
-          if (success) {
-            handleModalOpen(false);
-            form.resetFields();
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-          //message.success('Success');
-          return true;
-        }}
-      >
-        <ProForm.Group>
-          <ProFormText width='md' name='code' label='Mã' placeholder='Mã' />
 
-          <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            width='md'
-            name='firstWeight'
-            label='Cân nặng P0'
-            placeholder='Cân nặng P0'
-          />
 
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
-          <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormDatePicker name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
-          <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
-          <ProFormSelect
-            width='xs'
-            name='sex'
 
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
-            placeholder='Chọn giới tính'
-            rules={[{ required: true, message: 'Chọn giới tính!' }]}
-          />
-          <ProFormSelect
-            width='xl'
-            name='status'
-            label='Trạng thái'
-            options={[
-              {
-                label: 'Mới',
-                value: 'new',
-              },
-              {
-                label: 'Sẳn sàng',
-                value: 'ready',
-              },
-              {
-                label: 'Đã thêm vào CPass',
-                value: 'cpassAdded',
-              },
-
-              {
-                label: 'Đã thêm vào phiên',
-                value: 'fairAdded',
-              },
-              {
-                label: 'Đã ở trong phiên mở bán',
-                value: 'fairOpen',
-              },
-              {
-                label: 'Trong đặt hàng của phiên',
-                value: 'fairOrder',
-              },
-              {
-                label: 'Đã thanh toán',
-                value: 'paid',
-              },
-              {
-                label: 'Sẵn sàng nuôi',
-                value: 'readyFeed',
-              },
-              {
-                label: 'Chờ nuôi',
-                value: 'waitingFeed',
-              },
-            ]}
-            placeholder='Trạng thái'
-            rules={[{ required: true, message: 'Trạng thái!' }]}
-          />
-        </ProForm.Group>
-
-        <ProFormUploadButton
-          title='Up load'
-          name='upload'
-          label='Upload'
-          max={2}
-          fieldProps={{
-            name: 'file',
-            listType: 'picture-card',
-          }}
-
-        //ction={() => customAPIUpload({})}
-        />
-
-        <ProFormTextArea width='xl' label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
-      </ModalForm>
-
-      <ModalForm
-        //title='Cập nhật'
-        open={updateModalOpen}
-        form={form}
-
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleUpdateModalOpen(false);
-          },
-        }}
-        submitTimeout={2000}
-        onFinish={async (values) => {
-
-          //const success = await handleUpdate(values as any, refIdCow as any);
-          // if (success) {
-          //   handleUpdateModalOpen(false);
-          //   form.resetFields();
-          //   if (actionRef.current) {
-          //     actionRef.current.reload();
-          //   }
-          // }
-          message.success('Success');
-          return true;
-        }}
-      >
-
-      </ModalForm>
 
 
       <Drawer

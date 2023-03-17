@@ -107,6 +107,28 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
   }
 }
 
+export async function customAPIPost(values?: { [key: string]: any }, collection?: string, body: any) {
+  const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+    },
+    params: {
+      ...values,
+    },
+    data: {
+      ...body
+    }
+  });
+ 
+  return {
+    data : fetchData.data ? fetchData.data : fetchData,
+    success: true,
+    total : fetchData?.meta?.pagination?.total
+  }
+}
+
 export async function customAPIAdd(values?: { [key: string]: any }, collection?: string) {
   
   return request<any>(SERVERURL+'/api/'+collection, {

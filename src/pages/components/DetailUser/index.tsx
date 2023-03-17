@@ -1,7 +1,7 @@
 
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { ProColumns, ProDescriptions } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
+import { FormattedMessage,  } from '@umijs/max';
 import {  Drawer, Typography  } from 'antd';
 import moment from 'moment';
 import React from 'react';
@@ -12,7 +12,6 @@ const TableList = (props: any) => {
 
   
 
-  const intl = useIntl();
 
   const columnDetailUser: ProColumns<any>[] = [
     {

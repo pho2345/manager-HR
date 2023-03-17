@@ -38,10 +38,10 @@ export default [
     name: 'Bò',
     icon: 'table',
     path: '/cows',
-    component: './TableListCow',
-    menuHeaderRender: false,
+    //component: './TableListCow',
+    //menuHeaderRender: false,
     routes: [
-      { path: '/cows/:id', hideInMenu: true, name: 'chi tiết', component: './TableListCow' }
+      { path: '/cows/list', icon: 'table', hideInMenu: false, name: 'Danh sách bò', component: './TableListCow' }
     ],
   },
   {
@@ -54,18 +54,42 @@ export default [
     ]
   },
 
+ 
+
   {
     name: 'Phiên mở bán',
     icon: 'table',
     path: '/fairs',
-    component: './TableListFair',
+    //component: './TableListFair',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/fairs/list', name: 'Danh đợt mở bán', component: './TableListFair' }
+    ],
   },
   {
-
     path: '/fairs/:id',
     component: './TableListFairDetail',
   },
 
+  {
+    path: '/fairs/add-mega-assign/:id',
+    component: './TableListAddMegaAndAssignCPass',
+  },
+
+  {
+    path: '/fairs/manager/:id',
+    component: './TableListManagerCPassPayment',
+  },
+
+  {
+    path: 'cpasses/history-slot/:id',
+    component: './TableListHistorySlot',
+  },
+
+  {
+    path: '/fairs/add-cpass/:id',
+    component: './TableListAddCPassInFair',
+  },
   {
     name: 'Slot',
     icon: 'table',
@@ -77,7 +101,11 @@ export default [
     name: 'Giao dịch',
     icon: 'table',
     path: '/transactions',
-    component: './TableListTransaction',
+    //component: './TableListTransaction',
+    routes: [
+      { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Transaction/TableListTransactionSettlement' },
+      { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Transaction/TableListTransaction' }
+    ],
   },
  
   {
@@ -85,6 +113,13 @@ export default [
     icon: 'table',
     path: '/categories',
     component: './TableListCategory',
+  },
+
+  {
+    name: 'Nhóm bò',
+    icon: 'table',
+    path: '/group',
+    component: './TableListGroupCow',
   },
   {
     name: 'E-Wallet', 

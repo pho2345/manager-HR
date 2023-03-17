@@ -28,7 +28,6 @@ import {
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Drawer, Form, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
 
 
 const handleAdd = async (fields: any) => {
@@ -58,17 +57,18 @@ const handleAdd = async (fields: any) => {
 };
 
 
-const handleUpdateMany = async (fields: any) => {
+const handleUpdateMany = async (fields: any, api: any) => {
+  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
-   
-    const updateTransaction = await  customAPIUpdateMany(
-      fields,
-        'transactions/done',
-      );
-  
+
+    const updateTransaction = await customAPIUpdateMany(
+      {...fields},
+      api,
+    );
+
     hide();
-    if(updateTransaction){
+    if (updateTransaction) {
       message.success('Cập nhật thành công');
 
     }
@@ -136,28 +136,26 @@ const TableList: React.FC = () => {
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
 
-  const confirm = (entity : any) => {
-    console.log(entity)
+  const confirm = (entity: any, message: string, api: string, types: any) => {
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
-      content: 'Bạn có muốn cập nhật?',
+      content: message,
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        if(entity.attributes.status === 'waitRefund'){
-
-        }
-       const data = await handleUpdateMany({
-        transaction: [entity.id],
-        types: entity.attributes.types
-       });
-        if (actionRef.current && data) {
+        console.log('oke');
+        await handleUpdateMany({
+          transaction: [...entity],
+          types: types
+        }, api);
+        if (actionRef.current) {
           actionRef.current.reload();
         }
-      } 
+      }
     });
   };
+
 
   useEffect(() => {
     const getValues = async () => {
@@ -180,11 +178,11 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
+              setCurrentRow(entity?.code);
               setShowDetail(true);
             }}
           >
-            {entity?.attributes?.code}
+            {entity?.code}
           </a>
         );
       },
@@ -197,17 +195,17 @@ const TableList: React.FC = () => {
           defaultMessage='Người giao dịch'
         />
       ),
-      dataIndex: 'atrributes',
+      dataIndex: 'sender',
       valueType: 'textarea',
-      key: 'firstWeight',
-      renderText: (_, text: any) => text?.attributes?.sender?.data?.attributes?.fullname ||  text?.attributes?.sender?.data?.attributes?.email  ,
+      key: 'sender',
+      renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.reveicer' defaultMessage='Người nhận' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'receiver',
-      renderText: (_, text: any) => text?.attributes?.receiver?.data?.attributes?.fullname ||  text?.attributes?.receiver?.data?.attributes?.username ,
+      renderText: (_, text: any) => text?.receiver?.fullname || text?.receiver?.username,
     },
 
     {
@@ -215,7 +213,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'ale',
-      renderText: (_, text: any) => text?.attributes?.ale
+      renderText: (_, text: any) => text?.ale
 
       ,
     },
@@ -227,16 +225,16 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
-      renderText: (_, text: any) => text?.attributes?.c_pass?.data?.attributes?.code,
+      renderText: (_, text: any) => text?.c_pass?.code,
     },
     {
       title: (
         <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
       ),
-      dataIndex: 'atrributes',
+      dataIndex: 'method',
       valueType: 'textarea',
       key: 'method',
-      renderText: (_, text: any) => text?.attributes?.method,
+      renderText: (_, text: any) => text?.method,
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại' />,
@@ -244,13 +242,26 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       render: (_, text: any) => {
-        switch (text?.attributes?.types) {
+        switch (text?.types) {
           case 'cpassPayment':
             return (<div style={{ color: 'green' }}>Giao dịch CPass</div>);
 
           case 'cpassSettlement':
             return (<div style={{ color: 'cyan' }}>Thanh quyết toán</div>);
 
+          case 'buyAle':
+            return (<div style={{ color: 'cyan' }}>Mua Ale</div>);
+          case 'sellAle':
+            return (<div style={{ color: 'cyan' }}>Bán Ale</div>);
+          case 'produceAleExchangeAle':
+            return (<div style={{ color: 'cyan' }}>produceAle sang Ale</div>);
+          case 'produceAleExchangePromo':
+            return (<div style={{ color: 'cyan' }}>produceAle sang promoAle</div>);
+
+          case 'megaDeltaWeightproduceAle':
+            return (<div style={{ color: 'cyan' }}>megaDeltaWeight sang produceAle</div>);
+          case 'qrCode':
+            return (<div style={{ color: 'cyan' }}>Quét QRcode</div>);
           case 'aleTransfer':
             return (<div style={{ color: 'red' }}>Chuyển khoản ale</div>);
 
@@ -274,12 +285,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'status',
       render: (_, text: any) => {
-        switch (text?.attributes?.status) {
+        switch (text?.status) {
           case 'waitConfirm':
-            return (<div style={{ color: 'cyan' }}>Chờ xác nhận...</div>);
+            return (<div style={{ color: 'cyan' }}>Chờ Mega xác nhận</div>);
 
           case 'inProgress':
-            return (<div style={{ color: 'blue' }}>Chờ xử lí...</div>);
+            return (<div style={{ color: 'blue' }}>Chờ xác nhận</div>);
 
           case 'done':
             return (<div style={{ color: 'green' }}>Hoàn thành</div>);
@@ -289,7 +300,7 @@ const TableList: React.FC = () => {
 
           case 'waitRefund':
             return (<div style={{ color: 'red' }}>Chờ xác nhận hoàn trả</div>);
-        
+
           default:
 
             break;
@@ -303,29 +314,22 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
-        if(entity?.attributes?.status === 'inProgress' ) {
+        if (entity?.status === 'inProgress') {
           return (
-            <Button onClick={() => confirm(entity as any)}>Xác nhận</Button>
+            <Button onClick={() => confirm([entity.id] , 'xác nhận', 'transactions/done', entity.types)}>Xác nhận</Button>
           );
         }
-        if(entity?.attributes?.status === 'waitRefund' ) {
+        if (entity?.status === 'waitRefund') {
           return (
-            <Button onClick={() => confirm(entity as any)}>Xác nhận hoàn trả</Button>
+           
+             <Button onClick={() => confirm([entity.id], 'xác nhận','transactions/done', entity.types )}>Xác nhận hoàn trả</Button>
           );
         }
         return null;
       },
     },
 
-    {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
+    
   ];
 
   return (
@@ -337,9 +341,7 @@ const TableList: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button
             type='primary'
@@ -353,8 +355,8 @@ const TableList: React.FC = () => {
         ]}
         request={() =>
           customAPIGet(
-            { 'populate[0]': 'sender', 'populate[1]': 'receiver', 'populate[2]': 'c_pass' },
-            'transactions',
+            {},
+            'transactions/findadmin',
           )
         }
         columns={columns}
@@ -535,7 +537,7 @@ const TableList: React.FC = () => {
         //title='Cập nhật'
         open={updateModalOpen}
         form={form}
-        
+
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
@@ -544,7 +546,7 @@ const TableList: React.FC = () => {
         }}
         submitTimeout={2000}
         onFinish={async (values) => {
-          
+
           //const success = await handleUpdate(values as any, refIdCow as any);
           // if (success) {
           //   handleUpdateModalOpen(false);
@@ -557,7 +559,7 @@ const TableList: React.FC = () => {
           return true;
         }}
       >
-       
+
       </ModalForm>
 
 

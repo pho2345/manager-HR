@@ -107,6 +107,28 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
   }
 }
 
+export async function customAPIPost(values?: { [key: string]: any }, collection?: string, body: any) {
+  const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+    },
+    params: {
+      ...values,
+    },
+    data: {
+      ...body
+    }
+  });
+ 
+  return {
+    data : fetchData.data ? fetchData.data : fetchData,
+    success: true,
+    total : fetchData?.meta?.pagination?.total
+  }
+}
+
 export async function customAPIAdd(values?: { [key: string]: any }, collection?: string) {
   
   return request<any>(SERVERURL+'/api/'+collection, {
@@ -121,7 +143,9 @@ export async function customAPIAdd(values?: { [key: string]: any }, collection?:
   });
 }
 
+
 export async function customAPIUpdate(values?: { [key: string]: any }, collection?: string, id?: any) {
+  console.log('api id', id);
   return request<any>(SERVERURL +'/api/'+collection + `/${id}`, {
     method: "PUT",
     headers: {
@@ -158,8 +182,22 @@ export async function customAPIGetOne(values?: any, collection?: string, params?
       ...params
     }
   });
-
 }
+
+export async function customAPIPostOne(values?: any, collection?: string, params?: { [key: string]: any }) {
+
+  return request<any>( SERVERURL +'/api/'+ collection +'/'+ values, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+    },
+    params: {
+      ...params
+    }
+  });
+}
+
 
 export async function customAPIUpload(values?: { [key: string]: any }) {
   console.log(values);
@@ -175,7 +213,7 @@ export async function customAPIUpload(values?: { [key: string]: any }) {
 }
 
 export async function customAPIUpdateMany(values?: any, collection?: string, id?: any) {
-  return request<any>(`${SERVERURL}/api/${collection}${id ?`/${id}` : null }`, {
+  return request<any>(`${SERVERURL}/api/${collection}${id ?`/${id}` : '' }`, {
     method: "PUT",
     headers: {
       'Content-Type': 'application/json',

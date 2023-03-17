@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -12,11 +12,11 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl } from '@umijs/max';
-import { Avatar, Button, Checkbox, Drawer, Form, message, Switch, Typography } from 'antd';
+import { Avatar, Button,  Drawer, Form,  message, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailUser from '../components/DetailUser';
-const {Text} = Typography;
+const { Text } = Typography;
 
 const handleAdd = async (fields: any) => {
   console.log(fields);
@@ -34,6 +34,36 @@ const handleAdd = async (fields: any) => {
   }
 };
 
+const cascaderOptions = [
+  {
+    field: 'front end',
+    value: 'fe',
+    language: [
+      {
+        field: 'Javascript',
+        value: 'js',
+      },
+      {
+        field: 'Typescript',
+        value: 'ts',
+      },
+    ],
+  },
+  {
+    field: 'back end',
+    value: 'be',
+    language: [
+      {
+        field: 'Java',
+        value: 'java',
+      },
+      {
+        field: 'Go',
+        value: 'go',
+      },
+    ],
+  },
+];
 
 const handleUpdate = async (fields: any, id: any) => {
 
@@ -118,14 +148,14 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br/>Ngày hết hạn hợp tác</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'fair',
       render: (_, text: any) => {
         return (<>
           {text?.fair?.code}
-          <br/> {moment(text?.fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')}
+          <br /> {moment(text?.fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')}
 
 
         </>)
@@ -152,27 +182,47 @@ const TableList: React.FC = () => {
             {entity?.code}
 
           </a>
-        //   <Link to={`/cows/` + entity.id}>
-        //   {entity?.code}
-        // </Link>
+          //   <Link to={`/cows/` + entity.id}>
+          //   {entity?.code}
+          // </Link>
         );
       },
+      // filterDropdown: () => (
+      //   <div style={{ padding: 8 }}>
+      //     <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} />
+      //   </div>
+      // ),
+      // filterIcon: (filtered) => (
+      //   <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      // ),
+      // onFilter: (value, record) => {
+      //   console.log(record);
+      //   console.log(value);
+      //   return true;
+      // },
+
+      // filterSearch: (input, record) => {
+      //   console.log(input);
+      //   return true
+      // }, 
+      
+      
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
-      Giống bò-Giới tính</>)} />,
+        Giống bò-Giới tính</>)} />,
       width: 200,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
       render: (_, text: any) => {
         let sex = 'Đực';
-        if(text?.cow?.sex === 'female'){
+        if (text?.cow?.sex === 'female') {
           sex = 'Cái';
         }
         return (<>
-        {text?.cow?.farm?.name}<br />
-        {`${text?.cow?.category?.name}-${sex}`}
+          {text?.cow?.farm?.name}<br />
+          {`${text?.cow?.category?.name}-${sex}`}
         </>)
       }
     },
@@ -215,7 +265,7 @@ const TableList: React.FC = () => {
         return age;
 
       }
-    },  
+    },
     {
       title: 'P0(kg)/Pnow@Snow (kg)',
       dataIndex: 'P0andPnow',
@@ -295,32 +345,32 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'users_permissions_user',
       render: (_, text: any) => {
-        if(text?.owner?.id){
+        if (text?.owner?.id) {
           return (<>
-          <a 
-          onClick={() => {
-            setCurrentRowUser(text.owner.id);
-            setShowDetailUser(true);
-          }}
-          >
-                {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner?.id}`}</a>
-            </>)
-        }else {
+            <a
+              onClick={() => {
+                setCurrentRowUser(text.owner.id);
+                setShowDetailUser(true);
+              }}
+            >
+              {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner?.id}`}</a>
+          </>)
+        } else {
           return null;
         }
-          
-        }
-       
-      
+
+      }
+
+
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)| MegaE(VNĐ)<br/>MegaCPR</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)| MegaE(VNĐ)<br />MegaCPR</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'plan',
       render: (_, text: any) => {
         return (<>
-          {`${text?.megaP ? text?.megaP : '-'} | ${text?.megaE}`} <br/> {`${text?.megaCPR}%`} 
+          {`${text?.megaP ? text?.megaP : '-'} | ${text?.megaE}`} <br /> {`${text?.megaCPR}%`}
         </>)
       }
     },
@@ -330,20 +380,24 @@ const TableList: React.FC = () => {
       dataIndex: 'plan',
       valueType: 'textarea',
       key: 'plan',
-      renderText: (_, text: any) => text?.plan ? `${text?.plan?.profit}` : null 
+      renderText: (_, text: any) => text?.plan ? `${text?.plan?.profit}` : null
     },
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaDelta<br/>ProduceAle<br/>History</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaDelta<br />ProduceAle<br />History</>)} />,
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
       render: (_, text: any) => {
         return (<>
-            {text?.megaDeltaWeight} <br/>
-            {text?.produceAle} <br/>
-            <Button>History</Button>
+          {text?.megaDeltaWeight} <br />
+          {text?.produceAle} <br />
+          <Button>
+            <Link to={`/cpasses/history-slot/` + text?.id}>
+              HISTORY
+            </Link>
+          </Button>
         </>)
       }
     },
@@ -354,10 +408,10 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'statusOwner',
       render: (_, text: any) => {
-        if(text?.statusTransaction === 'open'){
+        if (text?.statusTransaction === 'open') {
           return (<>
             Đang sở hữu
-        </>)
+          </>)
         }
         else {
           return null;
@@ -366,29 +420,51 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage={(<>Trạng thái giao dịch</>)} />,
+      title: (<>Trạng thái giao dịch</>) ,
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
       key: 'statusTransaction',
       render: (_, text: any) => {
-        if(text?.statusTransaction === 'registeringSettlement'){
-          if(text?.reasonSettlement === 'finished'){
+        if (text?.statusTransaction === 'registeringSettlement') {
+          if (text?.reasonSettlement === 'finished') {
             return (<>
-              Đăng kí quyết toán<br/> Hết hạn hợp tác
+              Đăng kí quyết toán<br /> Hết hạn hợp tác
             </>)
           }
 
-          if(text?.reasonSettlement === 'megaCanceled'){
+          if (text?.reasonSettlement === 'megaCanceled') {
             return (<>
-              Đăng kí quyết toán<br/> Mega chấm dứt trước hạn
+              Đăng kí quyết toán<br /> Mega chấm dứt trước hạn
             </>)
           }
-          
+
         }
         else {
           return null;
         }
       }
+    },
+
+    {
+      title: 'test',
+      key: 'cascaders',
+      dataIndex: 'cascaders',
+      width: 100,
+      fieldProps: {
+        options:  [
+          {
+            field: 'front end',
+            value: 'fe',
+            
+          },
+          {
+            field: 'back end',
+            value: 'be',
+           
+          },
+        ],
+      },
+      valueType: 'cascader',
     },
 
 
@@ -438,7 +514,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-      
+
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -458,7 +534,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
           </Button>,
         ]}
-        request={() => customAPIGet({  }, 'c-passes/get/find-admin')}
+        request={() => customAPIGet({}, 'c-passes/get/find-admin')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -567,7 +643,7 @@ const TableList: React.FC = () => {
           />
 
 
-        
+
           {/* <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
               {
                 required: true,
@@ -592,9 +668,9 @@ const TableList: React.FC = () => {
                 ),
               },
             ]}
-             />
+          />
 
-    <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+          <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
             rules={[
               {
                 required: true,
@@ -606,9 +682,9 @@ const TableList: React.FC = () => {
                 ),
               },
             ]}
-             /> 
+          />
 
-         <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" />
+          <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" />
 
           {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
             rules={[
@@ -625,7 +701,7 @@ const TableList: React.FC = () => {
 
 
 
-          <ProFormDigit  min={1} width="md" name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
+          <ProFormDigit min={1} width="md" name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
             {
               required: true,
               message: (

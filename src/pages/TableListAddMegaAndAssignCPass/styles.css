@@ -7,7 +7,7 @@
 .organColor{
     background-color: #FF9933;
 }
-.background-red{
+.redColor{
     background-color: #FF6666;
 }
 
@@ -24,12 +24,4 @@
 
 .worse{
     color: #F00003;
-    border-radius: none;
-}
-
-
-
-.background-red:hover{
-    background-color: white;
-    border-radius: none;
 }

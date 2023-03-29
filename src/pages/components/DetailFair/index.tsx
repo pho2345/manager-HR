@@ -60,7 +60,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'switchNotify',
       render: (_, text: any) => (<>
-         <Link to={`/fairs/` + props?.fairId}>
+         <Link to={`/web-c-pass/fairs/` + props?.fairId}>
              Danh sách cPass
            </Link>
       </>)

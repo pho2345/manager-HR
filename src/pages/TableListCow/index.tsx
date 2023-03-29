@@ -28,7 +28,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
-import { Avatar, Button, Drawer, Form, Input, message } from 'antd';
+import { Avatar, Button, Drawer, Form, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';

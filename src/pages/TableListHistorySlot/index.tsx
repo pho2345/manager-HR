@@ -11,10 +11,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import DetailCPass from '../components/DetailCPass';
 import DetailUser from '../components/DetailUser';
 
-const getCPass = async (id: number) => {
-  const fetchCPass = await customAPIGetOne(id, 'c-passes', {});
-  return fetchCPass?.data;
-}
+// const getCPass = async (id: number) => {
+//   const fetchCPass = await customAPIGetOne(id, 'c-passes', {});
+//   return fetchCPass?.data;
+// }
 
 
 
@@ -24,7 +24,7 @@ const getCPass = async (id: number) => {
 
 
 const TableList: React.FC = () => {
-  const [cPass, setCPass] = useState<any>();
+  //const [cPass, setCPass] = useState<any>();
   const actionRef = useRef<ActionType>();
   const params = useParams<any>();
   const [currentRow, setCurrentRow] = useState<any>();
@@ -33,20 +33,19 @@ const TableList: React.FC = () => {
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchDataCPass = async () => {
-      const getCPassData = await getCPass(params?.id);
-      setCPass(getCPassData)
-    }
-    fetchDataCPass();
-  }, []);
+  // useEffect(() => {
+  //   const fetchDataCPass = async () => {
+  //     const getCPassData = await getCPass(params?.id);
+  //     setCPass(getCPassData)
+  //   }
+  //   fetchDataCPass();
+  // }, []);
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.stt' defaultMessage='STT' />,
+      title: 'STT',
       dataIndex: 'index',
-      valueType: 'textarea',
-      key: 'index',
+      valueType: 'index',
     },
     {
       title: (
@@ -154,12 +153,12 @@ const TableList: React.FC = () => {
         headerTitle={(<>cPass:
           <a
             onClick={() => {
-              console.log('api');
-              setCurrentRow(cPass?.id);
-              setShowDetail(true);
+        
+             // setCurrentRow(cPass?.id);
+             // setShowDetail(true);
             }}
           >
-            {cPass?.attributes?.code}
+            {/* {cPass?.attributes?.code} */}
           </a>
 
 
@@ -169,7 +168,7 @@ const TableList: React.FC = () => {
         search={false}
 
         request={async () => {
-          const data = await customAPIGetOne(params?.id, 'history-c-pass/find-admin', {});
+          const data = await customAPIGetOne(params?.id, 'accumulation-c-passes/find-admin', {});
           return {
             data: data,
             success: true,

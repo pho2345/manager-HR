@@ -86,7 +86,6 @@ const TableList: React.FC = () => {
   const params = useParams<number>();
 
   const confirm = (entity: any, message: any, api: string, types: any) => {
-    console.log('types', types);
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
@@ -95,7 +94,7 @@ const TableList: React.FC = () => {
       cancelText: 'Không',
       onOk: async () => {
         await handleUpdate({
-          ...types
+          ...entity
         }, api, types);
         if (actionRef.current) {
           actionRef.current.reload();
@@ -223,7 +222,7 @@ const TableList: React.FC = () => {
       key: 'megaS',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.megaS} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'vnd'} /> | {text?.c_pass?.price} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
+          {text?.c_pass?.megaS} <Checkbox disabled checked={(text?.status === 'done' && text?.method === 'vnd') || text?.status === 'inProgress' } /> | {text?.c_pass?.price} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
         </>)
       }
     },
@@ -242,6 +241,9 @@ const TableList: React.FC = () => {
           case 'waitConfirm':
             status = `Chờ thanh toán bằng VNĐ`
             break;
+            case 'inProgress':
+              status = `Đã thanh toán bằng VNĐ, Chờ xác nhận`
+              break;
           case 'done':
             if (text?.method === 'vnd') {
               status = `Đã thanh toán bằng VNĐ`;
@@ -278,7 +280,9 @@ const TableList: React.FC = () => {
         if (entity?.status === 'waitConfirm' || entity?.status === 'inProgress' && entity?.method === 'vnd') {
           button.push(<>
             <Button disabled={entity?.c_pass?.price > entity?.aleWallet?.ale} onClick={() => {
-              confirm(entity.id, `Chắc chắn muốn thanh toán MegaS của cPass: ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
+              confirm({
+                transaction: [entity.id]
+              }, `Chắc chắn muốn thanh toán MegaS của cPass: ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
             }}>Pay</Button>
           </>)
 
@@ -337,27 +341,25 @@ const TableList: React.FC = () => {
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-              </span>
+              
             </div>
           }
         >
           <Button
             onClick={async () => {
-              await handleRemove(selectedRowsState);
+              let text = '';
+              const transaction = selectedRowsState.map((e: any, index: number)  => {
+                text += index === 0 ? e?.c_pass?.code : `, ${e?.c_pass?.code}` ;
+                return e?.id
+              })
+              confirm({
+                transaction: transaction
+              }, `Chắc chắn muốn thanh toán MegaS của cPass: ${text} bằng Ale không?`, 'transactions/payale', '');
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
+           Pay
           </Button>
           <Button type='primary'>
             <FormattedMessage
@@ -379,11 +381,10 @@ const TableList: React.FC = () => {
             handleModalOpen(false);
           },
         }}
-        width={300}
+        width={400}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
-          console.log('values', values);
           const refund = await handleUpdate({
             data: { types: values.method, transaction: [refTransaction.current] }
           }, 'transactions/refund', null);
@@ -394,7 +395,6 @@ const TableList: React.FC = () => {
               actionRef.current.reload();
             }
           }
-          //message.success('Success');
           return true;
         }}
       >

@@ -57,28 +57,86 @@ export default [
  
 
   {
-    name: 'Phiên mở bán',
+    name: 'Web-cPass',
     icon: 'table',
-    path: '/fairs',
+    path: '/web-c-pass',
     //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
-      { path: '/fairs/list', name: 'Danh đợt mở bán', component: './TableListFair' }
+      { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh đợt mở bán', component: './Web-cPass/TableListFair' },
     ],
   },
+
   {
-    path: '/fairs/:id',
-    component: './TableListFairDetail',
+    name: 'AgriGate',
+    icon: 'table',
+    path: '/agrigate',
+    //component: './TableListFair',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/agrigate/cows',hideInMenu: false,  name: 'Danh sách bò', component: './AgriGate/TableListCow' },
+      { path: '/agrigate/c-pass',hideInMenu: false,  name: 'Danh sách cPass', component: './AgriGate/TableListCPass' },
+      { path: '/agrigate/group-cow',hideInMenu: false,  name: 'Danh sách nhóm', component: './AgriGate/TableListGroupCow' },
+      { path: '/agrigate/category',hideInMenu: false,  name: 'Giống bò', component: './AgriGate/TableListCategory' },
+
+    ],
   },
 
   {
-    path: '/fairs/add-mega-assign/:id',
-    component: './TableListAddMegaAndAssignCPass',
+    name: 'Web-Aleger',
+    icon: 'table',
+    path: '/web-aleger',
+    //component: './TableListFair',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' }
+    ],
   },
 
   {
-    path: '/fairs/manager/:id',
-    component: './TableListManagerCPassPayment',
+    name: 'AgriOS',
+    icon: 'table',
+    path: '/agrios',
+    //component: './TableListFair',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/agrios/transfer',hideInMenu: false,  name: 'Transfer', component: './AgriOS/TableListTransfer' },
+      { path: '/agrios/buy-ale',hideInMenu: false,  name: 'Mua Ale từ PL', component: './AgriOS/TableListBuyAle' },
+      { path: '/agrios/sell-ale',hideInMenu: false,  name: 'Bán Ale cho PL', component: './AgriOS/TableListSellAle' },
+      { path: '/agrios/confirm',hideInMenu: false,  name: 'Xác nhận giao dịch mua/bán Ale', component: './AgriOS/TableListConfirmAleTransaction' },
+      { path: '/agrios/follow',hideInMenu: false,  name: 'Theo dõi giao dịch Ale', component: './AgriOS/TableListFollowTransactionAle' },
+    ],
+  },
+
+
+  {
+    path: '/web-aleger/mega/my-ale/:id',
+    component: './Web-Aleger/TableListMyAle',
+  },
+
+  {
+    path: '/web-aleger/mega/my-c-pass/:id',
+    component: './Web-Aleger/TableListMyCPassMega',
+  },
+
+  {
+    path: '/web-aleger/mega/slot-c-pass/:id',
+    component: './Web-Aleger/TableListHistoryOfMega',
+  },
+
+  {
+    path: '/web-c-pass/fairs/:id',
+    component: './Web-cPass/TableListFairDetail',
+  },
+
+  {
+    path: '/web-c-pass/fairs/add-mega-assign/:id',
+    component: './Web-cPass/TableListAddMegaAndAssignCPass',
+  },
+
+  {
+    path: '/web-c-pass/fairs/manager/:id',
+    component: './Web-cPass/TableListManagerCPassPayment',
   },
 
   {
@@ -87,7 +145,7 @@ export default [
   },
 
   {
-    path: '/fairs/add-cpass/:id',
+    path: '/web-c-pass/fairs/add-cpass/:id',
     component: './TableListAddCPassInFair',
   },
   {
@@ -103,8 +161,9 @@ export default [
     path: '/transactions',
     //component: './TableListTransaction',
     routes: [
-      { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Transaction/TableListTransactionSettlement' },
-      { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Transaction/TableListTransaction' }
+      { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
+      { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
+      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
     ],
   },
  

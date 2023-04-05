@@ -256,6 +256,7 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('mega')
     },
 
+
     {
       title: (
         <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />

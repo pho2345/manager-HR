@@ -326,6 +326,16 @@ const TableList: React.FC = () => {
                 select: ['id', 'code']
               },
               qr_ale: true
+            },
+            filters: {
+              c_pass: {
+                // /statusTransaction: 'open',
+                // colorStatusTransaction: {
+                //   id: {
+                //     $null: true
+                //   }
+                // }
+              }
             }
           });
 
@@ -439,11 +449,6 @@ const TableList: React.FC = () => {
         />
 
       </ModalForm>
-
-
-
-
-
       <Drawer
         width={600}
         open={showDetail}
@@ -472,3 +477,4 @@ const TableList: React.FC = () => {
 };
 
 export default TableList;
+

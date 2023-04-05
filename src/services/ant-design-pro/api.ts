@@ -107,7 +107,7 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
   }
 }
 
-export async function customAPIPost(values?: { [key: string]: any }, collection?: string, body: any) {
+export async function customAPIPost(values?: { [key: string]: any }, collection?: string, body?: any) {
   const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
     method: "POST",
     headers: {
@@ -145,7 +145,6 @@ export async function customAPIAdd(values?: { [key: string]: any }, collection?:
 
 
 export async function customAPIUpdate(values?: { [key: string]: any }, collection?: string, id?: any) {
-  console.log('api id', id);
   return request<any>(SERVERURL +'/api/'+collection + `/${id}`, {
     method: "PUT",
     headers: {

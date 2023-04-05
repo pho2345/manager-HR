@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -34,36 +34,7 @@ const handleAdd = async (fields: any) => {
   }
 };
 
-const cascaderOptions = [
-  {
-    field: 'front end',
-    value: 'fe',
-    language: [
-      {
-        field: 'Javascript',
-        value: 'js',
-      },
-      {
-        field: 'Typescript',
-        value: 'ts',
-      },
-    ],
-  },
-  {
-    field: 'back end',
-    value: 'be',
-    language: [
-      {
-        field: 'Java',
-        value: 'java',
-      },
-      {
-        field: 'Go',
-        value: 'go',
-      },
-    ],
-  },
-];
+
 
 const handleUpdate = async (fields: any, id: any) => {
 
@@ -390,11 +361,16 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'megaDeltaProduce',
       render: (_, text: any) => {
+        let id = text?.id;
+        if(text?.checkHistory){
+          id = text?.cPassId;
+        }
+        
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
           <Button>
-            <Link to={`/cpasses/history-slot/` + text?.id}>
+            <Link to={`/cpasses/history-slot/` + id}>
               HISTORY
             </Link>
           </Button>
@@ -411,6 +387,11 @@ const TableList: React.FC = () => {
         if (text?.statusTransaction === 'open') {
           return (<>
             Đang sở hữu
+          </>)
+        }
+        if(text?.statusTransaction === 'doneSettlement'){
+          return (<>
+            Đã thanh quyết toán
           </>)
         }
         else {
@@ -445,27 +426,7 @@ const TableList: React.FC = () => {
       }
     },
 
-    {
-      title: 'test',
-      key: 'cascaders',
-      dataIndex: 'cascaders',
-      width: 100,
-      fieldProps: {
-        options:  [
-          {
-            field: 'front end',
-            value: 'fe',
-            
-          },
-          {
-            field: 'back end',
-            value: 'be',
-           
-          },
-        ],
-      },
-      valueType: 'cascader',
-    },
+   
 
 
     // {
@@ -534,7 +495,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'c-passes/get/find-admin')}
+        request={() => customAPIGet({}, 'c-passes/get/c-pass-mega')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -743,10 +704,8 @@ const TableList: React.FC = () => {
             setCow(getCow);
             if (actionRef.current) {
               actionRef.current.reload();
-
             }
           }
-          //message.success('Success');
           return true;
         }}
       >
@@ -757,7 +716,6 @@ const TableList: React.FC = () => {
             label="Mã"
             placeholder="Mã"
           />
-
           <ProFormSelect
             width="md"
             options={cow}
@@ -765,8 +723,6 @@ const TableList: React.FC = () => {
             label="Bò"
             placeholder="Chọn bò"
           />
-
-
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
@@ -774,9 +730,7 @@ const TableList: React.FC = () => {
           <ProFormText width="sm" name="price" label="Giá" placeholder="Giá" />
           <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
         </ProForm.Group>
-
       </ModalForm>
-
 
 
       <Drawer

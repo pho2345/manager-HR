@@ -5,18 +5,17 @@ import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProFormText,
 
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
-import { Button, Drawer, Form, List, message, Modal } from 'antd';
+import { FormattedMessage, Link, useParams } from '@umijs/max';
+import { Button,  Form,  message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
-import DetailCPass from '../components/DetailCPass';
+//import DetailCPass from '../components/DetailCPass';
 import DetailFair from '../components/DetailFair';
 
 
@@ -161,7 +160,6 @@ const TableList: React.FC = () => {
     });
   };
 
-  const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {

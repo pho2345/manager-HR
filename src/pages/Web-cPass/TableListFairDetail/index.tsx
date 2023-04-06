@@ -1,13 +1,13 @@
-import {  customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined,  } from '@ant-design/icons';
+import { customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined, LogoutOutlined, RollbackOutlined } from '@ant-design/icons';
 import { ActionType, FooterToolbar, ProColumns } from '@ant-design/pro-components';
 import {
 
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage,  useParams } from '@umijs/max';
-import { Button, Checkbox, Input, message, Modal, Typography } from 'antd';
+import { FormattedMessage, useParams } from '@umijs/max';
+import { Button, Checkbox, Input, message, Modal, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
@@ -97,7 +97,7 @@ const TableListFairDetail: React.FC = () => {
 
       filterDropdown: () => (
         <div style={{ padding: 8 }}>
-          <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} 
+          <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }}
           />
         </div>
       ),
@@ -106,15 +106,15 @@ const TableListFairDetail: React.FC = () => {
           <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
         )
       },
-      filterSearch:(input, record) =>{
+      filterSearch: (input, record) => {
         console.log(input, record);
         // if (input === record?.code) {
         //   return record;
         // }
         return true;
       },
-       filters:true,
-    
+      filters: true,
+
       onFilter: (value: any, record: any) => {
         if (value === record.code) {
           return record;
@@ -166,7 +166,7 @@ const TableListFairDetail: React.FC = () => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-            return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -271,16 +271,39 @@ const TableListFairDetail: React.FC = () => {
       render: (_, entity: any) => {
 
         if (entity.check === 'order') {
-          return (<Button onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)}>Remove Mega </Button>);
+          return (  <Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
+            <RollbackOutlined 
+               style={{
+                fontSize: 20,
+                paddingLeft: 5,
+                color: 'red'
+              }}
+            onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)}/>
+            </Tooltip>);
         }
 
         if (entity.check === 'none') {
           return (<>
-           <Button onClick={() => {
-              setCurrentCPass(entity.id);
-              setShowModalMega(true)
-            }}>Assign Mega </Button>
-            <Button onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)}>Remove cPass </Button>
+            <Tooltip title={<FormattedMessage id='pages.searchTable.assign' defaultMessage='Chỉ định' />} >
+              <PlusOutlined
+                style={{
+                  fontSize: 20,
+                  paddingLeft: 5,
+                  color: 'blue'
+                }}
+                onClick={() => {
+                  setCurrentCPass(entity.id);
+                  setShowModalMega(true)
+                }} /></Tooltip>
+            <Tooltip title={<FormattedMessage id='pages.searchTable.remove' defaultMessage='Loại bỏ khỏi phiên' />} >
+              <LogoutOutlined
+               style={{
+                fontSize: 20,
+                paddingLeft: 5,
+                color: 'red'
+              }}
+              onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)} />
+            </Tooltip>
           </>);
         }
         return null;
@@ -297,6 +320,7 @@ const TableListFairDetail: React.FC = () => {
       <Text>{`Ngày mở bán: ${fair?.timeStart ? `${moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''} `}</Text>
       <Text>{`Ngày đóng bán: ${fair?.timeEnd ? `${moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
       <Text>{`Ngày bắt đầu nuôi: ${fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
+      <br/>
       <ProTable
         headerTitle={(<>Danh sách cPass</>)}
         actionRef={actionRef}
@@ -318,7 +342,7 @@ const TableListFairDetail: React.FC = () => {
           //   <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           // </Button>,
         ]}
-       
+
         // request={() => customAPIGet({}, 'banks')}
         request={async () => {
 
@@ -349,8 +373,8 @@ const TableListFairDetail: React.FC = () => {
             <div>
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length} hàng</a>{' '}
-            
-            
+
+
             </div>
           }
         >
@@ -399,8 +423,8 @@ const TableListFairDetail: React.FC = () => {
       )
       }
 
-      
-{
+
+      {
         currentCPass && (<>
           <TableListAssignCPass
             openModal={showModalMega}

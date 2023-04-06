@@ -127,6 +127,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
+        return text?.aleWallet.ale
 
       }
     },

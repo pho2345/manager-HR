@@ -16,7 +16,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: false,
   pwa: false,
-  logo: 'https://aleger-server.process.vn/uploads/logo_orange_5c7f875e2d.png',
+  logo: 'https://aleger-server.process.vn/uploads/logo_orange_7adf2fae80.png',
   iconfontUrl: '',
 };
 

@@ -11,12 +11,12 @@ export default [
       },
     ],
   },
-  {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
-    component: './Welcome',
-  },
+  // {
+  //   path: '/welcome',
+  //   name: 'welcome',
+  //   icon: 'smile',
+  //   component: './Welcome',
+  // },
   {
     path: '/admin',
     name: 'admin',
@@ -34,25 +34,17 @@ export default [
       },
     ],
   },
-  {
-    name: 'Bò',
-    icon: 'table',
-    path: '/cows',
-    //component: './TableListCow',
-    //menuHeaderRender: false,
-    routes: [
-      { path: '/cows/list', icon: 'table', hideInMenu: false, name: 'Danh sách bò', component: './TableListCow' }
-    ],
-  },
-  {
-    name: 'CPass',
-    icon: 'table',
-    path: '/cpasses',
-    component: './TableListCPass',
-    routes: [
-
-    ]
-  },
+  // {
+  //   name: 'Bò',
+  //   icon: 'table',
+  //   path: '/cows',
+  //   //component: './TableListCow',
+  //   //menuHeaderRender: false,
+  //   routes: [
+  //     { path: '/cows/list', icon: 'table', hideInMenu: false, name: 'Danh sách bò', component: './TableListCow' }
+  //   ],
+  // },
+  
 
  
 
@@ -89,7 +81,9 @@ export default [
     //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
-      { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' }
+      { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
+      { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
+      { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' }
     ],
   },
 
@@ -163,53 +157,53 @@ export default [
     routes: [
       { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
       { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
-      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
+      //{ path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
     ],
   },
  
-  {
-    name: 'Giống bò',
-    icon: 'table',
-    path: '/categories',
-    component: './TableListCategory',
-  },
+  // {
+  //   name: 'Giống bò',
+  //   icon: 'table',
+  //   path: '/categories',
+  //   component: './TableListCategory',
+  // },
 
-  {
-    name: 'Nhóm bò',
-    icon: 'table',
-    path: '/group',
-    component: './TableListGroupCow',
-  },
-  {
-    name: 'E-Wallet', 
-    icon: 'table',
-    path: '/ewallets',
-    component: './TableListEWallet',
-  },
-  {
-    name: 'Nông trại',
-    icon: 'table',
-    path: '/farms',
-    component: './TableListFarm',
-  },
-  {
-    name: 'Phương án hợp tác',
-    icon: 'table',
-    path: '/plans',
-    component: './TableListPlan',
-  },
+  // {
+  //   name: 'Nhóm bò',
+  //   icon: 'table',
+  //   path: '/group',
+  //   component: './TableListGroupCow',
+  // },
+  // {
+  //   name: 'E-Wallet', 
+  //   icon: 'table',
+  //   path: '/ewallets',
+  //   component: './TableListEWallet',
+  // },
+  // {
+  //   name: 'Nông trại',
+  //   icon: 'table',
+  //   path: '/farms',
+  //   component: './TableListFarm',
+  // },
+  // {
+  //   name: 'Phương án hợp tác',
+  //   icon: 'table',
+  //   path: '/plans',
+  //   component: './TableListPlan',
+  // },
  
  
-  {
-    name: 'Địa chỉ',
-    icon: 'table',
-    path: '/address',
-    component: './TableListAddress',
-  },
+  // {
+  //   name: 'Địa chỉ',
+  //   icon: 'table',
+  //   path: '/address',
+  //   component: './TableListAddress',
+  // },
  
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/web-c-pass/fairs',
   },
   {
     path: '*',

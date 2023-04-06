@@ -6,7 +6,7 @@ import {
   customAPIUpload,
   customAPIGetOne,
 } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -39,7 +39,7 @@ const handleAdd = async (fields: any) => {
   try {
     hide();
     const cow = await customAPIAdd({ ...fields }, 'cows');
-    if(fields?.upload && cow){
+    if (fields?.upload && cow) {
       const uploadImages = fields?.upload.map((e: any) => {
         let formdata = new FormData();
         formdata.append('files', e?.originFileObj);
@@ -52,13 +52,13 @@ const handleAdd = async (fields: any) => {
       });
       await Promise.all(uploadImages);
     }
-    
+
     message.success('Thêm thành công');
     return true;
-  } catch (error : any) {
+  } catch (error: any) {
     //hide();
     console.log(error);
-   // message.error('poi')
+    // message.error('poi')
     message.error(error?.response?.data?.error?.message);
     return false;
   }
@@ -143,8 +143,8 @@ const getFarm = async () => {
   return data;
 };
 
-const getGroupFarm = async ( id:number ) => {
-  const fetchDataGroupFarm = await customAPIGetOne( id, 'group-cows/get/find-of-farm', {});
+const getGroupFarm = async (id: number) => {
+  const fetchDataGroupFarm = await customAPIGetOne(id, 'group-cows/get/find-of-farm', {});
   const configGroupFarm = fetchDataGroupFarm?.map((e: any) => {
     return {
       label: e?.name,
@@ -181,7 +181,7 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
-  
+
 
   const intl = useIntl();
 
@@ -205,7 +205,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.name,
-      
+
     },
     {
       title: (
@@ -303,7 +303,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCow.current = entity.id;
-              const cow = await customAPIGetOne(entity.id, 'cows/find', {  });
+              const cow = await customAPIGetOne(entity.id, 'cows/find', {});
               const photos = cow.photos;
               if (photos) {
                 const photoCow = photos.map((e: any) => {
@@ -317,7 +317,7 @@ const TableList: React.FC = () => {
                   upload: photoCow,
                   group_cow: {
                     label: cow?.group_cow?.name,
-                    value:  cow?.group_cow?.id
+                    value: cow?.group_cow?.id
                   }
 
                 })
@@ -363,23 +363,42 @@ const TableList: React.FC = () => {
           })}
           actionRef={actionRef}
           rowKey='id'
-          search={{
-            labelWidth: 120,
+          search={false}
+          toolBarRender={() => {
+            return [
+              <Button
+                type='primary'
+                key='primary'
+                onClick={() => {
+                  handleModalOpen(true);
+                }}
+              >
+
+                <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+              </Button>,
+              
+              // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+            
+
+            ]
           }}
-          toolBarRender={() => [
-            <Button
-              type='primary'
-              key='primary'
-              onClick={() => {
-                handleModalOpen(true);
-              }}
-            >
-              <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
-            </Button>,
-          ]}
+         
+          toolbar= {{
+            settings:[{
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined></ReloadOutlined>,
+              onClick:() => {
+                if (actionRef.current){
+                  console.log(actionRef);
+                }
+              }
+            }]
+          }}
+
           request={() =>
             customAPIGet(
-              { },
+              {},
               'cows/find',
             )
           }
@@ -440,11 +459,12 @@ const TableList: React.FC = () => {
               setGroupCow([]);
             },
           }}
+          width={`76vh`}
           submitTimeout={2000}
           onFinish={async (values) => {
             //await waitTime(2000);
             console.log('groupcow', values.group_cow);
-           const success = await handleAdd(values as any);
+            const success = await handleAdd(values as any);
             if (success) {
               handleModalOpen(false);
               form.resetFields();
@@ -466,10 +486,9 @@ const TableList: React.FC = () => {
               label='Cân nặng P0'
               placeholder='Cân nặng P0'
             />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='xs' name='category' label='Giống bò' />
-            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại'  name='farm' label='Trang trại' 
+         
+            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
+            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại'
               fieldProps={{
                 onChange: async (value) => {
                   const groupCow = await getGroupFarm(value);
@@ -478,14 +497,13 @@ const TableList: React.FC = () => {
                 }
               }}
             />
-            <ProFormSelect width='xs' options={ groupCow?.length ? groupCow : null} disabled={ groupCow?.length !== 0 ? false : true} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'/>
+            <ProFormSelect width='md' options={groupCow?.length ? groupCow : null} disabled={groupCow?.length !== 0 ? false : true} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò' />
 
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormDatePicker name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
-            <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
+          
+            <ProFormDatePicker  width='md' name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
+            <ProFormText width='md' name='age' label='Tuổi' placeholder='Tuổi' />
             <ProFormSelect
-              width='xs'
+              width='md'
               name='sex'
 
               label='Giới tính'
@@ -502,7 +520,7 @@ const TableList: React.FC = () => {
               placeholder='Chọn giới tính'
               rules={[{ required: true, message: 'Chọn giới tính!' }]}
             />
-            
+
           </ProForm.Group>
 
           <ProFormUploadButton
@@ -518,7 +536,7 @@ const TableList: React.FC = () => {
           //ction={() => customAPIUpload({})}
           />
 
-          <ProFormTextArea width='xl' label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
+          <ProFormTextArea label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
         </ModalForm>
 
         <ModalForm
@@ -531,25 +549,25 @@ const TableList: React.FC = () => {
             onCancel: () => {
               handleUpdateModalOpen(false);
               refIdPicture.current = null;
-              
+
             },
           }}
+          width={`76vh`}
           submitTimeout={2000}
           onFinish={async (values) => {
-            console.log('values update', values);
-          const success = await handleUpdate(values as any, refIdCow as any);
+            const success = await handleUpdate(values as any, refIdCow as any);
 
 
             if (success) {
-              if(typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0){
-                 if(refIdPicture.current !== null){
-                  const  deletePicture = refIdPicture?.current.map((e: any) => {
+              if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
+                if (refIdPicture.current !== null) {
+                  const deletePicture = refIdPicture?.current.map((e: any) => {
                     return customAPIDelete(e as any, 'upload/files');
                   })
                   await Promise.all(deletePicture);
-                 }
+                }
               }
-             
+
               handleUpdateModalOpen(false);
               form.resetFields();
               if (actionRef.current) {
@@ -564,8 +582,7 @@ const TableList: React.FC = () => {
             <ProFormText width='md' name='code' label='Mã' required placeholder='Mã' disabled />
 
             <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' />
-          </ProForm.Group>
-          <ProForm.Group>
+         
             <ProFormText
               width='md'
               name='firstWeight'
@@ -574,10 +591,9 @@ const TableList: React.FC = () => {
               disabled
             />
 
-          </ProForm.Group>
-          <ProForm.Group>
+          
             <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
-            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại'  name='farm' label='Trang trại' 
+            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại'
               fieldProps={{
                 onChange: async (value) => {
                   const groupCow = await getGroupFarm(value);
@@ -586,15 +602,14 @@ const TableList: React.FC = () => {
                 }
               }}
             />
-            <ProFormSelect width='xs' options={groupCow?.length !== 0 ? groupCow : null}  required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'/>
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormDatePicker name='birthdate' label='Ngày sinh' />
-            <ProFormText width='xs' name='age' label='Tuổi' placeholder='Tuổi' />
+            <ProFormSelect width='md' options={groupCow?.length !== 0 ? groupCow : null} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò' />
+         
+            <ProFormDatePicker width='md' name='birthdate' label='Ngày sinh' />
+            <ProFormText width='md' name='age' label='Tuổi' placeholder='Tuổi' />
             <ProFormSelect
               required
-              
-              width='xs'
+
+              width='md'
               name='sex'
               label='Giới tính'
               options={[
@@ -607,10 +622,10 @@ const TableList: React.FC = () => {
                   value: 'female',
                 },
               ]}
-             
+
             />
             <ProFormSelect
-              width='xl'
+              width='md'
               name='status'
               label='Trạng thái'
               options={[
@@ -666,8 +681,8 @@ const TableList: React.FC = () => {
               name: 'file',
               listType: 'picture-card',
               onRemove(file) {
-                if (!file.lastModified) { 
-                  if(refIdPicture.current){
+                if (!file.lastModified) {
+                  if (refIdPicture.current) {
                     refIdPicture.current = [...refIdPicture.current, file.uid];
                   }
                   else {
@@ -678,7 +693,7 @@ const TableList: React.FC = () => {
             }}
           //action={() => customAPIUpload({})}
           />
-          <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
+          <ProFormTextArea label='Mô tả chi tiết' name='description' />
         </ModalForm>
 
 
@@ -717,7 +732,7 @@ const TableList: React.FC = () => {
           size='middle'
           request={async () => {
             let cowDetail = await customAPIGetOne(params?.id, 'cows', { 'populate[0]': 'photos', 'populate[1]': 'farm', 'populate[2]': 'category', });
-            
+
 
             const photo = cowDetail?.data.attributes.photos?.data?.map((e: any) => {
               return e.attributes.url;
@@ -744,10 +759,10 @@ const TableList: React.FC = () => {
               title: () => {
                 return <div style={{ color: 'red', fontSize: '20px' }}> Mã</div>
               },
-              
+
               key: 'code',
               dataIndex: 'code',
-              render: (_, record)=> {
+              render: (_, record) => {
                 return <div style={{ color: 'red', fontSize: '20px' }}> {record.code}</div>
               }
             },

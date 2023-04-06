@@ -2,7 +2,7 @@ import DetailUser from '@/pages/components/DetailUser';
 import {
   customAPIGet, customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import {
   ActionType,
   FooterToolbar,
@@ -56,8 +56,8 @@ const TableList: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
 
   const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
-   const [searchText, setSearchText] = useState('');
-   const [searchedColumn, setSearchedColumn] = useState('');
+   //const [searchText, setSearchText] = useState('');
+   //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
 
@@ -65,17 +65,16 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-   
-    
-    
+    //setSearchText(selectedKeys[0]);
+   // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-  
+    //setSearchText('');
   };
-
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters } : any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
         style={{
           padding: 8,
@@ -84,7 +83,7 @@ const TableList: React.FC = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+         // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -103,7 +102,7 @@ const TableList: React.FC = () => {
               width: 90,
             }}
           >
-            Search
+            Tìm kiếm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -112,7 +111,7 @@ const TableList: React.FC = () => {
               width: 90,
             }}
           >
-            Reset
+            Làm mới
           </Button>
           <Button
             type="link"
@@ -121,11 +120,20 @@ const TableList: React.FC = () => {
               confirm({
                 closeDropdown: false,
               });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+              //setSearchText(selectedKeys[0]);
+              //setSearchedColumn(dataIndex);
             }}
           >
-            Filter
+            Lọc
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            đóng
           </Button>
         </Space>
       </div>
@@ -138,33 +146,28 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(dataIndex);
-
-      if (record[dataIndex]) {
+      console.log(record);
+      if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(dataIndex === 'mega'){
-        if(record['userId'].toString() === (value.toLowerCase())){
-          return record['userId']?.toString().toLowerCase().includes(value.toLowerCase());
-        }
-        if(record['email']?.toString().includes(value.toLowerCase())){
-          return record['email'].toString().toLowerCase().includes(value.toLowerCase());
-        }
-
-        if(record['passport']?.toString() === (value.toLowerCase())){
-          return record['passport']?.toString().toLowerCase().includes(value.toLowerCase());
-        }
-
-        if(record['phone']?.toString().includes(value.toLowerCase())){
-          return record['phone'].toString().toLowerCase().includes(value.toLowerCase());
-        }
+      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
+
+      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['email'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
       return null;
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-       // setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -359,7 +362,7 @@ const TableList: React.FC = () => {
             (<>
              <SettingOutlined 
               style={{
-                fontSize: 30
+                fontSize: 20
               }}
               onClick={() => {
                 setShowModal(true);
@@ -485,6 +488,19 @@ const TableList: React.FC = () => {
             disabled: record?.status === 'inProgress' ? false : true, // Column configuration not to be checked
           }),
         }}
+
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       
       {selectedRowsState?.length > 0 && (
@@ -522,7 +538,6 @@ const TableList: React.FC = () => {
           },
         }}
         onFinish={async (values) => {
-          console.log(values);
           if(values?.status === 1 || !values?.status){
             confirm({
               transaction: selectedRows

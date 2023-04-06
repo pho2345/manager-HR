@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -13,7 +13,7 @@ import { BsGraphUpArrow } from "react-icons/bs";
 import { MdOutlineEdit } from "react-icons/md";
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Avatar, Button, Form, message, Typography } from 'antd';
+import { Avatar, Button, Form, message, Tooltip, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
@@ -39,8 +39,8 @@ const handleAdd = async (fields: any) => {
 
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields, id);
-   const hide = message.loading('Đang cập nhật...');
-   try {
+  const hide = message.loading('Đang cập nhật...');
+  try {
     let uploadImages = fields?.upload.map((e: any) => {
       if (e.originFileObj) {
         let formdata = new FormData();
@@ -54,12 +54,12 @@ const handleUpdate = async (fields: any, id: any) => {
       }
       return null;
     });
-    let {category, farm, group_cow, cow, birthdate, ...other} = fields;
-    
-    let fieldCow  = {
+    let { category, farm, group_cow, cow, birthdate, ...other } = fields;
+
+    let fieldCow = {
       category: category?.value || category,
-      farm:  farm?.value || farm,
-      group_cow:  group_cow?.value || group_cow,
+      farm: farm?.value || farm,
+      group_cow: group_cow?.value || group_cow,
       birthdate: birthdate
     }
     const updateCow = customAPIUpdate(
@@ -71,7 +71,7 @@ const handleUpdate = async (fields: any, id: any) => {
     );
 
 
-   const updateCPass = customAPIUpdate(
+    const updateCPass = customAPIUpdate(
       {
         ...other
       },
@@ -80,11 +80,11 @@ const handleUpdate = async (fields: any, id: any) => {
     );
     uploadImages.push(updateCow);
     uploadImages.push(updateCPass)
-    
+
     await Promise.all(uploadImages);
     hide();
 
-  //   message.success('Cập nhật thành công');
+    //   message.success('Cập nhật thành công');
     return true;
   } catch (error: any) {
     hide();
@@ -151,8 +151,8 @@ const getFarm = async () => {
   return data;
 };
 
-const getGroupFarm = async ( id:number ) => {
-  const fetchDataGroupFarm = await customAPIGetOne( id, 'group-cows/get/find-of-farm', {});
+const getGroupFarm = async (id: number) => {
+  const fetchDataGroupFarm = await customAPIGetOne(id, 'group-cows/get/find-of-farm', {});
   const configGroupFarm = fetchDataGroupFarm?.map((e: any) => {
     return {
       label: e?.name,
@@ -210,7 +210,7 @@ const TableList: React.FC = () => {
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
-        
+
         return (
           <a
             onClick={() => {
@@ -222,7 +222,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-    
+
 
 
     },
@@ -330,7 +330,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-            return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -380,29 +380,28 @@ const TableList: React.FC = () => {
       key: 'graph',
       render: (_, text: any) => {
         return (<>
-          <BsGraphUpArrow
+          <Tooltip title={<FormattedMessage id='pages.columns.graph' defaultMessage='Biểu đồ' />}><BsGraphUpArrow
             onClick={() => {
-              alert('oke')
+              alert(text?.awgAv);
             }}
-          />
+          /></Tooltip>
         </>)
       }
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
+      title: <FormattedMessage id='pages.searchTable.column.option' defaultMessage='Thao tác' />,
       dataIndex: 'graph',
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
         return (<>
-          <MdOutlineEdit
+          <Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Cập nhật' />}><MdOutlineEdit
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCpass.current = text.id;
               const cPass = await customAPIGetOne(text.id, 'c-passes/get/find-admin', {});
               //const cowNotCpass = await getCownotInCpass();
-              
               // const cowForm = [
               //   ...cowNotCpass,
               //   {
@@ -437,7 +436,7 @@ const TableList: React.FC = () => {
                 birthdate: cPass?.birthdate,
                 dateInStable: cPass?.dateInStable,
                 weightInStable: cPass?.weightInStable,
-                bodyCondition:  cPass?.bodyCondition,
+                bodyCondition: cPass?.bodyCondition,
                 code: cPass?.code,
                 pZero: cPass?.pZero,
                 price: cPass?.price,
@@ -446,58 +445,17 @@ const TableList: React.FC = () => {
                 upload: photoCow
               })
             }}
-          />
+          /></Tooltip>
         </>)
       }
     },
 
-    // {
-    //   title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'option',
-    //   render: (_, entity: any) => {
-    //     return (<Button
-    //       type='primary'
-    //       key='primary'
-    //       onClick={async () => {
-    //         handleUpdateModalOpen(true);
-    //         refIdCpass.current = entity.id;
-    //         const cPass = await customAPIGetOne(entity.id, 'c-passes/get/find-admin', { });
-    //         //const cowNotCpass = await getCownotInCpass();
-    //         console.log(cPass);
-    //         // const cowForm = [
-    //         //   ...cowNotCpass,
-    //         //   {
-    //         //     value: cPass?.data?.attributes?.cow?.data?.id,
-    //         //     label: cPass?.data?.attributes?.cow?.data?.attributes?.name,
-    //         //   }
-    //         // ]
-
-    //         form.setFieldsValue({
-    //           cow: {
-    //             value: cPass?.cow?.id,
-    //             label: cPass?.cow?.name,
-    //           },
-    //           code: cPass?.code,
-    //           pZero: cPass?.pZero,
-    //           price: cPass?.price,
-    //           nowWeight: cPass?.nowWeight,
-    //           activeAleTransfer: cPass?.activeAleTransfer
-    //         })
-    //       }}
-    //     >
-    //       <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-    //     </Button>)
-    //   }
-    // },
-
+  
   ];
 
   return (
     <PageContainer>
       <ProTable
-
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -524,7 +482,30 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
-
+        toolbar={{
+          settings: [
+            {
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            },
+            // {
+            //   key: 'desity',
+            //   tooltip: 'Tải lại',
+            //   icon: <ReloadOutlined />,
+            //   onClick: () => {
+            //     if (actionRef.current) {
+            //       actionRef.current.reload();
+            //     }
+            //   }
+            // }
+          ]
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -560,6 +541,7 @@ const TableList: React.FC = () => {
         title="Tạo mới"
         open={createModalOpen}
         form={form}
+        width={`76vh`}
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -570,7 +552,6 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
-          console.log(values);
           const success = await handleAdd(values as any);
           if (success) {
             handleModalOpen(false);
@@ -666,7 +647,7 @@ const TableList: React.FC = () => {
             ]}
           />
 
-          <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" />
+          <ProFormDatePicker width="md" name="dateInStable" label="Ngày nhập chuồng" />
 
           {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
             rules={[
@@ -713,25 +694,26 @@ const TableList: React.FC = () => {
             handleUpdateModalOpen(false)
           },
         }}
+        width={`76vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
-         const success = await handleUpdate(values as any, refIdCpass);
+          const success = await handleUpdate(values as any, refIdCpass);
           if (success) {
-            if(typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0){
-              if(refIdPicture.current !== null){
-               const  deletePicture = refIdPicture?.current.map((e: any) => {
-                 return customAPIDelete(e as any, 'upload/files');
-               })
-               await Promise.all(deletePicture);
+            if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
+              if (refIdPicture.current !== null) {
+                const deletePicture = refIdPicture?.current.map((e: any) => {
+                  return customAPIDelete(e as any, 'upload/files');
+                })
+                await Promise.all(deletePicture);
               }
-           }
-           handleUpdateModalOpen(false);
-           form.resetFields();
-           if (actionRef.current) {
-             actionRef.current.reload();
-             refIdPicture.current = null;
-           }
+            }
+            handleUpdateModalOpen(false);
+            form.resetFields();
+            if (actionRef.current) {
+              actionRef.current.reload();
+              refIdPicture.current = null;
+            }
           }
           return true;
         }}
@@ -746,17 +728,17 @@ const TableList: React.FC = () => {
           />
           <ProFormSelect
             width='md'
-            options={farm} 
+            options={farm}
             //required 
             placeholder='Chọn trang trại'
             name='farm' label='Trang trại'
-          fieldProps={{
-            onChange: async (value) => {
-              const groupCow = await getGroupFarm(value);
-              setGroupCow(groupCow);
-              form.setFieldValue('group_cow', null);
-            }
-          }}
+            fieldProps={{
+              onChange: async (value) => {
+                const groupCow = await getGroupFarm(value);
+                setGroupCow(groupCow);
+                form.setFieldValue('group_cow', null);
+              }
+            }}
           />
 
           <ProFormSelect
@@ -768,7 +750,7 @@ const TableList: React.FC = () => {
 
 
           <ProFormSelect
-            options={category} 
+            options={category}
             width='md'
             name='category'
             placeholder='Chọn giống bò'
@@ -793,8 +775,8 @@ const TableList: React.FC = () => {
 
           />
 
-          <ProFormDatePicker name='birthdate' label='Ngày sinh' width='md'/>
-          <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng"  width='md' />
+          <ProFormDatePicker name='birthdate' label='Ngày sinh' width='md' />
+          <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" width='md' />
           <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
             rules={[
               {
@@ -810,7 +792,7 @@ const TableList: React.FC = () => {
           />
 
           <ProFormSelect
-             width='md'
+            width='md'
             //options={groupCow?.length !== 0 ? groupCow : null}
             options={[
               {
@@ -860,16 +842,16 @@ const TableList: React.FC = () => {
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
-                  onRemove(file) {
-                    if (!file.lastModified) { 
-                      if(refIdPicture.current){
-                        refIdPicture.current = [...refIdPicture.current, file.uid];
-                      }
-                      else {
-                        refIdPicture.current = [file.uid];
-                      }
-                    }
+              onRemove(file) {
+                if (!file.lastModified) {
+                  if (refIdPicture.current) {
+                    refIdPicture.current = [...refIdPicture.current, file.uid];
                   }
+                  else {
+                    refIdPicture.current = [file.uid];
+                  }
+                }
+              }
             }}
           //action={() => customAPIUpload({})}
           />
@@ -877,10 +859,10 @@ const TableList: React.FC = () => {
       </ModalForm>
 
 
-     {currentRow &&  <DetailCPass
+      {currentRow && <DetailCPass
         openModal={showDetail}
-        cPassId= {currentRow}
-        closeModal = {() => {
+        cPassId={currentRow}
+        closeModal={() => {
           setShowDetail(false);
           setCurrentRow(undefined);
         }}

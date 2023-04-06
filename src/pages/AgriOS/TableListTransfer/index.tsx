@@ -6,12 +6,12 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input, Form } from 'antd';
+import { Button, message, Modal, Space, Input, Form, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 import DialogTransfer from '../components/DialogTransfer';
 
-const { Text, } = Typography;
+//const { Text, } = Typography;
 
 
 
@@ -44,7 +44,7 @@ const handleAdd = async (fields: any, api: string) => {
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
+  ////const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -54,23 +54,21 @@ const TableListAssignCPass = () => {
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
 
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
+    // setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
     console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchText('');
+   // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
         style={{
           padding: 8,
@@ -79,10 +77,10 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+         // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -91,14 +89,14 @@ const TableListAssignCPass = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Search
+            Tìm kiếm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -107,7 +105,7 @@ const TableListAssignCPass = () => {
               width: 90,
             }}
           >
-            Reset
+            Làm mới
           </Button>
           <Button
             type="link"
@@ -116,11 +114,11 @@ const TableListAssignCPass = () => {
               confirm({
                 closeDropdown: false,
               });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+              //setSearchText(selectedKeys[0]);
+              //setSearchedColumn(dataIndex);
             }}
           >
-            Filter
+            Lọc
           </Button>
           <Button
             type="link"
@@ -129,7 +127,7 @@ const TableListAssignCPass = () => {
               close();
             }}
           >
-            close
+            đóng
           </Button>
         </Space>
       </div>
@@ -142,16 +140,27 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      if (record[dataIndex]) {
-        console.log('vao day');
+      if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
+      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['email'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
       return null;
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -256,7 +265,7 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-            <TranslationOutlined
+            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi'/>}> <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -266,11 +275,11 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(text);
 
               }}
-            />
+            /></Tooltip>
 
           </>,
           <>
-            <TransactionOutlined
+           <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transferProduceAle' defaultMessage='Chuyển đổi ProduceAle'/>}> <TransactionOutlined
               style={{
                 fontSize: 30,
                 paddingLeft: 5,
@@ -281,7 +290,7 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(text);
               }}
 
-            />
+            /></Tooltip>
           </>
         ]
       }
@@ -307,21 +316,21 @@ const TableListAssignCPass = () => {
           return data;
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            console.log(selectedRows);
-            if (selectedRows.length > 1) {
-              // message.er('Chỉ được chọn 1 Mega!');
-            }
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
+        //     console.log(selectedRows);
+        //     if (selectedRows.length > 1) {
+        //       // message.er('Chỉ được chọn 1 Mega!');
+        //     }
 
-            setSelectedRowsMega(selectedRows);
+        //     //setSelectedRowsMega(selectedRows);
 
-          },
-          // getCheckboxProps: (record: any) => ({
-          //   disabled: false, // Column configuration not to be checked
-          //  //name: record.name,
-          // }),
-        }}
+        //   },
+        //   // getCheckboxProps: (record: any) => ({
+        //   //   disabled: false, // Column configuration not to be checked
+        //   //  //name: record.name,
+        //   // }),
+        // }}
       />
 
       {
@@ -356,18 +365,25 @@ const TableListAssignCPass = () => {
             confirm({
               senderId: currentRowUser?.id,
               produceAle: convertAle
-            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang  ${convertAle + convertAle * rateConvert?.ratePromo}  Ale không?`, 'transactions/transfer-promo-admin', '');
+            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang  ${convertAle + convertAle * rateConvert?.ratePromo}  Ale không?`, 'transactions/transfer-promo-admin');
           }
           else {
             /// transfer produceAle to PromoAle
             confirm({
               senderId: currentRowUser?.id,
               produceAle: convertAle
-            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin', '');
+            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
           }
           form.resetFields();
          
           return true
+        }}
+
+        submitter={{
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+          },
         }}
       >
         <ProFormSelect width='md' options={[

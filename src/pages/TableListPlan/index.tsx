@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProFormDigit } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -11,9 +11,10 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message } from 'antd';
+import { Button, Drawer, Form, Input, InputRef, message, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
+import { MdOutlineEdit } from 'react-icons/md';
 
 
 
@@ -81,10 +82,88 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  const [codePlan, setCodePlan] = useState<any>();
-  const [namePlan, setNamePlan] = useState<any>();
-  const [profit, setProfit] = useState<any>();
   const intl = useIntl();
+  const searchInput = useRef<InputRef>(null);
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
+  };
+  const handleReset = (clearFilters: any) => {
+    clearFilters();
+   // setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Tìm kiếm`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+        onClick={() => {
+        }}
+      />
+    ),
+    onFilter: (value:any, record: any) =>{
+      if(record.attributes[dataIndex]){
+        return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+      return null;
+    }
+      ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        //setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+      
+    // }
+      
+  });
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
@@ -110,12 +189,14 @@ const TableList: React.FC = () => {
           </a>
         );
       },
+      ...getColumnSearchProps('code')
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Name' />,
-      dataIndex: 'atrributes',
+      dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
+      ...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
@@ -128,26 +209,47 @@ const TableList: React.FC = () => {
       }
     },
     {
+      title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu' />,
+      dataIndex: 'color',
+      valueType: 'textarea',
+      key: 'color',
+      renderText: (_, text: any) => {
+        return `${text?.attributes?.color}`
+      }
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
+      dataIndex: 'backgroundColor',
+      valueType: 'textarea',
+      key: 'backgroundColor',
+      renderText: (_, text: any) => {
+        return `${text?.attributes?.backgroundColor}`
+      }
+    },
+    {
       title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
-        return (<Button
-          type='primary'
-          key='primary'
-          onClick={() => {
-            handleUpdateModalOpen(true);
-            refIdCateogry.current = entity.id;
-            setCodePlan(entity?.attributes?.code);
-            setNamePlan(entity?.attributes?.name);
-            setProfit(entity?.attributes?.profit);
+        return (<Tooltip
+          title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
+        ><MdOutlineEdit
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              refIdCateogry.current = entity.id;
+              form.setFieldsValue({
+                code: entity?.attributes?.code,
+                name: entity?.attributes?.name,
+                profit: entity?.attributes?.profit,
+                color: entity?.attributes?.color,
+                backgroundColor: entity?.attributes?.backgroundColor
+              })
 
+            }}
+          /></Tooltip>
 
-          }}
-        >
-          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-        </Button>)
+        )
       }
     },
 
@@ -174,9 +276,7 @@ const TableList: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button
             type='primary'
@@ -195,6 +295,19 @@ const TableList: React.FC = () => {
 
             setSelectedRows(selectedRows);
           },
+        }}
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
         }}
       />
       {selectedRowsState?.length > 0 && (
@@ -220,12 +333,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+         
         </FooterToolbar>
       )}
       <ModalForm
@@ -234,9 +342,14 @@ const TableList: React.FC = () => {
           id: 'pages.searchTable.createForm.new',
           defaultMessage: 'New rule',
         })}
-        width='400px'
+        width='35vh'
         open={createModalOpen}
-        onOpenChange={handleModalOpen}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            handleModalOpen(false);
+          },
+        }}
         onFinish={async (value) => {
           const success = await handleAdd(value as any);
           if (success) {
@@ -260,6 +373,7 @@ const TableList: React.FC = () => {
               ),
             },
           ]}
+          label='Mã'
           width='md'
           name='code'
           placeholder='Mã'
@@ -277,12 +391,13 @@ const TableList: React.FC = () => {
               ),
             },
           ]}
+          label='Tên'
           width='md'
           name='name'
           placeholder='Tên'
         />
 
-        <ProFormText
+        <ProFormDigit min={1} max={1000}
           rules={[
             {
               required: true,
@@ -294,30 +409,66 @@ const TableList: React.FC = () => {
               ),
             },
           ]}
+          label='Lợi nhuận (%)'
           width='md'
           name='profit'
           placeholder='Lợi nhuận (%)'
         />
 
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.searchTable.color'
+                  defaultMessage='Yêu cấu nhập màu'
+                />
+              ),
+            },
+          ]}
+          label='Màu'
+          width='md'
+          name='color'
+          placeholder='Màu'
+        />
+
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.searchTable.backgroundColor'
+                  defaultMessage='Yêu cấu nhập màu nền'
+                />
+              ),
+            },
+          ]}
+          label='Mầu nền'
+          width='md'
+          name='backgroundColor'
+          placeholder='Mầu nền'
+        />
 
       </ModalForm>
 
 
       <ModalForm
-      form={form}
+        form={form}
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.update',
           defaultMessage: '',
         })}
-        width='400px'
+        width='35vh'
         open={updateModalOpen}
-        onOpenChange={handleUpdateModalOpen}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            handleUpdateModalOpen(false);
+          },
+        }}
         onFinish={async (value) => {
-          // let values = {
-          //   code: codePlan,
-          //   name: namePlan,
-
-          // }
           const success = await handleUpdate(value as any, refIdCateogry);
           if (success) {
             handleUpdateModalOpen(false);
@@ -340,12 +491,7 @@ const TableList: React.FC = () => {
           //     ),
           //   },
           // ]}
-          fieldProps={{
-            value: codePlan,
-            onChange: (e) => {
-              setCodePlan(e.target.value);
-            }
-          }}
+          label='Mã'
           width='md'
           name='code'
           placeholder='Mã'
@@ -363,18 +509,13 @@ const TableList: React.FC = () => {
           //     ),
           //   },
           // ]}
-          fieldProps={{
-            value: namePlan,
-            onChange: (e) => {
-              setNamePlan(e.target.value);
-            }
-          }}
+          label='Tên'
           width='md'
           name='name'
           placeholder='Tên'
         />
 
-        <ProFormText
+        <ProFormDigit min={1} max={1000}
           // rules={[
           //   {
           //     required: true,
@@ -386,17 +527,48 @@ const TableList: React.FC = () => {
           //     ),
           //   },
           // ]}
-
-          fieldProps={{
-            value: profit,
-            onChange: (e) => {
-              setProfit(e.target.value);
-            }
-          }}
+          label='Lợi nhuận (%)'
           width='md'
           name='profit'
           placeholder='Lợi nhuận (%)'
-        />    
+        />
+
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.searchTable.color'
+                  defaultMessage='Yêu cấu nhập màu'
+                />
+              ),
+            },
+          ]}
+          label='Màu'
+          width='md'
+          name='color'
+          placeholder='Màu'
+        />
+
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.searchTable.backgroundColor'
+                  defaultMessage='Yêu cấu nhập màu nền'
+                />
+              ),
+            },
+          ]}
+          label='Mầu nền'
+          width='md'
+          name='backgroundColor'
+          placeholder='Mầu nền'
+        />
+
       </ModalForm>
 
       <Drawer

@@ -1,13 +1,15 @@
-import {  customAPIGetOne,  customAPIPostOne,  customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import {   ExclamationCircleOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import {  customAPIGetOne } from '@/services/ant-design-pro/api';
+import {   PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import moment from 'moment';
-import { FormattedMessage, useParams } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input } from 'antd';
+import { FormattedMessage, 
+ // useParams 
+} 
+  from '@umijs/max';
+import { Button, Typography,  Space, Input } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
@@ -18,24 +20,24 @@ import ConfirmRegisteringSettlement from './ConfirmSettlementMegaCancel';
 const { Text, } = Typography;
 
 
-const handleUpdateMany = async (fields: any, api: string, id: any) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    const updateTransaction = await customAPIUpdateMany(
-      fields,
-      api,
-      id);
-    hide();
-    if (updateTransaction) {
-      message.success('Cập nhật thành công');
-    }
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Cập nhật thất bại!');
-    return false;
-  }
-};
+// const handleUpdateMany = async (fields: any, api: string, id: any) => {
+//   const hide = message.loading('Đang cập nhật...');
+//   try {
+//     const updateTransaction = await customAPIUpdateMany(
+//       fields,
+//       api,
+//       id);
+//     hide();
+//     if (updateTransaction) {
+//       message.success('Cập nhật thành công');
+//     }
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Cập nhật thất bại!');
+//     return false;
+//   }
+// };
 
 
 
@@ -71,29 +73,29 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
 
   const [showConfirmSettlement, setShowConfirmSettlement] = useState<boolean>(false);
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
-  const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
+  //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
   
 
   
-  const params = useParams<any>();
+  //const params = useParams<any>();
   const [userSettlement, setUserSettlement] = useState<userSettlement>();
   
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  //const [searchText, setSearchText] = useState('');
+  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-    console.log('selectedKeys',selectedKeys[0] );
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchText('');
+   // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div
         style={{
           padding: 8,
@@ -102,10 +104,10 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Tìm thẻ tai`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -114,14 +116,14 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -130,29 +132,7 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
+            Làm mới
           </Button>
         </Space>
       </div>
@@ -166,7 +146,6 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
     ),
     onFilter: (value:any, record: any) =>{
       if(record[dataIndex]){
-        console.log('vao day');
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
@@ -174,7 +153,7 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
       ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -184,24 +163,24 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
   });
   
 
-  const confirm = (entity: any, message: string, api: string, id: any) => {
-    Modal.confirm({
-      title: 'Confirm',
-      icon: <ExclamationCircleOutlined />,
-      content: message,
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: async () => {
+  // const confirm = (entity: any, message: string, api: string, id: any) => {
+  //   Modal.confirm({
+  //     title: 'Confirm',
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: message,
+  //     okText: 'Có',
+  //     cancelText: 'Không',
+  //     onOk: async () => {
         
-        await handleUpdateMany({
-          ...entity
-        }, api, id);
-        if (actionRef.current) {
-          actionRef.current.reload();
-        }
-      }
-    });
-  };
+  //       await handleUpdateMany({
+  //         ...entity
+  //       }, api, id);
+  //       if (actionRef.current) {
+  //         actionRef.current.reload();
+  //       }
+  //     }
+  //   });
+  // };
 
 
   useEffect(() => {
@@ -266,7 +245,6 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
       valueType: 'textarea',
       key: 'ageAndSlot',
       renderText: (_, text: any) =>  {
-        console.log('age',text?.age);
         let age = `${text.age / 4 >= 1  ? `${(text.age / 4).toFixed(0)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}/S${text?.slotNow}`;
         return age;
       },
@@ -404,16 +382,26 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
             type='primary'
             key='primary'
             onClick={() => {
-             console.log(selectedRowsCPass)
              setShowConfirmSettlement(true);
-            
-           
             }}
           >
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Đăng kí' />
           </Button>)}
           </>
         ]}
+
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
         columns={columnCPass}
       
         rowSelection={{

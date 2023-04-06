@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, TransactionOutlined, TranslationOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns, ProFormMoney, } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -11,11 +11,7 @@ import React, { useRef, useState } from 'react';
 import "./styles.css";
 
 const { Text, } = Typography;
-function delay(time: number) {
-  return new Promise((resolve: any) => {
-    setTimeout(resolve, time);
-  });
-}
+
 
 
 const handleAdd = async (fields: any, api: string) => {
@@ -46,33 +42,33 @@ const handleAdd = async (fields: any, api: string) => {
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
+ // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
-  const [showDialog, setShowDialog] = useState<boolean>(false);
+  //const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [convertAle, setConvertAle] = useState<number>(0);
-  const [typeConvert, setTypeConvert] = useState<boolean>(false);
+  //const [typeConvert, setTypeConvert] = useState<boolean>(false);
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
 
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  //const [searchText, setSearchText] = useState('');
+  //const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-    console.log('selectedKeys', selectedKeys[0]);
+    //setSearchText(selectedKeys[0]);
+   // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchText('');
+    //setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
         style={{
           padding: 8,
@@ -81,10 +77,10 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+         // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -93,14 +89,14 @@ const TableListAssignCPass = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Search
+            Tìm kiếm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -109,7 +105,7 @@ const TableListAssignCPass = () => {
               width: 90,
             }}
           >
-            Reset
+            Làm mới
           </Button>
           <Button
             type="link"
@@ -118,11 +114,11 @@ const TableListAssignCPass = () => {
               confirm({
                 closeDropdown: false,
               });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+              //setSearchText(selectedKeys[0]);
+              //setSearchedColumn(dataIndex);
             }}
           >
-            Filter
+            Lọc
           </Button>
           <Button
             type="link"
@@ -131,7 +127,7 @@ const TableListAssignCPass = () => {
               close();
             }}
           >
-            close
+            đóng
           </Button>
         </Space>
       </div>
@@ -144,15 +140,28 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      if (record[dataIndex]) {
+      console.log(record);
+      if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
+      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['email'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
       return null;
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -176,7 +185,7 @@ const TableListAssignCPass = () => {
           actionRef.current.reload();
           setShowModal(false);
           setConvertAle(0);
-          setTypeConvert(false);
+         // setTypeConvert(false);
 
         }
 
@@ -273,7 +282,7 @@ const TableListAssignCPass = () => {
           <Tooltip title="Mua ale">
             <TransactionOutlined
               style={{
-                fontSize: 30,
+                fontSize: 20,
                 paddingLeft: 5,
                 color: '#66FFFF'
               }}
@@ -313,23 +322,34 @@ const TableListAssignCPass = () => {
           };
         }}
         columns={columns}
-        
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
 
       <ModalForm
         title='Mua Ale'
         open={showModal}
         form={form}
-        width={300}
+        width={'30vh'}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
             setShowModal(false);
-            setTypeConvert(false);
+            //setTypeConvert(false);
             setConvertAle(0);
           },
         }}
-        onFinish={async (values) => {
+        onFinish={async () => {
             confirm({
               senderId: currentRowUser?.id,
               ale: convertAle

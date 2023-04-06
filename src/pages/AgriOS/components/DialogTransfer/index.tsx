@@ -1,35 +1,18 @@
-import { customAPIAdd, customAPIGet, customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, TransactionOutlined, TranslationOutlined } from '@ant-design/icons';
+import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, SearchOutlined,  TranslationOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useParams } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { FormattedMessage } from '@umijs/max';
+import { Button, message, Modal, Space, Input, Tooltip } from 'antd';
+import React, {  useRef, useState } from 'react';
 import "./styles.css";
-const { Text, } = Typography;
 
 
-const handleUpdateMany = async (fields: any, api: string, id: any) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    const updateTransaction = await customAPIUpdateMany(
-      fields,
-      api,
-      id);
-    hide();
-    if (updateTransaction) {
-      message.success('Cập nhật thành công');
-    }
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Cập nhật thất bại!');
-    return false;
-  }
-};
+
+
 
 const handleAdd = async (fields: any, api: string) => {
   const hide = message.loading('Đang cập nhật...');
@@ -56,29 +39,29 @@ const handleAdd = async (fields: any, api: string) => {
 
 const DialogTransfer = (props: any) => {
   const actionRef = useRef<ActionType>();
-  const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
+  //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
   const [showTransfer, setShowTransfer] = useState<boolean>(false);
 
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
-  const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  const params = useParams<any>();
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  //const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
+  //const params = useParams<any>();
+  //const [searchText, setSearchText] = useState('');
+ // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-    console.log('selectedKeys', selectedKeys[0]);
+    //setSearchText(selectedKeys[0]);
+  
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchText('');
+    //setSearchText('');
   };
+ 
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
         style={{
           padding: 8,
@@ -87,10 +70,10 @@ const DialogTransfer = (props: any) => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+         // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -99,14 +82,14 @@ const DialogTransfer = (props: any) => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Search
+            Tìm kiếm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -115,7 +98,7 @@ const DialogTransfer = (props: any) => {
               width: 90,
             }}
           >
-            Reset
+            Làm mới
           </Button>
           <Button
             type="link"
@@ -124,11 +107,11 @@ const DialogTransfer = (props: any) => {
               confirm({
                 closeDropdown: false,
               });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+              //setSearchText(selectedKeys[0]);
+              //setSearchedColumn(dataIndex);
             }}
           >
-            Filter
+            Lọc
           </Button>
           <Button
             type="link"
@@ -137,7 +120,7 @@ const DialogTransfer = (props: any) => {
               close();
             }}
           >
-            close
+            đóng
           </Button>
         </Space>
       </div>
@@ -150,16 +133,27 @@ const DialogTransfer = (props: any) => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      if (record[dataIndex]) {
-        console.log('vao day');
+      if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
+      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['email'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+        return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
       return null;
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -169,7 +163,7 @@ const DialogTransfer = (props: any) => {
   });
 
 
-  const confirm = (entity: any, message: string, api: string, id: any) => {
+  const confirm = (entity: any, message: string, api: string) => {
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
@@ -195,6 +189,11 @@ const DialogTransfer = (props: any) => {
 
   const columns: ProColumns<any>[] = [
     {
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'index',
+    },
+    {
       key: 'code',
       dataIndex: 'code',
       title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
@@ -205,7 +204,7 @@ const DialogTransfer = (props: any) => {
             <a
               onClick={() => {
                 setCurrentRowUser(entity);
-                setShowDetailUser(true);
+                //setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
             </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
@@ -255,7 +254,7 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-            <TranslationOutlined
+           <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />} > <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -264,7 +263,7 @@ const DialogTransfer = (props: any) => {
                 setShowTransfer(true);
                 setCurrentRowUser(text);
               }}
-            />
+            /></Tooltip>
           </>,
 
         ]
@@ -312,24 +311,25 @@ const DialogTransfer = (props: any) => {
           }}
 
           columns={columns}
-          rowSelection={{
-            onChange: (_, selectedRows: any) => {
-              if (selectedRows.length > 1) {
-                message.error('Chỉ được chọn 1 Mega!');
-              }
-              setSelectedRowsMega(selectedRows);
-            },
+          // rowSelection={{
+          //   onChange: (_, selectedRows: any) => {
+          //     if (selectedRows.length > 1) {
+          //       message.error('Chỉ được chọn 1 Mega!');
+          //     }
+          //     setSelectedRowsMega(selectedRows);
+          //   },
 
-            // getCheckboxProps: (record: any) => ({
-            //   disabled: false, // Column configuration not to be checked
-            //  //name: record.name,
-            // }),
-          }}
+          //   // getCheckboxProps: (record: any) => ({
+          //   //   disabled: false, // Column configuration not to be checked
+          //   //  //name: record.name,
+          //   // }),
+          // }}
         />
       </ModalForm>
 
       { currentRowUser && (
         <ModalForm
+        
         width={300}
         open={showTransfer}
         modalProps={{
@@ -347,9 +347,15 @@ const DialogTransfer = (props: any) => {
           },
            `Chắc chắn chuyển ${values.ale} Ale từ Aleger  ${props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - ${props?.megaChoosen?.id} 
            sang Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}`,
-            'transactions/transfer-admin', null);
+            'transactions/transfer-admin');
 
           return true;
+        }}
+        submitter={{
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+          },
         }}
       >
         <ProFormMoney

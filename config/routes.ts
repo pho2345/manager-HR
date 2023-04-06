@@ -83,7 +83,7 @@ export default [
     routes: [
       { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
       { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
-      { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' }
+     // { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' }
     ],
   },
 
@@ -157,7 +157,7 @@ export default [
     routes: [
       { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
       { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
-      //{ path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
+      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
     ],
   },
  

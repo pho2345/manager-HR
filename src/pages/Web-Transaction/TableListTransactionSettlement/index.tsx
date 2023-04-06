@@ -6,7 +6,7 @@ import {
   customAPIUpdateMany,
   customAPIDelete,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -17,7 +17,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import SettlementCPassModal from './components/SettlementMegaCancel';
@@ -26,7 +26,6 @@ const { Text } = Typography;
 
 
 const handleUpdateMany = async (fields: any, api: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
 
@@ -108,7 +107,6 @@ const TableList: React.FC = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        console.log('oke');
         await handleUpdateMany({
           transaction: [...entity],
           types: types
@@ -125,9 +123,14 @@ const TableList: React.FC = () => {
 
 
 
-  const intl = useIntl();
+  //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
+    {
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'index',
+    },
     {
       title: <FormattedMessage id='pages.searchTable.column.cPassCode' defaultMessage='cPass' />,
       key: 'code',
@@ -320,10 +323,10 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        // headerTitle={intl.formatMessage({
+        //   id: 'pages.searchTable.title',
+        //   defaultMessage: 'Enquiry form',
+        // })}
 
         actionRef={actionRef}
         rowKey='id'
@@ -380,6 +383,18 @@ const TableList: React.FC = () => {
             disabled: record.status === 'done'
           })
         }}
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -388,13 +403,7 @@ const TableList: React.FC = () => {
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-              </span>
+             
             </div>
           }
         >

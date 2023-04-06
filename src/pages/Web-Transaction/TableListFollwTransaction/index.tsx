@@ -4,6 +4,7 @@ import DetailUser from '@/pages/components/DetailUser';
 import {
   customAPIPost,
 } from '@/services/ant-design-pro/api';
+import { ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -372,6 +373,18 @@ const TableList: React.FC = () => {
         }
         columns={columns}
         rowSelection={false}
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       
 

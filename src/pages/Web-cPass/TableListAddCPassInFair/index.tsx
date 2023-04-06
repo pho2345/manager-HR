@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -74,7 +74,6 @@ const TableListAddCPassInFair = (props: any) => {
   useEffect(() => {
     const fetchDataFair = async () => {
       const getFairData = await getFair(props.currentFair);
-      console.log('getFairData', getFairData);
       setFair(getFairData);
 
     }
@@ -295,6 +294,19 @@ const TableListAddCPassInFair = (props: any) => {
 
             setSelectedRows(selectedRows);
           },
+        }}
+
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
         }}
       />
       {currentRow && (

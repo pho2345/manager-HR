@@ -2,10 +2,9 @@ import DetailUser from '@/pages/components/DetailUser';
 import {
   customAPIGet, customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  FooterToolbar,
   ModalForm,
   ProColumns,
   ProFormSelect,
@@ -55,9 +54,9 @@ const TableList: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<any>([]);
 
-  const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  //const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
+ // const [searchText, setSearchText] = useState('');
+  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
 
@@ -121,8 +120,8 @@ const TableList: React.FC = () => {
               confirm({
                 closeDropdown: false,
               });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+             // setSearchText(selectedKeys[0]);
+              //setSearchedColumn(dataIndex);
             }}
           >
             Filter
@@ -234,7 +233,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'app',
       renderText: (_, entity: any) => {
-        return ``;
+        return `${entity.fullname}`;
       },
       //...getColumnSearchProps('mega')
     },
@@ -295,7 +294,7 @@ const TableList: React.FC = () => {
           value: 'sellAle'
         }
       ],
-      onFilter: true,
+     
       filterSearch: true,
     },
 
@@ -495,6 +494,20 @@ const TableList: React.FC = () => {
         }
         }
         columns={columns}
+
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
+        
       // rowSelection={{
       //   onChange: (_, selectedRows: any) => {
       //     setSelectedRowsState(selectedRows);
@@ -518,7 +531,7 @@ const TableList: React.FC = () => {
       // }}
       />
 
-      {selectedRowsState?.length > 0 && (
+      {/* {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
@@ -540,7 +553,7 @@ const TableList: React.FC = () => {
           </Button>
 
         </FooterToolbar>
-      )}
+      )} */}
 
 
       <ModalForm

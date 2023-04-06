@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -80,8 +80,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  const [codeCategory, setCodeCategory] = useState<any>();
-  const [nameCategory, setNameCategory] = useState<any>();
   const intl = useIntl();
   const columns: ProColumns<API.RuleListItem>[] = [
     {
@@ -127,8 +125,10 @@ const TableList: React.FC = () => {
           onClick={() => {
             handleUpdateModalOpen(true);
             refIdCateogry.current = entity.id;
-            setCodeCategory(entity?.attributes?.code);
-            setNameCategory(entity?.attributes?.name);
+            form.setFieldsValue({
+              code: entity?.attributes?.code,
+              name: entity?.attributes?.name 
+            })
           
 
           }}
@@ -161,9 +161,19 @@ const TableList: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
+        options={
+          {
+            reload: (props:any) => {
+              console.log('props', props);
+             return true;
+            },
+            setting: {
+              checkable: true
+            }
+            
+          }
+        }
         toolBarRender={() => [
           <Button
             type='primary'
@@ -175,6 +185,18 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined/>,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
         request={() => customAPIGet({}, 'categories')}
         columns={columns}
         rowSelection={{
@@ -192,13 +214,7 @@ const TableList: React.FC = () => {
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
               &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-               
-              </span>
+              
             </div>
           }
         >
@@ -214,23 +230,26 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+         
         </FooterToolbar>
       )}
+      
+
       <ModalForm
         form={form}
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newCategory',
           defaultMessage: 'New rule',
         })}
-        width='400px'
+         width={'30vh'}
+      
         open={createModalOpen}
-        onOpenChange={handleModalOpen}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            handleModalOpen(false)
+          },
+        }}
         onFinish={async (value) => {
           const success = await handleAdd(value as API.RuleListItem);
           if (success) {
@@ -242,6 +261,7 @@ const TableList: React.FC = () => {
           }
         }}
       >
+        <ProForm.Group>
         <ProFormText
           rules={[
             {
@@ -254,9 +274,10 @@ const TableList: React.FC = () => {
               ),
             },
           ]}
-          width='md'
+          label={`Mã`}
+          width={`md`}
           name='code'
-          placeholder='Mã'
+          placeholder='Nhập mã'
         />
 
         <ProFormText
@@ -266,33 +287,36 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.Name'
-                  defaultMessage='Rule name is required'
+                  defaultMessage='Yêu cầu nhập tên'
                 />
               ),
             },
           ]}
+          label={`Tên giống bò`}
           width='md'
           name='name'
-          placeholder='Tên'
+          placeholder='Nhập tên'
         />
-
-
+        </ProForm.Group>
+        
       </ModalForm>
   
 
-<ModalForm
+    <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.updateCategory',
-          defaultMessage: 'New rule',
+          defaultMessage: 'Cập nhật giống bò',
         })}
-        width='400px'
+        form={form}
+        width={'30vh'}
         open={updateModalOpen}
-        onOpenChange={handleUpdateModalOpen}
-        onFinish={async () => {
-          let values = {
-            code: codeCategory,
-            name: nameCategory
-          }
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            handleUpdateModalOpen(false)
+          },
+        }}
+        onFinish={async (values: any) => {
           const success = await handleUpdate(values as any, refIdCateogry);
           if (success) {
             handleUpdateModalOpen(false);
@@ -304,23 +328,7 @@ const TableList: React.FC = () => {
         }}
       >
         <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.Code'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
-          fieldProps={{
-            value : codeCategory,
-            onChange : (e) => {
-              setCodeCategory(e.target.value);
-            }
-          }}
+          label={`Mã`}
           width='md'
           name='code'
           placeholder='Mã'
@@ -338,12 +346,8 @@ const TableList: React.FC = () => {
           //     ),
           //   },
           // ]}
-          fieldProps={{
-            value : nameCategory,
-            onChange : (e) => {
-              setNameCategory(e.target.value);
-            }
-          }}
+
+          label={`Mã`}
           width='md'
           name='name'
           placeholder='Tên'

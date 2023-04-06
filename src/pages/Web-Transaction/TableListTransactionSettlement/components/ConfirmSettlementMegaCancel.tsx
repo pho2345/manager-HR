@@ -1,12 +1,15 @@
 import DetailCPass from '@/pages/components/DetailCPass';
 import {   customAPIAdd} from '@/services/ant-design-pro/api';
-import {     SearchOutlined } from '@ant-design/icons';
+import {     ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useParams } from '@umijs/max';
+import { 
+  FormattedMessage, 
+ // useParams 
+} from '@umijs/max';
 import { Button, Space, Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -24,9 +27,10 @@ const handleCreate = async (fields: any, api: string) => {
       }, api);
     hide();
     if (createTransaction) {
-      message.success(createTransaction);
+       message.success(createTransaction.message);
+       return true;
     }
-    return true;
+    
   } catch (error: any) {
     hide();
     message.error(error?.response.data.error.message);
@@ -57,25 +61,25 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
   
 
   
-  const params = useParams<any>();
-  const [userSettlement, setUserSettlement] = useState<userSettlement>();
+  //const params = useParams<any>();
+  //const [userSettlement, setUserSettlement] = useState<userSettlement>();
   
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  //const [searchText, setSearchText] = useState('');
+  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-    console.log('selectedKeys',selectedKeys[0] );
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchText('');
+   // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close } : any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div
         style={{
           padding: 8,
@@ -84,10 +88,10 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={`Tìm thẻ tai`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -96,14 +100,14 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -112,29 +116,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
               width: 90,
             }}
           >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
+            Làm mới
           </Button>
         </Space>
       </div>
@@ -148,7 +130,6 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
     ),
     onFilter: (value:any, record: any) =>{
       if(record[dataIndex]){
-        console.log('vao day');
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
@@ -156,7 +137,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
       ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -164,7 +145,6 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
     // }
       
   });
-  
 
 
 
@@ -319,7 +299,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
     >
     <ProTable
         headerTitle={(<>
-         Đăng ký Thanh quyết toán cho Mega {userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}  các cPass sau:
+         {/* Đăng ký Thanh quyết toán cho Mega {userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}  các cPass sau: */}
         </>)}
         pagination={false}
         actionRef={actionRef}
@@ -346,6 +326,19 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
         // }}
         columns={columnCPass}
         dataSource={props.cPass}
+
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
         
       />
       {currentRowCPass && (

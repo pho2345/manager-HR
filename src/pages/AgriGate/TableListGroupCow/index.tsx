@@ -6,7 +6,7 @@ import {
   customAPIGetOne,
 
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SafetyOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -24,8 +24,9 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, } from '@umijs/max';
-import { Button, Form, message, Modal } from 'antd';
+import { Button, Form, message, Modal, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import { MdOutlineEdit } from 'react-icons/md';
 
 
 const handleAdd = async (fields: any) => {
@@ -33,8 +34,10 @@ const handleAdd = async (fields: any) => {
   try {
     hide();
     const groupCow = await customAPIAdd({ ...fields }, 'group-cows/add');
-    message.success('Thêm thành công');
-    return true;
+    if (groupCow) {
+      message.success('Thêm thành công');
+      return true;
+    }
   } catch (error: any) {
     console.log(error);
     message.error(error?.response?.data?.error?.message);
@@ -51,7 +54,7 @@ const handleUpdate = async (fields: any, api: string, id: any) => {
         ...fields,
       },
       api,
-     // 'group-cows/update',
+      // 'group-cows/update',
       id,
     );
     hide();
@@ -111,7 +114,7 @@ const confirm = (entity: any, message: string, actionRef: any) => {
       //   cPass: [entity.id]
       // }, api, id);
       await handleRemove(entity);
-       if (actionRef.current) {
+      if (actionRef.current) {
         actionRef.current.reload();
       }
     }
@@ -194,37 +197,57 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (
           <>
-            <Button
-              type='primary'
-
+            <Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Cập nhật' />}><MdOutlineEdit
+              style={{
+                fontSize: 25
+              }}
               onClick={async () => {
                 handleUpdateModalOpen(true);
                 refIdCow.current = entity.id;
                 const cow = await customAPIGetOne(entity.id, 'group-cows/find-admin', {});
-
                 form.setFieldsValue({
                   ...cow
                 });
 
               }
               }
-            >
-              <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-            </Button>
+            /></Tooltip>
 
-            <Button
-              type='primary'
+
+
+            {
+            entity.active ? (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='InActive' />}>< CloseCircleOutlined
+              style={{
+                fontSize: 25,
+                paddingLeft: 10
+              }}
               onClick={async () => {
                 await handleUpdate({
                   active: !entity.active
-                }, 'group-cows/update' ,  entity.id);
+                }, 'group-cows/update', entity.id);
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
               }}
-            >
-              <FormattedMessage id='pages.searchTable.active' defaultMessage={entity.active ? 'Inactive' : 'Active'} />
-            </Button>
+
+            /></Tooltip>) : 
+            (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Active' />}><  SafetyOutlined
+              style={{
+                fontSize: 25,
+                paddingLeft: 10
+              }}
+              onClick={async () => {
+                await handleUpdate({
+                  active: !entity.active
+                }, 'group-cows/update', entity.id);
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
+
+            /></Tooltip>
+            )}
+
           </>
         );
       },
@@ -245,7 +268,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        
+
         toolBarRender={() => [
           <Button
             type='primary'
@@ -263,6 +286,18 @@ const TableList: React.FC = () => {
             'group-cows/find-admin',
           )
         }
+        toolbar={{
+          settings:[{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick:() => {
+              if (actionRef.current){
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -288,7 +323,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               await confirm(selectedRowsState as any, 'xóa', actionRef);
               setSelectedRows([]);
-             
+
               await actionRef.current?.reloadAndRest?.();
             }}
           >
@@ -302,7 +337,10 @@ const TableList: React.FC = () => {
       )}
 
       <ModalForm
-        title='Tạo mới'
+        title={<FormattedMessage
+          id='pages.form.new'
+          defaultMessage='Tạo mới'
+        />}
         open={createModalOpen}
         form={form}
         autoFocusFirstInput
@@ -312,6 +350,7 @@ const TableList: React.FC = () => {
             handleModalOpen(false);
           },
         }}
+        width={`40vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
@@ -328,12 +367,10 @@ const TableList: React.FC = () => {
         }}
       >
         <ProForm.Group>
-          <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-          <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
+          <ProFormSelect width={`lg`} options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
+          <ProFormText width={`lg`} name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
         <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
         <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
-
-
       </ModalForm>
 
       <ModalForm
@@ -349,9 +386,10 @@ const TableList: React.FC = () => {
 
           },
         }}
+        width={`40vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
-          const success = await handleUpdate(values as any, 'group-cows/update' , refIdCow?.current as any);
+          const success = await handleUpdate(values as any, 'group-cows/update', refIdCow?.current as any);
 
 
           if (success) {
@@ -379,8 +417,8 @@ const TableList: React.FC = () => {
       >
 
         <ProForm.Group>
-          <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-          <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
+          <ProFormSelect width='lg' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
+          <ProFormText width='lg' name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
         <ProFormSwitch name='active' label='Kích hoạt' />
         <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
       </ModalForm>

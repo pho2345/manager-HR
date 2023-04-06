@@ -2,24 +2,22 @@ import {
   customAPIUpdateMany,
   customAPIPost
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
-  ProDescriptionsItemProps,
   ProFormSelect,
 } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
 import "./styles.css";
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, message, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 
@@ -53,12 +51,12 @@ const handleUpdateMany = async (fields: any, api: any) => {
 
 const TableList: React.FC = () => {
   const [openModalStatus, setOpenModalStatus] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
+  //const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<any>();
+  //const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [filterCode, setFilterCode] = useState<any>();
-  
+
   //const [form] = Form.useForm<any>();
 
   const confirm = (entity: any, message: string, api: string) => {
@@ -99,8 +97,8 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.code);
-              setShowDetail(true);
+              //setCurrentRow(entity?.code);
+              //setShowDetail(true);
             }}
           >
             {entity?.code}
@@ -238,7 +236,7 @@ const TableList: React.FC = () => {
             break;
         }
       },
-     
+
       filters: [
         {
           text: 'Chờ xác nhận',
@@ -247,18 +245,18 @@ const TableList: React.FC = () => {
         {
           text: 'Chờ Aleger xác nhận',
           value: 'waitConfirm'
-        },{
+        }, {
           text: 'Chờ xác nhận hoàn trả',
           value: 'waitRefund'
-        },{
+        }, {
           text: 'Hoàn thành',
           value: 'done'
-        },{
+        }, {
           text: 'Đã hủy',
           value: 'cancel'
         }
       ],
-      filterSearch:true,
+      filterSearch: true,
       onFilter: true,
       defaultFilteredValue: ['inProgress'],
     },
@@ -325,7 +323,9 @@ const TableList: React.FC = () => {
               c_pass: {
                 select: ['id', 'code']
               },
-              qr_ale: true
+              qr_ale: true,
+              colorSettlement: true,
+              colorStatusTransaction: true
             },
             filters: {
               c_pass: {
@@ -364,15 +364,27 @@ const TableList: React.FC = () => {
           if (record?.types === 'cpassPayment' && (record?.status === 'inProgress' || record?.status === 'done')) {
             return 'add-money';
           }
-          else if( record?.status === 'cancel'){
+          else if (record?.status === 'cancel') {
             return ''
           }
           else {
             return 'sub-money';
           }
 
-        }
-        }
+        }}
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -436,6 +448,9 @@ const TableList: React.FC = () => {
         <ProFormSelect
 
           name='method'
+          fieldProps={{
+            defaultValue: '1'
+          }}
           options={[
             {
               label: 'Xác nhận',
@@ -449,7 +464,7 @@ const TableList: React.FC = () => {
         />
 
       </ModalForm>
-      <Drawer
+      {/* <Drawer
         width={600}
         open={showDetail}
         onClose={() => {
@@ -471,10 +486,9 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-      </Drawer>
+      </Drawer> */}
     </PageContainer>
   );
 };
 
 export default TableList;
-

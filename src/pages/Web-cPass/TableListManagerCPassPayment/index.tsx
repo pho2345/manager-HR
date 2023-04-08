@@ -3,7 +3,7 @@ import {
   customAPIGetOne,
   customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -320,6 +320,19 @@ const TableList: React.FC = () => {
             disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
           })
         }}
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -359,7 +372,7 @@ const TableList: React.FC = () => {
       )}
 
       <ModalForm
-        title='Chọn phương thức hoàn trả'
+        
         open={createModalOpen}
         //form={form}
         autoFocusFirstInput
@@ -369,7 +382,7 @@ const TableList: React.FC = () => {
             handleModalOpen(false);
           },
         }}
-        width={400}
+        width={`25vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
@@ -391,7 +404,8 @@ const TableList: React.FC = () => {
           //value={method}
           style={{ width: 200 }}
           //onChange={handleChange}
-
+          label='Phương thức hoàn trả'
+          width='md'
           name='method'
           options={[
             {

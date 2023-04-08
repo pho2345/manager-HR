@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -272,9 +272,7 @@ const TableList: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey='id'
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         pagination={{
           pageSize: 5
         }}
@@ -297,6 +295,18 @@ const TableList: React.FC = () => {
 
             setSelectedRows(selectedRows);
           },
+        }}
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
         }}
 
       />
@@ -396,14 +406,13 @@ const TableList: React.FC = () => {
           />
 
 
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText width="xs" name="pZero" label="P0" placeholder="P0" />
-          <ProFormText width="xs" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
+        
+          <ProFormText width="md" name="pZero" label="P0" placeholder="P0" />
+          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
           <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
+      
         </ProForm.Group>
-        <Title level={5}>Tự động chuyển đổi Ale</Title>
-        <Switch defaultChecked={refAutoTransfer.current} onChange={() => { refAutoTransfer.current = !refAutoTransfer.current }} />
+
       </ModalForm>
 
 

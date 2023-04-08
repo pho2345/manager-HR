@@ -1,17 +1,16 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, Input, InputRef, message, Space, Tooltip } from 'antd';
+import { Button, Form, Input, InputRef, message, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -75,11 +74,9 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
 
-  const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const intl = useIntl();
@@ -180,8 +177,8 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
-              setShowDetail(true);
+              // setCurrentRow(entity?.attributes?.code);
+              // setShowDetail(true);
             }}
           >
             {entity?.attributes?.code}
@@ -209,7 +206,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu' />,
+      title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       dataIndex: 'color',
       valueType: 'textarea',
       key: 'color',
@@ -422,15 +419,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu'
+                  defaultMessage='Yêu cấu nhập màu chữ'
                 />
               ),
             },
           ]}
-          label='Màu'
+          label='Màu chữ'
           width='md'
           name='color'
-          placeholder='Màu'
+          placeholder='Màu chữ'
         />
 
         <ProFormText
@@ -540,15 +537,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu'
+                  defaultMessage='Yêu cấu nhập màu chữ'
                 />
               ),
             },
           ]}
-          label='Màu'
+          label='Màu chữ'
           width='md'
           name='color'
-          placeholder='Màu'
+          placeholder='Màu chữ'
         />
 
         <ProFormText
@@ -571,29 +568,7 @@ const TableList: React.FC = () => {
 
       </ModalForm>
 
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
+     
     </PageContainer>
   );
 };

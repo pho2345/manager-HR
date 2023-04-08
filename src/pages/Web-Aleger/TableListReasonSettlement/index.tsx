@@ -20,7 +20,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'status-transactions');
+    await customAPIAdd({ ...fields }, 'reason-settlements');
     hide();
     message.success('Thêm thành công');
     return true;
@@ -38,7 +38,7 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    }, 'status-transactions', id.current);
+    }, 'reason-settlements', id.current);
     hide();
 
     message.success('Cập nhật thành công');
@@ -54,7 +54,7 @@ const handleRemove = async (selectedRows: any) => {
   const hide = message.loading('Đang xóa...');
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'status-transactions')
+      return customAPIDelete(e.id, 'reason-settlements')
     })
     await Promise.all(deleteRowss);
     hide();
@@ -220,7 +220,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
+      title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage=' Màu chữ' />,
       dataIndex: 'color',
       valueType: 'textarea',
       key: 'color',
@@ -299,7 +299,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'status-transactions')}
+        request={() => customAPIGet({}, 'reason-settlements')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -556,7 +556,7 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
+                  defaultMessage='Yêu cấu nhập màu'
                 />
               ),
             },

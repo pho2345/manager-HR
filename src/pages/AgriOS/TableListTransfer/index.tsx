@@ -1,5 +1,5 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, TransactionOutlined, TranslationOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined, TranslationOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -314,6 +314,18 @@ const TableListAssignCPass = () => {
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger');
           return data;
+        }}
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
         }}
         columns={columns}
         // rowSelection={{

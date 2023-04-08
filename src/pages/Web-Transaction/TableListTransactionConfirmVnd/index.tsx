@@ -431,12 +431,11 @@ const TableList: React.FC = () => {
               types: e?.types
             }
           });
-          let typeApi = parseInt(values?.method) === 1 ? 'transactions/done-many' : 'transactions/cancel-many';
+          let typeApi = parseInt(values?.method) === 1 || !values?.method ? 'transactions/done-many' : 'transactions/cancel-many';
           confirm(transaction, 'Chắn chắn tiến hành thay đổi Tình trạng xác nhận hàng loạt?', typeApi);
           if (actionRef.current) {
             actionRef.current.reload();
             setOpenModalStatus(false);
-
           }
           setSelectedRows([]);
           actionRef.current?.reloadAndRest?.();

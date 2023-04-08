@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button,  Form, Input, InputRef, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Form, Input, InputRef, message, Modal, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -20,7 +20,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'status-transactions');
+    await customAPIAdd({ ...fields }, 'weight-gain-effects');
     hide();
     message.success('Thêm thành công');
     return true;
@@ -38,7 +38,7 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    }, 'status-transactions', id.current);
+    }, 'weight-gain-effects', id.current);
     hide();
 
     message.success('Cập nhật thành công');
@@ -54,7 +54,7 @@ const handleRemove = async (selectedRows: any) => {
   const hide = message.loading('Đang xóa...');
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'status-transactions')
+      return customAPIDelete(e.id, 'weight-gain-effects')
     })
     await Promise.all(deleteRowss);
     hide();
@@ -192,7 +192,7 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-            
+
             }}
           >
             {entity?.attributes?.code}
@@ -203,7 +203,41 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Name' />,
+      title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
+      dataIndex: 'name',
+      valueType: 'textarea',
+      key: 'name',
+      ...getColumnSearchProps('name'),
+      renderText: (_, text: any) => text?.attributes?.name
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
+      dataIndex: 'valueFrom',
+      valueType: 'textarea',
+      key: 'valueFrom',
+      ...getColumnSearchProps('name'),
+      renderText: (_, text: any) => {
+        if (text?.attributes?.valueFrom === 0) {
+          return null;
+        }
+        return text?.attributes?.valueFrom;
+      }
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
+      dataIndex: 'valueTo',
+      valueType: 'textarea',
+      key: 'valueTo',
+      ...getColumnSearchProps('name'),
+      renderText: (_, text: any) => {
+        if (text?.attributes?.valueTo > 200) {
+          return null;
+        }
+        return text?.attributes?.valueTo;
+      }
+    },
+    {
+      title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
@@ -216,7 +250,16 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'profit',
       renderText: (_, text: any) => {
-        return `${text?.attributes?.value}`
+        if (text?.attributes?.valueFrom > 100) {
+          return `WGE > ${text?.attributes?.valueFrom}%`
+        }
+        else if (text?.attributes?.valueFrom >= 95) {
+          return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
+        } else if (text?.attributes?.valueFrom >= 90) {
+          return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
+        } else if (text?.attributes?.valueFrom < 90) {
+          return `WGE < ${text?.attributes?.valueTo}%`
+        }
       }
     },
     {
@@ -252,7 +295,8 @@ const TableList: React.FC = () => {
               form.setFieldsValue({
                 code: entity?.attributes?.code,
                 name: entity?.attributes?.name,
-                value: entity?.attributes?.value,
+                valueFrom: entity?.attributes?.valueFrom,
+                valueTo: entity?.attributes?.valueTo,
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
               })
@@ -299,7 +343,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'status-transactions')}
+        request={() => customAPIGet({}, 'weight-gain-effects')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -339,7 +383,7 @@ const TableList: React.FC = () => {
                 selectedRowsState, `Bạn có chắc xóa?`
               );
 
-             // await handleRemove(selectedRowsState);
+              // await handleRemove(selectedRowsState);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
@@ -413,22 +457,40 @@ const TableList: React.FC = () => {
           placeholder='Tên'
         />
 
-        <ProFormText
+        <ProFormDigit
           rules={[
             {
               required: true,
               message: (
                 <FormattedMessage
                   id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị'
+                  defaultMessage='Nhập giá trị dưới'
                 />
               ),
             },
           ]}
-          label='Giá trị'
+          label='Nhập giá trị dưới'
           width='md'
-          name='value'
-          placeholder='Nhập giá trị'
+          name='valueFrom'
+          placeholder='Nhập giá trị dưới'
+        />
+
+        <ProFormDigit
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.listStatusTransaction.value'
+                  defaultMessage='Nhập giá trị trên'
+                />
+              ),
+            },
+          ]}
+          label='Nhập giá trị trên'
+          width='md'
+          name='valueTo'
+          placeholder='Nhập giá trị trên'
         />
 
         <ProFormText
@@ -438,15 +500,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
+                  defaultMessage='Yêu cấu nhập màu'
                 />
               ),
             },
           ]}
-          label='Màu chữ'
+          label='Màu'
           width='md'
           name='color'
-          placeholder='Màu chữ'
+          placeholder='Màu'
         />
 
         <ProFormText
@@ -531,6 +593,24 @@ const TableList: React.FC = () => {
           placeholder='Tên'
         />
 
+<ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.listStatusTransaction.value'
+                  defaultMessage='Nhập giá trị dưới'
+                />
+              ),
+            },
+          ]}
+          label='Nhập giá trị dưới'
+          width='md'
+          name='valueFrom'
+          placeholder='Nhập giá trị dưới'
+        />
+
         <ProFormText
           rules={[
             {
@@ -538,15 +618,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị'
+                  defaultMessage='Nhập giá trị trên'
                 />
               ),
             },
           ]}
-          label='Giá trị'
+          label='Nhập giá trị trên'
           width='md'
-          name='value'
-          placeholder='Nhập giá trị'
+          name='valueTo'
+          placeholder='Nhập giá trị trên'
         />
 
         <ProFormText
@@ -556,15 +636,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
+                  defaultMessage='Yêu cấu nhập màu'
                 />
               ),
             },
           ]}
-          label='Màu chữ'
+          label='Màu'
           width='md'
           name='color'
-          placeholder='Màu chữ'
+          placeholder='Màu'
         />
 
         <ProFormText

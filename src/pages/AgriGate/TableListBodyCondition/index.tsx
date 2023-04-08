@@ -20,7 +20,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'status-transactions');
+    await customAPIAdd({ ...fields }, 'body-conditions');
     hide();
     message.success('Thêm thành công');
     return true;
@@ -38,7 +38,7 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    }, 'status-transactions', id.current);
+    }, 'body-conditions', id.current);
     hide();
 
     message.success('Cập nhật thành công');
@@ -54,7 +54,7 @@ const handleRemove = async (selectedRows: any) => {
   const hide = message.loading('Đang xóa...');
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'status-transactions')
+      return customAPIDelete(e.id, 'body-conditions')
     })
     await Promise.all(deleteRowss);
     hide();
@@ -203,7 +203,7 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Name' />,
+      title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
@@ -299,7 +299,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'status-transactions')}
+        request={() => customAPIGet({}, 'body-conditions')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -438,15 +438,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
+                  defaultMessage='Yêu cấu nhập màu'
                 />
               ),
             },
           ]}
-          label='Màu chữ'
+          label='Màu'
           width='md'
           name='color'
-          placeholder='Màu chữ'
+          placeholder='Màu'
         />
 
         <ProFormText
@@ -556,15 +556,15 @@ const TableList: React.FC = () => {
               message: (
                 <FormattedMessage
                   id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
+                  defaultMessage='Yêu cấu nhập màu'
                 />
               ),
             },
           ]}
-          label='Màu chữ'
+          label='Màu'
           width='md'
           name='color'
-          placeholder='Màu chữ'
+          placeholder='Màu'
         />
 
         <ProFormText

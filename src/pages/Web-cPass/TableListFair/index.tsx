@@ -17,7 +17,6 @@ import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
 //import DetailCPass from '../components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
-import { values } from 'lodash';
 
 
 const handleAdd = async (fields: any) => {

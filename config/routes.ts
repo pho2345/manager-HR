@@ -70,7 +70,11 @@ export default [
       { path: '/agrigate/c-pass',hideInMenu: false,  name: 'Danh sách cPass', component: './AgriGate/TableListCPass' },
       { path: '/agrigate/group-cow',hideInMenu: false,  name: 'Danh sách nhóm', component: './AgriGate/TableListGroupCow' },
       { path: '/agrigate/category',hideInMenu: false,  name: 'Giống bò', component: './AgriGate/TableListCategory' },
-
+      { path: '/agrigate/status-owner',hideInMenu: false,  name: 'Thể trạng', component: './AgriGate/TableListBodyCondition' },
+      { path: '/agrigate/wge',hideInMenu: false,  name: 'Hiệu quả tăng trọng', component: './AgriGate/TableListWGE' },
+      { path: '/agrigate/awg',hideInMenu: false,  name: 'Tăng trọng trung bình', component: './AgriGate/TableListAWG' },
+      { path: '/agrigate/range-p-zero', name: 'Khoản cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
+      
     ],
   },
 
@@ -83,7 +87,9 @@ export default [
     routes: [
       { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
       { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
-     // { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' }
+      { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' },
+      { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },
+      { path: '/web-aleger/status-owner', name: 'Tình trạng sở hữu Mega', component: './Web-Aleger/TableListStatusOwner' },
     ],
   },
 

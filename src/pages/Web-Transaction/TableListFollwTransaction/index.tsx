@@ -295,7 +295,15 @@ const TableList: React.FC = () => {
                   }
                 }
               },
-              qr_ale: true
+              qr_ale: true,
+              history_c_pass: {
+                select: ['id', 'code'],
+                populate: {
+                  fair: {
+                    select: ['code']
+                  }
+                }
+              }
             },
             filters: {
               $and: [
@@ -357,7 +365,6 @@ const TableList: React.FC = () => {
           return pre;
          }, []);
 
-         console.log('filter', filter);
 
          const uniqueArr = filter.filter((item: any, index: any, self: any) => {
           return index === self.findIndex((t: any) => t.value === item.value);

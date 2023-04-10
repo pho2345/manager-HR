@@ -1,20 +1,20 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
   ProFormText,
- 
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message } from 'antd';
+import { Button, Col, Drawer, Form, Row, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
+import { MdOutlineEdit } from 'react-icons/md';
 
 
 const handleAdd = async (fields: API.RuleListItem) => {
@@ -38,7 +38,7 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    },'categories', id.current);
+    }, 'categories', id.current);
     hide();
 
     message.success('Cập nhật thành công');
@@ -57,7 +57,7 @@ const handleRemove = async (selectedRows: any) => {
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id,'categories')
+      return customAPIDelete(e.id, 'categories')
     })
 
     await Promise.all(deleteRowss);
@@ -101,7 +101,7 @@ const TableList: React.FC = () => {
             }}
           >
             {entity?.attributes?.code}
-           
+
           </a>
         );
       },
@@ -118,23 +118,24 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
-      render: (_, entity : any) => {
-        return (<Button
-          type='primary'
-          key='primary'
-          onClick={() => {
-            handleUpdateModalOpen(true);
-            refIdCateogry.current = entity.id;
-            form.setFieldsValue({
-              code: entity?.attributes?.code,
-              name: entity?.attributes?.name 
-            })
-          
+      render: (_, entity: any) => {
+        return (
+          <Tooltip
+            title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
+          ><MdOutlineEdit
+              type='primary'
+              key='primary'
+              onClick={() => {
+                handleUpdateModalOpen(true);
+                refIdCateogry.current = entity.id;
+                form.setFieldsValue({
+                  code: entity?.attributes?.code,
+                  name: entity?.attributes?.name
+                })
+              }}
+            /></Tooltip>
 
-          }}
-        >
-          <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
-        </Button>)
+        )
       }
     },
 
@@ -144,10 +145,10 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-        
-        return  moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+
+        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
       }
-     
+
     },
 
   ];
@@ -164,14 +165,14 @@ const TableList: React.FC = () => {
         search={false}
         options={
           {
-            reload: (props:any) => {
+            reload: (props: any) => {
               console.log('props', props);
-             return true;
+              return true;
             },
             setting: {
               checkable: true
             }
-            
+
           }
         }
         toolBarRender={() => [
@@ -186,12 +187,12 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
-            icon: <ReloadOutlined/>,
-            onClick:() => {
-              if (actionRef.current){
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -201,8 +202,8 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-           
-           setSelectedRows(selectedRows);
+
+            setSelectedRows(selectedRows);
           },
         }}
       />
@@ -213,8 +214,7 @@ const TableList: React.FC = () => {
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
-              &nbsp;&nbsp;
-              
+
             </div>
           }
         >
@@ -230,10 +230,10 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-         
+
         </FooterToolbar>
       )}
-      
+
 
       <ModalForm
         form={form}
@@ -241,8 +241,8 @@ const TableList: React.FC = () => {
           id: 'pages.searchTable.createForm.newCategory',
           defaultMessage: 'New rule',
         })}
-         width={'30vh'}
-      
+        width={'30vh'}
+
         open={createModalOpen}
         modalProps={{
           destroyOnClose: true,
@@ -260,49 +260,74 @@ const TableList: React.FC = () => {
             }
           }
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+          },
+        }}
       >
-        <ProForm.Group>
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          label={`Mã`}
-          width={`md`}
-          name='code'
-          placeholder='Nhập mã'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Name'
-                  defaultMessage='Yêu cầu nhập tên'
-                />
-              ),
-            },
-          ]}
-          label={`Tên giống bò`}
-          width='md'
-          name='name'
-          placeholder='Nhập tên'
-        />
-        </ProForm.Group>
-        
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              label={`Mã`}
+              width='md'
+              name='code'
+              placeholder='Mã'
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.category.required.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]} />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.category.required.name'
+                      defaultMessage='Nhập tên'
+                    />
+                  ),
+                },
+              ]}
+              label={`Tên giống bò`}
+              width='md'
+              name='name'
+              placeholder='Tên'
+            />
+          </Col>
+        </Row>
+
+
+
+
       </ModalForm>
-  
 
-    <ModalForm
+
+      <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.updateCategory',
           defaultMessage: 'Cập nhật giống bò',
@@ -326,32 +351,69 @@ const TableList: React.FC = () => {
             }
           }
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+          },
+        }}
       >
-        <ProFormText
-          label={`Mã`}
-          width='md'
-          name='code'
-          placeholder='Mã'
-        />
 
-        <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.Name'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
 
-          label={`Mã`}
-          width='md'
-          name='name'
-          placeholder='Tên'
-        />       
+
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              label={`Mã`}
+              width='md'
+              name='code'
+              placeholder='Mã'
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.category.required.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]} />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.category.required.name'
+                      defaultMessage='Nhập tên'
+                    />
+                  ),
+                },
+              ]}
+              label={`Tên giống bò`}
+              width='md'
+              name='name'
+              placeholder='Tên'
+            />
+          </Col>
+        </Row>
+
       </ModalForm>
 
       <Drawer

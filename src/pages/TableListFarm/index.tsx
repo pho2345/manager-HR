@@ -376,6 +376,7 @@ const TableList: React.FC = () => {
         />
 
         <ProFormText
+          
           rules={[
             {
               required: true,

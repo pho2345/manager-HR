@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button,  Form, Input, InputRef, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -192,7 +192,7 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-            
+
             }}
           >
             {entity?.attributes?.code}
@@ -339,7 +339,7 @@ const TableList: React.FC = () => {
                 selectedRowsState, `Bạn có chắc xóa?`
               );
 
-             // await handleRemove(selectedRowsState);
+              // await handleRemove(selectedRowsState);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
@@ -376,96 +376,136 @@ const TableList: React.FC = () => {
             }
           }
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+          },
+        }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          label='Mã'
-          width='md'
-          name='code'
-          placeholder='Mã'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Name'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          label='Tên'
-          width='md'
-          name='name'
-          placeholder='Tên'
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]}
+              label='Mã'
+              className='w-full'
+              name='code'
+              placeholder='Mã'
+            />
+          </Col>
+        </Row>
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.code'
+                      defaultMessage='Nhập tên'
+                    />
+                  ),
+                },
+              ]}
+              label='Tên'
+              className='w-full'
+              name='name'
+              placeholder='Tên'
+            />
+          </Col>
+        </Row>
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị'
-                />
-              ),
-            },
-          ]}
-          label='Giá trị'
-          width='md'
-          name='value'
-          placeholder='Nhập giá trị'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
-                />
-              ),
-            },
-          ]}
-          label='Màu chữ'
-          width='md'
-          name='color'
-          placeholder='Màu chữ'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.backgroundColor'
-                  defaultMessage='Yêu cấu nhập màu nền'
-                />
-              ),
-            },
-          ]}
-          label='Màu nền'
-          width='md'
-          name='background'
-          placeholder='Màu nền'
-        />
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.value'
+                      defaultMessage='Nhập giá trị'
+                    />
+                  ),
+                },
+              ]}
+              label='Giá trị'
+              width='md'
+              name='value'
+              placeholder='Nhập giá trị'
+            />
+
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.color'
+                      defaultMessage='Yêu cấu nhập màu chữ'
+                    />
+                  ),
+                },
+              ]}
+              label='Màu chữ'
+              className='w-full'
+              name='color'
+              placeholder='Màu chữ'
+            />
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.backgroundColor'
+                      defaultMessage='Yêu cấu nhập màu nền'
+                    />
+                  ),
+                },
+              ]}
+              label='Màu nền'
+              className='w-full'
+              name='background'
+              placeholder='Màu nền'
+            />
+          </Col>
+        </Row>
+
 
       </ModalForm>
 
@@ -494,44 +534,70 @@ const TableList: React.FC = () => {
             }
           }
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+          },
+        }}
       >
-        <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.Code'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
-          label='Mã'
-          width='md'
-          name='code'
-          placeholder='Mã'
-        />
+       
+       <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]}
+              label='Mã'
+              className='w-full'
+              name='code'
+              placeholder='Mã'
+            />
+          </Col>
+        </Row>
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.code'
+                      defaultMessage='Nhập tên'
+                    />
+                  ),
+                },
+              ]}
+              label='Tên'
+              className='w-full'
+              name='name'
+              placeholder='Tên'
+            />
+          </Col>
+        </Row>
 
-        <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.Name'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
-          label='Tên'
-          width='md'
-          name='name'
-          placeholder='Tên'
-        />
 
-        <ProFormText
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+          <ProFormText
           rules={[
             {
               required: true,
@@ -549,42 +615,55 @@ const TableList: React.FC = () => {
           placeholder='Nhập giá trị'
         />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.color'
-                  defaultMessage='Yêu cấu nhập màu chữ'
-                />
-              ),
-            },
-          ]}
-          label='Màu chữ'
-          width='md'
-          name='color'
-          placeholder='Màu chữ'
-        />
+          </Col>
+        </Row>
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.backgroundColor'
-                  defaultMessage='Yêu cấu nhập màu nền'
-                />
-              ),
-            },
-          ]}
-          label='Màu nền'
-          width='md'
-          name='background'
-          placeholder='Màu nền'
-        />
 
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.color'
+                      defaultMessage='Yêu cấu nhập màu chữ'
+                    />
+                  ),
+                },
+              ]}
+              label='Màu chữ'
+              className='w-full'
+              name='color'
+              placeholder='Màu chữ'
+            />
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listStatusTransaction.backgroundColor'
+                      defaultMessage='Yêu cấu nhập màu nền'
+                    />
+                  ),
+                },
+              ]}
+              label='Màu nền'
+              className='w-full'
+              name='background'
+              placeholder='Màu nền'
+            />
+          </Col>
+        </Row>
+       
       </ModalForm>
 
     </PageContainer>

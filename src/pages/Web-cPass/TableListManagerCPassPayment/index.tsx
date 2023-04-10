@@ -1,5 +1,4 @@
 import {
-  customAPIDelete,
   customAPIGetOne,
   customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
@@ -21,8 +20,6 @@ import { FormattedMessage, useIntl, useParams } from '@umijs/max';
 import { Button, Checkbox, Drawer, Form, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import "./styles.css";
-
-
 
 
 
@@ -257,7 +254,6 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
               refTransaction.current = entity.id
             }}
-
           >Refund</Button></>);
         }
 
@@ -271,7 +267,6 @@ const TableList: React.FC = () => {
           </>)
 
         }
-
         return (<>{button}</>);
       },
     },

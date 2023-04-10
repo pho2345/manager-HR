@@ -1,13 +1,13 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined,  TranslationOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage } from '@umijs/max';
-import { Button, message, Modal, Space, Input, Tooltip } from 'antd';
-import React, {  useRef, useState } from 'react';
+import { Button, message, Modal, Space, Input, Tooltip, Row, Col } from 'antd';
+import React, { useRef, useState } from 'react';
 import "./styles.css";
 
 
@@ -47,19 +47,19 @@ const DialogTransfer = (props: any) => {
   //const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   //const params = useParams<any>();
   //const [searchText, setSearchText] = useState('');
- // const [searchedColumn, setSearchedColumn] = useState('');
+  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-  
+
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
     //setSearchText('');
   };
- 
+
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
@@ -70,7 +70,7 @@ const DialogTransfer = (props: any) => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -136,15 +136,15 @@ const DialogTransfer = (props: any) => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -177,7 +177,7 @@ const DialogTransfer = (props: any) => {
         }, api);
         if (actionRef.current) {
           actionRef.current.reload();
-          setShowTransfer(false); 
+          setShowTransfer(false);
         }
       }
     });
@@ -254,7 +254,7 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-           <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />} > <TranslationOutlined
+            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />} > <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -289,7 +289,7 @@ const DialogTransfer = (props: any) => {
         submitter={false}
       >
         <ProTable
-          headerTitle='Danh sách Mega'
+          headerTitle='Chọn Aleger muốn chuyển Ale'
           actionRef={actionRef}
           rowKey='id'
           search={false}
@@ -311,61 +311,58 @@ const DialogTransfer = (props: any) => {
           }}
 
           columns={columns}
-          // rowSelection={{
-          //   onChange: (_, selectedRows: any) => {
-          //     if (selectedRows.length > 1) {
-          //       message.error('Chỉ được chọn 1 Mega!');
-          //     }
-          //     setSelectedRowsMega(selectedRows);
-          //   },
 
-          //   // getCheckboxProps: (record: any) => ({
-          //   //   disabled: false, // Column configuration not to be checked
-          //   //  //name: record.name,
-          //   // }),
-          // }}
         />
       </ModalForm>
 
-      { currentRowUser && (
+      {currentRowUser && (
         <ModalForm
-        
-        width={300}
-        open={showTransfer}
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            setShowTransfer(false);
-          },
-        }}
-        onFinish={async(values) => {
-          console.log(props?.megaChoosen);
-          confirm({
-              receiverId: currentRowUser.id,
-              senderId:  props?.megaChoosen?.id,
-              ale: values?.ale
-          },
-           `Chắc chắn chuyển ${values.ale} Ale từ Aleger  ${props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - ${props?.megaChoosen?.id} 
-           sang Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}`,
-            'transactions/transfer-admin');
 
-          return true;
-        }}
-        submitter={{
-          searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
-          },
-        }}
-      >
-        <ProFormMoney
-          label="Nhập giá trị Ale muốn chuyển"
-          name="ale"
-          min={1}
-          max={props?.megaChoosen?.availableBalance}
-          customSymbol='A'
-        />
-      </ModalForm>
+          width={`30vh`}
+          open={showTransfer}
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+              setShowTransfer(false);
+            },
+          }}
+          onFinish={async (values) => {
+            console.log(props?.megaChoosen);
+            confirm({
+              receiverId: currentRowUser.id,
+              senderId: props?.megaChoosen?.id,
+              ale: values?.ale
+            },
+              `Chắc chắn chuyển ${values.ale} Ale từ Aleger  ${props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - ${props?.megaChoosen?.id} 
+           sang Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}`,
+              'transactions/transfer-admin');
+
+            return true;
+          }}
+          submitter={{
+            searchConfig: {
+              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            },
+          }}
+        >
+
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
+
+              <ProFormMoney
+                className='w-full'
+                label="Nhập giá trị Ale muốn chuyển"
+                name="ale"
+                min={1}
+                max={props?.megaChoosen?.availableBalance}
+                customSymbol='A'
+              />
+            </Col>
+          </Row>
+
+
+        </ModalForm>
       )}
 
     </>

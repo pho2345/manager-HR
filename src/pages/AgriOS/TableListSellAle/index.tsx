@@ -1,12 +1,12 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined,  } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined, } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input, Form, Tooltip } from 'antd';
+import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Col, Row } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 
@@ -61,7 +61,7 @@ const TableListAssignCPass = () => {
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-   // setSearchedColumn(dataIndex);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
@@ -78,7 +78,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -145,15 +145,15 @@ const TableListAssignCPass = () => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -180,7 +180,7 @@ const TableListAssignCPass = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       await handleAdd(entity, api);
+        await handleAdd(entity, api);
 
         if (actionRef.current) {
           actionRef.current.reload();
@@ -197,7 +197,7 @@ const TableListAssignCPass = () => {
 
 
   const columns: ProColumns<any>[] = [
-     {
+    {
       title: 'STT',
       dataIndex: 'index',
       valueType: 'index',
@@ -277,7 +277,7 @@ const TableListAssignCPass = () => {
       renderText: (_, text: any) => {
         return `${text?.totalSellAle} | ${text?.totalVnd}`;
       }
-    },  
+    },
 
     {
       title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
@@ -287,18 +287,18 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-          <Tooltip title={<FormattedMessage id='pages.sellAle.buttonSellAle' defaultMessage='Đặt bán Ale'/>}>
-            <TransactionOutlined
-              style={{
-                fontSize: 20,
-                paddingLeft: 5,
-                color: '#66FFFF'
-              }}
-              onClick={() => {
-                setShowModal(true);
-                setCurrentRowUser(text);
-              }}
-            />
+            <Tooltip title={<FormattedMessage id='pages.sellAle.buttonSellAle' defaultMessage='Đặt bán Ale' />}>
+              <TransactionOutlined
+                style={{
+                  fontSize: 20,
+                  paddingLeft: 5,
+                  color: '#66FFFF'
+                }}
+                onClick={() => {
+                  setShowModal(true);
+                  setCurrentRowUser(text);
+                }}
+              />
             </Tooltip>
           </>
         ]
@@ -322,6 +322,7 @@ const TableListAssignCPass = () => {
         }
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger/get/sell-ale');
+          console.log('data', data);
           setRateConvert(data?.data.rate);
           return {
             data: data?.data?.user,
@@ -331,12 +332,12 @@ const TableListAssignCPass = () => {
         }}
         columns={columns}
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -349,7 +350,7 @@ const TableListAssignCPass = () => {
         open={showModal}
         form={form}
         width={300}
-        
+
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
@@ -362,27 +363,31 @@ const TableListAssignCPass = () => {
             resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
             submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
           },
-          
+
 
         }}
         onFinish={async () => {
-            confirm({
-              senderId: currentRowUser?.id,
-              ale: convertAle
-            }, 
-            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle} Ale?`, 
+          confirm({
+            senderId: currentRowUser?.id,
+            ale: convertAle
+          },
+            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle} Ale?`,
             'transactions/sell-ale-admin');
           form.resetFields();
-         
+
           return true
         }}
 
-       
+
       >
-        <Text style={{fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ,</Text>
-        <Text style={{fontWeight: 'bolder', color: 'red' }}> Phí = {rateConvert?.feeTransaction}%</Text>
-          <br/>
-        <ProFormMoney
+
+
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ,</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> Phí = {rateConvert?.feeTransaction}%</Text>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+          <ProFormMoney
           label="Nhập giá trị Ale muốn mua"
           name="ale"
           min={1}
@@ -395,45 +400,71 @@ const TableListAssignCPass = () => {
               setConvertAle(e);
             }
           }}
-          required
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.sellAle.required.ale'
+                  defaultMessage='Vui lòng nhập Ale'
+                />
+              ),
+            }
+          ]}
         />
-        <ProFormSelect options={[
-          {
-            value: 1,
-            label: 'Ngân hàng'
-          },
-          {
-            value: 2,
-            label: 'Ví điện tử'
-          }
-        ]} 
-        placeholder='Chọn PTTT' 
-        width='md' name='method' label={<FormattedMessage id='pages.sellAle.methodPayment' defaultMessage='Phương thức thanh toán'/>} 
-        rules={[
-          {
-            required: true,
-            message: (
-              <FormattedMessage
-                id='pages.sellAle.required.methodPayment'
-                defaultMessage='Chọn PTTT'
-              />
-            ),
-          }
-        ]}
-        />
+          </Col>
+        </Row>
 
-        <ProFormMoney
-          label="Số tiền nhận được:"
-          name="ale"
-          min={1}
-          disabled
-          customSymbol='VNĐ'
-          placeholder='ProduceAle'
-          fieldProps={{
-            value: convertAle * rateConvert?.rateAle - (convertAle * rateConvert?.rateAle * rateConvert?.feeTransaction) ,
-          
-          }}
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect options={[
+              {
+                value: 1,
+                label: 'Ngân hàng'
+              },
+              {
+                value: 2,
+                label: 'Ví điện tử'
+              }
+            ]}
+              placeholder='Chọn PTTT'
+              width='md' name='method' label={<FormattedMessage id='pages.sellAle.methodPayment' defaultMessage='Phương thức thanh toán' />}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.sellAle.required.methodPayment'
+                      defaultMessage='Chọn PTTT'
+                    />
+                  ),
+                }
+              ]}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormMoney
+              label="Số tiền nhận được:"
+              name="ale"
+              min={1}
+              disabled
+              customSymbol='VNĐ'
+              placeholder='ProduceAle'
+              fieldProps={{
+                value: convertAle * rateConvert?.rateAle - (convertAle * rateConvert?.rateAle * rateConvert?.feeTransaction),
+
+              }}
+            />
+
+          </Col>
+        </Row>
+
+
+
+
 
 
 

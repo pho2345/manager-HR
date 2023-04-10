@@ -6,14 +6,12 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, } from '@umijs/max';
-import { Button, message, Modal, Space, Input, Form, Tooltip } from 'antd';
+import { Button, message, Modal, Space, Input, Form, Tooltip, Col, Row, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 import DialogTransfer from '../components/DialogTransfer';
 
-//const { Text, } = Typography;
-
-
+const { Text } = Typography;
 
 
 const handleAdd = async (fields: any, api: string) => {
@@ -65,7 +63,7 @@ const TableListAssignCPass = () => {
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-   // setSearchText('');
+    // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -77,7 +75,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -143,15 +141,15 @@ const TableListAssignCPass = () => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -178,7 +176,7 @@ const TableListAssignCPass = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       await handleAdd(entity, api);
+        await handleAdd(entity, api);
 
         if (actionRef.current) {
           actionRef.current.reload();
@@ -265,7 +263,7 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi'/>}> <TranslationOutlined
+            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />}> <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -279,7 +277,7 @@ const TableListAssignCPass = () => {
 
           </>,
           <>
-           <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transferProduceAle' defaultMessage='Chuyển đổi ProduceAle'/>}> <TransactionOutlined
+            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transferProduceAle' defaultMessage='Chuyển đổi ProduceAle' />}> <TransactionOutlined
               style={{
                 fontSize: 30,
                 paddingLeft: 5,
@@ -296,8 +294,6 @@ const TableListAssignCPass = () => {
       }
     },
   ];
-
-
 
   return (
     <>
@@ -328,21 +324,21 @@ const TableListAssignCPass = () => {
           }]
         }}
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
-        //     console.log(selectedRows);
-        //     if (selectedRows.length > 1) {
-        //       // message.er('Chỉ được chọn 1 Mega!');
-        //     }
+      // rowSelection={{
+      //   onChange: (_, selectedRows: any) => {
+      //     console.log(selectedRows);
+      //     if (selectedRows.length > 1) {
+      //       // message.er('Chỉ được chọn 1 Mega!');
+      //     }
 
-        //     //setSelectedRowsMega(selectedRows);
+      //     //setSelectedRowsMega(selectedRows);
 
-        //   },
-        //   // getCheckboxProps: (record: any) => ({
-        //   //   disabled: false, // Column configuration not to be checked
-        //   //  //name: record.name,
-        //   // }),
-        // }}
+      //   },
+      //   // getCheckboxProps: (record: any) => ({
+      //   //   disabled: false, // Column configuration not to be checked
+      //   //  //name: record.name,
+      //   // }),
+      // }}
       />
 
       {
@@ -387,7 +383,7 @@ const TableListAssignCPass = () => {
             }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
           }
           form.resetFields();
-         
+
           return true
         }}
 
@@ -398,73 +394,87 @@ const TableListAssignCPass = () => {
           },
         }}
       >
-        <ProFormSelect width='md' options={[
-          {
-            label: 'ProduceAle sang Ale',
-            value: 1
-          },
-          {
-            label: 'ProduceAle sang PromoAle',
-            value: 2
-          }
-        ]}
-          fieldProps={{
-            defaultValue: 1,
-            onChange: async (values: any) => {
-              if (values === 1) {
-                setTypeConvert(false)
-              }
-              else {
-                const rate = await customAPIGet({}, 'conversionrates');
-                setRateConvert(rate.data);
-                setTypeConvert(true);
-              }
-            }
-          }} required placeholder='Chọn phương thức chuyển đổi' name='method' label='Phương thức chuyển đổi' />
 
-        <ProFormMoney
-          label="Nhập giá trị ProduceAle muốn chuyển"
-          name="ale"
-          min={1}
-          customSymbol='A'
-          placeholder='ProduceAle'
-          fieldProps={{
-            value: convertAle,
-            onChange: (e: any) => {
-              setConvertAle(e);
-            }
-          }}
-          required
-        />
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 ProduceAle = {typeConvert === true ? `${rateConvert?.ratePromo + 1} PromoAle` : '1 Ale'}</Text>
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect width='md' options={[
+              {
+                label: 'ProduceAle sang Ale',
+                value: 1
+              },
+              {
+                label: 'ProduceAle sang PromoAle',
+                value: 2
+              }
+            ]}
+              fieldProps={{
+                defaultValue: 1,
+                onChange: async (values: any) => {
+                  if (values === 1) {
+                    setTypeConvert(false)
+                  }
+                  else {
+                    const rate = await customAPIGet({}, 'conversionrates');
+                    setRateConvert(rate.data);
+                    setTypeConvert(true);
+                  }
+                }
+              }} required placeholder='Chọn phương thức chuyển đổi' name='method' label='Phương thức chuyển đổi' />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormMoney
+              label="Nhập giá trị ProduceAle muốn chuyển"
+              name="ale"
+              min={1}
+              customSymbol='A'
+              placeholder='ProduceAle'
+              fieldProps={{
+                value: convertAle,
+                onChange: (e: any) => {
+                  setConvertAle(e);
+                }
+              }}
+              required
+            />
+          </Col>
+        </Row>
+
         {
           typeConvert === true ? (
             <>
-              <ProFormText
-                label="PrmoAle nhận được"
-                name="promoAle"
-                disabled
-                fieldProps={{
-                  value: convertAle + convertAle * rateConvert?.ratePromo,
-                }}
-              />
+              <Row gutter={24} className="m-0">
+                <Col span={24} className="gutter-row p-0" >
+                  <ProFormText
+                    label="PrmoAle nhận được"
+                    name="promoAle"
+                    disabled
+                    fieldProps={{
+                      value: convertAle + convertAle * rateConvert?.ratePromo,
+                    }}
+                  />
+                </Col>
+              </Row>
             </>
           ) : (
-            <>
-              <ProFormText
-                label="Ale nhận được"
-                name="ale"
-                disabled
-                placeholder='Ale'
-                fieldProps={{
-                  value: convertAle,
-                }}
-              />
-            </>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormText
+                  label="Ale nhận được"
+                  name="ale"
+                  disabled
+                  placeholder='Ale'
+                  fieldProps={{
+                    value: convertAle,
+                  }}
+                />   </Col>
+            </Row>
           )
         }
-
-
-
       </ModalForm>
 
     </>

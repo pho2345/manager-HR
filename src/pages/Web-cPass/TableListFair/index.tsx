@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SettingOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -11,7 +11,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link } from '@umijs/max';
-import { Button, Form, message, Modal, Tooltip } from 'antd';
+import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
@@ -458,34 +458,9 @@ const TableList: React.FC = () => {
                 }
               }
             },
-              // {
-              //   key: 'density',
-              //   tooltip: 'Tải lại',
-              //   icon: <ReloadOutlined />,
-              //   onClick:() => {
-              //     if (actionRef.current){
-              //       actionRef.current.reload();
-              //     }
-              //   }
-              // },
 
             ],
-            // menu: {
-            //   type: 'dropdown',
-            //   activeKey: '1',
-            //   items: [
-            //     {
-            //       key: '1',
-            //       label: 1
-            //     },
-            //     {
-            //       key: '2',
-            //       label: 2
-            //     }
-            //   ]
-            // },
-            //  title: <Button>UUddU</Button>,
-            //  filter: <Button>UUU</Button>
+
           }}
 
 
@@ -532,7 +507,6 @@ const TableList: React.FC = () => {
               handleModalOpen(false);
             },
           }}
-          width={`76vh`}
           submitTimeout={2000}
           onFinish={async (values) => {
 
@@ -548,83 +522,118 @@ const TableList: React.FC = () => {
           }}
 
           submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
             searchConfig: {
               resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
               submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
             },
           }}
         >
-          <ProForm.Group>
+          
 
-            <ProFormDateTimePicker width='md' name="timeStart"
-              label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
-              ]}
-            />
 
-            <ProFormDatePicker width='md' name="dateStartFeed"
-              label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
-              ]}
-            />
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
+                label={<FormattedMessage id='pages.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                ]}
+              />
+            </Col>
 
-            <ProFormText width='md' name='timeFeed' placeholder='Thời gian nuôi'
-              label={<FormattedMessage id='pages.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
-              ]}
-            />
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='unitPriceMeat' placeholder='Đơn giá thịt'
+                label={<FormattedMessage id='pages.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                ]}
+              />
+            </Col>
+          </Row>
 
-            <ProFormText width='md' name='unitPriceMeat' placeholder='Đơn giá thịt' 
-              label={<FormattedMessage id='pages.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
-              ]}
-            />
 
-            <ProFormText width='md' name='nameFarm' placeholder='Tên trang trại' 
-               label= {<FormattedMessage id='pages.listFair.nameFarm' defaultMessage='Tên trang trại' />}
-               rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
-              ]}
-            />
-            <ProFormSelect
-              name="c_passes"
-              label="Chọn cPass"
-              request={getCPassNotFair}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
-            />
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker name="timeStart"
+                className='w-full'
+                placeholder='Nhập thời gian mở'
+                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                ]}
+              />
+            </Col>
 
-            <ProFormSelect
-              name="plans"
-              label="Chọn PAHT"
-              options={plan}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
-            rules={[
-              { required: true, message: <FormattedMessage id='pages.listFair.required.plans' defaultMessage='Vui lòng chọn PAHT' />  },
-            ]}
-            />
-          </ProForm.Group>
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                className='w-full'
+                name="dateStartFeed"
+                placeholder='Thời gian bắt đầu nuôi'
+                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText name='nameFarm' placeholder='Tên trang trại'
+                label={<FormattedMessage id='pages.listFair.nameFarm' defaultMessage='Tên trang trại' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                name="dateStartFeed"
+                style={{
+                  width: `100%`
+                }}
+                placeholder='Thời gian bắt đầu nuôi'
+                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect
+                name="plans"
+                label="Chọn PAHT"
+                options={plan}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder="Chọn cPass"
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.plans' defaultMessage='Vui lòng chọn PAHT' /> },
+                ]}
+              />
+            </Col>
+          </Row>
 
         </ModalForm>
 
 
-            
+
         <ModalForm
           title={<FormattedMessage id='pages.listFair.updateModal' defaultMessage='Cập nhật Phiên mở bán' />}
           open={updateModalOpen}
           form={form}
-          width={`76vh`}
           autoFocusFirstInput
           modalProps={{
             destroyOnClose: true,
@@ -639,7 +648,7 @@ const TableList: React.FC = () => {
               submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
             },
           }}
-          
+
           onFinish={async (values) => {
 
             const success = await handleUpdate(values as any, refIdFair as any);
@@ -653,89 +662,160 @@ const TableList: React.FC = () => {
 
             return true;
           }}
-          
+
         >
-          <ProForm.Group>
-            <ProFormText width='md' name='code' placeholder='Mã' disabled 
-              label={<FormattedMessage id='pages.listFair.code' defaultMessage='Mã phiên mở bán' />}
-            />
-          
-          <ProFormDateTimePicker width='md' name="timeStart"
-              label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
-              ]}
-            />
 
-            <ProFormDateTimePicker name="timeEnd" width='md'
-                label={<FormattedMessage id='pages.listFair.timeEnd' defaultMessage='Thời gian đóng' />}
-            />
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
 
-            <ProFormDatePicker width='md' name="dateStartFeed"
-              label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
-              rules={[
-                { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
-              ]}
-            />
+              <ProFormText className='w-full' name='code' placeholder='Mã' disabled
+                label={<FormattedMessage id='pages.listFair.code' defaultMessage='Mã phiên mở bán' />}
+              />
 
-            <ProFormSelect
-              width='md'
-              name='status'
-              label='Trạng thái'
-              options={[
-                {
-                  label: 'Chưa mở',
-                  value: 'noOpen',
-                },
-                {
-                  label: 'Đang mở',
-                  value: 'Opening',
-                },
-                {
-                  label: 'Đã đóng',
-                  value: 'closed',
-                },
-              ]}
-              placeholder='Trạng thái'
-              rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.timeStart' defaultMessage='Thời gian mở' /> }]}
-            />
-          
-            <ProFormDateTimePicker width='md' name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
-            <ProFormDateTimePicker width='md' name="dateEndFeed" label="Thời gian kết thúc nuôi" />
-            <ProFormText width='md' name='timeFeed' label='Thời gian nuôi(Tuần)' placeholder='Thời gian nuôi' />
-            <ProFormText width='md' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)' placeholder='Đơn giá thịt' />
-            <ProFormText width='md' name='nameFarm' label='Tên trang trại' placeholder='Tên trang trại' />
+            </Col>
 
-            <ProFormSelect
-              name="c_passes"
-              label="Chọn cPass"
-              // valueEnum={}
-              request={getCPassNotFair}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDateTimePicker className='w-full' name="timeStart"
+                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                ]}
+                placeholder='Thời gian mở'
+              />
 
-            />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker name="timeEnd" className='w-full'
+                placeholder='Thời gian đóng'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                ]}
+                label={<FormattedMessage id='pages.listFair.timeEnd'
+                  defaultMessage='Thời gian đóng' />
+
+                }
+              />
+
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker className='w-full' name="dateStartFeed"
+                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                placeholder='Thời gian bắt đầu nuôi'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                ]}
+              />
+            </Col>
+
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker className='w-full' name="dateEndFeed" label="Thời gian kết thúc nuôi" placeholder='Thời gian kết thúc nuôi' rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' /> }]} />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='timeFeed' label='Thời gian nuôi(Tuần)'
+                placeholder='Nhập thời gian nuôi'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeFeed' defaultMessage='Nhập thời gian nuôi' /> }]}
+              />
+            </Col>
+          </Row>
 
 
-            <ProFormSelect
-              name="plans"
-              label="Chọn Plans"
-              // valueEnum={}
-              options={plan}
-              //request={getPlans}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
-              rules={[
-                { required: true, message: 'Vui lòng chọn cPass!', type: 'array' },
-              ]}
-            />
-          </ProForm.Group>
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect
+                className='w-full'
+                name='status'
+                label='Trạng thái'
+                options={[
+                  {
+                    label: 'Chưa mở',
+                    value: 'noOpen',
+                  },
+                  {
+                    label: 'Đang mở',
+                    value: 'Opening',
+                  },
+                  {
+                    label: 'Đã đóng',
+                    value: 'closed',
+                  },
+                ]}
+                placeholder='Trạng thái'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeStart' defaultMessage='Trạng thái' /> }]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+
+              <ProFormSelect
+                name="plans"
+                label="Chọn Plans"
+                // valueEnum={}
+                options={plan}
+                //request={getPlans}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder="Chọn cPass"
+                rules={[
+                  { required: true, message: 'Vui lòng chọn Plans!' },
+                ]}
+              />
+            </Col>
+          </Row>
+
+
+
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)'
+                placeholder='Đơn giá thịt'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.unitPriceMeat' defaultMessage='Đơn giá thịt' /> }]}
+
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='nameFarm' label='Tên trang trại'
+                placeholder='Tên trang trại'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
+              <ProFormSelect
+                name="c_passes"
+                label="Chọn cPass"
+                // valueEnum={}
+                request={getCPassNotFair}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder="Chọn cPass"
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.c_passes' defaultMessage='Chọn cPass' /> }]}
+              />
+
+
+            </Col>
+          </Row>
+
+
+
+
+
 
         </ModalForm>
 
@@ -774,98 +854,151 @@ const TableList: React.FC = () => {
             },
           }}
         >
-        
-          <ProForm.Group>
-            <ProFormDateTimePicker width='md' name="timeStart" label="Thời gian mở" />
-            <ProFormDateTimePicker width='md' name="timeEnd" label="Thời gian đóng" />
-            <ProFormSelect
-              width='md'
-              name='status'
-              label='Trạng thái'
-              options={[
-                {
-                  label: 'Chưa mở',
-                  value: 'noOpen',
-                },
-                {
-                  label: 'Đang mở',
-                  value: 'Opening',
-                },
-                {
-                  label: 'Đã đóng',
-                  value: 'closed',
-                },
-              ]}
-              placeholder='Trạng thái'
-              rules={[{ required: true, message: 'Chọn Trạng thái!' }]}
-            />
 
-            <ProFormDateTimePicker width='md' name="dateStartFeed" label="Thời gian bắt đầu nuôi" />
-            <ProFormDateTimePicker width='md' name="dateEndFeed" label="Thời gian kết thúc nuôi" />
-            <ProFormText width='md' name='timeFeed' label='Thời gian nuôi(Tuần)' placeholder='Thời gian nuôi' />
-            <ProFormText width='md' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)' placeholder='Đơn giá thịt' />
-            <ProFormText width='md' name='nameFarm' label='Tên trang trại' placeholder='Tên trang trại' />
-
-            <ProFormSelect
-              name="c_passes"
-              label="Chọn cPass"
-              // valueEnum={}
-              request={getCPassNotFair}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
-
-            />
+          <Row gutter={24} className="m-0">
 
 
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDateTimePicker className='w-full' name="timeStart"
+                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                ]}
+                placeholder='Thời gian mở'
+              />
+
+            </Col>
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDateTimePicker name="timeEnd" className='w-full'
+                placeholder='Thời gian đóng'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                ]}
+                label={<FormattedMessage id='pages.listFair.timeEnd'
+                  defaultMessage='Thời gian đóng' />
+                }
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker className='w-full' name="dateStartFeed"
+                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                placeholder='Thời gian bắt đầu nuôi'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker className='w-full' name="dateEndFeed" label="Thời gian kết thúc nuôi" placeholder='Thời gian kết thúc nuôi' rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' /> }]} />
+            </Col>
 
 
-            <ProFormSelect
-              name="plans"
-              label="Chọn Plans"
-              options={plan}
+          </Row>
 
-              // valueEnum={}
-              //request={getPlans}
-              fieldProps={{
-                mode: 'multiple',
-              }}
-              width='md'
-              placeholder="Chọn cPass"
-              rules={[
-                { required: true, message: 'Vui lòng chọn cPass!', type: 'array' },
-              ]}
-            />
-          </ProForm.Group>
+          <Row gutter={24} className="m-0">
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='timeFeed' label='Thời gian nuôi(Tuần)'
+                placeholder='Nhập thời gian nuôi'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeFeed' defaultMessage='Nhập thời gian nuôi' /> }]}
+              />
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect
+                className='w-full'
+                name='status'
+                label='Trạng thái'
+                options={[
+                  {
+                    label: 'Chưa mở',
+                    value: 'noOpen',
+                  },
+                  {
+                    label: 'Đang mở',
+                    value: 'Opening',
+                  },
+                  {
+                    label: 'Đã đóng',
+                    value: 'closed',
+                  },
+                ]}
+                placeholder='Trạng thái'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeStart' defaultMessage='Trạng thái' /> }]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+
+              <ProFormSelect
+                name="plans"
+                label="Chọn Plans"
+                // valueEnum={}
+                options={plan}
+                //request={getPlans}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder="Chọn cPass"
+                rules={[
+                  { required: true, message: 'Vui lòng chọn Plans!' },
+                ]}
+              />
+            </Col>
+          </Row>
+
+
+
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)'
+                placeholder='Đơn giá thịt'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.unitPriceMeat' defaultMessage='Đơn giá thịt' /> }]}
+
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='nameFarm' label='Tên trang trại'
+                placeholder='Tên trang trại'
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
+              <ProFormSelect
+                name="c_passes"
+                label="Chọn cPass"
+                // valueEnum={}
+                request={getCPassNotFair}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder="Chọn cPass"
+                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.c_passes' defaultMessage='Chọn cPass' /> }]}
+              />
+
+
+            </Col>
+          </Row>
 
         </ModalForm>
 
 
-        {/* <Drawer
-        width={800}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.code && (
-          <ProDescriptions
-            column={1}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columnsDetail}
-          />
-        )}
-      </Drawer> */}
 
         {
           currentFair && (<>

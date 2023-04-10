@@ -6,7 +6,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input, Form, Tooltip } from 'antd';
+import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Row, Col } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 
@@ -42,7 +42,7 @@ const handleAdd = async (fields: any, api: string) => {
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
- // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
+  // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   //const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -60,7 +60,7 @@ const TableListAssignCPass = () => {
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-   // setSearchedColumn(dataIndex);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
@@ -77,7 +77,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -144,15 +144,15 @@ const TableListAssignCPass = () => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -179,13 +179,13 @@ const TableListAssignCPass = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       await handleAdd(entity, api);
+        await handleAdd(entity, api);
 
         if (actionRef.current) {
           actionRef.current.reload();
           setShowModal(false);
           setConvertAle(0);
-         // setTypeConvert(false);
+          // setTypeConvert(false);
 
         }
 
@@ -269,7 +269,7 @@ const TableListAssignCPass = () => {
       renderText: (_, text: any) => {
         return `${text?.quantityAleRecharge} | ${text?.exchangeVnd}`;
       }
-    },  
+    },
 
     {
       title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
@@ -279,18 +279,18 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-          <Tooltip title="Mua ale">
-            <TransactionOutlined
-              style={{
-                fontSize: 20,
-                paddingLeft: 5,
-                color: '#66FFFF'
-              }}
-              onClick={() => {
-                setShowModal(true);
-                setCurrentRowUser(text);
-              }}
-            />
+            <Tooltip title="Mua ale">
+              <TransactionOutlined
+                style={{
+                  fontSize: 20,
+                  paddingLeft: 5,
+                  color: '#66FFFF'
+                }}
+                onClick={() => {
+                  setShowModal(true);
+                  setCurrentRowUser(text);
+                }}
+              />
             </Tooltip>
           </>
         ]
@@ -323,12 +323,12 @@ const TableListAssignCPass = () => {
         }}
         columns={columns}
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -350,55 +350,79 @@ const TableListAssignCPass = () => {
           },
         }}
         onFinish={async () => {
-            confirm({
-              senderId: currentRowUser?.id,
-              ale: convertAle
-            }, 
-            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện mua ${convertAle} Ale?`, 
+          confirm({
+            senderId: currentRowUser?.id,
+            ale: convertAle
+          },
+            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện mua ${convertAle} Ale?`,
             'transactions/buy-ale-admin');
           form.resetFields();
-         
+
           return true
         }}
       >
-        <Text style={{fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ</Text>
 
-          <br/>
-        <ProFormMoney
-          label="Nhập giá trị Ale muốn mua"
-          name="ale"
-          min={1}
-          customSymbol='A'
-          placeholder='ProduceAle'
-          fieldProps={{
-            value: convertAle,
-            onChange: (e: any) => {
-              setConvertAle(e);
-            }
-          }}
-          required
-        />
+        <br />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormMoney
+              className='w-full'
+              label="Nhập giá trị Ale muốn mua"
+              name="ale"
+              min={1}
+              customSymbol='A'
+              placeholder='Ale'
+              fieldProps={{
+                value: convertAle,
+                onChange: (e: any) => {
+                  setConvertAle(e);
+                }
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.buyAle.required.ale'
+                      defaultMessage='Yêu cấu nhập số lượng'
+                    />
+                  ),
+                },
+              ]}
+            />
+          </Col>
+        </Row>
 
-        <ProFormMoney
-          label="Giá VNĐ:"
-          name="ale"
-          min={1}
-          customSymbol='VNĐ'
-          placeholder='ProduceAle'
-          fieldProps={{
-            value: convertAle * rateConvert?.rateAle,
-            onChange: (e: any) => {
-              if(e > 10000){
-                const roundedValue = Math.round(e / 1000) * 1000;
-                setConvertAle(roundedValue / rateConvert?.rateAle);
-              }
-              else {
-                setConvertAle(e / rateConvert?.rateAle);
-              }
-              
-            }
-          }}
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormMoney
+              className='w-full'
+              label={<FormattedMessage
+                id='pages.buyAle.ale'
+                defaultMessage='Yêu cấu nhập số lượng'
+              />}
+              name="ale"
+              min={1}
+              customSymbol='VNĐ'
+              placeholder='VNĐ'
+              fieldProps={{
+                value: convertAle * rateConvert?.rateAle,
+                onChange: (e: any) => {
+                  if (e > 10000) {
+                    const roundedValue = Math.round(e / 1000) * 1000;
+                    setConvertAle(roundedValue / rateConvert?.rateAle);
+                  }
+                  else {
+                    setConvertAle(e / rateConvert?.rateAle);
+                  }
+                }
+              }}
+            />
+          </Col>
+        </Row>
+
+
 
 
 

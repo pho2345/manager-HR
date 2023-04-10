@@ -28,7 +28,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
-import { Avatar, Button, Drawer, Form, message } from 'antd';
+import { Avatar, Button, Col, Drawer, Form, Row, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';
@@ -376,20 +376,20 @@ const TableList: React.FC = () => {
 
                 <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
               </Button>,
-              
+
               // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-            
+
 
             ]
           }}
-         
-          toolbar= {{
-            settings:[{
+
+          toolbar={{
+            settings: [{
               key: 'reload',
               tooltip: 'Tải lại',
               icon: <ReloadOutlined></ReloadOutlined>,
-              onClick:() => {
-                if (actionRef.current){
+              onClick: () => {
+                if (actionRef.current) {
                   console.log(actionRef);
                 }
               }
@@ -416,13 +416,6 @@ const TableList: React.FC = () => {
                 <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
                 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
                 <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-                &nbsp;&nbsp;
-                <span>
-                  <FormattedMessage
-                    id='pages.searchTable.totalServiceCalls'
-                    defaultMessage='Total number of service calls'
-                  />{' '}
-                </span>
               </div>
             }
           >
@@ -438,12 +431,7 @@ const TableList: React.FC = () => {
                 defaultMessage='Batch deletion'
               />
             </Button>
-            <Button type='primary'>
-              <FormattedMessage
-                id='pages.searchTable.batchApproval'
-                defaultMessage='Batch approval'
-              />
-            </Button>
+
           </FooterToolbar>
         )}
 
@@ -459,7 +447,6 @@ const TableList: React.FC = () => {
               setGroupCow([]);
             },
           }}
-          width={`76vh`}
           submitTimeout={2000}
           onFinish={async (values) => {
             //await waitTime(2000);
@@ -476,55 +463,140 @@ const TableList: React.FC = () => {
             //message.success('Success');
             return true;
           }}
+
+          submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
+            searchConfig: {
+              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            },
+          }}
         >
-          <ProForm.Group>
-            <ProFormText width='md' name='name' label='Tên' placeholder='Tên' />
-            <ProFormDigit
-              min={1}
-              width='md'
-              name='firstWeight'
-              label='Cân nặng P0'
-              placeholder='Cân nặng P0'
-            />
-         
-            <ProFormSelect options={category} placeholder='Chọn giống bò' required width='md' name='category' label='Giống bò' />
-            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại'
-              fieldProps={{
-                onChange: async (value) => {
-                  const groupCow = await getGroupFarm(value);
-                  setGroupCow(groupCow);
-                  form.setFieldValue('group_cow', []);
-                }
-              }}
-            />
-            <ProFormSelect width='md' options={groupCow?.length ? groupCow : null} disabled={groupCow?.length !== 0 ? false : true} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò' />
 
           
-            <ProFormDatePicker  width='md' name='birthdate' placeholder='Chọn ngày sinh' required label='Ngày sinh' />
-            <ProFormText width='md' name='age' label='Tuổi' placeholder='Tuổi' />
-            <ProFormSelect
-              width='md'
-              name='sex'
 
-              label='Giới tính'
-              options={[
-                {
-                  label: 'Đực',
-                  value: 'male',
-                },
-                {
-                  label: 'Cái',
-                  value: 'female',
-                },
-              ]}
-              placeholder='Chọn giới tính'
-              rules={[{ required: true, message: 'Chọn giới tính!' }]}
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='name' label='Tên' placeholder='Tên'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+
+              <ProFormDigit
+                min={1}
+                className='w-full'
+
+                name='firstWeight'
+                label='Cân nặng P0'
+                placeholder='Cân nặng P0'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect options={category} placeholder='Chọn giống bò' required className='w-full'
+                name='category' label='Giống bò'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='age' label='Tuổi' placeholder='Tuổi'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                ]}
+              />
+
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+            <ProFormSelect  options={farm}  placeholder='Chọn trang trại' className='w-full'  name='farm' label='Trang trại'
+             rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
+            ]}
+            fieldProps={{
+              onChange: async (value) => {
+                const groupCow = await getGroupFarm(value);
+                setGroupCow(groupCow);
+                form.setFieldValue('group_cow', []);
+              }
+            }}
+          />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+            <ProFormSelect className='w-full' 
+            options={groupCow?.length ? groupCow : null} 
+            disabled={groupCow?.length !== 0 ? false : true}  
+            placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'
+
+            rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
+            ]}
+             />
+
+            </Col>
+          </Row>
+
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+            <ProFormDatePicker className='w-full' name='birthdate' placeholder='Chọn ngày sinh' label='Ngày sinh' 
+             rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+            ]}
             />
 
-          </ProForm.Group>
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+            <ProFormSelect
+            className='w-full'
+            name='sex'
+
+            label='Giới tính'
+            options={[
+              {
+                label: 'Đực',
+                value: 'male',
+              },
+              {
+                label: 'Cái',
+                value: 'female',
+              },
+            ]}
+            placeholder='Chọn giới tính'
+            rules={[{ required: true, message:<FormattedMessage id='pages.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }]}
+          />
+            </Col>
+          </Row>
 
           <ProFormUploadButton
-            title='Up load'
+            title='Upload'
             name='upload'
             label='Upload'
             max={2}
@@ -533,7 +605,6 @@ const TableList: React.FC = () => {
               listType: 'picture-card',
             }}
 
-          //ction={() => customAPIUpload({})}
           />
 
           <ProFormTextArea label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
@@ -552,7 +623,7 @@ const TableList: React.FC = () => {
 
             },
           }}
-          width={`76vh`}
+          
           submitTimeout={2000}
           onFinish={async (values) => {
             const success = await handleUpdate(values as any, refIdCow as any);
@@ -577,12 +648,25 @@ const TableList: React.FC = () => {
             }
             return true;
           }}
+
+          submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
+            searchConfig: {
+              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            },
+          }}
         >
-          <ProForm.Group>
+          {/* <ProForm.Group>
             <ProFormText width='md' name='code' label='Mã' required placeholder='Mã' disabled />
 
             <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' />
-         
+
             <ProFormText
               width='md'
               name='firstWeight'
@@ -591,7 +675,7 @@ const TableList: React.FC = () => {
               disabled
             />
 
-          
+
             <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
             <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại'
               fieldProps={{
@@ -603,7 +687,7 @@ const TableList: React.FC = () => {
               }}
             />
             <ProFormSelect width='md' options={groupCow?.length !== 0 ? groupCow : null} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò' />
-         
+
             <ProFormDatePicker width='md' name='birthdate' label='Ngày sinh' />
             <ProFormText width='md' name='age' label='Tuổi' placeholder='Tuổi' />
             <ProFormSelect
@@ -693,7 +777,137 @@ const TableList: React.FC = () => {
             }}
           //action={() => customAPIUpload({})}
           />
-          <ProFormTextArea label='Mô tả chi tiết' name='description' />
+          <ProFormTextArea label='Mô tả chi tiết' name='description' /> */}
+
+<Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='name' label='Tên' placeholder='Tên'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+
+              <ProFormDigit
+                min={1}
+                className='w-full'
+
+                name='firstWeight'
+                label='Cân nặng P0'
+                placeholder='Cân nặng P0'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect options={category} placeholder='Chọn giống bò' required className='w-full'
+                name='category' label='Giống bò'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='age' label='Tuổi' placeholder='Tuổi'
+                rules={[
+                  { required: true, message: <FormattedMessage id='pages.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                ]}
+              />
+
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+            <ProFormSelect  options={farm}  placeholder='Chọn trang trại' className='w-full'  name='farm' label='Trang trại'
+             rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
+            ]}
+            fieldProps={{
+              onChange: async (value) => {
+                const groupCow = await getGroupFarm(value);
+                setGroupCow(groupCow);
+                form.setFieldValue('group_cow', []);
+              }
+            }}
+          />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+            <ProFormSelect className='w-full' 
+            options={groupCow?.length ? groupCow : null} 
+            disabled={groupCow?.length !== 0 ? false : true}  
+            placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'
+
+            rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
+            ]}
+             />
+
+            </Col>
+          </Row>
+
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+            <ProFormDatePicker className='w-full' name='birthdate' placeholder='Chọn ngày sinh' label='Ngày sinh' 
+             rules={[
+              { required: true, message: <FormattedMessage id='pages.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+            ]}
+            />
+
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+            <ProFormSelect
+            className='w-full'
+            name='sex'
+
+            label='Giới tính'
+            options={[
+              {
+                label: 'Đực',
+                value: 'male',
+              },
+              {
+                label: 'Cái',
+                value: 'female',
+              },
+            ]}
+            placeholder='Chọn giới tính'
+            rules={[{ required: true, message:<FormattedMessage id='pages.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }]}
+          />
+            </Col>
+          </Row>
+
+          <ProFormUploadButton
+            title='Upload'
+            name='upload'
+            label='Upload'
+            max={2}
+            fieldProps={{
+              name: 'file',
+              listType: 'picture-card',
+            }}
+
+          />
+
+          <ProFormTextArea label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
+
+
+
         </ModalForm>
 
 

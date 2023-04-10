@@ -307,10 +307,12 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
+        
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger');
           return data;
         }}
+
         toolbar={{
           settings: [{
             key: 'reload',
@@ -323,6 +325,7 @@ const TableListAssignCPass = () => {
             }
           }]
         }}
+
         columns={columns}
       // rowSelection={{
       //   onChange: (_, selectedRows: any) => {
@@ -339,6 +342,18 @@ const TableListAssignCPass = () => {
       //   //  //name: record.name,
       //   // }),
       // }}
+
+      pagination={{
+        locale: {
+         next_page: 'Trang sau',
+         prev_page: 'Trang trước',
+        },
+        showTotal: (total, range) => {
+          console.log(range);
+          return `${range[range.length - 1]} / Tổng số: ${total}`
+        }
+      }}
+
       />
 
       {

@@ -136,7 +136,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'cPassBuy',
       renderText: (_, text: any) => {
-
+          return text?.cPassBuy
       }
     },
     {
@@ -314,6 +314,17 @@ const TableList: React.FC = () => {
           getCheckboxProps: record => ({
             disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
           })
+        }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
 
         toolbar={{

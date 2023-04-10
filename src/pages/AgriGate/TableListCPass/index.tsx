@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -482,6 +482,7 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        
         toolbar={{
           settings: [
             {
@@ -496,6 +497,17 @@ const TableList: React.FC = () => {
             },
            
           ]
+        }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
       />
       {selectedRowsState?.length > 0 && (

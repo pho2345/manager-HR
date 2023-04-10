@@ -306,6 +306,19 @@ const TableList: React.FC = () => {
             }
           }]
         }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
+
+        
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

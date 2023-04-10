@@ -335,6 +335,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           </Button>,
         ]}
+
         request={() => customAPIGet({}, 'average-weight-gains')}
         columns={columns}
         rowSelection={{
@@ -342,6 +343,17 @@ const TableList: React.FC = () => {
 
             setSelectedRows(selectedRows);
           },
+        }}
+        
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
 
         toolbar={{

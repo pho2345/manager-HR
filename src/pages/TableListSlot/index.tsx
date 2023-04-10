@@ -1,23 +1,22 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
   ProFormText,
-
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, message, Switch, Typography } from 'antd';
+import { Button, Drawer, Form, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
 
-const { Title } = Typography;
+
 const handleAdd = async (fields: any) => {
 
 
@@ -87,8 +86,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-
-  const refAutoTransfer = useRef<any>();
 
   const intl = useIntl();
 
@@ -274,7 +271,14 @@ const TableList: React.FC = () => {
         rowKey='id'
         search={false}
         pagination={{
-          pageSize: 5
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
         toolBarRender={() => [
           <Button
@@ -308,6 +312,8 @@ const TableList: React.FC = () => {
             }
           }]
         }}
+
+        
 
       />
       {selectedRowsState?.length > 0 && (

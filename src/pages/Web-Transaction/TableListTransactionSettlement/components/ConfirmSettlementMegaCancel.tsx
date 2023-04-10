@@ -340,6 +340,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
           }]
         }}
         
+        
       />
       {currentRowCPass && (
         <DetailCPass

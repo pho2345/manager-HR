@@ -343,6 +343,17 @@ const TableListFairDetail: React.FC = () => {
           // </Button>,
         ]}
 
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
+
         // request={() => customAPIGet({}, 'banks')}
         request={async () => {
 

@@ -5,7 +5,10 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useParams } from '@umijs/max';
+import {
+  FormattedMessage,
+  // useParams 
+} from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import { Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -48,10 +51,10 @@ const TableListAddCPassInFair = (props: any) => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
 
-  
+
 
   const [fair, setFair] = useState<any>();
-  const params = useParams();
+  //const params = useParams();
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
       title: 'Confirm',
@@ -235,7 +238,7 @@ const TableListAddCPassInFair = (props: any) => {
       <ModalForm
         title='Thêm cPass vào phiên'
         open={props.openModal}
-        
+
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -247,83 +250,93 @@ const TableListAddCPassInFair = (props: any) => {
         submitter={false}
       >
 
-    <ProTable
-        headerTitle={(<>
-          Đợt mở bán: {fair?.code}
-        </>)}
-        actionRef={actionRef}
-        rowKey='id'
-        search={false}
-        rowClassName={
-          (entity) => {
-            return entity.classColor
-          }
-        }
-
-        request={async () => {
-          const data = await customAPIGet({}, 'c-passes/get/addfair');
-          return {
-            data: data?.data,
-            success: true,
-            total: data?.data.length
-          }
-        }}
-        toolBarRender={() => [
-          <>
-          { selectedRowsState.length !== 0 && (<Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-             console.log(selectedRowsState)
-             const c_passes = selectedRowsState?.map((e: any) => {
-              return e?.id;
-             })
-             confirm({
-              c_passes
-             }, 'thêm những cPass này vào phiên không?', 'fairs/update/add-c-passes', props.currentFair);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Thêm' />
-          </Button>)}
-          </>
-        ]}
-        columns={columns}
-        dataSource={fair?.c_passes}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-
-            setSelectedRows(selectedRows);
-          },
-        }}
-
-        toolbar={{
-          settings:[{
-            key: 'reload',
-            tooltip: 'Tải lại',
-            icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
-                actionRef.current.reload();
-              }
+        <ProTable
+          headerTitle={(<>
+            Đợt mở bán: {fair?.code}
+          </>)}
+          actionRef={actionRef}
+          rowKey='id'
+          search={false}
+          rowClassName={
+            (entity) => {
+              return entity.classColor
             }
-          }]
-        }}
-      />
-      {currentRow && (
-        <DetailCPass
-          openModal={showDetail}
-          idCPass={currentRow}
-          closeModal={() => {
-            setCurrentRow(undefined);
-            setShowDetail(false);
+          }
+
+          request={async () => {
+            const data = await customAPIGet({}, 'c-passes/get/addfair');
+            return {
+              data: data?.data,
+              success: true,
+              total: data?.data.length
+            }
+          }}
+          pagination={{
+            locale: {
+              next_page: 'Trang sau',
+              prev_page: 'Trang trước',
+            },
+            showTotal: (total, range) => {
+              console.log(range);
+              return `${range[range.length - 1]} / Tổng số: ${total}`
+            }
+          }}
+          toolBarRender={() => [
+            <>
+              {selectedRowsState.length !== 0 && (<Button
+                type='primary'
+                key='primary'
+                onClick={() => {
+                  console.log(selectedRowsState)
+                  const c_passes = selectedRowsState?.map((e: any) => {
+                    return e?.id;
+                  })
+                  confirm({
+                    c_passes
+                  }, 'thêm những cPass này vào phiên không?', 'fairs/update/add-c-passes', props.currentFair);
+                }}
+              >
+                <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Thêm' />
+              </Button>)}
+            </>
+          ]}
+          columns={columns}
+          dataSource={fair?.c_passes}
+          rowSelection={{
+            onChange: (_, selectedRows: any) => {
+
+              setSelectedRows(selectedRows);
+            },
+          }}
+
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
           }}
         />
-      )
-      }
+        {currentRow && (
+          <DetailCPass
+            openModal={showDetail}
+            idCPass={currentRow}
+            closeModal={() => {
+              setCurrentRow(undefined);
+              setShowDetail(false);
+            }}
+          />
+        )
+        }
       </ModalForm>
-      
 
-    
+
+
     </>
   );
 };

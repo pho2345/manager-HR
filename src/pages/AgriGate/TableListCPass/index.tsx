@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -13,7 +13,7 @@ import { BsGraphUpArrow } from "react-icons/bs";
 import { MdOutlineEdit } from "react-icons/md";
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Avatar, Button, Form, message, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Col, Form, message, Row, Tooltip, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
@@ -450,7 +450,7 @@ const TableList: React.FC = () => {
       }
     },
 
-  
+
   ];
 
   return (
@@ -482,6 +482,7 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        
         toolbar={{
           settings: [
             {
@@ -494,17 +495,19 @@ const TableList: React.FC = () => {
                 }
               }
             },
-            // {
-            //   key: 'desity',
-            //   tooltip: 'Tải lại',
-            //   icon: <ReloadOutlined />,
-            //   onClick: () => {
-            //     if (actionRef.current) {
-            //       actionRef.current.reload();
-            //     }
-            //   }
-            // }
+           
           ]
+        }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
       />
       {selectedRowsState?.length > 0 && (
@@ -541,7 +544,6 @@ const TableList: React.FC = () => {
         title="Tạo mới"
         open={createModalOpen}
         form={form}
-        width={`76vh`}
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -566,10 +568,22 @@ const TableList: React.FC = () => {
           //message.success('Success');
           return true;
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+          },
+        }}
       >
-        <ProForm.Group>
-          {/* <ProFormText
-            width="md"
+        {/* <ProFormText
+           className='w-full'
             name="code"
             label="Mã"
             placeholder="Mã"
@@ -586,28 +600,28 @@ const TableList: React.FC = () => {
             ]}
           /> */}
 
-          <ProFormSelect
-            width="md"
-            options={cow}
-            name="cow"
-            label="Bò"
-            placeholder="Chọn bò"
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.chosenCow'
-                    defaultMessage='Vui lòng chọn Bò!'
-                  />
-                ),
-              },
-            ]}
-          />
+        <ProFormSelect
+          className='w-full'
+          options={cow}
+          name="cow"
+          label="Bò"
+          placeholder="Chọn bò"
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id='pages.Cpass.chosenCow'
+                  defaultMessage='Vui lòng chọn Bò!'
+                />
+              ),
+            },
+          ]}
+        />
 
 
 
-          {/* <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
+        {/* <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
               {
                 required: true,
                 message: (
@@ -619,37 +633,91 @@ const TableList: React.FC = () => {
               },
             ]}/> */}
 
-          <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
-            rules={[
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.pZero'
+                      defaultMessage='Nhập cân nặng hiện tại'
+                    />
+                  ),
+                },
+              ]}
+            />
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.pZero'
+                      defaultMessage='Nhập cân nặng nhập chuồng'
+                    />
+                  ),
+                },
+              ]}
+            />
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormDatePicker className='w-full' name="dateInStable" label="Ngày nhập chuồng" placeholder={`Ngày nhập chuồng`} rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.required.dateInStable'
+                    defaultMessage='Ngày nhập chuồng'
+                  />
+                ),
+              },
+            ]} />
+
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormDigit min={1} className='w-full' name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
               {
                 required: true,
                 message: (
                   <FormattedMessage
                     id='pages.Cpass.pZero'
-                    defaultMessage='Nhập cân nặng hiện tại'
+                    defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
                   />
                 ),
               },
-            ]}
-          />
+            ]} />
+          </Col>
+        </Row>
 
-          <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.pZero'
-                    defaultMessage='Nhập nân nặng nhập chuồng'
-                  />
-                ),
-              },
-            ]}
-          />
 
-          <ProFormDatePicker width="md" name="dateInStable" label="Ngày nhập chuồng" />
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormDigit min={1} width="md" name="vZero" label="Giá trị con bò của Mega" placeholder="Giá trị con bò của Mega" required />
 
-          {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
+
+          </Col>
+        </Row>
+
+
+
+
+        {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
             rules={[
               {
                 required: true,
@@ -664,20 +732,7 @@ const TableList: React.FC = () => {
 
 
 
-          <ProFormDigit min={1} width="md" name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.Cpass.pZero'
-                  defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
-                />
-              ),
-            },
-          ]} />
-          <ProFormDigit min={1} width="md" name="vZero" label="Giá trị con bò của Mega" placeholder="Giá trị con bò của Mega" required />
-          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
-        </ProForm.Group>
+
 
 
       </ModalForm>
@@ -694,7 +749,19 @@ const TableList: React.FC = () => {
             handleUpdateModalOpen(false)
           },
         }}
-        width={`76vh`}
+        
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+          },
+        }}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
@@ -718,144 +785,339 @@ const TableList: React.FC = () => {
           return true;
         }}
       >
-        <ProForm.Group>
-          <ProFormText
-            width="md"
-            name="code"
-            label="Mã"
-            placeholder="Mã"
-            disabled
-          />
-          <ProFormSelect
-            width='md'
-            options={farm}
-            //required 
-            placeholder='Chọn trang trại'
-            name='farm' label='Trang trại'
-            fieldProps={{
-              onChange: async (value) => {
-                const groupCow = await getGroupFarm(value);
-                setGroupCow(groupCow);
-                form.setFieldValue('group_cow', null);
-              }
-            }}
-          />
 
-          <ProFormSelect
-            width='md'
-            options={groupCow?.length !== 0 ? groupCow : null}
-            required placeholder='Chọn nhóm bò'
-            name='group_cow'
-            label='Nhóm bò' />
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText
+              className='w-full'
+              name="code"
+              label="Mã"
+              placeholder="Mã"
+              disabled
+            />
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormSelect
+              disabled
+              className='w-full'
+              name="cow"
+              label="Bò"
+              placeholder="Chọn bò"
+            />
+          </Col>
 
 
-          <ProFormSelect
-            options={category}
-            width='md'
-            name='category'
-            placeholder='Chọn giống bò'
-            label='Giống bò' required />
 
-          <ProFormSelect
-            required
+        </Row>
 
-            width='md'
-            name='sex'
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
 
-          />
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormSelect
+              width='md'
+              options={groupCow?.length !== 0 ? groupCow : null}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.group_cow'
+                      defaultMessage='Chọn nhóm bò'
+                    />
+                  ),
+                },
+              ]}
+              placeholder='Chọn nhóm bò'
+              name='group_cow'
+              label='Nhóm bò' />
+          </Col>
 
-          <ProFormDatePicker name='birthdate' label='Ngày sinh' width='md' />
-          <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" width='md' />
-          <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+          <Col span={12} className="gutter-row p-0">
+
+            <ProFormSelect
+              options={category}
+              width='md'
+              name='category'
+              placeholder='Chọn giống bò'
+              label='Giống bò' rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.category'
+                      defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
+                    />
+                  ),
+                },
+              ]} />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.sex'
+                      defaultMessage='Giới tính'
+                    />
+                  ),
+                },
+              ]}
+              placeholder={`Giới tính`}
+              width='md'
+              name='sex'
+              label='Giới tính'
+              options={[
+                {
+                  label: 'Đực',
+                  value: 'male',
+                },
+                {
+                  label: 'Cái',
+                  value: 'female',
+                },
+              ]}
+            />
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormDigit min={1} max={1000} className='w-full' name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.weightInStable'
+                      defaultMessage='Cân nặng nhập chuồng'
+                    />
+                  ),
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormSelect
+              className='w-full'
+              //options={groupCow?.length !== 0 ? groupCow : null}
+              options={[
+                {
+                  value: 'good',
+                  label: 'Tốt'
+                },
+                {
+                  value: 'malnourished',
+                  label: 'Suy dinh dưỡng'
+                },
+                {
+                  value: 'weak',
+                  label: 'Yếu'
+                },
+                {
+                  value: 'sick',
+                  label: 'Bệnh'
+                },
+                {
+                  value: 'dead',
+                  label: 'Chết'
+                }
+
+              ]}
+
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.bodyCondition'
+                      defaultMessage='Thể trạng'
+                    />
+                  ),
+                },
+              ]}
+
+              placeholder='Thể trạng'
+              name='bodyCondition'
+              label='Thể trạng' />
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormSelect
+              className='w-full'
+              options={farm}
+              //required 
+              placeholder='Chọn trang trại'
+              name='farm' label='Trang trại'
+              fieldProps={{
+                onChange: async (value) => {
+                  const groupCow = await getGroupFarm(value);
+                  setGroupCow(groupCow);
+                  form.setFieldValue('group_cow', null);
+                }
+              }}
+            />
+
+          </Col>
+        </Row>
+
+
+
+
+
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" 
+            className='w-full' 
+            placeholder={`Ngày nhập chuồng`}
+
             rules={[
               {
                 required: true,
                 message: (
                   <FormattedMessage
-                    id='pages.Cpass.pZero'
-                    defaultMessage='Nhập nân nặng nhập chuồng'
+                    id='pages.Cpass.required.dateInStable'
+                    defaultMessage='Ngày nhập chuồng'
                   />
                 ),
               },
-            ]}
-          />
+            ]} />
 
-          <ProFormSelect
-            width='md'
-            //options={groupCow?.length !== 0 ? groupCow : null}
-            options={[
-              {
-                value: 'good',
-                label: 'Tốt'
-              },
-              {
-                value: 'malnourished',
-                label: 'Suy dinh dưỡng'
-              },
-              {
-                value: 'weak',
-                label: 'Yếu'
-              },
-              {
-                value: 'sick',
-                label: 'Bệnh'
-              },
-              {
-                value: 'dead',
-                label: 'Chết'
-              }
+          </Col>
 
-            ]}
-            required placeholder='Thể trạng'
-            name='bodyCondition'
-            label='Thể trạng' />
+          <Col span={12} className="gutter-row p-0">
 
-          <ProFormSelect
-            disabled
-            width="md"
-            name="cow"
-            label="Bò"
-            placeholder="Chọn bò"
-          />
-          <ProFormText width="md" name="pZero" label="P0" placeholder="P0" />
-          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
-          <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
-          <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormUploadButton
-            name='upload'
-            label='Upload'
-            title='Upload'
+            <ProFormDatePicker name='birthdate' label='Ngày sinh' className='w-full'
+            placeholder={`Ngày sinh`}
 
-            fieldProps={{
-              name: 'file',
-              listType: 'picture-card',
-              onRemove(file) {
-                if (!file.lastModified) {
-                  if (refIdPicture.current) {
-                    refIdPicture.current = [...refIdPicture.current, file.uid];
-                  }
-                  else {
-                    refIdPicture.current = [file.uid];
-                  }
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.birthdate'
+                      defaultMessage='Ngày sinh'
+                    />
+                  ),
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText className='w-full' name="pZero" label="P0" placeholder="P0" rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.required.pZero'
+                    defaultMessage='Nhập P0'
+                  />
+                ),
+              },
+            ]} />
+
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormText className='w-full' name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.required.nowWeight'
+                    defaultMessage='Nhập cân nặng hiện tại'
+                  />
+                ),
+              },
+            ]} />
+
+
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText className='w-full' name="price" label="Giá" placeholder="Giá"
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.Cpass.required.price'
+                      defaultMessage='Nhập cân nặng hiện tại'
+                    />
+                  ),
+                },
+              ]}
+
+            />
+
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+
+            <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi ProduceAle" rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.Cpass.required.price'
+                    defaultMessage='Nhập cân nặng hiện tại'
+                  />
+                ),
+              },
+            ]} />
+
+          </Col>
+        </Row>
+
+        <ProFormUploadButton
+          name='upload'
+          label='Upload'
+          title='Upload'
+
+          fieldProps={{
+            name: 'file',
+            listType: 'picture-card',
+            onRemove(file) {
+              if (!file.lastModified) {
+                if (refIdPicture.current) {
+                  refIdPicture.current = [...refIdPicture.current, file.uid];
+                }
+                else {
+                  refIdPicture.current = [file.uid];
                 }
               }
-            }}
-          //action={() => customAPIUpload({})}
-          />
-        </ProForm.Group>
+            }
+          }}
+        //action={() => customAPIUpload({})}
+        />
       </ModalForm>
 
 

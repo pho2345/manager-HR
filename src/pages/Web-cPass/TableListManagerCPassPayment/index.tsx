@@ -1,5 +1,4 @@
 import {
-  customAPIDelete,
   customAPIGetOne,
   customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
@@ -21,8 +20,6 @@ import { FormattedMessage, useIntl, useParams } from '@umijs/max';
 import { Button, Checkbox, Drawer, Form, message, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import "./styles.css";
-
-
 
 
 
@@ -139,7 +136,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'cPassBuy',
       renderText: (_, text: any) => {
-
+          return text?.cPassBuy
       }
     },
     {
@@ -257,7 +254,6 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
               refTransaction.current = entity.id
             }}
-
           >Refund</Button></>);
         }
 
@@ -271,7 +267,6 @@ const TableList: React.FC = () => {
           </>)
 
         }
-
         return (<>{button}</>);
       },
     },
@@ -319,6 +314,17 @@ const TableList: React.FC = () => {
           getCheckboxProps: record => ({
             disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
           })
+        }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
 
         toolbar={{

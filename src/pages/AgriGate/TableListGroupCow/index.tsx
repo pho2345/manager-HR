@@ -10,7 +10,6 @@ import { CloseCircleOutlined, ExclamationCircleOutlined, PlusOutlined, ReloadOut
 import {
   ActionType,
   ProColumns,
-  ProForm,
   ProFormSelect,
   ProFormSwitch,
   ProFormTextArea,
@@ -24,7 +23,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, } from '@umijs/max';
-import { Button, Form, message, Modal, Tooltip } from 'antd';
+import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 
@@ -216,37 +215,37 @@ const TableList: React.FC = () => {
 
 
             {
-            entity.active ? (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='InActive' />}>< CloseCircleOutlined
-              style={{
-                fontSize: 25,
-                paddingLeft: 10
-              }}
-              onClick={async () => {
-                await handleUpdate({
-                  active: !entity.active
-                }, 'group-cows/update', entity.id);
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }}
+              entity.active ? (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='InActive' />}>< CloseCircleOutlined
+                style={{
+                  fontSize: 25,
+                  paddingLeft: 10
+                }}
+                onClick={async () => {
+                  await handleUpdate({
+                    active: !entity.active
+                  }, 'group-cows/update', entity.id);
+                  if (actionRef.current) {
+                    actionRef.current.reload();
+                  }
+                }}
 
-            /></Tooltip>) : 
-            (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Active' />}><  SafetyOutlined
-              style={{
-                fontSize: 25,
-                paddingLeft: 10
-              }}
-              onClick={async () => {
-                await handleUpdate({
-                  active: !entity.active
-                }, 'group-cows/update', entity.id);
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }}
+              /></Tooltip>) :
+                (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Active' />}><  SafetyOutlined
+                  style={{
+                    fontSize: 25,
+                    paddingLeft: 10
+                  }}
+                  onClick={async () => {
+                    await handleUpdate({
+                      active: !entity.active
+                    }, 'group-cows/update', entity.id);
+                    if (actionRef.current) {
+                      actionRef.current.reload();
+                    }
+                  }}
 
-            /></Tooltip>
-            )}
+                /></Tooltip>
+                )}
 
           </>
         );
@@ -287,22 +286,35 @@ const TableList: React.FC = () => {
           )
         }
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
           }]
         }}
+        
         columns={columns}
+
         rowSelection={{
           onChange: (_, selectedRows: any) => {
             setSelectedRows(selectedRows);
           },
+        }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
         }}
       />
       {selectedRowsState?.length > 0 && (
@@ -312,10 +324,7 @@ const TableList: React.FC = () => {
               <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
 
-              </span>
             </div>
           }
         >
@@ -365,12 +374,74 @@ const TableList: React.FC = () => {
           //message.success('Success');
           return true;
         }}
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+          },
+        }}
       >
-        <ProForm.Group>
-          <ProFormSelect width={`lg`} options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-          <ProFormText width={`lg`} name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect className='w-full' options={farm}  placeholder='Chọn trang trại' name='farm' label='Trang trại' 
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.farm'
+                    defaultMessage='Trang trại'
+                  />
+                ),
+              },
+            ]}/>
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='name' label='Tên' required placeholder='Tên'  rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.name'
+                    defaultMessage='Nhập tên'
+                  />
+                ),
+              },
+            ]}/>
+          </Col>
+        </Row>
+
+
         <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
-        <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormTextArea className='w-full' label='Mô tả chi tiết' name='description' placeholder={`Mô tả chi tiết`}
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.description'
+                    defaultMessage='Mô tả chi tiết'
+                  />
+                ),
+              },
+            ]}/> 
+            
+          </Col>
+        </Row>
+
+
+
       </ModalForm>
 
       <ModalForm
@@ -414,13 +485,73 @@ const TableList: React.FC = () => {
 
           return true;
         }}
-      >
 
-        <ProForm.Group>
-          <ProFormSelect width='lg' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại' />
-          <ProFormText width='lg' name='name' label='Tên' required placeholder='Tên' /></ProForm.Group>
-        <ProFormSwitch name='active' label='Kích hoạt' />
-        <ProFormTextArea width='xl' label='Mô tả chi tiết' name='description' />
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+          },
+        }}
+      >
+<Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect className='w-full' options={farm}  placeholder='Chọn trang trại' name='farm' label='Trang trại' 
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.farm'
+                    defaultMessage='Trang trại'
+                  />
+                ),
+              },
+            ]}/>
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='name' label='Tên' required placeholder='Tên'  rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.name'
+                    defaultMessage='Nhập tên'
+                  />
+                ),
+              },
+            ]}/>
+          </Col>
+        </Row>
+
+
+        <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormTextArea className='w-full' label='Mô tả chi tiết' name='description'  placeholder='Mô tả chi tiết' 
+            rules={[
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id='pages.groupCow.required.description'
+                    defaultMessage='Mô tả chi tiết'
+                  />
+                ),
+              },
+            ]}/> 
+            
+          </Col>
+        </Row>
       </ModalForm>
 
     </PageContainer>

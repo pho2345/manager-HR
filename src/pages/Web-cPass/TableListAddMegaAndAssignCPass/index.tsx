@@ -387,7 +387,6 @@ const TableListAssignCPass = () => {
   return (
     <>
       <ProTable
-      
       toolbar={{
         settings: [{
           key: 'reload',
@@ -411,6 +410,16 @@ const TableListAssignCPass = () => {
           }
         }
 
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
 
         request={async () => {
           const data = await customAPIGetOne(params.id, 'users/list-and-cpass', {});

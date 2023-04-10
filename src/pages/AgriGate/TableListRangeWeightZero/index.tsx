@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Form, Input, InputRef, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -299,9 +299,9 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-
             setSelectedRows(selectedRows);
           },
+          
         }}
 
         toolbar={{
@@ -316,6 +316,18 @@ const TableList: React.FC = () => {
             }
           }]
         }}
+
+        pagination={{
+          locale: {
+           next_page: 'Trang sau',
+           prev_page: 'Trang trước',
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
+
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -372,64 +384,88 @@ const TableList: React.FC = () => {
             }
           }
         }}
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+          },
+        }}
+
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Code'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          label='Mã'
-          width='md'
-          name='code'
-          placeholder='Mã'
-        />
+         <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]}
+              label='Mã'
+              className='w-full'
+              name='code'
+              placeholder='Mã'
+            />
+          </Col>
+        </Row>
 
-        
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              min={0}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.value'
+                      defaultMessage='Nhập giá trị dưới'
+                    />
+                  ),
+                },
+              ]}
+              label='Nhập giá trị dưới'
+              width='md'
+              name='valueFrom'
+              placeholder='Nhập giá trị dưới'
+            />
+          </Col>
+        </Row>
 
-        <ProFormDigit
-          min={0}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị dưới'
-                />
-              ),
-            },
-          ]}
-          label='Nhập giá trị dưới'
-          width='md'
-          name='valueFrom'
-          placeholder='Nhập giá trị dưới'
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              min={0}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.value'
+                      defaultMessage='Nhập giá trị trên'
+                    />
+                  ),
+                },
+              ]}
+              label='Nhập giá trị trên'
+              width='md'
+              name='valueTo'
+              placeholder='Nhập giá trị trên'
+            />
+          </Col>
+        </Row>
 
-        <ProFormDigit
-          min={0}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị trên'
-                />
-              ),
-            },
-          ]}
-          label='Nhập giá trị trên'
-          width='md'
-          name='valueTo'
-          placeholder='Nhập giá trị trên'
-        />
 
 
 
@@ -460,7 +496,22 @@ const TableList: React.FC = () => {
             }
           }
         }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+          },
+        }}
       >
+
+
         <ProFormText
           // rules={[
           //   {
@@ -479,45 +530,74 @@ const TableList: React.FC = () => {
           placeholder='Mã'
         />
 
-      
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.code'
+                      defaultMessage='Nhập mã'
+                    />
+                  ),
+                },
+              ]}
+              label='Mã'
+              className='w-full'
+              name='code'
+              placeholder='Mã'
+            />
+          </Col>
+        </Row>
 
-        <ProFormDigit
-          min={0}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị dưới'
-                />
-              ),
-            },
-          ]}
-          label='Nhập giá trị dưới'
-          width='md'
-          name='valueFrom'
-          placeholder='Nhập giá trị dưới'
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              min={0}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.value'
+                      defaultMessage='Nhập giá trị dưới'
+                    />
+                  ),
+                },
+              ]}
+              label='Nhập giá trị dưới'
+              width='md'
+              name='valueFrom'
+              placeholder='Nhập giá trị dưới'
+            />
+          </Col>
+        </Row>
 
-        <ProFormDigit
-          min={0}
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.listStatusTransaction.value'
-                  defaultMessage='Nhập giá trị trên'
-                />
-              ),
-            },
-          ]}
-          label='Nhập giá trị trên'
-          width='md'
-          name='valueTo'
-          placeholder='Nhập giá trị trên'
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              min={0}
+              rules={[
+                {
+                  required: true,
+                  message: (
+                    <FormattedMessage
+                      id='pages.listP0.value'
+                      defaultMessage='Nhập giá trị trên'
+                    />
+                  ),
+                },
+              ]}
+              label='Nhập giá trị trên'
+              width='md'
+              name='valueTo'
+              placeholder='Nhập giá trị trên'
+            />
+          </Col>
+        </Row>
+
 
 
 

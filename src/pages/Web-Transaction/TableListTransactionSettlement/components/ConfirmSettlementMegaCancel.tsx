@@ -283,19 +283,20 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
             "userId": 8,
             "method": "vnd"
           }, 'transactions/settlement/create');
-        //  const success = await customAPIAdd(
-        //     {
-        //       "cPass" : cPass,
-        //   }, 'transactions/settlement/sick-or-dead');
+       
           if(success){
             props.onCloseModal();
           }
           return true;
         }}
-        
         submitTimeout={2000}
-        
         width='90vh'
+        submitter={{
+          searchConfig: {
+            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+          },
+        }}
     >
     <ProTable
         headerTitle={(<>
@@ -339,6 +340,8 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
             }
           }]
         }}
+
+        
         
         
       />

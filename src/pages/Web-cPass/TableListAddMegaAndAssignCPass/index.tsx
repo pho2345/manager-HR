@@ -6,14 +6,15 @@ import {
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import { FormattedMessage, useParams } from '@umijs/max';
+import {  useParams } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
 const { Text, } = Typography;
-
+import  configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -187,8 +188,11 @@ const TableListAssignCPass = () => {
         await handleUpdateMany({
           ...entity
         }, api, id);
-        if (actionRef.current) {
-          actionRef.current.reload();
+        if (actionRef.current && actionRefMega.current) {
+          setSelectedRowsCPass([]);
+          setSelectedRowsMega([]);
+          actionRef.current?.reloadAndRest?.();
+          actionRefMega.current?.reloadAndRest?.();
         }
       }
     });
@@ -208,7 +212,8 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.addMegaAndAssign.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
@@ -224,11 +229,10 @@ const TableListAssignCPass = () => {
           </>
         );
       },
-
-
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.buyCPass' defaultMessage='cPass đã mua trong đợt mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.buyCPass' defaultMessage='cPass đã mua trong đợt mở bán' />,
+      title: configDefaultText['page.addMegaAndAssign.column.buyCPass'],
       dataIndex: 'buyCPass',
       valueType: 'textarea',
       key: 'buyCPass',
@@ -252,7 +256,9 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+
+      //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.addMegaAndAssign.column.buyCPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
@@ -271,7 +277,8 @@ const TableListAssignCPass = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      title: configDefaultText['page.addMegaAndAssign.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
       key: 'farm',
@@ -281,7 +288,8 @@ const TableListAssignCPass = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      title: configDefaultText['page.addMegaAndAssign.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
       key: 'birthdate',
@@ -292,14 +300,16 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      title: configDefaultText['page.addMegaAndAssign.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
       renderText: (_, text: any) => text?.firstWeight
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      title: configDefaultText['page.addMegaAndAssign.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
       key: 'age',
@@ -310,15 +320,13 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.addMegaAndAssign.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-       
-        
-            return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
-     
+        return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -346,7 +354,8 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
+      title: configDefaultText['page.addMegaAndAssign.column.pZero'],
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -355,7 +364,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
+      title: configDefaultText['page.addMegaAndAssign.column.vs'],
       dataIndex: 'vs',
       valueType: 'textarea',
       key: 'vs',
@@ -364,7 +374,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
+      title: configDefaultText['page.addMegaAndAssign.column.vZero'],
       dataIndex: 'vZero',
       valueType: 'textarea',
       key: 'vZero',
@@ -373,7 +384,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
+      title: configDefaultText['page.addMegaAndAssign.column.megaS'],
       dataIndex: 'megaS',
       valueType: 'textarea',
       key: 'megaS',
@@ -390,7 +402,7 @@ const TableListAssignCPass = () => {
       toolbar={{
         settings: [{
           key: 'reload',
-          tooltip: 'Tải lại',
+          tooltip: configDefaultText['reload'],
           icon: <ReloadOutlined />,
           onClick: () => {
             if (actionRefMega.current) {
@@ -399,7 +411,7 @@ const TableListAssignCPass = () => {
           }
         }]
       }}
-        headerTitle='Danh sách Mega'
+        headerTitle={configDefaultText['page.addMegaAndAssign.titleAleger']}
         actionRef={actionRefMega}
         rowKey='id'
         search={false}
@@ -412,8 +424,8 @@ const TableListAssignCPass = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+           next_page: configDefaultText['nextPage'],
+           prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
@@ -440,12 +452,10 @@ const TableListAssignCPass = () => {
         dataSource={fair?.c_passes}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-            console.log(selectedRows);
+            
             if (selectedRows.length > 1) {
-              message.error('Chỉ được chọn 1 Mega!');
-
+              message.error(configDefaultText['page.addMegaAndAssign.errorOnlyAleger']);
             }
-
             setSelectedRowsMega(selectedRows);
           },
           // getCheckboxProps: (record: any) => ({
@@ -459,7 +469,7 @@ const TableListAssignCPass = () => {
 
       <ProTable
         headerTitle={(<>
-          Đợt mở bán: {fair?.code}
+         {configDefaultText['fair']}: {fair?.code}
         </>)}
         actionRef={actionRef}
         rowKey='id'
@@ -486,7 +496,6 @@ const TableListAssignCPass = () => {
               type='primary'
               key='primary'
               onClick={() => {
-                console.log(selectedRowsMega)
                 const cPassId = selectedRowsCPass.map((e: any) => e.id);
 
                 confirm(
@@ -495,10 +504,10 @@ const TableListAssignCPass = () => {
                       cPassId: cPassId,
                       userId: selectedRowsMega[0]?.id
                     }
-                  }, 'Bạn có muốn gán cPass cho Mega đã chọn không?', 'c-passes/update/assign', null);
+                  }, configDefaultText['page.addMegaAndAssign.textConfirmAssign'], 'c-passes/update/assign', null);
               }}
             >
-              <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Thêm' />
+              <PlusOutlined /> {configDefaultText['buttonAdd']}
             </Button>)}
           </>
         ]}
@@ -513,7 +522,7 @@ const TableListAssignCPass = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -522,6 +531,18 @@ const TableListAssignCPass = () => {
             }
           }]
         }}
+
+        pagination={{
+          locale: {
+          next_page: configDefaultText['nextPage'],
+           prev_page: configDefaultText['prePage'],
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
+
       />
       {currentRowCPass && (
         <DetailCPass

@@ -5,12 +5,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage } from '@umijs/max';
+import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Tooltip, Row, Col } from 'antd';
 import React, { useRef, useState } from 'react';
-import './styles.css';
-import configText from '@/locales/configText';
-const configDefaultText = configText;
+import "./styles.css";
+
 
 
 
@@ -40,15 +39,10 @@ const handleAdd = async (fields: any, api: string) => {
 
 const DialogTransfer = (props: any) => {
   const actionRef = useRef<ActionType>();
-  //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
   const [showTransfer, setShowTransfer] = useState<boolean>(false);
 
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
-  //const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  //const params = useParams<any>();
-  //const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -82,10 +76,10 @@ const DialogTransfer = (props: any) => {
         />
         <Space>
           <Button
-            type='primary'
+            type="primary"
             onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
-            size='small'
+            size="small"
             style={{
               width: 90,
             }}
@@ -94,7 +88,7 @@ const DialogTransfer = (props: any) => {
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
-            size='small'
+            size="small"
             style={{
               width: 90,
             }}
@@ -102,8 +96,8 @@ const DialogTransfer = (props: any) => {
             Làm mới
           </Button>
           <Button
-            type='link'
-            size='small'
+            type="link"
+            size="small"
             onClick={() => {
               confirm({
                 closeDropdown: false,
@@ -115,8 +109,8 @@ const DialogTransfer = (props: any) => {
             Lọc
           </Button>
           <Button
-            type='link'
-            size='small'
+            type="link"
+            size="small"
             onClick={() => {
               close();
             }}
@@ -197,15 +191,14 @@ const DialogTransfer = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
-      title: configDefaultText['page.transfer.column.aleger'],
+      title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
           <>
             <a
               onClick={() => {
-                setCurrentRowUser(entity?.id);
+                setCurrentRowUser(entity);
                 //setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
@@ -214,12 +207,13 @@ const DialogTransfer = (props: any) => {
           </>
         );
       },
+
+
     },
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
-      title: configDefaultText['page.transfer.column.ale'],
+      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
@@ -228,18 +222,7 @@ const DialogTransfer = (props: any) => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
-      title: configDefaultText['page.transfer.column.availableBalance'],
-      dataIndex: 'availableBalance',
-      valueType: 'textarea',
-      key: 'availableBalance',
-      renderText: (_, text: any) => {
-        return text?.availableBalance;
-      }
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
-      title: configDefaultText['page.transfer.column.produceAle'],
+      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -249,8 +232,7 @@ const DialogTransfer = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
-      title: configDefaultText['page.transfer.column.promoAle'],
+      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
       dataIndex: 'promoAle',
       valueType: 'textarea',
       key: 'promoAle',
@@ -258,16 +240,16 @@ const DialogTransfer = (props: any) => {
         return text?.promoAle;
       }
     },
+
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
-      title: configDefaultText['titleOption'],
+      title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.transfer']}> <TranslationOutlined
+            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />} > <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -315,11 +297,10 @@ const DialogTransfer = (props: any) => {
 
           request={async () => {
             const data = await customAPIGet({}, 'users/aleger');
-            const configData = data?.data.filter((e: any) => e?.id !== props?.megaChoosen?.id);
             return {
-              data: configData,
+              data: data.data,
               success: true,
-              total: configData.length
+              total: data.data.length
             };
           }}
 
@@ -353,7 +334,6 @@ const DialogTransfer = (props: any) => {
             },
           }}
           onFinish={async (values) => {
-            console.log(props?.megaChoosen);
             confirm({
               receiverId: currentRowUser.id,
               senderId: props?.megaChoosen?.id,
@@ -367,22 +347,20 @@ const DialogTransfer = (props: any) => {
           }}
           submitter={{
             searchConfig: {
-              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
-              resetText: configDefaultText['buttonClose'],
-              submitText: configDefaultText['submit'],
+              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
             },
           }}
         >
 
-          <Row gutter={24} className='m-0'>
-            <Col span={24} className='gutter-row p-0' >
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
 
               <ProFormMoney
                 className='w-full'
-                label={configDefaultText['page.transfer.ale']}
-                placeholder={configDefaultText['page.transfer.ale']}
-                name='ale'
+                label="Nhập giá trị Ale muốn chuyển"
+                placeholder="Ale"
+                name="ale"
                 min={1}
                 max={props?.megaChoosen?.availableBalance}
                 customSymbol='A'

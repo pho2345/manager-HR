@@ -1,20 +1,22 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Col, Drawer, Form, Row, Tooltip, message } from 'antd';
+import { Button, Col, Form, Row, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
+
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 const handleAdd = async (fields: API.RuleListItem) => {
@@ -74,21 +76,20 @@ const handleRemove = async (selectedRows: any) => {
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const intl = useIntl();
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.code'
-          defaultMessage='Rule name'
-        />
-      ),
+      // title: (
+      //   <FormattedMessage
+      //     id='pages.searchTable.column.code'
+      //     defaultMessage='Rule name'
+      //   />
+      // ),
+      title: configDefaultText['page.listCategory.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
@@ -96,8 +97,7 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
-              setShowDetail(true);
+             
             }}
           >
             {entity?.attributes?.code}
@@ -107,21 +107,23 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
+      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
+      title: configDefaultText['page.listCategory.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
+      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
         return (
           <Tooltip
-            title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
+            title={configDefaultText['buttonUpdate']}
           ><MdOutlineEdit
               type='primary'
               key='primary'
@@ -140,7 +142,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.listCategory.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'create',
@@ -156,10 +159,8 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+       
+       
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -189,7 +190,7 @@ const TableList: React.FC = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -201,8 +202,8 @@ const TableList: React.FC = () => {
         request={() => customAPIGet({}, 'categories')}
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
@@ -221,9 +222,11 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
+                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+                {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+                {configDefaultText['selectedItem']}
 
             </div>
           }
@@ -235,10 +238,7 @@ const TableList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
+            
           </Button>
 
         </FooterToolbar>
@@ -247,10 +247,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         form={form}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newCategory',
-          defaultMessage: 'New rule',
-        })}
+        title={configDefaultText['page.listCategory.createModal']}
         width={'30vh'}
 
         open={createModalOpen}
@@ -279,54 +276,59 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
       >
 
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={24} className='gutter-row p-0' >
             <ProFormText
-              label={`Mã`}
+              label={configDefaultText['page.listCategory.code']}
               width='md'
               name='code'
-              placeholder='Mã'
+              placeholder={configDefaultText['page.listCategory.code']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.category.required.code'
-                      defaultMessage='Nhập mã'
-                    />
-                  ),
+                  message: configDefaultText['page.listCategory.required.code']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.category.required.code'
+                  //     defaultMessage='Nhập mã'
+                  //   />
+                  // ),
                 },
               ]} />
           </Col>
         </Row>
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={24} className='gutter-row p-0' >
             <ProFormText
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.category.required.name'
-                      defaultMessage='Nhập tên'
-                    />
-                  ),
+                  message: configDefaultText['page.listCategory.required.name']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.category.required.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
                 },
               ]}
-              label={`Tên giống bò`}
+              
+              label={configDefaultText['page.listCategory.name']}
+              placeholder={configDefaultText['page.listCategory.name']}
               width='md'
               name='name'
-              placeholder='Tên'
             />
           </Col>
         </Row>
@@ -338,10 +340,7 @@ const TableList: React.FC = () => {
 
 
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.updateCategory',
-          defaultMessage: 'Cập nhật giống bò',
-        })}
+        title={configDefaultText['page.listCategory.updateModal']}
         form={form}
         width={'30vh'}
         open={updateModalOpen}
@@ -370,8 +369,8 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
@@ -380,75 +379,56 @@ const TableList: React.FC = () => {
 
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              label={`Mã`}
+        <Row gutter={24} className='m-0'>
+          <Col span={24} className='gutter-row p-0' >
+          <ProFormText
+              label={configDefaultText['page.listCategory.code']}
               width='md'
               name='code'
-              placeholder='Mã'
+              placeholder={configDefaultText['page.listCategory.code']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.category.required.code'
-                      defaultMessage='Nhập mã'
-                    />
-                  ),
+                  message: configDefaultText['page.listCategory.required.code']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.category.required.code'
+                  //     defaultMessage='Nhập mã'
+                  //   />
+                  // ),
                 },
               ]} />
           </Col>
         </Row>
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
+        <Row gutter={24} className='m-0'>
+          <Col span={24} className='gutter-row p-0' >
+          <ProFormText
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.category.required.name'
-                      defaultMessage='Nhập tên'
-                    />
-                  ),
+                  message: configDefaultText['page.listCategory.required.name']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.category.required.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
                 },
               ]}
-              label={`Tên giống bò`}
+              
+              label={configDefaultText['page.listCategory.name']}
+              placeholder={configDefaultText['page.listCategory.name']}
               width='md'
               name='name'
-              placeholder='Tên'
             />
           </Col>
         </Row>
 
       </ModalForm>
 
-      <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
-          setShowDetail(false);
-        }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer>
+     
     </PageContainer>
   );
 };

@@ -5,10 +5,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import {
-  FormattedMessage,
-  // useParams 
-} from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import { Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
@@ -16,6 +12,8 @@ const { Text, } = Typography;
 import moment from 'moment';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
+import  configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -87,7 +85,8 @@ const TableListAddCPassInFair = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.addCPassInFair.column.code'],
       render: (_, entity: any) => {
         return (
           // <Text>{`${entity.code}|${entity.id}`}</Text>
@@ -105,50 +104,54 @@ const TableListAddCPassInFair = (props: any) => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+     // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+     title: configDefaultText['page.addCPassInFair.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
       key: 'farm',
       renderText: (_, text) => text.farmName ? text.farmName : null
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm bò' />,
+      //title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm bò' />,
+      title: configDefaultText['page.addCPassInFair.column.groupCow'],
       dataIndex: 'groupCow',
       valueType: 'textarea',
       key: 'groupCow',
       renderText: (_, text) => text.groupCowDescription ? text.groupCowDescription : null
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+     // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      title: configDefaultText['page.addCPassInFair.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
         return moment(text?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY');
       }
-
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      //title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      title: configDefaultText['page.addCPassInFair.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
       renderText: (_, text: any) => text?.firstWeight
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+     // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+    title: configDefaultText['page.addCPassInFair.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
         let age = `${text.age / 4 >= 1 ? `${text.age / 4}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
         return age;
-
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.addCPassInFair.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -196,37 +199,15 @@ const TableListAddCPassInFair = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Pnow(Kg)' />,
-      dataIndex: 'nowWeight',
+      // title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Pnow(Kg)' />,
+    title: configDefaultText['page.addCPassInFair.column.nowWeight'],
+    dataIndex: 'nowWeight',
       valueType: 'textarea',
       key: 'nowWeight',
       renderText: (_, text: any) => text?.nowWeight
     },
 
 
-    // {
-    //   title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'option',
-    //   render: (_, entity: any) => {
-
-    //     if (entity.check === 'order') {
-    //       return (<Button onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)}>Remove Mega </Button>);
-    //     }
-
-    //     if (entity.check === 'none') {
-    //       return (<>
-    //         <Button onClick={() => {
-    //           // setCurrentCPass(entity.id);
-    //           // setShowModalMega(true)
-    //         }}>Assign Mega </Button>
-    //         <Button onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)}>Remove cPass </Button>
-    //       </>);
-    //     }
-    //     return null;
-    //   }
-    // },
   ];
 
 
@@ -236,7 +217,7 @@ const TableListAddCPassInFair = (props: any) => {
     <>
 
       <ModalForm
-        title='Thêm cPass vào phiên'
+        title={ configDefaultText['page.addCPassInFair.titleModal']}
         open={props.openModal}
 
         autoFocusFirstInput
@@ -252,7 +233,7 @@ const TableListAddCPassInFair = (props: any) => {
 
         <ProTable
           headerTitle={(<>
-            Đợt mở bán: {fair?.code}
+          {configDefaultText.fair}  : {fair?.code}
           </>)}
           actionRef={actionRef}
           rowKey='id'
@@ -273,8 +254,8 @@ const TableListAddCPassInFair = (props: any) => {
           }}
           pagination={{
             locale: {
-              next_page: 'Trang sau',
-              prev_page: 'Trang trước',
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
               console.log(range);
@@ -287,16 +268,15 @@ const TableListAddCPassInFair = (props: any) => {
                 type='primary'
                 key='primary'
                 onClick={() => {
-                  console.log(selectedRowsState)
                   const c_passes = selectedRowsState?.map((e: any) => {
                     return e?.id;
                   })
                   confirm({
                     c_passes
-                  }, 'thêm những cPass này vào phiên không?', 'fairs/update/add-c-passes', props.currentFair);
+                  }, configDefaultText['page.addCPassInFair.titleModal'], 'fairs/update/add-c-passes', props.currentFair);
                 }}
               >
-                <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Thêm' />
+                <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>)}
             </>
           ]}
@@ -312,7 +292,7 @@ const TableListAddCPassInFair = (props: any) => {
           toolbar={{
             settings: [{
               key: 'reload',
-              tooltip: 'Tải lại',
+              tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined />,
               onClick: () => {
                 if (actionRef.current) {

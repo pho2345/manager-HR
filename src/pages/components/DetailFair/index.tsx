@@ -1,11 +1,12 @@
 
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PageContainer, ProColumns, ProDescriptions } from '@ant-design/pro-components';
-import { FormattedMessage, Link,  } from '@umijs/max';
+import {  Link,  } from '@umijs/max';
 import { Drawer,  } from 'antd';
 import moment from 'moment';
 import React, {  } from 'react';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
  const DescriptionCustom = (props: any) => {
@@ -31,7 +32,8 @@ import React, {  } from 'react';
 const TableList = (props: any) => {
   const columnsDetailCPass: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      title: configDefaultText['page.DetailFair.column.cPassPublished'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
       key: 'cPassPublished',
@@ -39,7 +41,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.quantityMegeBuy' defaultMessage='Số lượng Mega đã góp vốn:' />,
+      // title: <FormattedMessage id='pages.searchTable.column.quantityMegeBuy' defaultMessage='Số lượng Mega đã góp vốn' />,
+      title: configDefaultText['page.DetailFair.column.quantityMegeBuy'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
       key: 'cPassPublished',
@@ -47,7 +50,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
+      //  title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
+      title: configDefaultText['page.DetailFair.column.switchNotify'],
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',
@@ -55,11 +59,12 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
+      //  title: <FormattedMessage id='pages.searchTable.column.listCPass' defaultMessage='Switch nhắc thanh toán:' />,
+      title: configDefaultText['page.DetailFair.column.listCPass'],
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',
-      render: (_, text: any) => (<>
+      render: () => (<>
          <Link to={`/web-c-pass/fairs/` + props?.fairId}>
              Danh sách cPass
            </Link>
@@ -69,7 +74,8 @@ const TableList = (props: any) => {
 
   const columnsDetaiFair: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Tình Trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Tình Trạng' />,
+      title: configDefaultText['page.DetailFair.column.status'],
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
@@ -78,7 +84,8 @@ const TableList = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Phiên mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Phiên mở bán' />,
+      title: configDefaultText['page.DetailFair.column.fair'],
       render: (_, entity: any) => {
         return (
           // <Text>{`${entity.code}|${entity.id}`}</Text>
@@ -92,7 +99,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
+      title: configDefaultText['page.DetailFair.column.timeStart'],
       dataIndex: 'timeStart',
       valueType: 'textarea',
       key: 'timeStart',
@@ -103,7 +111,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
+      title: configDefaultText['page.DetailFair.column.timeEnd'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'timeEnd',
@@ -114,7 +123,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
+      // title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
+      title: configDefaultText['page.DetailFair.column.timeEnd'],
       dataIndex: 'dateStartFeed',
       valueType: 'textarea',
       key: 'dateStartFeed',
@@ -127,7 +137,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
+      title: configDefaultText['page.DetailFair.column.timeEnd'],
       dataIndex: 'timeFeed',
       valueType: 'textarea',
       key: 'timeFeed',
@@ -135,7 +146,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
+      title: configDefaultText['page.DetailFair.column.timeEnd'],
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',

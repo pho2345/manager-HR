@@ -1,15 +1,18 @@
 
 import { customAPIAdd, customAPIGetOne, customAPIUpdate, customAPIUpdateMany } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, PageContainer, ProColumns, ProDescriptions, ProForm, ProFormDatePicker, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ModalForm, PageContainer, ProColumns, ProDescriptions, ProFormDatePicker, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { FormattedMessage, Link, } from '@umijs/max';
-import { Button, Drawer, Form, message, Modal, Typography } from 'antd';
+import { Button, Col, Drawer, Form, message, Modal, Row, Typography } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 const { Text } = Typography;
+import configText from '@/locales/configText';
+const configDefaultText = configText;
+
 
 function sleeper(ms: number) {
-    return new Promise((resolve) => setTimeout(() => resolve(), ms));
+  return new Promise((resolve) => setTimeout(() => resolve(), ms));
 }
 
 
@@ -95,7 +98,7 @@ const getInformation = async (id: any) => {
 }
 
 
-const updateConfig = async (values: any,id: number) => {
+const updateConfig = async (values: any, id: number) => {
   await customAPIUpdate({
     ...values
   }, 'users/aleger/notify', id);
@@ -112,7 +115,7 @@ const TableList = (props: any) => {
   const [notifyWG, setNotifyWG] = useState<boolean>();
   const [notifyEmail, setNotifyEmail] = useState<boolean>();
 
- 
+
 
   const confirm = (entity: any, messageConfirm: string, api: string) => {
     Modal.confirm({
@@ -140,60 +143,69 @@ const TableList = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.id' defaultMessage='ID' />,
+      // title: <FormattedMessage id='pages.searchTable.column.id' defaultMessage='ID' />,
+      title: configDefaultText['page.DetailAleger.column.id'],
       renderText: (_, record: any) => record.id
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.username' defaultMessage='Tên đăng nhập' />,
+      // title: <FormattedMessage id='pages.searchTable.column.username' defaultMessage='Tên đăng nhập' />,
+      title: configDefaultText['page.DetailAleger.column.id'],
       dataIndex: 'username',
       valueType: 'textarea',
       key: 'username',
       renderText: (_, record) => record.username
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.email' defaultMessage='Email' />,
+      // title: <FormattedMessage id='pages.searchTable.column.email' defaultMessage='email' />,
+      title: configDefaultText['page.DetailAleger.column.email'],
       dataIndex: 'email',
       valueType: 'textarea',
       key: 'email',
       renderText: (_, record) => record.email
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fullname' defaultMessage='Tên đầy đủ' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fullname' defaultMessage='Tên đầy đủ' />,
+      title: configDefaultText['page.DetailAleger.column.fullname'],
       dataIndex: 'fullname',
       valueType: 'textarea',
       key: 'fullname',
       renderText: (_, record) => record.fullname
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.phone' defaultMessage='Số điện thoại' />,
+      // title: <FormattedMessage id='pages.searchTable.column.phone' defaultMessage='Số điện thoại' />,
+      title: configDefaultText['page.DetailAleger.column.phone'],
       dataIndex: 'phone',
       valueType: 'textarea',
       key: 'phone',
       renderText: (_, record) => record.phone
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.passport' defaultMessage='CCCD/HC' />,
+      // title: <FormattedMessage id='pages.searchTable.column.passport' defaultMessage='CCCD/HC' />,
+      title: configDefaultText['page.DetailAleger.column.passport'],
       dataIndex: 'passport',
       valueType: 'textarea',
       key: 'passport',
       renderText: (_, record) => record?.passport
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.address' defaultMessage='Địa chỉ' />,
+      // title: <FormattedMessage id='pages.searchTable.column.address' defaultMessage='Địa chỉ' />,
+      title: configDefaultText['page.DetailAleger.column.address'],
       dataIndex: 'address',
       valueType: 'textarea',
       key: 'address',
       renderText: (_, record) => record?.address
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      title: configDefaultText['page.DetailAleger.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, record: any) => record.birthdate ? moment(record?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY') : null
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.sex' defaultMessage='Giới tính' />,
+      // title: <FormattedMessage id='pages.searchTable.column.sex' defaultMessage='Giới tính' />,
+      title: configDefaultText['page.DetailAleger.column.sex'],
       dataIndex: 'sex',
       valueType: 'textarea',
       key: 'sex',
@@ -212,7 +224,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.firebaseUid' defaultMessage='Firebase UID' />,
+      // title: <FormattedMessage id='pages.searchTable.column.firebaseUid' defaultMessage='Firebase UID' />,
+      title: configDefaultText['page.DetailAleger.column.firebaseUid'],
       dataIndex: 'firebaseUid',
       valueType: 'textarea',
       key: 'firebaseUid',
@@ -220,7 +233,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bank' defaultMessage='Tài khoản ngân hàng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bank' defaultMessage='Tài khoản ngân hàng' />,
+      title: configDefaultText['page.DetailAleger.column.bank'],
       dataIndex: 'bank',
       valueType: 'textarea',
       key: 'bank',
@@ -246,8 +260,8 @@ const TableList = (props: any) => {
             type="primary"
             onClick={() => confirm({
               userId: record?.id
-            }, `Chắc chắn muốn vô hiệu tài khoản của Aleger `, 'users/disabled')} danger
-          >{record?.disabled ? `Mở vô hiệu hóa` : 'Vô hiệu hóa'}</Button></>)
+            }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], 'users/disabled')} danger
+          >{record?.disabled ? configDefaultText['page.DetailAleger.column.openDisabled'] : configDefaultText['page.DetailAleger.column.disabled']}</Button></>)
         ]
       }
     },
@@ -257,7 +271,8 @@ const TableList = (props: any) => {
   const columnDetailUserAle: ProColumns<any>[] = [
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư ale' />,
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư ale' />,
+      title: configDefaultText['page.DetailAleger.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
@@ -265,7 +280,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.quantityAleRecharge' defaultMessage='Số ale đã nạp' />,
+      // title: <FormattedMessage id='pages.searchTable.column.quantityAleRecharge' defaultMessage='Số ale đã nạp' />,
+      title: configDefaultText['page.DetailAleger.column.quantityAleRecharge'],
       dataIndex: 'quantityAleRecharge',
       valueType: 'textarea',
       key: 'quantityAleRecharge',
@@ -273,7 +289,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.aleUsed' defaultMessage='Số ale đã dùng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.aleUsed' defaultMessage='Số ale đã dùng' />,
+      title: configDefaultText['page.DetailAleger.column.aleUsed'],
       dataIndex: 'aleUsed',
       valueType: 'textarea',
       key: 'aleUsed',
@@ -281,14 +298,16 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='ProduceAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='ProduceAle' />,
+      title: configDefaultText['page.DetailAleger.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text) => text?.produceAle
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
+      title: configDefaultText['page.DetailAleger.column.promoAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'promoAle',
@@ -301,7 +320,7 @@ const TableList = (props: any) => {
       key: 'edit',
       render: (_, record) => {
         return <Button>
-          <Link to={`/web-aleger/mega/my-ale/` + record?.id}>Giao dịch Ale</Link>
+          <Link to={`/web-aleger/mega/my-ale/` + record?.id}>{configDefaultText['page.DetailAleger.column.textTransactionAle']}</Link>
         </Button>
       }
     },
@@ -310,7 +329,8 @@ const TableList = (props: any) => {
 
   const columnDetailUserMegaCurrent: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.totalCPassCurrent' defaultMessage='Tổng cPass Mega sở hữu' />,
+      // title: <FormattedMessage id='pages.searchTable.column.totalCPassCurrent' defaultMessage='Tổng cPass Mega sở hữu' />,
+      title: configDefaultText['page.DetailAleger.column.totalCPassCurrent'],
       dataIndex: 'totalCPassCurrent',
       valueType: 'textarea',
       key: 'totalCPassCurrent',
@@ -318,7 +338,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightCurrent' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightCurrent' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
+      title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'megaDeltaWeightCurrent',
       valueType: 'textarea',
       key: 'megaDeltaWeightCurrent',
@@ -326,7 +347,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAleCurrent' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAleCurrent' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
+      title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'produceAleCurrent',
       valueType: 'textarea',
       key: 'megaWeightCurrent',
@@ -334,21 +356,24 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaWeightCurrent' defaultMessage=' Tổng trọng lượng MegaP (kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaWeightCurrent' defaultMessage=' Tổng trọng lượng MegaP (kg)' />,
+      title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'megaWeightCurrent',
       valueType: 'textarea',
       key: 'megaWeightCurrent',
       renderText: (_, text) => text?.megaWeightCurrent
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaECurrent' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaECurrent' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
+      title: configDefaultText['page.DetailAleger.column.megaECurrent'],
       dataIndex: 'megaECurrent',
       valueType: 'textarea',
       key: 'megaECurrent',
       renderText: (_, text) => text?.megaECurrent
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaCPRCurrent' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaCPRCurrent' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
+      title: configDefaultText['page.DetailAleger.column.megaECurrent'],
       dataIndex: 'megaCPRCurrent',
       valueType: 'textarea',
       key: 'megaCPRCurrent',
@@ -359,7 +384,8 @@ const TableList = (props: any) => {
 
   const columnDetailUserMegaHistory: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.totalCPassHistory' defaultMessage='Tổng cPass Mega sở hữu' />,
+      // title: <FormattedMessage id='pages.searchTable.column.totalCPassHistory' defaultMessage='Tổng cPass Mega sở hữu' />,
+      title: configDefaultText['page.DetailAleger.column.totalCPassHistory'],
       dataIndex: 'totalCPassHistory',
       valueType: 'textarea',
       key: 'totalCPassHistory',
@@ -367,7 +393,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightHistory' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightHistory' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
+      title: configDefaultText['page.DetailAleger.column.megaDeltaWeightHistory'],
       dataIndex: 'megaDeltaWeightHistory',
       valueType: 'textarea',
       key: 'megaDeltaWeightHistory',
@@ -375,7 +402,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAleHistory' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAleHistory' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
+      title: configDefaultText['page.DetailAleger.column.produceAleHistory'],
       dataIndex: 'produceAleHistory',
       valueType: 'textarea',
       key: 'megaWeightHistory',
@@ -383,21 +411,24 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaWeightHistory' defaultMessage=' Tổng trọng lượng MegaP (kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaWeightHistory' defaultMessage='Tổng trọng lượng MegaP (kg)' />,
+      title: configDefaultText['page.DetailAleger.column.megaWeightHistory'],
       dataIndex: 'megaWeightHistory',
       valueType: 'textarea',
       key: 'megaWeightHistory',
       renderText: (_, text) => text?.megaWeightHistory
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaEHistory' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaEHistory' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
+      title: configDefaultText['page.DetailAleger.column.megaEHistory'],
       dataIndex: 'megaEHistory',
       valueType: 'textarea',
       key: 'megaEHistory',
       renderText: (_, text) => text?.megaEHistory
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaCPRHistory' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaCPRHistory' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
+      title: configDefaultText['page.DetailAleger.column.megaCPRHistory'],
       dataIndex: 'megaCPRHistory',
       valueType: 'textarea',
       key: 'megaCPRHistory',
@@ -422,11 +453,11 @@ const TableList = (props: any) => {
       dataIndex: 'notification',
       valueType: 'textarea',
       key: 'notification',
-      render: (_, text) => <ProFormSwitch  label='Cho phép thông báo đẩy:' fieldProps={{
+      render: (_, text) => <ProFormSwitch label='Cho phép thông báo đẩy:' fieldProps={{
         checked: notification,
         onChange: (values) => {
           setNotification(values);
-        } 
+        }
       }} />
     },
 
@@ -435,7 +466,7 @@ const TableList = (props: any) => {
       dataIndex: 'report',
       valueType: 'textarea',
       key: 'report',
-      render: (_, text) => <ProFormSwitch label='Nhận báo cáo tăng trọng định kỳ:'  fieldProps={{
+      render: (_, text) => <ProFormSwitch label='Nhận báo cáo tăng trọng định kỳ:' fieldProps={{
         checked: notifyWG,
         onChange: async (values) => {
           setNotifyWG(values);
@@ -443,8 +474,8 @@ const TableList = (props: any) => {
           updateConfig({
             notifyWG: values
           }, props?.currentRowUser);
-        } 
-      }}/>
+        }
+      }} />
     },
 
     {
@@ -453,15 +484,15 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'notificationEmail',
       render: (_, text) => <ProFormSwitch label='Nhận thông báo bằng email:' fieldProps={{
-        checked: notifyEmail, 
-        onChange: async(values) => {
+        checked: notifyEmail,
+        onChange: async (values) => {
           setNotifyEmail(values);
           await sleeper(3000);
           updateConfig({
-              notifyEmail: values
-            
+            notifyEmail: values
+
           }, props?.currentRowUser);
-        } 
+        }
       }} />
     },
 
@@ -474,9 +505,9 @@ const TableList = (props: any) => {
         return <Button
           onClick={() => {
             handleModalOpen(true);
-            
+
           }}
-        >Tạo tài khoản mới</Button>
+        >{configDefaultText['page.DetailAleger.column.newAccount']}</Button>
       }
     },
   ];
@@ -517,7 +548,7 @@ const TableList = (props: any) => {
         <PageContainer
           tabList={[
             {
-              tab: 'Thông tin',
+              tab: configDefaultText['page.DetailAleger.tab.information'],
               key: '1',
               children: DescriptionCustom({
                 columns: columnDetailUser,
@@ -527,7 +558,7 @@ const TableList = (props: any) => {
               })
             },
             {
-              tab: 'Ale',
+              tab: configDefaultText['page.DetailAleger.tab.ale'],
               key: '2',
               children: DescriptionCustom({
                 columns: columnDetailUserAle,
@@ -538,7 +569,7 @@ const TableList = (props: any) => {
             },
 
             {
-              tab: 'MEGA',
+              tab: configDefaultText['page.DetailAleger.tab.mega'],
               key: '3',
               children: DescriptionTabMega({
                 columns: columnDetailUserMegaCurrent,
@@ -550,7 +581,7 @@ const TableList = (props: any) => {
             },
 
             {
-              tab: 'Thiết đặt riêng',
+              tab: configDefaultText['page.DetailAleger.tab.config'],
               key: '4',
               children: DescriptionCustom({
                 columns: columnDetailUserMegaConfig,
@@ -583,19 +614,174 @@ const TableList = (props: any) => {
             }
           }
           }
+
+          submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
+            searchConfig: {
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
+            },
+          }}
         >
-          <ProForm.Group>
-            <ProFormText width='md' name='fullname' label='Họ tên' placeholder='Nhập họ tên' />
-            <ProFormText width='md' name='email' label='Email' placeholder='Nhập email' />
-            <ProFormText width='md' name='username' label='Username' placeholder='Nhập username' />
-            <ProFormText width='md' name='phone' label='Số điện thoại' placeholder='Nhập số điện thoại' />
-            <ProFormText.Password width='md' name='password' label='Password' placeholder='Nhập password' />
-            <ProFormText.Password width='md' name='confirmPassword' label='Xác nhận password' placeholder='Xác nhận password' />
-            <ProFormText width='md' name='address' label='Địa chỉ' placeholder='Nhập địa chỉ' />
-            <ProFormText width='md' name='passport' label='CCCD/HC' placeholder='Nhập CCCD/HC' />
-            <ProFormText width='md' name='passport' label='CCCD/HC' placeholder='Nhập CCCD/HC' />
-            <ProFormDatePicker width='md' name='birthdate' label='Ngày sinh' />
-          </ProForm.Group>
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
+
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='fullname'
+                // label={<FormattedMessage id='pages.detailMega.fullname' defaultMessage='Nhập họ tên' />}
+                label={configDefaultText['page.DetailAleger.form.fullname']}
+                placeholder={configDefaultText['page.DetailAleger.form.fullname']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.fullname' defaultMessage='Vui lòng nhập họ tên' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.fullname'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='email'
+                // label={<FormattedMessage id='pages.detailMega.email' defaultMessage='Email' />}
+                // placeholder='Nhập email'
+                label={configDefaultText['page.DetailAleger.form.email']}
+                placeholder={configDefaultText['page.DetailAleger.form.email']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.fullname' defaultMessage='Vui lòng nhập họ tên' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.email'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='username'
+                // label={<FormattedMessage id='pages.detailMega.username' defaultMessage='Nhập username' />}
+                // placeholder='Nhập username'
+                label={configDefaultText['page.DetailAleger.form.username']}
+                placeholder={configDefaultText['page.DetailAleger.form.username']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.username' defaultMessage='Vui lòng nhập username' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.username'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='phone'
+                // label={<FormattedMessage id='pages.detailMega.phone' defaultMessage='Số điện thoại' />}
+                // placeholder='Nhập số điện thoại'
+                label={configDefaultText['page.DetailAleger.form.phone']}
+                placeholder={configDefaultText['page.DetailAleger.form.phone']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.phone' defaultMessage='Vui lòng nhập số điện thoại' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.phone'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='password'
+                // label={<FormattedMessage id='pages.detailMega.password' defaultMessage='Password' />}
+                // placeholder='Nhập password'
+                label={configDefaultText['page.DetailAleger.form.password']}
+                placeholder={configDefaultText['page.DetailAleger.form.password']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.password' defaultMessage='Vui lòng nhập mật khẩu' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.password'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='confirmPassword'
+                // label={<FormattedMessage id='pages.detailMega.confirmPassword' defaultMessage='Xác nhận password' />}
+                // placeholder='Nhập password'
+                label={configDefaultText['page.DetailAleger.form.confirmPassword']}
+                placeholder={configDefaultText['page.DetailAleger.form.confirmPassword']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.confirmPassword' defaultMessage='Vui lòng nhập lại mật khẩu' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.confirmPassword'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+
+
+              <ProFormText
+                className='w-full'
+                name='address'
+                // label={<FormattedMessage id='pages.detailMega.address' defaultMessage='Địa chỉ' />}
+                // placeholder='Nhập địa chỉ'
+                label={configDefaultText['page.DetailAleger.form.address']}
+                placeholder={configDefaultText['page.DetailAleger.form.address']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.address' defaultMessage='Vui lòng nhập địa chỉ' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.address'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='passport'
+                // label={<FormattedMessage id='pages.detailMega.passport' defaultMessage='CCCD/HC' />}
+                // placeholder='Nhập số CCCD/HC'
+                label={configDefaultText['page.DetailAleger.form.passport']}
+                placeholder={configDefaultText['page.DetailAleger.form.passport']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.confirmPassword' defaultMessage='Vui lòng nhập số CCCD/HC' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.passport'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker
+                className='w-full'
+                name='birthdate'
+                // placeholder={`Ngày sinh`}
+                // label={<FormattedMessage id='pages.detailMega.birthdate' defaultMessage='Ngày sinh' />}
+                label={configDefaultText['page.DetailAleger.form.birthdate']}
+                placeholder={configDefaultText['page.DetailAleger.form.birthdate']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.birthdate'] },
+                ]}
+              />
+            </Col>
+          </Row>
 
 
         </ModalForm>
@@ -627,18 +813,147 @@ const TableList = (props: any) => {
             }
             return true;
           }}
+          submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
+            searchConfig: {
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Update' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonUpdate'],
+            },
+          }}
+
         >
-          <ProForm.Group>
-            <ProFormText width='md' name='fullname' label='Họ tên' placeholder='Nhập họ tên' />
-            <ProFormText width='md' name='email' label='Email' placeholder='Nhập email' />
-            <ProFormText width='md' name='phone' label='Số điện thoại' placeholder='Nhập số điện thoại' />
-            <ProFormText width='md' name='address' label='Địa chỉ' placeholder='Nhập địa chỉ' />
-            <ProFormText width='md' name='passport' label='CCCD/HC' placeholder='Nhập CCCD/HC' />
-            <ProFormText width='md' name='bank' label='Ngân hàng' placeholder='Chọn ngân hàng' />
-            <ProFormText width='md' name='passport' label='CCCD/HC' placeholder='Nhập CCCD/HC' />
-            <ProFormDatePicker width='md' name='createdAt' label='Ngày tạo' />
-            <ProFormDatePicker width='md' name='birthdate' label='Ngày sinh' />
-          </ProForm.Group>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={8} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='fullname'
+                // label={<FormattedMessage id='pages.detailMega.fullname' defaultMessage='Nhập họ tên' />}
+                label={configDefaultText['page.DetailAleger.form.fullname']}
+                placeholder={configDefaultText['page.DetailAleger.form.fullname']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.fullname' defaultMessage='Vui lòng nhập họ tên' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.fullname'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={8} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='email'
+                // label={<FormattedMessage id='pages.detailMega.email' defaultMessage='Email' />}
+                // placeholder='Nhập email'
+                label={configDefaultText['page.DetailAleger.form.email']}
+                placeholder={configDefaultText['page.DetailAleger.form.email']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.fullname' defaultMessage='Vui lòng nhập họ tên' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.email'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={8} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='phone'
+                // label={<FormattedMessage id='pages.detailMega.phone' defaultMessage='Số điện thoại' />}
+                // placeholder='Nhập số điện thoại'
+                label={configDefaultText['page.DetailAleger.form.phone']}
+                placeholder={configDefaultText['page.DetailAleger.form.phone']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.phone' defaultMessage='Vui lòng nhập số điện thoại' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.phone'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={8} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='address'
+                // label={<FormattedMessage id='pages.detailMega.address' defaultMessage='Địa chỉ' />}
+                // placeholder='Nhập địa chỉ'
+                label={configDefaultText['page.DetailAleger.form.address']}
+                placeholder={configDefaultText['page.DetailAleger.form.address']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.address' defaultMessage='Vui lòng nhập địa chỉ' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.address'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={8} className="gutter-row p-0" >
+            <ProFormText
+                className='w-full'
+                name='passport'
+                // label={<FormattedMessage id='pages.detailMega.passport' defaultMessage='CCCD/HC' />}
+                // placeholder='Nhập số CCCD/HC'
+                label={configDefaultText['page.DetailAleger.form.passport']}
+                placeholder={configDefaultText['page.DetailAleger.form.passport']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.confirmPassword' defaultMessage='Vui lòng nhập số CCCD/HC' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.passport'] },
+                ]}
+              />
+            </Col>
+
+            {/* <Col span={8} className="gutter-row p-0" >
+              <ProFormText
+                className='w-full'
+                name='bank'
+                label={configDefaultText['page.DetailAleger.form.bank']}
+                placeholder={configDefaultText['page.DetailAleger.form.bank']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.bank' defaultMessage='Vui lòng nhập STK' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.bank'] },
+                ]}
+              />
+            </Col> */}
+          </Row>
+
+
+          <Row gutter={24} className="m-0">
+            <Col span={8} className="gutter-row p-0" >
+            <ProFormDatePicker
+                className='w-full'
+                name='birthdate'
+                // placeholder={`Ngày sinh`}
+                // label={<FormattedMessage id='pages.detailMega.birthdate' defaultMessage='Ngày sinh' />}
+                label={configDefaultText['page.DetailAleger.form.birthdate']}
+                placeholder={configDefaultText['page.DetailAleger.form.birthdate']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                  { required: true, message: configDefaultText['page.DetailAleger.form.required.birthdate'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={8} className="gutter-row p-0" >
+              <ProFormDatePicker
+                className='w-full'
+                name='createdAt'
+                placeholder={`Ngày tạo`}
+                label={<FormattedMessage id='pages.detailMega.createdAt' defaultMessage='Ngày tạo' />}
+                disabled
+              />
+            </Col>
+
+            <Col span={8} className="gutter-row p-0" >
+
+            </Col>
+          </Row>
+
         </ModalForm>
       </Drawer>
 

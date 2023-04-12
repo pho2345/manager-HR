@@ -22,11 +22,14 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, Link, useIntl, } from '@umijs/max';
+import { FormattedMessage, Link, getLocale } from '@umijs/max';
 import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
+import viVNIntl from 'antd/lib/locale/vi_VN';
 
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
@@ -121,6 +124,8 @@ const confirm = (entity: any, message: string, actionRef: any) => {
 };
 
 const TableList: React.FC = () => {
+  console.log('vnd', getLocale());
+  console.log('vd', viVNIntl)
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -138,11 +143,12 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
-  const intl = useIntl();
+  //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      //title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      title: configDefaultText['page.listGroupCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
@@ -155,21 +161,24 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      title: configDefaultText['page.listGroupCow.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
       key: 'farm',
       renderText: (_, text: any) => text?.farm?.name,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
+      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
+      title: configDefaultText['page.listGroupCow.column.farm'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.name,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.active' defaultMessage='Hoạt động' />,
+      // title: <FormattedMessage id='pages.searchTable.column.active' defaultMessage='Hoạt động' />,
+      title: configDefaultText['page.listGroupCow.column.active'],
       dataIndex: 'active',
       valueType: 'textarea',
       key: 'active',
@@ -179,7 +188,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.description' defaultMessage='Mô tả' />,
+      // title: <FormattedMessage id='pages.searchTable.column.description' defaultMessage='Mô tả' />,
+      title: configDefaultText['page.listGroupCow.column.description'],
       dataIndex: 'description',
       valueType: 'textarea',
       key: 'description',
@@ -189,14 +199,15 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
+      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
         return (
           <>
-            <Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Cập nhật' />}><MdOutlineEdit
+            <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
               style={{
                 fontSize: 25
               }}
@@ -215,7 +226,7 @@ const TableList: React.FC = () => {
 
 
             {
-              entity.active ? (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='InActive' />}>< CloseCircleOutlined
+              entity.active ? (<Tooltip title={configDefaultText['page.listGroupCow.inActive']}>< CloseCircleOutlined
                 style={{
                   fontSize: 25,
                   paddingLeft: 10
@@ -230,7 +241,7 @@ const TableList: React.FC = () => {
                 }}
 
               /></Tooltip>) :
-                (<Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Active' />}><  SafetyOutlined
+                (<Tooltip title={configDefaultText['page.listGroupCow.active']}><  SafetyOutlined
                   style={{
                     fontSize: 25,
                     paddingLeft: 10
@@ -260,10 +271,6 @@ const TableList: React.FC = () => {
 
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -276,7 +283,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         request={() =>
@@ -288,7 +295,7 @@ const TableList: React.FC = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -297,7 +304,7 @@ const TableList: React.FC = () => {
             }
           }]
         }}
-        
+
         columns={columns}
 
         rowSelection={{
@@ -308,11 +315,11 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            //  next_page: 'Trang sau',
+            //  prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
@@ -346,10 +353,7 @@ const TableList: React.FC = () => {
       )}
 
       <ModalForm
-        title={<FormattedMessage
-          id='pages.form.new'
-          defaultMessage='Tạo mới'
-        />}
+        title={configDefaultText['page.listGroupCow.newGroup']}
         open={createModalOpen}
         form={form}
         autoFocusFirstInput
@@ -382,61 +386,75 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
       >
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormSelect className='w-full' options={farm}  placeholder='Chọn trang trại' name='farm' label='Trang trại' 
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.farm'
-                    defaultMessage='Trang trại'
-                  />
-                ),
-              },
-            ]}/>
+            <ProFormSelect className='w-full' options={farm} name='farm'
+              label={configDefaultText['page.listGroupCow.column.farm']}
+              placeholder={configDefaultText['page.listGroupCow.column.farm']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.farm']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.farm'
+                  //     defaultMessage='Trang trại'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
         </Row>
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='name' label='Tên' required placeholder='Tên'  rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.name'
-                    defaultMessage='Nhập tên'
-                  />
-                ),
-              },
-            ]}/>
+            <ProFormText className='w-full' name='name'
+              label={configDefaultText['page.listGroupCow.column.name']}
+              placeholder={configDefaultText['page.listGroupCow.column.name']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.name']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
         </Row>
 
 
-        <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
+        <ProFormSwitch name='active'
+          label={configDefaultText['page.listGroupCow.active']}
+          fieldProps={{ defaultChecked: true, }} />
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormTextArea className='w-full' label='Mô tả chi tiết' name='description' placeholder={`Mô tả chi tiết`}
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.description'
-                    defaultMessage='Mô tả chi tiết'
-                  />
-                ),
-              },
-            ]}/> 
-            
+            <ProFormTextArea className='w-full' name='description'
+              label={configDefaultText['page.listGroupCow.column.description']}
+              placeholder={configDefaultText['page.listGroupCow.column.description']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.description']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.description'
+                  //     defaultMessage='Mô tả chi tiết'
+                  //   />
+                  // ),
+                },
+              ]} />
+
           </Col>
         </Row>
 
@@ -445,7 +463,7 @@ const TableList: React.FC = () => {
       </ModalForm>
 
       <ModalForm
-        title='Cập nhật'
+        title={configDefaultText['page.listGroupCow.updateGroup']}
         open={updateModalOpen}
         form={form}
         autoFocusFirstInput
@@ -494,62 +512,72 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
-<Row gutter={24} className="m-0">
+        <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormSelect className='w-full' options={farm}  placeholder='Chọn trang trại' name='farm' label='Trang trại' 
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.farm'
-                    defaultMessage='Trang trại'
-                  />
-                ),
-              },
-            ]}/>
+            <ProFormSelect className='w-full' options={farm} name='farm'
+              label={configDefaultText['page.listGroupCow.column.farm']}
+              placeholder={configDefaultText['page.listGroupCow.column.farm']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.farm']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.farm'
+                  //     defaultMessage='Trang trại'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
         </Row>
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='name' label='Tên' required placeholder='Tên'  rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.name'
-                    defaultMessage='Nhập tên'
-                  />
-                ),
-              },
-            ]}/>
+            <ProFormText className='w-full' name='name'
+              label={configDefaultText['page.listGroupCow.column.name']}
+              placeholder={configDefaultText['page.listGroupCow.column.name']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.name']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
         </Row>
-
 
         <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
-
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormTextArea className='w-full' label='Mô tả chi tiết' name='description'  placeholder='Mô tả chi tiết' 
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.groupCow.required.description'
-                    defaultMessage='Mô tả chi tiết'
-                  />
-                ),
-              },
-            ]}/> 
-            
+          <ProFormTextArea className='w-full' name='description'
+              label={configDefaultText['page.listGroupCow.column.description']}
+              placeholder={configDefaultText['page.listGroupCow.column.description']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listGroupCow.required.description']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.groupCow.required.description'
+                  //     defaultMessage='Mô tả chi tiết'
+                  //   />
+                  // ),
+                },
+              ]} />
+
           </Col>
         </Row>
       </ModalForm>

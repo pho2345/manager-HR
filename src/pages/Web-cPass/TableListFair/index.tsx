@@ -18,6 +18,18 @@ import TableListAddCPassInFair from '../TableListAddCPassInFair';
 //import DetailCPass from '../components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 
+import  configText from '@/locales/configText';
+const configDefaultText = configText;
+
+//import { config } from 'dotenv';
+// import viVNIntl from 'antd/lib/locale/vi_VN';
+// const intlMap = {
+//   viVNIntl,
+// };
+
+
+
+
 
 const handleAdd = async (fields: any) => {
 
@@ -134,9 +146,14 @@ const TableList: React.FC = () => {
     const getData = async () => {
       const getPlan = await getPlans();
       setPlan(getPlan);
+
     };
     getData();
   }, []);
+
+
+
+  // Generate the intl object
 
   const confirm = (entity: any) => {
     Modal.confirm({
@@ -156,11 +173,16 @@ const TableList: React.FC = () => {
   };
 
 
+
+
+
+
   const columns: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      // title: <FormattedMessage id='page.listFair.columns.code' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['page.listFair.columns.code'],
       render: (_, entity: any) => {
         return (
           <a
@@ -177,7 +199,8 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
+      //title: <FormattedMessage id='page.listFair.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
+      title: configDefaultText['page.listFair.column.timeStart'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'timeStart',
@@ -187,7 +210,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
+      // title: <FormattedMessage id='page.listFair.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
+      title: configDefaultText['page.listFair.column.timeEnd'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'timeEnd',
@@ -197,7 +221,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
+      // title: <FormattedMessage id='page.listFair.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
+      title: configDefaultText['page.listFair.column.dateStartFeed'],
       dataIndex: 'dateStartFeed',
       valueType: 'textarea',
       key: 'dateStartFeed',
@@ -209,7 +234,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
+      //title: <FormattedMessage id='page.listFair.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
+      title: configDefaultText['page.listFair.column.timeFeed'],
       dataIndex: 'timeFeed',
       valueType: 'textarea',
       key: 'timeFeed',
@@ -217,7 +243,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT Mega/PL' />,
+      // title: <FormattedMessage id='page.listFair.column.plans' defaultMessage='PAHT Mega/PL' />,
+      title: configDefaultText['page.listFair.column.plans'],
       dataIndex: 'plans',
       valueType: 'dateRange',
       key: 'plans',
@@ -235,14 +262,16 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      // title: <FormattedMessage id='page.listFair.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      title: configDefaultText['page.listFair.column.cPassPublished'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
       key: 'cPassPublished',
       renderText: (_, text: any) => `${text?.cPassPublished} / ${text?.quantitySellCpass}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />,
+      // title: <FormattedMessage id='page.listFair.column.status' defaultMessage='Trạng thái' />,
+      title: configDefaultText['page.listFair.column.status'],
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
@@ -268,14 +297,16 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
+      // title: <FormattedMessage id='page.listFair.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
+      title: configDefaultText['page.listFair.column.unitPriceMeat'],
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',
       renderText: (_, text: any) => `${text?.unitPriceMeat}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
+      //title: <FormattedMessage id='page.listFair.column.nameFarm' defaultMessage='Tên trang trại' />,
+      title: configDefaultText['page.listFair.column.nameFarm'],
       dataIndex: 'nameFarm',
       valueType: 'textarea',
       key: 'nameFarm',
@@ -283,7 +314,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.payment' defaultMessage='Thanh toán' />,
+      // title: <FormattedMessage id='page.listFair.payment' defaultMessage='Thanh toán' />,
+      title: configDefaultText['page.listFair.payment'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'payment',
@@ -301,7 +333,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
+      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
+      title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
@@ -309,7 +342,7 @@ const TableList: React.FC = () => {
         let configButton = [];
         configButton.push( /// button copy
           <>
-            <Tooltip title='Sao chép'><CopyTwoTone
+            <Tooltip title={configDefaultText['page.listFair.copy']}><CopyTwoTone
               style={{
                 fontSize: 20,
                 paddingLeft: 5
@@ -334,7 +367,7 @@ const TableList: React.FC = () => {
               }
             /></Tooltip>
 
-            <Tooltip title='Thêm cPass'>
+            <Tooltip title={configDefaultText['page.listFair.addCPass']}>
               <FileAddTwoTone
                 style={{
                   fontSize: 20,
@@ -347,7 +380,7 @@ const TableList: React.FC = () => {
 
               ></FileAddTwoTone></Tooltip>
 
-            <Tooltip title='Chỉ định'>
+            <Tooltip title={configDefaultText['page.listFair.assign']}>
               <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
                 <PlusOutlined
                   style={{
@@ -358,7 +391,8 @@ const TableList: React.FC = () => {
                   }}
                 />
               </Link></Tooltip>
-            <Tooltip title='Quản lí'>
+
+            <Tooltip title={configDefaultText['page.listFair.manager']}>
               <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
                 <SettingOutlined
                   style={{
@@ -372,7 +406,7 @@ const TableList: React.FC = () => {
         if (entity?.status === 'noOpen') {
           // button edit
           configButton.push(<>
-            <Tooltip title='Sửa'><EditTwoTone
+            <Tooltip title={configDefaultText['edit']}><EditTwoTone
               style={{
                 fontSize: 20,
                 paddingLeft: 5
@@ -409,13 +443,14 @@ const TableList: React.FC = () => {
   ];
 
 
-
+  // const [intl, setIntl] = useState('zhCNIntl');
 
   return (
     <>
-      <PageContainer>
+      <PageContainer >
+
+
         <ProTable
-          search={false}
           actionRef={actionRef}
           rowClassName={record => {
             if (record.status !== 'opening') {
@@ -424,7 +459,7 @@ const TableList: React.FC = () => {
             return '';
           }}
           rowKey='id'
-
+          search={false}
           toolBarRender={() => [
             <Button
               type='primary'
@@ -433,7 +468,9 @@ const TableList: React.FC = () => {
                 handleModalOpen(true);
               }}
             >
-              <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+              <PlusOutlined />
+              {/* <FormattedMessage id='buttonNew' defaultMessage='Mới' /> */}
+              {configDefaultText['new']}
             </Button>,
           ]}
           request={async () => {
@@ -450,7 +487,7 @@ const TableList: React.FC = () => {
           toolbar={{
             settings: [{
               key: 'reload',
-              tooltip: 'Tải lại',
+              tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined />,
               onClick: () => {
                 if (actionRef.current) {
@@ -465,24 +502,28 @@ const TableList: React.FC = () => {
 
           pagination={{
             locale: {
-             next_page: 'Trang sau',
-             prev_page: 'Trang trước',
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
               console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
+          
+          
 
         />
+
         {selectedRowsState?.length > 0 && (
           <FooterToolbar
             extra={
               <div>
-                <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+                {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+                {`${configDefaultText['chosen']} `}
                 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-                &nbsp;&nbsp;
+                {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+                {configDefaultText['selectedItem']}
 
               </div>
             }
@@ -495,18 +536,19 @@ const TableList: React.FC = () => {
                 //actionRef.current?.reloadAndRest?.();
               }}
             >
-              <FormattedMessage
-                id='pages.searchTable.batchDeletion'
-                defaultMessage='Batch deletion'
-              />
+              {/* <FormattedMessage
+                id='buttonDelete'
+                defaultMessage='Xóa'
+              /> */}
+              {configDefaultText['delete']}
             </Button>
 
           </FooterToolbar>
         )}
 
-
         <ModalForm
-          title={<FormattedMessage id='pages.listFair.createModal' defaultMessage='Tạo mới Phiên mở bán' />}
+          // title={<FormattedMessage id='page.listFair.create' defaultMessage='Tạo mới Phiên mở bán' />}
+          title={configDefaultText['page.listFair.create']}
           open={createModalOpen}
           form={form}
           autoFocusFirstInput
@@ -530,6 +572,8 @@ const TableList: React.FC = () => {
             return true;
           }}
 
+
+
           submitter={{
             // render: (_, dom) => (
             //   <div style={{ marginBlockStart: '5vh' }}>
@@ -538,29 +582,37 @@ const TableList: React.FC = () => {
             //   </div>
             // ),
             searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
+
             },
           }}
         >
-          
+
 
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
-                label={<FormattedMessage id='pages.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                label={configDefaultText['page.listFair.column.timeFeed']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeFeed'] },
+
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='unitPriceMeat' placeholder='Đơn giá thịt'
-                label={<FormattedMessage id='pages.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+              <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
+                //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+                label={configDefaultText['page.listFair.column.unitPriceMeat']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.unitPriceMeat'] },
                 ]}
               />
             </Col>
@@ -571,22 +623,32 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeStart"
                 className='w-full'
-                placeholder='Nhập thời gian mở'
-                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                placeholder={configDefaultText['page.listFair.column.timeStart']}
+                //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                label={configDefaultText['page.listFair.column.timeStart']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeStart'] },
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                className='w-full'
+              className="full-width"
+               fieldProps={{
+                style: {
+                  width: '100%'
+                }
+               }}
                 name="dateStartFeed"
-                placeholder='Thời gian bắt đầu nuôi'
-                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
+                //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                label={configDefaultText['page.listFair.column.dateStartFeed']}
+
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.dateStartFeed'] },
                 ]}
               />
             </Col>
@@ -594,42 +656,51 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormText name='nameFarm' placeholder='Tên trang trại'
-                label={<FormattedMessage id='pages.listFair.nameFarm' defaultMessage='Tên trang trại' />}
+              <ProFormText name='nameFarm'
+
+                placeholder={configDefaultText['page.listFair.column.nameFarm']}
+                //label={<FormattedMessage id='page.listFair.nameFarm' defaultMessage='Tên trang trại' />}
+                label={configDefaultText['page.listFair.column.nameFarm']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.nameFarm'] }
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                name="dateStartFeed"
-                style={{
-                  width: `100%`
-                }}
-                placeholder='Thời gian bắt đầu nuôi'
-                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                className='w-full'
+                name="dateEndFeed"
+                placeholder={configDefaultText['page.listFair.column.dateEndFeed']}
+                //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                label={configDefaultText['page.listFair.column.dateEndFeed']}
+
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.dateEndFeed'] },
                 ]}
               />
             </Col>
+
           </Row>
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 name="plans"
-                label="Chọn PAHT"
+                label={configDefaultText['page.listFair.column.plans']}
                 options={plan}
                 fieldProps={{
                   mode: 'multiple',
                 }}
                 className='w-full'
-                placeholder="Chọn cPass"
+                // placeholder="Chọn cPass"
+                placeholder={configDefaultText['page.listFair.column.plans']}
+
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.plans' defaultMessage='Vui lòng chọn PAHT' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.plans' defaultMessage='Vui lòng chọn PAHT' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.plans'] },
                 ]}
               />
             </Col>
@@ -639,8 +710,10 @@ const TableList: React.FC = () => {
 
 
 
+
         <ModalForm
-          title={<FormattedMessage id='pages.listFair.updateModal' defaultMessage='Cập nhật Phiên mở bán' />}
+          // title={<FormattedMessage id='page.listFair.update' defaultMessage='Cập nhật Phiên mở bán' />}
+          title={configDefaultText['page.listFair.update']}
           open={updateModalOpen}
           form={form}
           autoFocusFirstInput
@@ -652,9 +725,18 @@ const TableList: React.FC = () => {
           }}
           submitTimeout={2000}
           submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
             searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonUpdate'],
+
             },
           }}
 
@@ -676,72 +758,91 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-
-              <ProFormText className='w-full' name='code' placeholder='Mã' disabled
-                label={<FormattedMessage id='pages.listFair.code' defaultMessage='Mã phiên mở bán' />}
+              <ProFormText className='w-full' name='code' placeholder={configDefaultText['page.listFair.columns.code']} disabled
+                //label={<FormattedMessage id='page.listFair.code' defaultMessage='Mã phiên mở bán' />}
+                label={configDefaultText['page.listFair.columns.code']}
               />
-
             </Col>
 
-            <Col span={12} className="gutter-row p-0">
-              <ProFormDateTimePicker className='w-full' name="timeStart"
-                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker name="timeStart"
+                className='w-full'
+                placeholder={configDefaultText['page.listFair.column.timeStart']}
+                //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                label={configDefaultText['page.listFair.column.timeStart']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeStart'] },
                 ]}
-                placeholder='Thời gian mở'
               />
-
             </Col>
           </Row>
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeEnd" className='w-full'
-                placeholder='Thời gian đóng'
+                placeholder={configDefaultText['page.listFair.column.timeEnd']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
                 ]}
-                label={<FormattedMessage id='pages.listFair.timeEnd'
-                  defaultMessage='Thời gian đóng' />
-
+                label={
+                  configDefaultText['page.listFair.column.timeEnd']
                 }
               />
-
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormDatePicker className='w-full' name="dateStartFeed"
-                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
-                placeholder='Thời gian bắt đầu nuôi'
+              <ProFormDatePicker
+                className='w-full'
+                name="dateStartFeed"
+                placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
+                //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                label={configDefaultText['page.listFair.column.dateStartFeed']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.dateStartFeed'] },
                 ]}
               />
             </Col>
-
           </Row>
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormDateTimePicker className='w-full' name="dateEndFeed" label="Thời gian kết thúc nuôi" placeholder='Thời gian kết thúc nuôi' rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' /> }]} />
+              <ProFormDateTimePicker
+                className='w-full'
+                name="dateEndFeed"
+                // label="Thời gian kết thúc nuôi" 
+                label={configDefaultText['page.listFair.column.dateEndFeed']}
+                placeholder='Thời gian kết thúc nuôi'
+                rules={
+                  [{
+                    required: true,
+                    message: configDefaultText['page.listFair.required.dateEndFeed']
+                      // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
+                    }]
+                }
+              />
             </Col>
 
-            <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='timeFeed' label='Thời gian nuôi(Tuần)'
-                placeholder='Nhập thời gian nuôi'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeFeed' defaultMessage='Nhập thời gian nuôi' /> }]}
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
+                // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                label={configDefaultText['page.listFair.column.timeFeed']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeFeed'] },
+                ]}
               />
             </Col>
           </Row>
-
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 className='w-full'
                 name='status'
-                label='Trạng thái'
+                label={configDefaultText['page.listFair.column.status']}
                 options={[
                   {
                     label: 'Chưa mở',
@@ -756,16 +857,18 @@ const TableList: React.FC = () => {
                     value: 'closed',
                   },
                 ]}
-                placeholder='Trạng thái'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeStart' defaultMessage='Trạng thái' /> }]}
+                placeholder={configDefaultText['page.listFair.column.status']}
+                rules={[{ required: true,
+                  //  message: <FormattedMessage id='page.ListFair.required.timeStart' defaultMessage='Trạng thái' /> 
+                  message: configDefaultText['page.listFair.required.status']
+                  }]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-
               <ProFormSelect
                 name="plans"
-                label="Chọn Plans"
+                label={configDefaultText['page.listFair.column.plans']}
                 // valueEnum={}
                 options={plan}
                 //request={getPlans}
@@ -773,31 +876,30 @@ const TableList: React.FC = () => {
                   mode: 'multiple',
                 }}
                 className='w-full'
-                placeholder="Chọn cPass"
+                placeholder={configDefaultText['page.listFair.column.plans']}
                 rules={[
-                  { required: true, message: 'Vui lòng chọn Plans!' },
+                  { required: true, message: configDefaultText['page.listFair.required.plans'] },
                 ]}
               />
             </Col>
           </Row>
 
-
-
-
-
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)'
-                placeholder='Đơn giá thịt'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.unitPriceMeat' defaultMessage='Đơn giá thịt' /> }]}
-
+             <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
+                //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+                label={configDefaultText['page.listFair.column.unitPriceMeat']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.unitPriceMeat'] },
+                ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormText className='w-full' name='nameFarm' label='Tên trang trại'
                 placeholder='Tên trang trại'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
+                rules={[{ required: true, message: <FormattedMessage id='page.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
               />
             </Col>
           </Row>
@@ -806,26 +908,17 @@ const TableList: React.FC = () => {
             <Col span={24} className="gutter-row p-0" >
               <ProFormSelect
                 name="c_passes"
-                label="Chọn cPass"
+                label={configDefaultText['page.listFair.column.c_passes']}
                 // valueEnum={}
                 request={getCPassNotFair}
                 fieldProps={{
                   mode: 'multiple',
                 }}
                 className='w-full'
-                placeholder="Chọn cPass"
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.c_passes' defaultMessage='Chọn cPass' /> }]}
+                placeholder={configDefaultText['page.listFair.column.c_passes']}
               />
-
-
             </Col>
           </Row>
-
-
-
-
-
-
         </ModalForm>
 
         <ModalForm
@@ -857,75 +950,108 @@ const TableList: React.FC = () => {
           }}
 
           submitter={{
+            // render: (_, dom) => (
+            //   <div style={{ marginBlockStart: '5vh' }}>
+            //     {dom.pop()}
+            //     {dom.shift()}
+            //   </div>
+            // ),
             searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
+
             },
           }}
         >
-
           <Row gutter={24} className="m-0">
-
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormDateTimePicker className='w-full' name="timeStart"
-                label={<FormattedMessage id='pages.listFair.timeStart' defaultMessage='Thời gian mở' />}
-                rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
-                ]}
-                placeholder='Thời gian mở'
-              />
-
-            </Col>
-            <Col span={12} className="gutter-row p-0">
-              <ProFormDateTimePicker name="timeEnd" className='w-full'
-                placeholder='Thời gian đóng'
-                rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
-                ]}
-                label={<FormattedMessage id='pages.listFair.timeEnd'
-                  defaultMessage='Thời gian đóng' />
-                }
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={24} className="m-0">
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormDatePicker className='w-full' name="dateStartFeed"
-                label={<FormattedMessage id='pages.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
-                placeholder='Thời gian bắt đầu nuôi'
-                rules={[
-                  { required: true, message: <FormattedMessage id='pages.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
-                ]}
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='code' placeholder={configDefaultText['page.listFair.columns.code']} disabled
+                //label={<FormattedMessage id='page.listFair.code' defaultMessage='Mã phiên mở bán' />}
+                label={configDefaultText['page.listFair.columns.code']}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0" >
-              <ProFormDateTimePicker className='w-full' name="dateEndFeed" label="Thời gian kết thúc nuôi" placeholder='Thời gian kết thúc nuôi' rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' /> }]} />
-            </Col>
-
-
-          </Row>
-
-          <Row gutter={24} className="m-0">
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='timeFeed' label='Thời gian nuôi(Tuần)'
-                placeholder='Nhập thời gian nuôi'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeFeed' defaultMessage='Nhập thời gian nuôi' /> }]}
+              <ProFormDateTimePicker name="timeStart"
+                className='w-full'
+                placeholder={configDefaultText['page.listFair.column.timeStart']}
+                //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
+                label={configDefaultText['page.listFair.column.timeStart']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.timeStart' defaultMessage='Vui lòng chọn thời gian mở' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeStart'] },
+                ]}
               />
             </Col>
           </Row>
 
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker name="timeEnd" className='w-full'
+                placeholder={configDefaultText['page.listFair.column.timeEnd']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
+                ]}
+                label={
+                  configDefaultText['page.listFair.column.timeEnd']
+                }
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                className='w-full'
+                name="dateStartFeed"
+                placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
+                //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
+                label={configDefaultText['page.listFair.column.dateStartFeed']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.dateStartFeed' defaultMessage='Vui lòng chọn thời gian bắt đầu nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.dateStartFeed'] },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker
+                className='w-full'
+                name="dateEndFeed"
+                // label="Thời gian kết thúc nuôi" 
+                label={configDefaultText['page.listFair.column.dateEndFeed']}
+                placeholder='Thời gian kết thúc nuôi'
+                rules={
+                  [{
+                    required: true,
+                    message: configDefaultText['page.listFair.required.dateEndFeed']
+                      // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
+                    }]
+                }
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
+                // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                label={configDefaultText['page.listFair.column.timeFeed']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeFeed'] },
+                ]}
+              />
+            </Col>
+          </Row>
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 className='w-full'
                 name='status'
-                label='Trạng thái'
+                label={configDefaultText['page.listFair.column.status']}
                 options={[
                   {
                     label: 'Chưa mở',
@@ -940,16 +1066,18 @@ const TableList: React.FC = () => {
                     value: 'closed',
                   },
                 ]}
-                placeholder='Trạng thái'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.timeStart' defaultMessage='Trạng thái' /> }]}
+                placeholder={configDefaultText['page.listFair.column.status']}
+                rules={[{ required: true,
+                  //  message: <FormattedMessage id='page.ListFair.required.timeStart' defaultMessage='Trạng thái' /> 
+                  message: configDefaultText['page.listFair.required.status']
+                  }]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-
               <ProFormSelect
                 name="plans"
-                label="Chọn Plans"
+                label={configDefaultText['page.listFair.column.plans']}
                 // valueEnum={}
                 options={plan}
                 //request={getPlans}
@@ -957,31 +1085,30 @@ const TableList: React.FC = () => {
                   mode: 'multiple',
                 }}
                 className='w-full'
-                placeholder="Chọn cPass"
+                placeholder={configDefaultText['page.listFair.column.plans']}
                 rules={[
-                  { required: true, message: 'Vui lòng chọn Plans!' },
+                  { required: true, message: configDefaultText['page.listFair.required.plans'] },
                 ]}
               />
             </Col>
           </Row>
 
-
-
-
-
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='unitPriceMeat' label='Đơn giá thịt(VND/Kg)'
-                placeholder='Đơn giá thịt'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.unitPriceMeat' defaultMessage='Đơn giá thịt' /> }]}
-
+             <Col span={12} className="gutter-row p-0">
+              <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
+                //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+                label={configDefaultText['page.listFair.column.unitPriceMeat']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.unitPriceMeat'] },
+                ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormText className='w-full' name='nameFarm' label='Tên trang trại'
                 placeholder='Tên trang trại'
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
+                rules={[{ required: true, message: <FormattedMessage id='page.ListFair.required.nameFarm' defaultMessage='Tên trang trại' /> }]}
               />
             </Col>
           </Row>
@@ -990,21 +1117,18 @@ const TableList: React.FC = () => {
             <Col span={24} className="gutter-row p-0" >
               <ProFormSelect
                 name="c_passes"
-                label="Chọn cPass"
+                label={configDefaultText['page.listFair.column.c_passes']}
                 // valueEnum={}
                 request={getCPassNotFair}
                 fieldProps={{
                   mode: 'multiple',
                 }}
                 className='w-full'
-                placeholder="Chọn cPass"
-                rules={[{ required: true, message: <FormattedMessage id='pages.ListFair.required.c_passes' defaultMessage='Chọn cPass' /> }]}
+                placeholder={configDefaultText['page.listFair.column.c_passes']}
               />
-
-
             </Col>
           </Row>
-
+          
         </ModalForm>
 
 

@@ -27,7 +27,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
+
+
+import { FormattedMessage, useParams } from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Row, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
@@ -181,26 +185,22 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
-
-
-  const intl = useIntl();
-
   const columns: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
+      title: configDefaultText['page.listCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
-          <Link to={`/cows/` + entity.id}>
-            {entity?.code}
-          </Link>
+           <>{entity?.code}</> 
         );
 
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
+      // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
+      title: configDefaultText['page.listCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
@@ -208,19 +208,21 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.firstWeight'
-          defaultMessage='Cân nặng sơ sinh'
-        />
-      ),
+      // title: (
+      //   <FormattedMessage
+      //     id='page.searchTable.column.firstWeight'
+      //     defaultMessage='Cân nặng sơ sinh'
+      //   />
+      // ),
+      title: configDefaultText['page.listCow.column.firstWeight'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'firstWeight',
       renderText: (_, text: any) => text?.firstWeight,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.photos' defaultMessage='Hình ảnh' />,
+      // title: <FormattedMessage id='page.searchTable.column.photos' defaultMessage='Hình ảnh' />,
+      title: configDefaultText['page.listCow.column.photos'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'photos',
@@ -249,7 +251,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.sex' defaultMessage='Giới tính' />,
+      // title: <FormattedMessage id='page.searchTable.column.sex' defaultMessage='Giới tính' />,
+      title: configDefaultText['page.listCow.column.sex'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'sex',
@@ -262,16 +265,18 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.category' defaultMessage='Giống loài' />
-      ),
+      // title: (
+      //   <FormattedMessage id='page.searchTable.column.category' defaultMessage='Giống loài' />
+      // ),
+      title: configDefaultText['page.listCow.column.category'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
       renderText: (_, text: any) => text?.category?.name,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      // title: <FormattedMessage id='page.searchTable.column.age' defaultMessage='Tuổi' />,
+      title: configDefaultText['page.listCow.column.age'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
@@ -279,9 +284,10 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />
-      ),
+      // title: (
+      //   <FormattedMessage id='page.searchTable.column.birthdate' defaultMessage='Ngày sinh' />
+      // ),
+      title: configDefaultText['page.listCow.column.birthdate'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'birthdate',
@@ -291,7 +297,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
+      // title: <FormattedMessage id='page.searchTable.titleOption' defaultMessage='Tùy chọn' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
@@ -335,14 +342,15 @@ const TableList: React.FC = () => {
               }
             }}
           >
-            <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+            {configDefaultText['buttonUpdate']}
           </Button>
         );
       },
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
+      // title: <FormattedMessage id='page.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
+      title: configDefaultText['buttonUpdate'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'create',
@@ -354,13 +362,12 @@ const TableList: React.FC = () => {
 
   return (
     !params.id ? (
-
       <PageContainer>
         <ProTable
-          headerTitle={intl.formatMessage({
-            id: 'pages.searchTable.title',
-            defaultMessage: 'Enquiry form',
-          })}
+          // headerTitle={intl.formatMessage({
+          //   id: 'page.searchTable.title',
+          //   defaultMessage: 'Enquiry form',
+          // })}
           actionRef={actionRef}
           rowKey='id'
           search={false}
@@ -374,7 +381,7 @@ const TableList: React.FC = () => {
                 }}
               >
 
-                <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+                <PlusOutlined /> <FormattedMessage id='page.searchTable.new' defaultMessage='New' />
               </Button>,
 
               // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
@@ -386,7 +393,7 @@ const TableList: React.FC = () => {
           toolbar={{
             settings: [{
               key: 'reload',
-              tooltip: 'Tải lại',
+              tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined></ReloadOutlined>,
               onClick: () => {
                 if (actionRef.current) {
@@ -398,8 +405,8 @@ const TableList: React.FC = () => {
 
           pagination={{
             locale: {
-             next_page: 'Trang sau',
-             prev_page: 'Trang trước',
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
               console.log(range);
@@ -424,9 +431,12 @@ const TableList: React.FC = () => {
           <FooterToolbar
             extra={
               <div>
-                <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+                {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+                {`${configDefaultText['chosen']} `}
                 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
+                {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+                {configDefaultText['selectedItem']}
+
               </div>
             }
           >
@@ -437,10 +447,7 @@ const TableList: React.FC = () => {
                 actionRef.current?.reloadAndRest?.();
               }}
             >
-              <FormattedMessage
-                id='pages.searchTable.batchDeletion'
-                defaultMessage='Batch deletion'
-              />
+             {configDefaultText['delete']}
             </Button>
 
           </FooterToolbar>
@@ -483,13 +490,15 @@ const TableList: React.FC = () => {
             //   </div>
             // ),
             searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
             },
           }}
         >
 
-          
+
 
 
 
@@ -497,9 +506,12 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0" >
               <ProFormText
                 className='w-full'
-                name='name' label='Tên' placeholder='Tên'
+                name='name'
+                label={configDefaultText['page.listCow.column.name']}
+                placeholder={configDefaultText['page.listCow.column.name']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.name'] },
                 ]}
               />
             </Col>
@@ -509,12 +521,13 @@ const TableList: React.FC = () => {
               <ProFormDigit
                 min={1}
                 className='w-full'
-
                 name='firstWeight'
-                label='Cân nặng P0'
-                placeholder='Cân nặng P0'
+                label={configDefaultText['page.listCow.column.firstWeight']}
+                placeholder={configDefaultText['page.listCow.column.firstWeight']}
+
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
+                  { required: true, message: configDefaultText['page.listCow.column.firstWeight'] },
                 ]}
               />
             </Col>
@@ -523,18 +536,25 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={category} placeholder='Chọn giống bò' required className='w-full'
-                name='category' label='Giống bò'
+              <ProFormSelect options={category}
+                label={configDefaultText['page.listCow.column.category']}
+                placeholder={configDefaultText['page.listCow.column.category']}
+                className='w-full'
+                name='category'
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.category'] },
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='age' label='Tuổi' placeholder='Tuổi'
+              <ProFormText className='w-full' name='age'
+                label={configDefaultText['page.listCow.column.age']}
+                placeholder={configDefaultText['page.listCow.column.age']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.age'] },
                 ]}
               />
 
@@ -544,31 +564,38 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-            <ProFormSelect  options={farm}  placeholder='Chọn trang trại' className='w-full'  name='farm' label='Trang trại'
-             rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
-            ]}
-            fieldProps={{
-              onChange: async (value) => {
-                const groupCow = await getGroupFarm(value);
-                setGroupCow(groupCow);
-                form.setFieldValue('group_cow', []);
-              }
-            }}
-          />
+              <ProFormSelect options={farm} className='w-full' name='farm'
+                label={configDefaultText['page.listCow.column.farm']}
+                placeholder={configDefaultText['page.listCow.column.farm']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
+                  {
+                    required: true, message: configDefaultText['page.listCow.required.farm'
+                    ]
+                  },
+                ]}
+                fieldProps={{
+                  onChange: async (value) => {
+                    const groupCow = await getGroupFarm(value);
+                    setGroupCow(groupCow);
+                    form.setFieldValue('group_cow', []);
+                  }
+                }}
+              />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-            <ProFormSelect className='w-full' 
-            options={groupCow?.length ? groupCow : null} 
-            disabled={groupCow?.length !== 0 ? false : true}  
-            placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'
+              <ProFormSelect className='w-full'
+                options={groupCow?.length ? groupCow : null}
+                disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
+                label={configDefaultText['page.listCow.column.farm']}
+                placeholder={configDefaultText['page.listCow.column.farm']}
 
-            rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
-            ]}
-             />
-
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
+                ]}
+              />
             </Col>
           </Row>
 
@@ -576,40 +603,47 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-            <ProFormDatePicker className='w-full' name='birthdate' placeholder='Chọn ngày sinh' label='Ngày sinh' 
-             rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
-            ]}
-            />
+              <ProFormDatePicker className='w-full' name='birthdate'
+                label={configDefaultText['page.listCow.column.birthdate']}
+                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
 
+                ]}
+              />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-            <ProFormSelect
-            className='w-full'
-            name='sex'
+              <ProFormSelect
+                className='w-full'
+                name='sex'
 
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
-            placeholder='Chọn giới tính'
-            rules={[{ required: true, message:<FormattedMessage id='pages.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }]}
-          />
+                label={configDefaultText['page.listCow.column.birthdate']}
+                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                options={[
+                  {
+                    label: 'Đực',
+                    value: 'male',
+                  },
+                  {
+                    label: 'Cái',
+                    value: 'female',
+                  },
+                ]}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
+                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
+                ]}
+              />
             </Col>
           </Row>
 
           <ProFormUploadButton
-            title='Upload'
             name='upload'
-            label='Upload'
+
+            title={configDefaultText['page.listCow.column.upload']}
+            label={configDefaultText['page.listCow.column.upload']}
             max={2}
             fieldProps={{
               name: 'file',
@@ -618,10 +652,14 @@ const TableList: React.FC = () => {
 
           />
 
-          <ProFormTextArea label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
+          <ProFormTextArea
+            label={configDefaultText['page.listCow.column.upload']}
+            placeholder={configDefaultText['page.listCow.column.upload']}
+            name='description' />
         </ModalForm>
 
         <ModalForm
+
           title='Cập nhật'
           open={updateModalOpen}
           form={form}
@@ -634,7 +672,7 @@ const TableList: React.FC = () => {
 
             },
           }}
-          
+
           submitTimeout={2000}
           onFinish={async (values) => {
             const success = await handleUpdate(values as any, refIdCow as any);
@@ -668,135 +706,25 @@ const TableList: React.FC = () => {
             //   </div>
             // ),
             searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+              // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonUpdate'],
             },
           }}
         >
-          {/* <ProForm.Group>
-            <ProFormText width='md' name='code' label='Mã' required placeholder='Mã' disabled />
-
-            <ProFormText width='md' name='name' label='Tên' required placeholder='Tên' />
-
-            <ProFormText
-              width='md'
-              name='firstWeight'
-              label='Cân nặng P0'
-              placeholder='Cân nặng P0'
-              disabled
-            />
 
 
-            <ProFormSelect options={category} width='md' name='category' placeholder='Chọn giống bò' label='Giống bò' required />
-            <ProFormSelect width='md' options={farm} required placeholder='Chọn trang trại' name='farm' label='Trang trại'
-              fieldProps={{
-                onChange: async (value) => {
-                  const groupCow = await getGroupFarm(value);
-                  setGroupCow(groupCow);
-                  form.setFieldValue('group_cow', null);
-                }
-              }}
-            />
-            <ProFormSelect width='md' options={groupCow?.length !== 0 ? groupCow : null} required placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò' />
-
-            <ProFormDatePicker width='md' name='birthdate' label='Ngày sinh' />
-            <ProFormText width='md' name='age' label='Tuổi' placeholder='Tuổi' />
-            <ProFormSelect
-              required
-
-              width='md'
-              name='sex'
-              label='Giới tính'
-              options={[
-                {
-                  label: 'Đực',
-                  value: 'male',
-                },
-                {
-                  label: 'Cái',
-                  value: 'female',
-                },
-              ]}
-
-            />
-            <ProFormSelect
-              width='md'
-              name='status'
-              label='Trạng thái'
-              options={[
-                {
-                  label: 'Mới',
-                  value: 'new',
-                },
-                {
-                  label: 'Sẳn sàng',
-                  value: 'ready',
-                },
-                {
-                  label: 'Đã thêm vào CPass',
-                  value: 'cpassAdded',
-                },
-
-                {
-                  label: 'Đã thêm vào phiên',
-                  value: 'fairAdded',
-                },
-                {
-                  label: 'Đã ở trong phiên mở bán',
-                  value: 'fairOpen',
-                },
-                {
-                  label: 'Trong đặt hàng của phiên',
-                  value: 'fairOrder',
-                },
-                {
-                  label: 'Đã thanh toán',
-                  value: 'paid',
-                },
-                {
-                  label: 'Sẵn sàng nuôi',
-                  value: 'readyFeed',
-                },
-                {
-                  label: 'Chờ nuôi',
-                  value: 'waitingFeed',
-                },
-              ]}
-              placeholder='Trạng thái'
-              rules={[{ required: true, message: 'Trạng thái!' }]}
-            />
-          </ProForm.Group>
-
-          <ProFormUploadButton
-            name='upload'
-            label='Upload'
-            title='Upload'
-
-            fieldProps={{
-              name: 'file',
-              listType: 'picture-card',
-              onRemove(file) {
-                if (!file.lastModified) {
-                  if (refIdPicture.current) {
-                    refIdPicture.current = [...refIdPicture.current, file.uid];
-                  }
-                  else {
-                    refIdPicture.current = [file.uid];
-                  }
-                }
-              }
-            }}
-          //action={() => customAPIUpload({})}
-          />
-          <ProFormTextArea label='Mô tả chi tiết' name='description' /> */}
-
-<Row gutter={24} className="m-0">
+          <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormText
                 className='w-full'
-                name='name' label='Tên' placeholder='Tên'
+                name='name'
+                label={configDefaultText['page.listCow.column.name']}
+                placeholder={configDefaultText['page.listCow.column.name']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.name'] },
                 ]}
               />
             </Col>
@@ -808,10 +736,10 @@ const TableList: React.FC = () => {
                 className='w-full'
 
                 name='firstWeight'
-                label='Cân nặng P0'
-                placeholder='Cân nặng P0'
+                label={configDefaultText['page.listCow.column.pZero']}
+                placeholder={configDefaultText['page.listCow.column.pZero']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
                 ]}
               />
             </Col>
@@ -820,18 +748,25 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={category} placeholder='Chọn giống bò' required className='w-full'
-                name='category' label='Giống bò'
+              <ProFormSelect options={category}
+                label={configDefaultText['page.listCow.column.category']}
+                placeholder={configDefaultText['page.listCow.column.category']}
+                className='w-full'
+                name='category'
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.category'] },
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='age' label='Tuổi' placeholder='Tuổi'
+              <ProFormText className='w-full' name='age'
+                label={configDefaultText['page.listCow.column.age']}
+                placeholder={configDefaultText['page.listCow.column.age']}
                 rules={[
-                  { required: true, message: <FormattedMessage id='pages.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.age'] },
                 ]}
               />
 
@@ -841,72 +776,87 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-            <ProFormSelect  options={farm}  placeholder='Chọn trang trại' className='w-full'  name='farm' label='Trang trại'
-             rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
-            ]}
-            fieldProps={{
-              onChange: async (value) => {
-                const groupCow = await getGroupFarm(value);
-                setGroupCow(groupCow);
-                form.setFieldValue('group_cow', []);
-              }
-            }}
-          />
+              <ProFormSelect options={farm} className='w-full' name='farm'
+                label={configDefaultText['page.listCow.column.farm']}
+                placeholder={configDefaultText['page.listCow.column.farm']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
+                  {
+                    required: true, message: configDefaultText['page.listCow.required.farm'
+                    ]
+                  },
+                ]}
+                fieldProps={{
+                  onChange: async (value) => {
+                    const groupCow = await getGroupFarm(value);
+                    setGroupCow(groupCow);
+                    form.setFieldValue('group_cow', []);
+                  }
+                }}
+              />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-            <ProFormSelect className='w-full' 
-            options={groupCow?.length ? groupCow : null} 
-            disabled={groupCow?.length !== 0 ? false : true}  
-            placeholder='Chọn nhóm bò' name='group_cow' label='Nhóm bò'
+              <ProFormSelect className='w-full'
+                options={groupCow?.length ? groupCow : null}
+                disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
+                label={configDefaultText['page.listCow.column.farm']}
+                placeholder={configDefaultText['page.listCow.column.farm']}
 
-            rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
-            ]}
-             />
-
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
+                ]}
+              />
             </Col>
           </Row>
 
 
 
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-            <ProFormDatePicker className='w-full' name='birthdate' placeholder='Chọn ngày sinh' label='Ngày sinh' 
-             rules={[
-              { required: true, message: <FormattedMessage id='pages.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
-            ]}
-            />
 
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker className='w-full' name='birthdate'
+                label={configDefaultText['page.listCow.column.birthdate']}
+                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
+
+                ]}
+              />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-            <ProFormSelect
-            className='w-full'
-            name='sex'
+              <ProFormSelect
+                className='w-full'
+                name='sex'
 
-            label='Giới tính'
-            options={[
-              {
-                label: 'Đực',
-                value: 'male',
-              },
-              {
-                label: 'Cái',
-                value: 'female',
-              },
-            ]}
-            placeholder='Chọn giới tính'
-            rules={[{ required: true, message:<FormattedMessage id='pages.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }]}
-          />
+                label={configDefaultText['page.listCow.column.birthdate']}
+                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                options={[
+                  {
+                    label: 'Đực',
+                    value: 'male',
+                  },
+                  {
+                    label: 'Cái',
+                    value: 'female',
+                  },
+                ]}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
+                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
+                ]}
+              />
             </Col>
           </Row>
 
           <ProFormUploadButton
-            title='Upload'
             name='upload'
-            label='Upload'
+
+            title={configDefaultText['page.listCow.column.upload']}
+            label={configDefaultText['page.listCow.column.upload']}
             max={2}
             fieldProps={{
               name: 'file',
@@ -915,7 +865,10 @@ const TableList: React.FC = () => {
 
           />
 
-          <ProFormTextArea label='Mô tả chi tiết' placeholder='Nhập chi tiết' name='description' />
+          <ProFormTextArea
+            label={configDefaultText['page.listCow.column.upload']}
+            placeholder={configDefaultText['page.listCow.column.upload']}
+            name='description' />
 
 
 
@@ -1041,8 +994,6 @@ const TableList: React.FC = () => {
                 return photo;
               }
             }
-
-
 
           ]}
         >

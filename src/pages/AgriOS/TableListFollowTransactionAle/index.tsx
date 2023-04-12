@@ -1,58 +1,51 @@
 import DetailUser from '@/pages/components/DetailUser';
 import {
-  customAPIGet, customAPIUpdateMany,
+  customAPIGet, 
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import {  ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  ModalForm,
   ProColumns,
-  ProFormSelect,
 } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Input, message, Modal, Space } from 'antd';
+// import { FormattedMessage, useIntl } from '@umijs/max';
+import { Button, Input, Space } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 
 
 
-
-const handleUpdateMany = async (fields: any, api: string, id: any) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    const updateTransaction = await customAPIUpdateMany(
-      fields,
-      api,
-      id);
-    hide();
-    if (updateTransaction) {
-      message.success('Cập nhật thành công');
-    }
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Cập nhật thất bại!');
-    return false;
-  }
-};
-
-
-
+// const handleUpdateMany = async (fields: any, api: string, id: any) => {
+//   const hide = message.loading('Đang cập nhật...');
+//   try {
+//     const updateTransaction = await customAPIUpdateMany(
+//       fields,
+//       api,
+//       id);
+//     hide();
+//     if (updateTransaction) {
+//       message.success('Cập nhật thành công');
+//     }
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Cập nhật thất bại!');
+//     return false;
+//   }
+// };
 
 const TableList: React.FC = () => {
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<any>([]);
 
   //const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
  // const [searchText, setSearchText] = useState('');
@@ -173,28 +166,25 @@ const TableList: React.FC = () => {
   });
 
 
-  const confirm = (entity: any, content: string, api: string) => {
-    Modal.confirm({
-      title: 'Confirm',
-      icon: <ExclamationCircleOutlined />,
-      content: content,
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: async () => {
-        const success = await handleUpdateMany(entity, api, null);
-        if (success) {
-          if (actionRef.current) {
-            setShowModal(false);
-            actionRef.current.reload();
-            setSelectedRows([]);
-          }
-        }
-      }
-    })
-  }
+  // const confirm = (entity: any, content: string, api: string) => {
+  //   Modal.confirm({
+  //     title: 'Confirm',
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: content,
+  //     okText: 'Có',
+  //     cancelText: 'Không',
+  //     onOk: async () => {
+  //       const success = await handleUpdateMany(entity, api, null);
+  //       if (success) {
+  //         if (actionRef.current) {
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
 
-  const intl = useIntl();
+  // const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -203,7 +193,8 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Mã giao dịch' />,
+      // title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Mã giao dịch' />,
+      title: configDefaultText['page.confirm.column.code'],
       key: 'code',
       dataIndex: 'code',
       render: (_, entity: any) => {
@@ -218,7 +209,8 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
+      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
+      title: configDefaultText['page.confirm.column.aleger'],
       dataIndex: 'username',
       valueType: 'textarea',
       key: 'username',
@@ -228,7 +220,8 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('mega')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.app' defaultMessage='Ứng dụng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.app' defaultMessage='Ứng dụng' />,
+      title: configDefaultText['page.follow.column.app'],
       dataIndex: 'app',
       valueType: 'textarea',
       key: 'app',
@@ -238,7 +231,8 @@ const TableList: React.FC = () => {
       //...getColumnSearchProps('mega')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.typesTransaction' defaultMessage='Hoạt động' />,
+      // title: <FormattedMessage id='page.follow.column.types' defaultMessage='Hoạt động' />,
+      title: configDefaultText['page.follow.column.types'],
       dataIndex: 'types',
       valueType: 'textarea',
       key: 'types',
@@ -284,7 +278,6 @@ const TableList: React.FC = () => {
         }
       },
       filters: [
-
         {
           text: 'Mua Ale',
           value: 'buyAle'
@@ -294,19 +287,26 @@ const TableList: React.FC = () => {
           value: 'sellAle'
         }
       ],
-     
+      onFilter:(value, record) => {
+        if(record.types === value){
+          return record
+        }
+        return null;
+      },
       filterSearch: true,
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số lượng Ale' />,
+      // title: <FormattedMessage id='page.follow.column.ale' defaultMessage='Số lượng Ale' />,
+      title: configDefaultText['page.follow.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => text?.ale && text?.ale > 0 ? text?.ale.toLocaleString() : 'N/A'
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lượng ProduceAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lượng ProduceAle' />,
+      title: configDefaultText['page.follow.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -314,7 +314,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số lượng PromoAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số lượng PromoAle' />,
+      title: configDefaultText['page.follow.column.promoAle'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
       key: 'promoAle',
@@ -322,7 +323,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.location' defaultMessage='Vị trí' />,
+      // title: <FormattedMessage id='pages.searchTable.column.location' defaultMessage='Vị trí' />,
+      title: configDefaultText['page.follow.column.location'],
       dataIndex: 'location',
       valueType: 'textarea',
       key: 'location',
@@ -331,9 +333,10 @@ const TableList: React.FC = () => {
 
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
+      // ),      
+      title: configDefaultText['page.confirm.column.method'],
       dataIndex: 'method',
       valueType: 'textarea',
       key: 'method',
@@ -352,7 +355,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: (<>Tài khoản<br />thanh toán</>),
+      title: (<>{configDefaultText['page.follow.column.account']}<br />{configDefaultText['page.follow.column.payment']}</>),
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
@@ -360,16 +363,18 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      title: configDefaultText['page.confirm.column.priceVnd'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
       key: 'priceVnd',
       renderText: (_, text: any) => text?.priceVnd.toLocaleString()
     },
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
+      // ),
+      title: configDefaultText['page.confirm.column.statusTransaction'],
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
@@ -404,7 +409,8 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      title: configDefaultText['page.confirm.column.createdAt'],
       dataIndex: 'createdAt',
       valueType: 'textarea',
       key: 'createdAt',
@@ -418,10 +424,10 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        // headerTitle={intl.formatMessage({
+        //   id: 'pages.searchTable.title',
+        //   defaultMessage: 'Enquiry form',
+        // })}
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -511,11 +517,10 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
@@ -568,50 +573,7 @@ const TableList: React.FC = () => {
       )} */}
 
 
-      <ModalForm
-        open={showModal}
-        width={300}
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            setShowModal(false);
-          },
-        }}
-        onFinish={async (values) => {
-          console.log(values);
-          if (values?.status === 1 || !values?.status) {
-            confirm({
-              transaction: selectedRows
-            }, `Chắc chắn thay đổi Tình trạng xử lý từ Chờ xác nhận sang Xác nhận ?`, 'transactions/confirm-ale-admin');
-          }
-          else {
-            confirm({
-              transaction: selectedRows
-            }, `Chắc chắn thay đổi Tình trạng xử lý từ Chờ xác nhận sang Hủy?`, 'transactions/cancel-ale-admin');
-          }
-
-          return true
-        }}
-      >
-
-        <ProFormSelect width='md' options={[
-          {
-            label: 'Xác nhận',
-            value: 1
-          },
-          {
-            label: 'Hủy',
-            value: 2
-          }
-        ]}
-          fieldProps={{
-            defaultValue: 1,
-            // onChange: async (values: any) => {
-            // }
-          }}
-          required placeholder='Chọn tình trạng' name='status' label='Tình trạng' />
-      </ModalForm>
-
+     
 
 
       {currentRowUser && (

@@ -1,4 +1,5 @@
 ﻿
+
 export default [
   {
     path: '/user',
@@ -56,6 +57,7 @@ export default [
     menuHeaderRender: false,
     routes: [
       { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh đợt mở bán', component: './Web-cPass/TableListFair' },
+     
     ],
   },
 
@@ -84,8 +86,9 @@ export default [
     path: '/web-aleger',
     //component: './TableListFair',
     menuHeaderRender: false,
+    
     routes: [
-      { path: '/web-aleger/mega', name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
+      { path: '/web-aleger/mega', hideInMenu: false,name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
       { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
       { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' },
       { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },
@@ -146,7 +149,7 @@ export default [
 
   {
     path: '/web-c-pass/fairs/add-cpass/:id',
-    component: './TableListAddCPassInFair',
+    component: './Web-cPass/TableListAddCPassInFair',
   },
   {
     name: 'Slot',

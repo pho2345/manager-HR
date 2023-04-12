@@ -5,11 +5,13 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, } from '@umijs/max';
+// import { FormattedMessage, } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Form, Tooltip, Col, Row, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 import DialogTransfer from '../components/DialogTransfer';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const { Text } = Typography;
 
@@ -42,8 +44,6 @@ const handleAdd = async (fields: any, api: string) => {
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  ////const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -51,14 +51,11 @@ const TableListAssignCPass = () => {
   const [typeConvert, setTypeConvert] = useState<boolean>(false);
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
-
-
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    // setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
+
     console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
@@ -198,7 +195,8 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+      title: configDefaultText['page.transfer.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
@@ -218,7 +216,8 @@ const TableListAssignCPass = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      title: configDefaultText['page.transfer.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
@@ -227,7 +226,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
+      title: configDefaultText['page.transfer.column.availableBalance'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
       key: 'availableBalance',
@@ -236,7 +236,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
+      title: configDefaultText['page.transfer.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -246,7 +247,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
+      title: configDefaultText['page.transfer.column.promoAle'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
       key: 'promoAle',
@@ -256,14 +258,15 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
+      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />}> <TranslationOutlined
+            <Tooltip title={configDefaultText['page.transfer.transfer']}> <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
@@ -274,10 +277,9 @@ const TableListAssignCPass = () => {
 
               }}
             /></Tooltip>
-
           </>,
           <>
-            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transferProduceAle' defaultMessage='Chuyển đổi ProduceAle' />}> <TransactionOutlined
+            <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}> <TransactionOutlined
               style={{
                 fontSize: 30,
                 paddingLeft: 5,
@@ -307,7 +309,7 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
-        
+
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger');
           return data;
@@ -327,32 +329,33 @@ const TableListAssignCPass = () => {
         }}
 
         columns={columns}
-      // rowSelection={{
-      //   onChange: (_, selectedRows: any) => {
-      //     console.log(selectedRows);
-      //     if (selectedRows.length > 1) {
-      //       // message.er('Chỉ được chọn 1 Mega!');
-      //     }
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
+        //     console.log(selectedRows);
+        //     if (selectedRows.length > 1) {
+        //       // message.er('Chỉ được chọn 1 Mega!');
+        //     }
 
-      //     //setSelectedRowsMega(selectedRows);
+        //     //setSelectedRowsMega(selectedRows);
 
-      //   },
-      //   // getCheckboxProps: (record: any) => ({
-      //   //   disabled: false, // Column configuration not to be checked
-      //   //  //name: record.name,
-      //   // }),
-      // }}
+        //   },
+        //   // getCheckboxProps: (record: any) => ({
+        //   //   disabled: false, // Column configuration not to be checked
+        //   //  //name: record.name,
+        //   // }),
+        // }}
 
-      pagination={{
-        locale: {
-         next_page: 'Trang sau',
-         prev_page: 'Trang trước',
-        },
-        showTotal: (total, range) => {
-          console.log(range);
-          return `${range[range.length - 1]} / Tổng số: ${total}`
-        }
-      }}
+        pagination={{
+
+          locale: {
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
+          },
+          showTotal: (total, range) => {
+            console.log(range);
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+          }
+        }}
 
       />
 
@@ -404,8 +407,10 @@ const TableListAssignCPass = () => {
 
         submitter={{
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
@@ -435,7 +440,12 @@ const TableListAssignCPass = () => {
                     setTypeConvert(true);
                   }
                 }
-              }} required placeholder='Chọn phương thức chuyển đổi' name='method' label='Phương thức chuyển đổi' />
+              }}
+              name='method'
+              required
+              label={configDefaultText['page.transfer.method']}
+              placeholder={configDefaultText['page.transfer.method']}
+            />
           </Col>
         </Row>
 
@@ -443,11 +453,11 @@ const TableListAssignCPass = () => {
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormMoney
-              label="Nhập giá trị ProduceAle muốn chuyển"
+              label={configDefaultText['page.transfer.produceAle']}
               name="ale"
               min={1}
               customSymbol='A'
-              placeholder='ProduceAle'
+              placeholder={configDefaultText['page.transfer.produceAle']}
               fieldProps={{
                 value: convertAle,
                 onChange: (e: any) => {
@@ -465,7 +475,8 @@ const TableListAssignCPass = () => {
               <Row gutter={24} className="m-0">
                 <Col span={24} className="gutter-row p-0" >
                   <ProFormText
-                    label="PrmoAle nhận được"
+                    placeholder={configDefaultText['page.transfer.rePromoAle']}
+                    label={configDefaultText['page.transfer.rePromoAle']}
                     name="promoAle"
                     disabled
                     fieldProps={{
@@ -479,10 +490,10 @@ const TableListAssignCPass = () => {
             <Row gutter={24} className="m-0">
               <Col span={24} className="gutter-row p-0" >
                 <ProFormText
-                  label="Ale nhận được"
+                  placeholder={configDefaultText['page.transfer.reAle']}
+                  label={configDefaultText['page.transfer.reAle']}
                   name="ale"
                   disabled
-                  placeholder='Ale'
                   fieldProps={{
                     value: convertAle,
                   }}

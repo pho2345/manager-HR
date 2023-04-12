@@ -9,18 +9,19 @@ import {
 
   ProTable,
 } from '@ant-design/pro-components';
-import { BsGraphUpArrow } from "react-icons/bs";
-import { MdOutlineEdit } from "react-icons/md";
+import { BsGraphUpArrow } from 'react-icons/bs';
+import { MdOutlineEdit } from 'react-icons/md';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
 import { Avatar, Button, Col, Form, message, Row, Tooltip, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
+
 const { Text } = Typography;
 
 const handleAdd = async (fields: any) => {
-  console.log(fields);
 
   const hide = message.loading('Đang chờ...');
   try {
@@ -36,9 +37,7 @@ const handleAdd = async (fields: any) => {
 };
 
 
-
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields, id);
   const hide = message.loading('Đang cập nhật...');
   try {
     let uploadImages = fields?.upload.map((e: any) => {
@@ -88,14 +87,12 @@ const handleUpdate = async (fields: any, id: any) => {
     return true;
   } catch (error: any) {
     hide();
-    //console.log(error);
     message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
 const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
   const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
@@ -196,17 +193,17 @@ const TableList: React.FC = () => {
     getValues();
   }, [])
 
-  const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
 
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.code'
-          defaultMessage='Thẻ tai'
-        />
-      ),
+      // title: (
+      //   <FormattedMessage
+      //     id='pages.searchTable.column.code'
+      //     defaultMessage='Thẻ tai'
+      //   />
+      // ),
+      title: configDefaultText['page.listCPass.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
@@ -227,7 +224,8 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm' />,
+      // title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm' />,
+      title: configDefaultText['page.listCPass.column.code'],
       dataIndex: 'groupCow',
       valueType: 'textarea',
       key: 'groupCow',
@@ -237,8 +235,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: (<>Trang trại <br />
-        Giống bò-Giới tính</>),
+      title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
+        {configDefaultText['page.listCPass.column.category']}-{configDefaultText['page.listCPass.column.sex']}</>),
       width: 200,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
@@ -257,7 +255,8 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.image' defaultMessage='Hình' />,
+      // title: <FormattedMessage id='pages.searchTable.column.image' defaultMessage='Hình' />,
+      title: configDefaultText['page.listCPass.column.image'],
       dataIndex: 'image',
       valueType: 'textarea',
       key: 'image',
@@ -284,8 +283,10 @@ const TableList: React.FC = () => {
         );
       }
     },
+
     {
-      title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      title: configDefaultText['page.listCPass.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
       key: 'birthdate',
@@ -295,7 +296,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss' />,
+      // title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss' />,
+      title: configDefaultText['page.listCPass.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
@@ -304,7 +306,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      title: configDefaultText['page.listCPass.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
       key: 'age',
@@ -315,7 +318,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: 'Pnow',
+      title: configDefaultText['page.listCPass.column.pNow'],
       dataIndex: 'P0andPnow',
       valueType: 'textarea',
       key: 'P0andPnow',
@@ -325,7 +328,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.listCPass.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -358,7 +362,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
+      title: configDefaultText['page.listCPass.column.wgePercent'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgePercent',
@@ -366,7 +370,9 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB' />,
+      //title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB' />,
+      title: configDefaultText['page.listCPass.column.awgAvg'],
+
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -374,13 +380,14 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
+      // title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
+      title: configDefaultText['page.listCPass.column.graph'],
       dataIndex: 'graph',
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
         return (<>
-          <Tooltip title={<FormattedMessage id='pages.columns.graph' defaultMessage='Biểu đồ' />}><BsGraphUpArrow
+          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
             onClick={() => {
               alert(text?.awgAv);
             }}
@@ -390,13 +397,13 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.option' defaultMessage='Thao tác' />,
-      dataIndex: 'graph',
+      title: configDefaultText['titleOption'],
+      dataIndex: 'titleOption',
       valueType: 'textarea',
-      key: 'graph',
+      key: 'grtitleOptionaph',
       render: (_, text: any) => {
         return (<>
-          <Tooltip title={<FormattedMessage id='pages.columns.update' defaultMessage='Cập nhật' />}><MdOutlineEdit
+          <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCpass.current = text.id;
@@ -456,10 +463,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -472,7 +476,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         request={() => customAPIGet({}, 'c-passes/get/c-pass-agrigate')}
@@ -482,12 +486,12 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
-        
+
         toolbar={{
           settings: [
             {
               key: 'reload',
-              tooltip: 'Tải lại',
+              tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined />,
               onClick: () => {
                 if (actionRef.current) {
@@ -495,17 +499,16 @@ const TableList: React.FC = () => {
                 }
               }
             },
-           
+
           ]
         }}
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
@@ -514,10 +517,12 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
+              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+              {configDefaultText['selectedItem']}
+
 
             </div>
           }
@@ -531,17 +536,14 @@ const TableList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
+            {configDefaultText['delete']}
           </Button>
         </FooterToolbar>
       )}
 
 
       <ModalForm
-        title="Tạo mới"
+        title='Tạo mới'
         open={createModalOpen}
         form={form}
         autoFocusFirstInput
@@ -577,16 +579,18 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,\
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
       >
         {/* <ProFormText
            className='w-full'
-            name="code"
-            label="Mã"
-            placeholder="Mã"
+            name='code'
+            label='Mã'
+            placeholder='Mã'
             rules={[
               {
                 required: true,
@@ -603,25 +607,26 @@ const TableList: React.FC = () => {
         <ProFormSelect
           className='w-full'
           options={cow}
-          name="cow"
-          label="Bò"
-          placeholder="Chọn bò"
+          name='cow'
+          label={configDefaultText['page.listCPass.modal.cow']}
+          placeholder={configDefaultText['page.listCPass.modal.cow']}
           rules={[
             {
               required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.Cpass.chosenCow'
-                  defaultMessage='Vui lòng chọn Bò!'
-                />
-              ),
+              message: configDefaultText['page.listCPass.required.cow']
+              // (
+              //   <FormattedMessage
+              //     id='pages.Cpass.chosenCow'
+              //     defaultMessage='Vui lòng chọn Bò!'
+              //   />
+              // ),
             },
           ]}
         />
 
 
 
-        {/* <ProFormText width="md" name="pZero" label="P0" placeholder="P0"  rules={[
+        {/* <ProFormText width='md' name='pZero' label='P0' placeholder='P0'  rules={[
               {
                 required: true,
                 message: (
@@ -635,34 +640,35 @@ const TableList: React.FC = () => {
 
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormDigit min={1} max={1000} className='w-full'
+              name='nowWeight'
+              label={configDefaultText['page.listCPass.modal.pNow']}
+              placeholder={configDefaultText['page.listCPass.modal.pNow']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.pZero'
-                      defaultMessage='Nhập cân nặng hiện tại'
-                    />
-                  ),
+                  message: configDefaultText['page.listCPass.required.pNow']
                 },
               ]}
             />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
-            <ProFormDigit min={1} max={1000} width="md" name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit min={1} max={1000} className='w-full' name='weightInStable'
+              label={configDefaultText['page.listCPass.modal.weightInStable']}
+              placeholder={configDefaultText['page.listCPass.modal.weightInStable']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.pZero'
-                      defaultMessage='Nhập cân nặng nhập chuồng'
-                    />
-                  ),
+                  message: configDefaultText['page.listCPass.modal.weightInStable']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.pZero'
+                  //     defaultMessage='Nhập cân nặng nhập chuồng'
+                  //   />
+                  // ),
                 },
               ]}
             />
@@ -670,54 +676,78 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormDatePicker className='w-full' name="dateInStable" label="Ngày nhập chuồng" placeholder={`Ngày nhập chuồng`} rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.required.dateInStable'
-                    defaultMessage='Ngày nhập chuồng'
-                  />
-                ),
-              },
-            ]} />
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormDatePicker className='w-full' name='dateInStable'
+              label={configDefaultText['page.listCPass.modal.dateInStable']}
+              placeholder={configDefaultText['page.listCPass.modal.dateInStable']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.dateInStable']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.dateInStable'
+                  //     defaultMessage='Ngày nhập chuồng'
+                  //   />
+                  // ),
+                },
+              ]} />
 
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
-            <ProFormDigit min={1} className='w-full' name="vs" label="Chi phí bảo trì và bảo hiểm" placeholder="Chi phí bảo trì và bảo hiểm" rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.pZero'
-                    defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
-                  />
-                ),
-              },
-            ]} />
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormDigit min={1} width="md" name="vZero" label="Giá trị con bò của Mega" placeholder="Giá trị con bò của Mega" required />
-
-          </Col>
-
-          <Col span={12} className="gutter-row p-0">
-            <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
-
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit min={1} className='w-full' name='vs'
+              label={configDefaultText['page.listCPass.modal.vs']}
+              placeholder={configDefaultText['page.listCPass.modal.vs']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.vs']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.pZero'
+                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
         </Row>
 
 
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormDigit min={1} className='w-full' name='vZero'
+              label={configDefaultText['page.listCPass.modal.vZero']}
+              placeholder={configDefaultText['page.listCPass.modal.vZero']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.vZero']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.pZero'
+                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
+                  //   />
+                  // ),
+                },
+              ]}
+
+            />
+
+          </Col>
+
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
+
+          </Col>
+        </Row>
 
 
-        {/* <ProFormDigit min={1} max={1000} width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại"
+
+
+        {/* <ProFormDigit min={1} max={1000} width='md' name='nowWeight' label='Cân nặng hiện tại' placeholder='Cân nặng hiện tại'
             rules={[
               {
                 required: true,
@@ -739,7 +769,7 @@ const TableList: React.FC = () => {
 
 
       <ModalForm
-        title="Cập nhật"
+        title='Cập nhật'
         open={updateModalOpen}
         form={form}
         autoFocusFirstInput
@@ -749,7 +779,7 @@ const TableList: React.FC = () => {
             handleUpdateModalOpen(false)
           },
         }}
-        
+
         submitter={{
           // render: (_, dom) => (
           //   <div style={{ marginBlockStart: '5vh' }}>
@@ -758,8 +788,10 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
         submitTimeout={2000}
@@ -786,24 +818,36 @@ const TableList: React.FC = () => {
         }}
       >
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
             <ProFormText
               className='w-full'
-              name="code"
-              label="Mã"
-              placeholder="Mã"
+              name='code'
+              label={configDefaultText['page.listCPass.modal.code']}
+              placeholder={configDefaultText['page.listCPass.modal.code']}
               disabled
             />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
+          <Col span={12} className='gutter-row p-0'>
             <ProFormSelect
-              disabled
               className='w-full'
-              name="cow"
-              label="Bò"
-              placeholder="Chọn bò"
+              options={cow}
+              name='cow'
+              label={configDefaultText['page.listCPass.modal.cow']}
+              placeholder={configDefaultText['page.listCPass.modal.cow']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.cow']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.chosenCow'
+                  //     defaultMessage='Vui lòng chọn Bò!'
+                  //   />
+                  // ),
+                },
+              ]}
             />
           </Col>
 
@@ -812,67 +856,78 @@ const TableList: React.FC = () => {
         </Row>
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
             <ProFormSelect
-              width='md'
+              //width='md'
+              className='w-full'
               options={groupCow?.length !== 0 ? groupCow : null}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.group_cow'
-                      defaultMessage='Chọn nhóm bò'
-                    />
-                  ),
+                  message: configDefaultText['page.listCow.required.group_cow']
+
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.group_cow'
+                  //     defaultMessage='Chọn nhóm bò'
+                  //   />
+                  // ),
                 },
               ]}
-              placeholder='Chọn nhóm bò'
+
+              label={configDefaultText['page.listCPass.column.groupCow']}
+              placeholder={configDefaultText['page.listCPass.column.groupCow']}
               name='group_cow'
-              label='Nhóm bò' />
+            />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
+          <Col span={12} className='gutter-row p-0'>
 
             <ProFormSelect
               options={category}
-              width='md'
+              className='w-full'
+
               name='category'
-              placeholder='Chọn giống bò'
-              label='Giống bò' rules={[
+              label={configDefaultText['page.listCPass.column.category']}
+              placeholder={configDefaultText['page.listCPass.column.category']}
+              rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.category'
-                      defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
-                    />
-                  ),
+                  message: configDefaultText['page.listCow.required.category']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.category'
+                  //     defaultMessage='Nhập trọng lượng bò thời điểm tính lợi nhuận'
+                  //   />
+                  // ),
                 },
               ]} />
           </Col>
         </Row>
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
             <ProFormSelect
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.sex'
-                      defaultMessage='Giới tính'
-                    />
-                  ),
+                  message: configDefaultText['page.listCow.required.category']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.sex'
+                  //     defaultMessage='Giới tính'
+                  //   />
+                  // ),
                 },
               ]}
-              placeholder={`Giới tính`}
-              width='md'
+
+              label={configDefaultText['page.listCow.column.category']}
+              placeholder={configDefaultText['page.listCow.column.category']}
+              className='w-full'
               name='sex'
-              label='Giới tính'
+
               options={[
                 {
                   label: 'Đực',
@@ -886,25 +941,29 @@ const TableList: React.FC = () => {
             />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
-            <ProFormDigit min={1} max={1000} className='w-full' name="weightInStable" label="Cân nặng nhập chuồng" placeholder="Cân nặng nhập chuồng"
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit min={1} max={1000} className='w-full'
+              name='weightInStable'
+              label={configDefaultText['page.listCPass.modal.weightInStable']}
+              placeholder={configDefaultText['page.listCPass.modal.weightInStable']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.weightInStable'
-                      defaultMessage='Cân nặng nhập chuồng'
-                    />
-                  ),
+                  message: configDefaultText['page.listCPass.modal.weightInStable']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.pZero'
+                  //     defaultMessage='Nhập cân nặng nhập chuồng'
+                  //   />
+                  // ),
                 },
               ]}
             />
           </Col>
         </Row>
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
             <ProFormSelect
               className='w-full'
               //options={groupCow?.length !== 0 ? groupCow : null}
@@ -935,27 +994,30 @@ const TableList: React.FC = () => {
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.bodyCondition'
-                      defaultMessage='Thể trạng'
-                    />
-                  ),
+                  message: configDefaultText['page.listCPass.required.bodyCondition']
+
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.bodyCondition'
+                  //     defaultMessage='Thể trạng'
+                  //   />
+                  // ),
                 },
               ]}
 
-              placeholder='Thể trạng'
+              placeholder={configDefaultText['page.listCPass.column.bodyCondition']}
               name='bodyCondition'
-              label='Thể trạng' />
+              label={configDefaultText['page.listCPass.column.bodyCondition']} />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
+          <Col span={12} className='gutter-row p-0'>
             <ProFormSelect
               className='w-full'
               options={farm}
               //required 
-              placeholder='Chọn trang trại'
-              name='farm' label='Trang trại'
+              placeholder={configDefaultText['page.listCPass.column.farm']}
+              label={configDefaultText['page.listCPass.column.farm']}
+              name='farm'
               fieldProps={{
                 onChange: async (value) => {
                   const groupCow = await getGroupFarm(value);
@@ -974,40 +1036,42 @@ const TableList: React.FC = () => {
 
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormDatePicker name="dateInStable" label="Ngày nhập chuồng" 
-            className='w-full' 
-            placeholder={`Ngày nhập chuồng`}
-
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.required.dateInStable'
-                    defaultMessage='Ngày nhập chuồng'
-                  />
-                ),
-              },
-            ]} />
-
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormDatePicker className='w-full' name='dateInStable'
+              label={configDefaultText['page.listCPass.modal.dateInStable']}
+              placeholder={configDefaultText['page.listCPass.modal.dateInStable']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.dateInStable']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.dateInStable'
+                  //     defaultMessage='Ngày nhập chuồng'
+                  //   />
+                  // ),
+                },
+              ]} />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
+          <Col span={12} className='gutter-row p-0'>
 
-            <ProFormDatePicker name='birthdate' label='Ngày sinh' className='w-full'
-            placeholder={`Ngày sinh`}
+            <ProFormDatePicker name='birthdate'
+              label={configDefaultText['page.listCPass.column.birthdate']}
+              placeholder={configDefaultText['page.listCPass.column.birthdate']}
+              className='w-full'
 
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.birthdate'
-                      defaultMessage='Ngày sinh'
-                    />
-                  ),
+                  message: configDefaultText['page.listCPass.required.birthdate']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.birthdate'
+                  //     defaultMessage='Ngày sinh'
+                  //   />
+                  // ),
                 },
               ]}
             />
@@ -1016,63 +1080,60 @@ const TableList: React.FC = () => {
 
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
 
-          </Col>
-
-          <Col span={12} className="gutter-row p-0">
-
-
-          </Col>
-        </Row>
-
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormText className='w-full' name="pZero" label="P0" placeholder="P0" rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.required.pZero'
-                    defaultMessage='Nhập P0'
-                  />
-                ),
-              },
-            ]} />
-
-          </Col>
-
-          <Col span={12} className="gutter-row p-0">
-            <ProFormText className='w-full' name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.required.nowWeight'
-                    defaultMessage='Nhập cân nặng hiện tại'
-                  />
-                ),
-              },
-            ]} />
-
-
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormText className='w-full' name="price" label="Giá" placeholder="Giá"
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormText className='w-full' name='pZero'
+              label={configDefaultText['page.listCow.column.pZero']}
+              placeholder={configDefaultText['page.listCow.column.pZero']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.Cpass.required.price'
-                      defaultMessage='Nhập cân nặng hiện tại'
-                    />
-                  ),
+                  message: configDefaultText['page.listCow.required.pZero']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.pZero'
+                  //     defaultMessage='Nhập P0'
+                  //   />
+                  // ),
+                },
+              ]} />
+
+          </Col>
+
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit min={1} max={1000} className='w-full'
+              name='nowWeight'
+              label={configDefaultText['page.listCPass.modal.pNow']}
+              placeholder={configDefaultText['page.listCPass.modal.pNow']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.pNow']
+                },
+              ]}
+            />
+
+
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormText className='w-full' name='price'
+              label={configDefaultText['page.listCPass.modal.price']}
+              placeholder={configDefaultText['page.listCPass.modal.price']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.price']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.price'
+                  //     defaultMessage='Nhập cân nặng hiện tại'
+                  //   />
+                  // ),
                 },
               ]}
 
@@ -1080,19 +1141,9 @@ const TableList: React.FC = () => {
 
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
+          <Col span={12} className='gutter-row p-0'>
 
-            <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi ProduceAle" rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.Cpass.required.price'
-                    defaultMessage='Nhập cân nặng hiện tại'
-                  />
-                ),
-              },
-            ]} />
+            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi ProduceAle' />
 
           </Col>
         </Row>
@@ -1130,14 +1181,7 @@ const TableList: React.FC = () => {
         }}
       />}
 
-      {/* <DetailUser
-        onDetail={showDetailUser}
-        currentRowUser={currentRowUser}
-        onCloseDetail={() => {
-          setCurrentRowUser(undefined);
-          setShowDetailUser(false);
-        }}
-      /> */}
+     
     </PageContainer>
 
   );

@@ -12,7 +12,8 @@ import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import ConfirmRegisteringSettlementSickOrDead from './ConfirmSettlementSickOrDead';
 import DetailUser from '@/pages/components/DetailUser';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const { Text, } = Typography;
 
@@ -170,7 +171,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.settlementDeadOrSick.column.cPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
@@ -190,7 +192,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -210,9 +213,11 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
     },
     {
-      title: (
-        <>Mega <br />sở hữu</>
-      ),
+      // title: (
+      //   <>Mega <br />sở hữu</>
+      // ),
+      title: configDefaultText['page.listSettlement.column.owner'],
+
       dataIndex: 'owner',
       valueType: 'textarea',
       key: 'owner',
@@ -227,7 +232,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.listCPass.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -264,7 +270,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuần tuổi/Snow</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuần tuổi/Snow</>} />,
+      title: configDefaultText['page.settlementDeadOrSick.column.ageAndSlot'],
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
@@ -275,35 +282,40 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.pZero']}<br/> {configDefaultText['page.listSettlement.column.pNow']} </>,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
       renderText: (_, text: any) => `${text?.pZero}/${text?.nowWeight}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br/> {configDefaultText['page.DetailAleger.column.produceAle']} </>,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => `${text?.megaDeltaWeight}/${text?.produceAle}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaP']}</>,
       dataIndex: 'megaP',
       valueType: 'textarea',
       key: 'megaP',
       renderText: (_, text: any) => text?.megaP
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaE']}</>,
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
       renderText: (_, text: any) => text?.megaE
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Trả lại Vs</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Trả lại Vs</>} />,
+      title: configDefaultText['page.confirmSettlementDeadOrSick.column.refundVs'],
       dataIndex: 'refundVs',
       valueType: 'textarea',
       key: 'refundVs',
@@ -327,7 +339,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         }}
         submitTimeout={2000}
         submitter={false}
-        width='90vh'
+        width='100vh'
       >
 
         <ProTable

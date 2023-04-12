@@ -14,10 +14,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+// import { FormattedMessage, useIntl } from '@umijs/max';
 import moment from 'moment';
 import React, {  useRef, useState } from 'react';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 
@@ -44,7 +45,7 @@ const TableList: React.FC = () => {
 
 
 
-  const intl = useIntl();
+  // const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -53,7 +54,8 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      // title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      title: configDefaultText['page.confirmSettlementVnd.code'],
       key: 'code',
       dataIndex: 'code',
       render: (_, entity: any) => {
@@ -69,7 +71,8 @@ const TableList: React.FC = () => {
       //valueEnum: filterCode
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      title: configDefaultText['page.confirmSettlementVnd.createdAt'],
       dataIndex: 'createdAt',
       valueType: 'textarea',
       key: 'createdAt',
@@ -78,14 +81,15 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: 'Mega',
+      title: configDefaultText['page.confirmSettlementVnd.sender'],
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
       renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -100,9 +104,10 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.codeCPass'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
@@ -118,7 +123,8 @@ const TableList: React.FC = () => {
       </>,
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
+      // title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
+      title: configDefaultText['page.confirmSettlementVnd.types'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
@@ -182,9 +188,10 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.method'],
       dataIndex: 'method',
       valueType: 'textarea',
       key: 'method',
@@ -203,16 +210,18 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'Tài khoản đến',
+      title: configDefaultText['page.confirmSettlementVnd.reciever'],
+      // title: 'Tài khoản đến',
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
-      renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
+      renderText: (_, text: any) => null
     },
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.statusTransaction'],
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
@@ -247,7 +256,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      title: configDefaultText['page.confirmSettlementVnd.priceVnd'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
       key: 'priceVnd',
@@ -263,10 +273,10 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        // headerTitle={intl.formatMessage({
+        //   id: 'pages.searchTable.title',
+        //   defaultMessage: 'Enquiry form',
+        // })}
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -395,8 +405,8 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);

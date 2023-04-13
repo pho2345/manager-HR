@@ -4,7 +4,7 @@ import DetailUser from '@/pages/components/DetailUser';
 import {
   customAPIGet,
   customAPIUpdateMany,
-  customAPIDelete,
+  // customAPIDelete,
 } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import {
@@ -17,13 +17,15 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
+// import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
-import SettlementCPassModal from './components/SettlementMegaCancel';
+// import SettlementCPassModal from './components/SettlementMegaCancel';
 import SettlementCPassSickOrDeath from './components/SettlementSickOrDeath';
+import DialogTransfer from './components/DialogChooseUserSettlement';
 const { Text } = Typography;
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -48,25 +50,25 @@ const handleUpdateMany = async (fields: any, api: any) => {
 };
 
 
-const handleRemove = async (selectedRows: any) => {
+// const handleRemove = async (selectedRows: any) => {
 
-  const hide = message.loading('Đang xóa...');
-  if (!selectedRows) return true;
-  try {
-    const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'transactions');
-    });
+//   const hide = message.loading('Đang xóa...');
+//   if (!selectedRows) return true;
+//   try {
+//     const deleteRowss = selectedRows.map((e: any) => {
+//       return customAPIDelete(e.id, 'transactions');
+//     });
 
-    await Promise.all(deleteRowss);
-    hide();
-    message.success('Xóa thành công');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Xóa thất bại');
-    return false;
-  }
-};
+//     await Promise.all(deleteRowss);
+//     hide();
+//     message.success('Xóa thành công');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Xóa thất bại');
+//     return false;
+//   }
+// };
 
 
 
@@ -85,8 +87,10 @@ const TableList: React.FC = () => {
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
 
-  const [currentUserSettlementCancel, setCurrentUserSettlementCancel] = useState<any>();
-  const [showRegisteringSettlementCancel, setShowRegisteringSettlementCancel] = useState<boolean>(false);
+  const [showUsers, setShowUsers] = useState<boolean>(false);
+
+ // const [currentUserSettlementCancel, setCurrentUserSettlementCancel] = useState<any>();
+ // const [showRegisteringSettlementCancel, setShowRegisteringSettlementCancel] = useState<boolean>(false);
 
 
   const [showRegisteringSettlementSickOrDeath, setShowRegisteringSettlementSickOrDeath] = useState<boolean>(false);
@@ -132,7 +136,8 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.cPassCode' defaultMessage='cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPassCode' defaultMessage='cPass' />,
+      title: configDefaultText['page.listSettlement.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
@@ -150,7 +155,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -174,9 +180,10 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <>Mega <br />sở hữu</>
-      ),
+      // title: (
+      //   <>Mega <br />sở hữu</>
+      // ),
+      title: configDefaultText['page.listSettlement.column.owner'],
       dataIndex: 'owner',
       valueType: 'textarea',
       key: 'owner',
@@ -191,7 +198,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
+      title: configDefaultText['page.listSettlement.column.ageAndSlot'],
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
@@ -202,12 +210,13 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.addCPassInFair.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-            return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -235,75 +244,83 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br />tăng trọng</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br />tăng trọng</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.wgePercentOne']}<br/>{configDefaultText['page.listSettlement.column.wgePercentTwo']}</>,
       dataIndex: 'wgePercent',
       valueType: 'textarea',
       key: 'wgePercent',
       renderText: (_, text: any) => text?.wgePercent
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br />trung bình<br />(kg/Tuần)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br />trung bình<br />(kg/Tuần)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br/> {configDefaultText['page.listSettlement.column.awgAvgTwo']} <br/> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>,
       dataIndex: 'awgAvg',
       valueType: 'textarea',
       key: 'awgAvg',
       renderText: (_, text: any) => text?.awgAvg
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.pZero']}<br/> {configDefaultText['page.listSettlement.column.pNow']} </>,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
       renderText: (_, text: any) => `${text?.pZero}/${text?.nowWeight}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br/> {configDefaultText['page.DetailAleger.column.produceAle']} </>,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => `${text?.megaDeltaWeight}/${text?.produceAle}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaP']}</>,
       dataIndex: 'megaP',
       valueType: 'textarea',
       key: 'megaP',
       renderText: (_, text: any) => text?.megaP
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaE']}</>,
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
       renderText: (_, text: any) => text?.megaE
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage={<>Lý do</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage={<>Lý do</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.reasonSettlement']}</>,
       dataIndex: 'reasonSettlement',
       valueType: 'textarea',
       key: 'reasonSettlement',
       render: (_, text: any) => {
-       
-            return (<Text style={{ color: `${text?.colorTextReason}` }}>{text.textReason}</Text>);
-       
-        }      
+
+        return (<Text style={{ color: `${text?.colorTextReason}` }}>{text.textReason}</Text>);
+
+      }
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />
+      // ),
+      title: <>{configDefaultText['page.listSettlement.column.reasonSettlement']}</>,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'status',
       render: (_, text: any) => {
-     
-            return (<div style={{ color: text?.colorStatusTransaction }}>{text?.textStatusTransaction}</div>);
-      
-      
+
+        return (<div style={{ color: text?.colorStatusTransaction }}>{text?.textStatusTransaction}</div>);
+
+
+      },
     },
-  },
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
+      title: <>{configDefaultText['titleOption']}</>,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
@@ -337,11 +354,12 @@ const TableList: React.FC = () => {
             key='primary'
             onClick={() => {
               // handleModalOpen(true);
-              setShowRegisteringSettlementCancel(true);
-              setCurrentUserSettlementCancel(8);
+              setShowUsers(true);
+              // setShowRegisteringSettlementCancel(true);
+              // setCurrentUserSettlementCancel(8);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.registeringSettlementCancel' defaultMessage='Đăng kí thanh quyết toán trước hạn' />
+            <PlusOutlined /> {configDefaultText['page.listSettlement.registeringSettlementCancel']}
           </Button>,
 
           <Button
@@ -352,7 +370,7 @@ const TableList: React.FC = () => {
               setShowRegisteringSettlementSickOrDeath(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.registeringSettlementSickOrDeath' defaultMessage='Đăng kí thanh quyết toán bệnh chết' />
+            <PlusOutlined />   {configDefaultText['page.listSettlement.registeringSettlementSickOrDeath']}
           </Button>
 
         ]}
@@ -383,14 +401,14 @@ const TableList: React.FC = () => {
             disabled: record.status === 'done'
           })
         }}
-        
+
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -399,8 +417,8 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
@@ -413,14 +431,16 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-             
+              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+              {configDefaultText['selectedItem']}
+
             </div>
           }
         >
-          <Button
+          {/* <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -432,12 +452,7 @@ const TableList: React.FC = () => {
               defaultMessage='Batch deletion'
             />
           </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
+           */}
         </FooterToolbar>
       )}
 
@@ -477,21 +492,34 @@ const TableList: React.FC = () => {
       )
       }
 
-
-      {currentUserSettlementCancel && (
-        <SettlementCPassModal
-          openModal={showRegisteringSettlementCancel}
-          userId={currentUserSettlementCancel}
-          onCloseModal={() => {
-            setCurrentUserSettlementCancel(undefined);
-            setShowRegisteringSettlementCancel(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      )
+    
+        {
+          <DialogTransfer
+            openModal={showUsers}
+            onCloseModal={() => {
+              setShowUsers(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+          />
       }
+
+
+      {/* {
+        currentUserSettlementCancel && (
+          <SettlementCPassModal
+            openModal={showRegisteringSettlementCancel}
+            userId={currentUserSettlementCancel}
+            onCloseModal={() => {
+              setCurrentUserSettlementCancel(undefined);
+              setShowRegisteringSettlementCancel(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+          />)
+      } */}
 
       {
         showRegisteringSettlementSickOrDeath && (

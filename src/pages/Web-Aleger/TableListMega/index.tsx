@@ -4,33 +4,16 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
-import { Button, message, Space, Input } from 'antd';
+import { Button, Space, Input } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
-import DetailCPass from '@/pages/components/DetailCPass';
+// import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '../components/DetailUser';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
-// const handleUpdateMany = async (fields: any, api: string, id: any) => {
-//   const hide = message.loading('Đang cập nhật...');
-//   try {
-//     const updateTransaction = await customAPIUpdateMany(
-//       fields,
-//       api,
-//       id);
-//     hide();
-//     if (updateTransaction) {
-//       message.success('Cập nhật thành công');
-//     }
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Cập nhật thất bại!');
-//     return false;
-//   }
-// };
 
 
 
@@ -39,8 +22,8 @@ import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  const [currentRowCPass, setCurrentRowCPass] = useState<any>();
-  const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
+  // const [currentRowCPass, setCurrentRowCPass] = useState<any>();
+  // const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
   //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
 
@@ -132,7 +115,6 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(record);
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
@@ -162,36 +144,12 @@ const TableListAssignCPass = () => {
 
   });
 
-
-
-  // const confirm = (entity: any, message: string, api: string, id: any) => {
-  //   Modal.confirm({
-  //     title: 'Confirm',
-  //     icon: <ExclamationCircleOutlined />,
-  //     content: message,
-  //     okText: 'Có',
-  //     cancelText: 'Không',
-  //     onOk: async () => {
-
-  //       await handleUpdateMany({
-  //         ...entity
-  //       }, api, id);
-  //       if (actionRef.current) {
-  //         actionRef.current.reload();
-  //       }
-  //     }
-  //   });
-  // };
-
-
-
-
-
   const columns: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.se archTable.column.aleger' defaultMessage='Aleger' />,
+      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
+      title: configDefaultText['page.listAleger.column.aleger'],
       ...getColumnSearchProps('username'),
       render: (_, entity: any) => {
         return (
@@ -211,7 +169,8 @@ const TableListAssignCPass = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.totalMegaCPass' defaultMessage='Tổng cPass Mega' />,
+      // title: <FormattedMessage id='pages.searchTable.column.totalMegaCPass' defaultMessage='Tổng cPass Mega' />,
+      title: configDefaultText['page.listAleger.column.totalMegaCPass'],
       dataIndex: 'totalMegaCPass',
       valueType: 'textarea',
       key: 'totalMegaCPass',
@@ -221,7 +180,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tổng MegaΔP (kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tổng MegaΔP (kg)' />,
+      title: configDefaultText['page.listAleger.column.totalMegaCPass'],
       dataIndex: 'megaDeltaWeight',
       valueType: 'textarea',
       key: 'megaDeltaWeight',
@@ -231,7 +191,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: (<>Tổng MegaP (kg) <br />MegaE (VNĐ)</>),
+      // title: (<>Tổng MegaP (kg) <br />MegaE (VNĐ)</>),
+      title: (<>{configDefaultText['page.listAleger.column.totalMegaP']}<br/> {configDefaultText['page.listAleger.column.megaE']}</>),
       dataIndex: 'megaWeight',
       valueType: 'textarea',
       key: 'megaWeight',
@@ -241,7 +202,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
+      title: configDefaultText['page.listAleger.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -251,7 +213,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      title: configDefaultText['page.listAleger.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
@@ -260,7 +223,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.detail' defaultMessage='Chi tiết' />,
+      // title: <FormattedMessage id='pages.searchTable.column.detail' defaultMessage='Chi tiết' />,
+      title: configDefaultText['page.listAleger.column.ale'],
       dataIndex: 'detail',
       valueType: 'textarea',
       key: 'detail',
@@ -270,7 +234,7 @@ const TableListAssignCPass = () => {
             setCurrentRowUser(record?.id);
             setShowDetailUser(true);
           }}
-        >Chi tiết</Button>
+        >{configDefaultText['page.listAleger.column.ale']}</Button>
       }
     },
 
@@ -283,7 +247,6 @@ const TableListAssignCPass = () => {
   return (
     <>
       <ProTable
-        //headerTitle='Danh sách Mega'
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -296,7 +259,7 @@ const TableListAssignCPass = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -308,39 +271,31 @@ const TableListAssignCPass = () => {
 
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger');
-          //console.log('usersss', data);
           return data;
         }}
-        toolBarRender={() => [
-          <>
-
-          </>
-        ]}
         columns={columns}
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
+        //     console.log(selectedRows);
+        //     if (selectedRows.length > 1) {
+        //       message.error('Chỉ được chọn 1 Mega!');
 
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            console.log(selectedRows);
-            if (selectedRows.length > 1) {
-              message.error('Chỉ được chọn 1 Mega!');
+        //     }
 
-            }
-
-            //setSelectedRowsMega(selectedRows);
-          },
-          // getCheckboxProps: (record: any) => ({
-          //   disabled: false, // Column configuration not to be checked
-          //  //name: record.name,
-          // }),
-        }}
+        //     //setSelectedRowsMega(selectedRows);
+        //   },
+        //   // getCheckboxProps: (record: any) => ({
+        //   //   disabled: false, // Column configuration not to be checked
+        //   //  //name: record.name,
+        //   // }),
+        // }}
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
@@ -348,9 +303,8 @@ const TableListAssignCPass = () => {
 
 
 
-      {currentRowCPass && (
+      {/* {currentRowCPass && (
         <DetailCPass
-          
           openModal={showDetailCPass}
           idCPass={currentRowCPass}
           closeModal={() => {
@@ -359,7 +313,7 @@ const TableListAssignCPass = () => {
           }}
         />
       )}
-
+ */}
 
       {currentRowUser && (
         <DetailUser

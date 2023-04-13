@@ -1,11 +1,12 @@
 
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { ProColumns, ProDescriptions } from '@ant-design/pro-components';
-import { FormattedMessage, useIntl } from '@umijs/max';
 import {  Drawer, Typography, Image, Checkbox  } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
 const {Text} = Typography;
+import  configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const ListImage = (image: any) => {
   return image?.length !== 0 ? (<>
@@ -23,13 +24,13 @@ const TableList = (props: any) => {
 
   
 
-  const intl = useIntl();
 
   const columnsDetailCPass: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.DetailCPass.column.code'],
       render: (_, entity: any) => {
         return (
           // <Text>{`${entity.code}|${entity.id}`}</Text>
@@ -42,14 +43,16 @@ const TableList = (props: any) => {
       
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fairCode' defaultMessage='Đợt mở bán' />,
+    //   title: <FormattedMessage id='pages.searchTable.column.fairCode' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['page.DetailCPass.column.fair'],
       dataIndex: 'fairCode',
       valueType: 'textarea',
       key: 'fairCode',
       renderText: (_, text: any) => text?.fairCode
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.hintName' defaultMessage='Tên gợi nhớ' />,
+      // title: <FormattedMessage id='pages.searchTable.column.hintName' defaultMessage='Tên gợi nhớ' />,
+      title: configDefaultText['page.DetailCPass.column.hintName'],
       dataIndex: 'hintName',
       valueType: 'textarea',
       key: 'hintName',
@@ -58,7 +61,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.cowName' defaultMessage='Tên' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cowName' defaultMessage='Tên' />,
+      title: configDefaultText['page.DetailCPass.column.cowName'],
       dataIndex: 'cowName',
       valueType: 'textarea',
       key: 'cowName',
@@ -67,14 +71,16 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
+      title: configDefaultText['page.DetailCPass.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
       key: 'farm',
       renderText: (_, text) => text.farmName ? text.farmName : null
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      //title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
+      title: configDefaultText['page.DetailCPass.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
       key: 'birthdate',
@@ -85,7 +91,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss' />,
+     // title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss' />,
+      title: configDefaultText['page.DetailCPass.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
@@ -93,7 +100,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      title: configDefaultText['page.DetailCPass.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
       key: 'age',
@@ -103,7 +111,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.DetailCPass.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -150,7 +159,8 @@ const TableList = (props: any) => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
+      title: configDefaultText['page.DetailCPass.column.pZero'],
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -159,7 +169,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
+      title: configDefaultText['page.DetailCPass.column.vs'],
       dataIndex: 'vs',
       valueType: 'textarea',
       key: 'vs',
@@ -168,7 +179,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
+      title: configDefaultText['page.DetailCPass.column.vZero'],
       dataIndex: 'vZero',
       valueType: 'textarea',
       key: 'vZero',
@@ -177,7 +189,8 @@ const TableList = (props: any) => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
+      title: configDefaultText['page.DetailCPass.column.megaS'],
       dataIndex: 'megaS',
       valueType: 'textarea',
       key: 'megaS',
@@ -185,7 +198,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.mega' defaultMessage='Mega' />,
+      // title: <FormattedMessage id='pages.searchTable.column.mega' defaultMessage='Mega' />,
+      title: configDefaultText['page.DetailCPass.column.mega'],
       dataIndex: 'mega',
       valueType: 'textarea',
       key: 'mega',
@@ -208,7 +222,8 @@ const TableList = (props: any) => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.wge' defaultMessage='Hiệu quả tăng trọng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.wge' defaultMessage='Hiệu quả tăng trọng' />,
+      title: configDefaultText['page.DetailCPass.column.wge'],
       dataIndex: 'wge',
       valueType: 'textarea',
       key: 'wge',
@@ -218,7 +233,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng trung bình' />,
+      // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng trung bình' />,
+      title: configDefaultText['page.DetailCPass.column.awgAvg'],
       dataIndex: 'awgAvg',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -228,7 +244,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Cân nặng chênh lệch(Kg)' />,
+      //title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Cân nặng chênh lệch(Kg)' />,
+      title: configDefaultText['page.DetailCPass.column.deltaWeight'],
       dataIndex: 'deltaWeight',
       valueType: 'textarea',
       key: 'deltaWeight',
@@ -238,7 +255,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại(Kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại(Kg)' />,
+      title: configDefaultText['page.DetailCPass.column.nowWeight'],
       dataIndex: 'nowWeight',
       valueType: 'textarea',
       key: 'nowWeight',
@@ -248,7 +266,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Cân nặng Mega được hưởng(Kg)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Cân nặng Mega được hưởng(Kg)' />,
+      title: configDefaultText['page.DetailCPass.column.megaDeltaWeight'],
       dataIndex: 'megaDeltaWeight',
       valueType: 'textarea',
       key: 'megaDeltaWeight',
@@ -258,7 +277,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='produceAle tích lũy' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='produceAle tích lũy' />,
+      title: configDefaultText['page.DetailCPass.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -267,18 +287,11 @@ const TableList = (props: any) => {
       }
     },
 
-    {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='produceAle tích lũy' />,
-      dataIndex: 'produceAle',
-      valueType: 'textarea',
-      key: 'produceAle',
-      renderText: (_, text: any) => {
-        return text?.produceAle
-      }
-    },
+    
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaCPR' defaultMessage='Tỷ suất lợi nhuận tích lũy Mega' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaCPR' defaultMessage='Tỷ suất lợi nhuận tích lũy Mega' />,
+      title: configDefaultText['page.DetailCPass.column.megaCPR'],
       dataIndex: 'megaCPR',
       valueType: 'textarea',
       key: 'megaCPR',
@@ -286,18 +299,11 @@ const TableList = (props: any) => {
         return text?.megaCPR
       }
     },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.megaCPR' defaultMessage='Tỷ suất lợi nhuận tích lũy Mega' />,
-      dataIndex: 'megaCPR',
-      valueType: 'textarea',
-      key: 'megaCPR',
-      renderText: (_, text: any) => {
-        return text?.megaCPR
-      }
-    },
+    
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightTransfer' defaultMessage='Số megaDeltaWeight đã chuyễn sang produceAle' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightTransfer' defaultMessage='Số megaDeltaWeight đã chuyễn sang produceAle' />,
+      title: configDefaultText['page.DetailCPass.column.megaDeltaWeightTransfer'],
       dataIndex: 'megaDeltaWeightTransfer',
       valueType: 'textarea',
       key: 'megaDeltaWeightTransfer',
@@ -307,7 +313,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.weightInStable' defaultMessage='Cân nặng lúc nhập chuồng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.weightInStable' defaultMessage='Cân nặng lúc nhập chuồng' />,
+      title: configDefaultText['page.DetailCPass.column.weightInStable'],
       dataIndex: 'weightInStable',
       valueType: 'textarea',
       key: 'weightInStable',
@@ -317,7 +324,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.dateInStable' defaultMessage='Ngày nhập chuồng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.dateInStable' defaultMessage='Ngày nhập chuồng' />,
+      title: configDefaultText['page.DetailCPass.column.dateInStable'],
       dataIndex: 'dateInStable',
       valueType: 'textarea',
       key: 'dateInStable',
@@ -328,7 +336,8 @@ const TableList = (props: any) => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage='megaE(Vnđ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage='megaE(Vnđ)' />,
+      title: configDefaultText['page.DetailCPass.column.megaE'],
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'dateInmegaEStable',
@@ -342,7 +351,8 @@ const TableList = (props: any) => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng giao dịch' />,
+      //title: <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng giao dịch' />,
+      title: configDefaultText['page.DetailCPass.column.statusTransaction'],
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
       key: 'statusTransaction',
@@ -350,7 +360,8 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage='Lý do quyết toán' />,
+      //title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage='Lý do quyết toán' />,
+      title: configDefaultText['page.DetailCPass.column.reasonSettlement'],
       dataIndex: 'reasonSettlement',
       valueType: 'textarea',
       key: 'reasonSettlement',

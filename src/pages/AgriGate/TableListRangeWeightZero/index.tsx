@@ -9,12 +9,12 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 const handleAdd = async (fields: API.RuleListItem) => {
@@ -77,7 +77,6 @@ const TableList: React.FC = () => {
   const refIdCateogry = useRef<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  const intl = useIntl();
   const searchInput = useRef<InputRef>(null);
 
 
@@ -179,12 +178,13 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.code'
-          defaultMessage='Rule name'
-        />
-      ),
+      // title: (
+      //   <FormattedMessage
+      //     id='pages.searchTable.column.code'
+      //     defaultMessage='Rule name'
+      //   />
+      // ),
+      title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
@@ -203,7 +203,8 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
+      // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
+      title: configDefaultText['page.valueFrom'],
       dataIndex: 'valueFrom',
       valueType: 'textarea',
       key: 'valueFrom',
@@ -214,7 +215,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
+      // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
+      title: configDefaultText['page.valueTo'],
       dataIndex: 'valueTo',
       valueType: 'textarea',
       key: 'valueTo',
@@ -225,7 +227,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      title: configDefaultText['page.value'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'profit',
@@ -236,13 +239,14 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
+      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
         return (<Tooltip
-          title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
+          title={configDefaultText['buttonUpdate']}
         ><MdOutlineEdit
             onClick={() => {
               handleUpdateModalOpen(true);
@@ -252,7 +256,6 @@ const TableList: React.FC = () => {
                 valueFrom: entity?.attributes?.valueFrom,
                 valueTo: entity?.attributes?.valueTo,
               })
-
             }}
           /></Tooltip>
 
@@ -261,12 +264,12 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-
         return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
       }
 
@@ -277,10 +280,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -292,7 +292,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         request={() => customAPIGet({}, 'rang-weight-zeros')}
@@ -301,13 +301,13 @@ const TableList: React.FC = () => {
           onChange: (_, selectedRows: any) => {
             setSelectedRows(selectedRows);
           },
-          
+
         }}
 
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -319,8 +319,8 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
@@ -333,10 +333,11 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='项' />
-              &nbsp;&nbsp;
+              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+              {configDefaultText['selectedItem']}
             </div>
           }
         >
@@ -344,7 +345,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
 
               confirm(
-                selectedRowsState, `Bạn có chắc xóa?`
+                selectedRowsState, configDefaultText['confirmDetele']
               );
 
               // await handleRemove(selectedRowsState);
@@ -352,20 +353,14 @@ const TableList: React.FC = () => {
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
+            {configDefaultText['delete']}
           </Button>
 
         </FooterToolbar>
       )}
       <ModalForm
         form={form}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.new',
-          defaultMessage: 'New rule',
-        })}
+        title={configDefaultText['modalCreate']}
         width='35vh'
         open={createModalOpen}
         modalProps={{
@@ -392,30 +387,31 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
 
       >
-         <Row gutter={24} className="m-0">
+        <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormText
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.code'
-                      defaultMessage='Nhập mã'
-                    />
-                  ),
+                  message: configDefaultText['page.required.code']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.code'
+                  //     defaultMessage='Nhập mã'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Mã'
               className='w-full'
               name='code'
-              placeholder='Mã'
+              label={configDefaultText['page.code']}
+              placeholder={configDefaultText['page.code']}
             />
           </Col>
         </Row>
@@ -423,22 +419,22 @@ const TableList: React.FC = () => {
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormDigit
-              min={0}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.value'
-                      defaultMessage='Nhập giá trị dưới'
-                    />
-                  ),
+                  message: configDefaultText['page.required.rangFrom']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeFrom'
+                  //     defaultMessage='Nhập giá trị dưới'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Nhập giá trị dưới'
-              width='md'
+              className='w-full'
               name='valueFrom'
-              placeholder='Nhập giá trị dưới'
+              label={configDefaultText['page.rangeFrom']}
+              placeholder={configDefaultText['page.rangeFrom']}
             />
           </Col>
         </Row>
@@ -446,22 +442,23 @@ const TableList: React.FC = () => {
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormDigit
-              min={0}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.value'
-                      defaultMessage='Nhập giá trị trên'
-                    />
-                  ),
+                  message: configDefaultText['page.required.rangTo']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeTo'
+                  //     defaultMessage='Nhập giá trị trên'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Nhập giá trị trên'
-              width='md'
+              //label='Nhập giá trị trên'
+              className='w-full'
               name='valueTo'
-              placeholder='Nhập giá trị trên'
+              label={configDefaultText['page.rangeTo']}
+              placeholder={configDefaultText['page.rangeTo']}
             />
           </Col>
         </Row>
@@ -474,10 +471,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         form={form}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.update',
-          defaultMessage: '',
-        })}
+        title={configDefaultText['modalUpdate']}
         width='35vh'
         open={updateModalOpen}
         modalProps={{
@@ -505,102 +499,84 @@ const TableList: React.FC = () => {
           //   </div>
           // ),
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
 
 
-        <ProFormText
-          // rules={[
-          //   {
-          //     required: true,
-          //     message: (
-          //       <FormattedMessage
-          //         id='pages.searchTable.Code'
-          //         defaultMessage='Rule name is required'
-          //       />
-          //     ),
-          //   },
-          // ]}
-          label='Mã'
-          width='md'
-          name='code'
-          placeholder='Mã'
-        />
-
-        <Row gutter={24} className="m-0">
+<Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormText
+          <ProFormText
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.code'
-                      defaultMessage='Nhập mã'
-                    />
-                  ),
+                  message: configDefaultText['page.required.code']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.code'
+                  //     defaultMessage='Nhập mã'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Mã'
               className='w-full'
               name='code'
-              placeholder='Mã'
+              label={configDefaultText['page.code']}
+              placeholder={configDefaultText['page.code']}
             />
           </Col>
         </Row>
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit
-              min={0}
+          <ProFormDigit
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.value'
-                      defaultMessage='Nhập giá trị dưới'
-                    />
-                  ),
+                  message: configDefaultText['page.required.rangFrom']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeFrom'
+                  //     defaultMessage='Nhập giá trị dưới'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Nhập giá trị dưới'
-              width='md'
+              className='w-full'
               name='valueFrom'
-              placeholder='Nhập giá trị dưới'
+              label={configDefaultText['page.rangeFrom']}
+              placeholder={configDefaultText['page.rangeFrom']}
             />
           </Col>
         </Row>
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit
-              min={0}
+          <ProFormDigit
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.listP0.value'
-                      defaultMessage='Nhập giá trị trên'
-                    />
-                  ),
+                  message: configDefaultText['page.required.rangTo']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeTo'
+                  //     defaultMessage='Nhập giá trị trên'
+                  //   />
+                  // ),
                 },
               ]}
-              label='Nhập giá trị trên'
-              width='md'
+              //label='Nhập giá trị trên'
+              className='w-full'
               name='valueTo'
-              placeholder='Nhập giá trị trên'
+              label={configDefaultText['page.rangeTo']}
+              placeholder={configDefaultText['page.rangeTo']}
             />
           </Col>
         </Row>
-
-
-
-
 
       </ModalForm>
 

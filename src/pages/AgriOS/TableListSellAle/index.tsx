@@ -5,10 +5,12 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, } from '@umijs/max';
+// import { FormattedMessage, } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Col, Row } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const { Text, } = Typography;
 // function delay(time: number) {
@@ -205,7 +207,8 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+      title: configDefaultText['page.transfer.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
@@ -223,17 +226,19 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Tài khoản thanh toán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Tài khoản thanh toán' />,
+      title: configDefaultText['page.sellAle.column.payment'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return null;
       }
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      title: configDefaultText['page.transfer.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
@@ -242,7 +247,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
+      title: configDefaultText['page.transfer.column.availableBalance'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
       key: 'availableBalance',
@@ -251,7 +257,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale đặt cọc' />,
+      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale đặt cọc' />,
+      title: configDefaultText['page.transfer.column.aleDeposit'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
       key: 'availableBalance',
@@ -260,7 +267,8 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần bán' />,
+      title: configDefaultText['page.sellAle.column.timeSellAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -270,7 +278,8 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã bán | VNĐ qui đổi' />,
+      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã bán | VNĐ qui đổi' />,
+      title: configDefaultText['page.sellAle.column.totalBuyAndConvert'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
       key: 'promoAle',
@@ -280,14 +289,15 @@ const TableListAssignCPass = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
+      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={<FormattedMessage id='pages.sellAle.buttonSellAle' defaultMessage='Đặt bán Ale' />}>
+            <Tooltip title={configDefaultText['page.sellAle.tooltip.sellAle']}>
               <TransactionOutlined
                 style={{
                   fontSize: 20,
@@ -349,8 +359,8 @@ const TableListAssignCPass = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
@@ -374,8 +384,10 @@ const TableListAssignCPass = () => {
         }}
         submitter={{
           searchConfig: {
-            resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['submit'],
           },
 
 
@@ -402,7 +414,7 @@ const TableListAssignCPass = () => {
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
           <ProFormMoney
-          label="Nhập giá trị Ale muốn mua"
+          label={configDefaultText['page.sellAle.ale']}
           name="ale"
           min={1}
           max={currentRowUser?.availableBalance}
@@ -417,12 +429,13 @@ const TableListAssignCPass = () => {
           rules={[
             {
               required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.sellAle.required.ale'
-                  defaultMessage='Vui lòng nhập Ale'
-                />
-              ),
+              message:  configDefaultText['page.sellAle.required.ale']
+              // (
+              //   <FormattedMessage
+              //     id='pages.sellAle.required.ale'
+              //     defaultMessage='Vui lòng nhập Ale'
+              //   />
+              // ),
             }
           ]}
         />
@@ -441,17 +454,18 @@ const TableListAssignCPass = () => {
                 label: 'Ví điện tử'
               }
             ]}
-              placeholder='Chọn PTTT'
-              width='md' name='method' label={<FormattedMessage id='pages.sellAle.methodPayment' defaultMessage='Phương thức thanh toán' />}
+              placeholder={configDefaultText['methodPayment']}
+              width='md' name='method' label={configDefaultText['methodPayment']}
               rules={[
                 {
                   required: true,
-                  message: (
-                    <FormattedMessage
-                      id='pages.sellAle.required.methodPayment'
-                      defaultMessage='Chọn PTTT'
-                    />
-                  ),
+                  message: configDefaultText['methodPayment.required']
+                  //  (
+                  //   <FormattedMessage
+                  //     id='pages.sellAle.required.methodPayment'
+                  //     defaultMessage='Chọn PTTT'
+                  //   />
+                  // ),
                 }
               ]}
             />

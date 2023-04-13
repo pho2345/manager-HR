@@ -16,11 +16,13 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, history, useIntl, useModel } from '@umijs/max';
+import {  history, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 // const ActionIcons = () => {
 //   const langClassName = useEmotionCss(({ token }) => {
@@ -100,7 +102,6 @@ const Login: React.FC = () => {
     };
   });
 
-  const intl = useIntl();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -120,10 +121,13 @@ const Login: React.FC = () => {
       const msg = await login({ ...values, type });
 
       if (msg.jwt) {
-        const defaultLoginSuccessMessage = intl.formatMessage({
-          id: 'pages.login.success',
-          defaultMessage: 'Login succes',
-        });
+        const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
+        // intl.formatMessage({
+        //   id: 'pages.login.success',
+        //   defaultMessage: 'Login succes',
+        // });
+
+
         localStorage.setItem('access_token', msg.jwt);
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -135,10 +139,11 @@ const Login: React.FC = () => {
       
       setUserLoginState(msg);
     } catch (error) {
-      const defaultLoginFailureMessage = intl.formatMessage({
-        id: 'pages.login.failure',
-        defaultMessage: 'Failure',
-      });
+      const defaultLoginFailureMessage = configDefaultText['pages.login.failure'];
+      // intl.formatMessage({
+      //   id: 'pages.login.failure',
+      //   defaultMessage: 'Failure',
+      // });
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
@@ -185,6 +190,11 @@ const Login: React.FC = () => {
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);
           }}
+          submitter={{
+            searchConfig: {
+              submitText: configDefaultText['pages.login.title']
+            }
+          }}
         >
           <Tabs
             activeKey={type}
@@ -193,10 +203,11 @@ const Login: React.FC = () => {
             items={[
               {
                 key: 'account',
-                label: intl.formatMessage({
-                  id: 'pages.login.accountLogin.tab',
-                  defaultMessage: 'Login',
-                }),
+                label: configDefaultText['pages.login.title']
+                //  intl.formatMessage({
+                //   id: 'pages.login.accountLogin.tab',
+                //   defaultMessage: 'Đăng nhập',
+                // }),
               },
               // {
               //   key: 'mobile',
@@ -210,10 +221,11 @@ const Login: React.FC = () => {
 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage
-              content={intl.formatMessage({
-                id: 'pages.login.accountLogin.errorMessage',
-                defaultMessage: 'Error Message',
-              })}
+              content = {configDefaultText['pages.login.title']}
+              // {intl.formatMessage({
+              //   id: 'pages.login.accountLogin.errorMessage',
+              //   defaultMessage: 'Error Message',
+              // })}
             />
           )}
           {type === 'account' && (
@@ -224,19 +236,21 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.username.placeholder',
-                  defaultMessage: 'Username',
-                })}
+                placeholder = {configDefaultText['pages.login.accountLogin.username']}
+                // {intl.formatMessage({
+                //   id: 'pages.login.username.placeholder',
+                //   defaultMessage: 'Username',
+                // })}
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="Username required"
-                      />
-                    ),
+                    message: configDefaultText['pages.login.required.username']
+                    // (
+                    //   <FormattedMessage
+                    //     id="pages.login.username.required"
+                    //     defaultMessage="Username required"
+                    //   />
+                    // ),
                   },
                 ]}
               />
@@ -246,19 +260,21 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.password.placeholder',
-                  defaultMessage: 'Passwrod',
-                })}
+                placeholder= {configDefaultText['pages.login.accountLogin.password']}
+                // {intl.formatMessage({
+                //   id: 'pages.login.password.placeholder',
+                //   defaultMessage: 'Passwrod',
+                // })}
                 rules={[
                   {
                     required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.password.required"
-                        defaultMessage="Password required"
-                      />
-                    ),
+                    message: configDefaultText['pages.login.required.password']
+                    // (
+                    //   <FormattedMessage
+                    //     id="pages.login.password.required"
+                    //     defaultMessage="Password required"
+                    //   />
+                    // ),
                   },
                 ]}
               />
@@ -354,14 +370,16 @@ const Login: React.FC = () => {
             }}
           >
             <ProFormCheckbox noStyle name="autoLogin">
-              <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
+              {/* <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" /> */}
+              {configDefaultText['pages.login.accountLogin.remember']}
             </ProFormCheckbox>
             <a
               style={{
                 float: 'right',
               }}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+              {/* <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" /> */}
+              {configDefaultText['pages.login.accountLogin.forgetPassword']}
             </a>
           </div>
         </LoginForm>

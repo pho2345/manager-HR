@@ -11,7 +11,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -85,7 +86,8 @@ const TableListAssignCPass = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.assign.column.aleger'],
       render: (_, entity: any) => {
         return (
           <>
@@ -103,10 +105,11 @@ const TableListAssignCPass = (props: any) => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='cPass' />,
-      dataIndex: 'farm',
+      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='cPass' />,
+      title: configDefaultText['page.assign.column.cPass'],
+      dataIndex: 'cPass',
       valueType: 'textarea',
-      key: 'farm',
+      key: 'cPass',
       render: (_, text) => {
         const cPass = text?.c_pass?.map((e: any) => {
           return (<> <a
@@ -146,7 +149,7 @@ const TableListAssignCPass = (props: any) => {
 
     <ProTable
         headerTitle={(<>
-          Đợt mở bán: {fair?.code}
+          {configDefaultText['fair']}: {fair?.code}
         </>)}
         actionRef={actionRef}
         rowKey='id'
@@ -181,10 +184,10 @@ const TableListAssignCPass = (props: any) => {
                   cPassId: [props.currentCPass],
                   userId: selectedRowsState[0]?.id
                }
-              }, 'Bạn có muốn gán cPass cho Mega đã chọn không?', 'c-passes/update/assign', null);
+              }, configDefaultText['page.assign.textConfirmAssign'], 'c-passes/update/assign', null);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Thêm' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>)}
           </>
         ]}
@@ -203,8 +206,8 @@ const TableListAssignCPass = (props: any) => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);

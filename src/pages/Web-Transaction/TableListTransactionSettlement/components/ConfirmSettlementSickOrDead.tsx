@@ -8,10 +8,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
+// import { FormattedMessage } from '@umijs/max';
 import { Button, Space, Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 const handleCreate = async (fields: any, api: string) => {
@@ -175,7 +176,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
+      title: configDefaultText['page.listFair.column.c_passes'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
@@ -194,7 +196,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -209,9 +211,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      title: (
-        <>Mega <br />sở hữu</>
-      ),
+      title: configDefaultText['page.confirmSettlementDeadOrSick.column.owner'],
       dataIndex: 'owner',
       valueType: 'textarea',
       key: 'owner',
@@ -225,7 +225,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Snow</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Snow</>} />,
+      title: configDefaultText['page.confirmSettlementDeadOrSick.column.slot'],
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
@@ -234,7 +235,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.pZero']}<br/> {configDefaultText['page.listSettlement.column.pNow']} </>,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -244,7 +246,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Hoàn trả Vs(VNĐ)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Hoàn trả Vs(VNĐ)</>} />,
+      title: configDefaultText['page.confirmSettlementDeadOrSick.column.refundVs'],
       dataIndex: 'refundVs',
       valueType: 'textarea',
       key: 'refundVs',
@@ -259,7 +262,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br/> {configDefaultText['page.DetailAleger.column.produceAle']} </>,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -267,7 +271,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaP']}</>,
       dataIndex: 'megaP',
       valueType: 'textarea',
       key: 'megaP',
@@ -275,7 +280,8 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      title: <>{configDefaultText['page.listSettlement.column.megaE']}</>,
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
@@ -309,16 +315,20 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
           }
           return true;
         }}
-
+        submitter={{
+          searchConfig: {
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['submit'],
+          },
+        }}
         submitTimeout={2000}
-
         width='90vh'
         
       >
         <ProTable
-          headerTitle={(<>
-            Đăng ký Thanh quyết toán cho các cPass bệnh chết sau:
-          </>)}
+          headerTitle={configDefaultText['page.confirmSettlementDeadOrSick.column.titleConfirm']}
           pagination={false}
           actionRef={actionRef}
           rowKey='id'
@@ -333,7 +343,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
           toolbar={{
             settings:[{
               key: 'reload',
-              tooltip: 'Tải lại',
+              tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined />,
               onClick:() => {
                 if (actionRef.current){

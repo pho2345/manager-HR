@@ -16,11 +16,12 @@ import {
 } from '@ant-design/pro-components';
 import "./styles.css";
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+// import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 const handleUpdateMany = async (fields: any, api: any) => {
@@ -81,7 +82,7 @@ const TableList: React.FC = () => {
 
 
 
-  const intl = useIntl();
+  // const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -90,7 +91,8 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      // title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
+      title: configDefaultText['page.confirmSettlementVnd.code'],
       key: 'code',
       dataIndex: 'code',
       render: (_, entity: any) => {
@@ -111,7 +113,8 @@ const TableList: React.FC = () => {
       valueEnum: filterCode
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      // title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
+      title: configDefaultText['page.confirmSettlementVnd.createdAt'],
       dataIndex: 'createdAt',
       valueType: 'textarea',
       key: 'createdAt',
@@ -120,7 +123,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
+      // title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
+      title: configDefaultText['page.confirmSettlementVnd.types'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
@@ -189,9 +193,11 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.method'],
+
       dataIndex: 'method',
       valueType: 'textarea',
       key: 'method',
@@ -210,9 +216,11 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.statusTransaction'],
+
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
@@ -262,7 +270,8 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      title: configDefaultText['page.confirmSettlementVnd.priceVnd'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
       key: 'priceVnd',
@@ -270,9 +279,10 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
-      ),
+      // title: (
+      //   <FormattedMessage id='pages.searchTable.column.codeCPass' defaultMessage='CPass' />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.codeCPass'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
@@ -280,12 +290,13 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.sender'
-          defaultMessage='Người giao dịch'
-        />
-      ),
+      // title: (
+      //   <FormattedMessage
+      //     id='pages.searchTable.column.sender'
+      //     defaultMessage='Người giao dịch'
+      //   />
+      // ),
+      title: configDefaultText['page.confirmSettlementVnd.sender'],
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
@@ -296,10 +307,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -376,7 +384,7 @@ const TableList: React.FC = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: 'Tải lại',
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -388,23 +396,25 @@ const TableList: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-        
+
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+               {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+               {`${configDefaultText['chosen']} `}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
+              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+              {configDefaultText['selectedItem']}
 
             </div>
           }
@@ -414,10 +424,7 @@ const TableList: React.FC = () => {
               setOpenModalStatus(true);
             }}
           >
-            <FormattedMessage
-              id='pages.searchTable.changeStatus'
-              defaultMessage='Thay đổi Tình trạng xác nhận hàng loạt'
-            />
+           {configDefaultText['submit']}
           </Button>
 
         </FooterToolbar>
@@ -453,6 +460,21 @@ const TableList: React.FC = () => {
           actionRef.current?.reloadAndRest?.();
 
           return true;
+        }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['submit'],
+          },
         }}
       >
 

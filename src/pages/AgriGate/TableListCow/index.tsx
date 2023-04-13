@@ -33,7 +33,8 @@ const configDefaultText = configText;
 
 import {
   // FormattedMessage, 
-  useParams } from '@umijs/max';
+  useParams
+} from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Row, Tooltip, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
@@ -196,7 +197,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
-           <>{entity?.code}</> 
+          <>{entity?.code}</>
         );
 
       },
@@ -342,7 +343,7 @@ const TableList: React.FC = () => {
                 })
               }
             }}
-            /></Tooltip>
+          /></Tooltip>
         );
       },
     },
@@ -388,7 +389,7 @@ const TableList: React.FC = () => {
 
             ]
           }}
-          
+
           toolbar={{
             settings: [{
               key: 'reload',
@@ -409,7 +410,6 @@ const TableList: React.FC = () => {
               prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
-              console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
@@ -447,7 +447,7 @@ const TableList: React.FC = () => {
                 actionRef.current?.reloadAndRest?.();
               }}
             >
-             {configDefaultText['delete']}
+              {configDefaultText['delete']}
             </Button>
 
           </FooterToolbar>
@@ -603,7 +603,16 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormDatePicker className='w-full' name='birthdate'
+              <ProFormDatePicker
+
+                // className='w-full
+                // style={{ width: '100%' }}
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
+                name='birthdate'
                 label={configDefaultText['page.listCow.column.birthdate']}
                 placeholder={configDefaultText['page.listCow.column.birthdate']}
                 rules={[
@@ -817,6 +826,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0" >
               <ProFormDatePicker className='w-full' name='birthdate'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 label={configDefaultText['page.listCow.column.birthdate']}
                 placeholder={configDefaultText['page.listCow.column.birthdate']}
                 rules={[

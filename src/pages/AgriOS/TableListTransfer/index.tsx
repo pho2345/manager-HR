@@ -352,7 +352,6 @@ const TableListAssignCPass = () => {
             prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}

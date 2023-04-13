@@ -6,19 +6,18 @@ import {
   ModalForm,
   PageContainer,
   ProFormText,
-
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link } from '@umijs/max';
-import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
 //import DetailCPass from '../components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 
-import  configText from '@/locales/configText';
+import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 //import { config } from 'dotenv';
@@ -146,7 +145,7 @@ const TableList: React.FC = () => {
     const getData = async () => {
       const getPlan = await getPlans();
       setPlan(getPlan);
-
+      
     };
     getData();
   }, []);
@@ -445,6 +444,32 @@ const TableList: React.FC = () => {
 
   // const [intl, setIntl] = useState('zhCNIntl');
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Alert
+        message={
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+        }
+        type="info"
+        showIcon
+      />
+    );
+  }
+  
+
+  function renderTableAlertOption( selectedRows: any, onCleanSelected: any) {
+    return (
+    <>
+      
+      <Fragment>
+        <Button onClick={() => onCleanSelected()}>Bỏ chọn</Button>
+      </Fragment>
+    </>
+    );
+  }
+
   return (
     <>
       <PageContainer >
@@ -482,6 +507,18 @@ const TableList: React.FC = () => {
             onChange: (_, selectedRows: any) => {
               setSelectedRows(selectedRows);
             },
+            alwaysShowAlert: false,
+            
+           
+          }}
+
+          tableAlertRender={({selectedRowKeys}: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+
+
+          tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
+           return renderTableAlertOption(selectedRows, onCleanSelected)
           }}
 
           toolbar={{
@@ -506,12 +543,11 @@ const TableList: React.FC = () => {
               prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
-              console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
-          
-          
+
+
 
         />
 
@@ -622,7 +658,11 @@ const TableList: React.FC = () => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeStart"
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 placeholder={configDefaultText['page.listFair.column.timeStart']}
                 //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
                 label={configDefaultText['page.listFair.column.timeStart']}
@@ -635,12 +675,12 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-              className="full-width"
-               fieldProps={{
-                style: {
-                  width: '100%'
-                }
-               }}
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
+
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
                 //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
@@ -670,7 +710,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 name="dateEndFeed"
                 placeholder={configDefaultText['page.listFair.column.dateEndFeed']}
                 //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
@@ -766,7 +810,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeStart"
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 placeholder={configDefaultText['page.listFair.column.timeStart']}
                 //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
                 label={configDefaultText['page.listFair.column.timeStart']}
@@ -780,7 +828,12 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormDateTimePicker name="timeEnd" className='w-full'
+              <ProFormDateTimePicker name="timeEnd"
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 placeholder={configDefaultText['page.listFair.column.timeEnd']}
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
@@ -794,7 +847,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
                 //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
@@ -810,7 +867,11 @@ const TableList: React.FC = () => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 name="dateEndFeed"
                 // label="Thời gian kết thúc nuôi" 
                 label={configDefaultText['page.listFair.column.dateEndFeed']}
@@ -819,14 +880,19 @@ const TableList: React.FC = () => {
                   [{
                     required: true,
                     message: configDefaultText['page.listFair.required.dateEndFeed']
-                      // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
-                    }]
+                    // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
+                  }]
                 }
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
+              <ProFormText
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }} name='timeFeed' placeholder='Thời gian nuôi'
                 // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
                 label={configDefaultText['page.listFair.column.timeFeed']}
                 rules={[
@@ -858,10 +924,11 @@ const TableList: React.FC = () => {
                   },
                 ]}
                 placeholder={configDefaultText['page.listFair.column.status']}
-                rules={[{ required: true,
+                rules={[{
+                  required: true,
                   //  message: <FormattedMessage id='page.ListFair.required.timeStart' defaultMessage='Trạng thái' /> 
                   message: configDefaultText['page.listFair.required.status']
-                  }]}
+                }]}
               />
             </Col>
 
@@ -885,7 +952,7 @@ const TableList: React.FC = () => {
           </Row>
 
           <Row gutter={24} className="m-0">
-             <Col span={12} className="gutter-row p-0">
+            <Col span={12} className="gutter-row p-0">
               <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
                 //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
                 label={configDefaultText['page.listFair.column.unitPriceMeat']}
@@ -975,7 +1042,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeStart"
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 placeholder={configDefaultText['page.listFair.column.timeStart']}
                 //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
                 label={configDefaultText['page.listFair.column.timeStart']}
@@ -989,7 +1060,12 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormDateTimePicker name="timeEnd" className='w-full'
+              <ProFormDateTimePicker name="timeEnd"
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 placeholder={configDefaultText['page.listFair.column.timeEnd']}
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
@@ -1003,7 +1079,11 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
                 //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}
@@ -1019,7 +1099,11 @@ const TableList: React.FC = () => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker
-                className='w-full'
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
                 name="dateEndFeed"
                 // label="Thời gian kết thúc nuôi" 
                 label={configDefaultText['page.listFair.column.dateEndFeed']}
@@ -1028,8 +1112,8 @@ const TableList: React.FC = () => {
                   [{
                     required: true,
                     message: configDefaultText['page.listFair.required.dateEndFeed']
-                      // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
-                    }]
+                    // <FormattedMessage id='page.ListFair.required.dateEndFeed' defaultMessage='Thời gian kết thúc nuôi' />
+                  }]
                 }
               />
             </Col>
@@ -1067,10 +1151,11 @@ const TableList: React.FC = () => {
                   },
                 ]}
                 placeholder={configDefaultText['page.listFair.column.status']}
-                rules={[{ required: true,
+                rules={[{
+                  required: true,
                   //  message: <FormattedMessage id='page.ListFair.required.timeStart' defaultMessage='Trạng thái' /> 
                   message: configDefaultText['page.listFair.required.status']
-                  }]}
+                }]}
               />
             </Col>
 
@@ -1094,7 +1179,7 @@ const TableList: React.FC = () => {
           </Row>
 
           <Row gutter={24} className="m-0">
-             <Col span={12} className="gutter-row p-0">
+            <Col span={12} className="gutter-row p-0">
               <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
                 //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
                 label={configDefaultText['page.listFair.column.unitPriceMeat']}
@@ -1128,7 +1213,7 @@ const TableList: React.FC = () => {
               />
             </Col>
           </Row>
-          
+
         </ModalForm>
 
 

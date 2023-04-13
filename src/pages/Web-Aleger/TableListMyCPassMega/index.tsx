@@ -275,7 +275,6 @@ const TableList: React.FC = () => {
            prev_page: 'Trang trước',
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}

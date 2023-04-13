@@ -31,11 +31,14 @@ import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 
-import { FormattedMessage, useParams } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Row, message } from 'antd';
+import {
+  // FormattedMessage, 
+  useParams } from '@umijs/max';
+import { Avatar, Button, Col, Drawer, Form, Row, Tooltip, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';
+import { MdOutlineEdit } from 'react-icons/md';
 
 
 const handleAdd = async (fields: any) => {
@@ -304,9 +307,7 @@ const TableList: React.FC = () => {
       key: 'option',
       render: (_, entity: any) => {
         return (
-          <Button
-            type='primary'
-            key='primary'
+          <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCow.current = entity.id;
@@ -341,9 +342,7 @@ const TableList: React.FC = () => {
                 })
               }
             }}
-          >
-            {configDefaultText['buttonUpdate']}
-          </Button>
+            /></Tooltip>
         );
       },
     },
@@ -381,7 +380,7 @@ const TableList: React.FC = () => {
                 }}
               >
 
-                <PlusOutlined /> <FormattedMessage id='page.searchTable.new' defaultMessage='New' />
+                <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>,
 
               // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
@@ -389,7 +388,7 @@ const TableList: React.FC = () => {
 
             ]
           }}
-
+          
           toolbar={{
             settings: [{
               key: 'reload',
@@ -404,6 +403,7 @@ const TableList: React.FC = () => {
           }}
 
           pagination={{
+            pageSize: 10,
             locale: {
               next_page: configDefaultText['nextPage'],
               prev_page: configDefaultText['prePage'],
@@ -454,7 +454,7 @@ const TableList: React.FC = () => {
         )}
 
         <ModalForm
-          title='Tạo mới'
+          title={configDefaultText['modalCreate']}
           open={createModalOpen}
           form={form}
           autoFocusFirstInput

@@ -200,7 +200,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      ...getColumnSearchProps('code')
+      //...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
@@ -208,7 +208,7 @@ const TableList: React.FC = () => {
       dataIndex: 'valueFrom',
       valueType: 'textarea',
       key: 'valueFrom',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
 
         return text?.attributes?.valueFrom;
@@ -220,7 +220,7 @@ const TableList: React.FC = () => {
       dataIndex: 'valueTo',
       valueType: 'textarea',
       key: 'valueTo',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
 
         return text?.attributes?.valueTo;

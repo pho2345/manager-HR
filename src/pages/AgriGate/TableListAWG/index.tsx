@@ -201,7 +201,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      ...getColumnSearchProps('code')
+      //...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.rangeFrom' defaultMessage='Giá trị dưới' />,
@@ -209,7 +209,7 @@ const TableList: React.FC = () => {
       dataIndex: 'rangeFrom',
       valueType: 'textarea',
       key: 'rangeFrom',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.rangeFrom < 0) {
           return null;
@@ -223,7 +223,7 @@ const TableList: React.FC = () => {
       dataIndex: 'rangeTo',
       valueType: 'textarea',
       key: 'rangeTo',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.rangeTo > 200) {
           return null;
@@ -237,7 +237,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      ...getColumnSearchProps('name'),
+     // ...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {

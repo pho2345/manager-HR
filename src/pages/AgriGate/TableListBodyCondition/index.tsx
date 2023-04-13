@@ -2,7 +2,7 @@ import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { FooterToolbar, ModalForm, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
-import { FormattedMessage } from '@umijs/max';
+// import { FormattedMessage } from '@umijs/max';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -194,7 +194,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      ...getColumnSearchProps('code')
+      //...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
@@ -202,7 +202,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
@@ -293,7 +293,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         request={() => customAPIGet({}, 'body-conditions')}

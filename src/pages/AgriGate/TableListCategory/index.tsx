@@ -9,7 +9,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
+// import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Col, Form, Row, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
@@ -80,7 +80,7 @@ const TableList: React.FC = () => {
   const refIdCateogry = useRef<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  const intl = useIntl();
+  // const intl = useIntl();
   const columns: ProColumns<API.RuleListItem>[] = [
     {
       // title: (
@@ -184,7 +184,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         toolbar={{

@@ -9,7 +9,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
+// import { FormattedMessage } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
@@ -201,7 +201,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      ...getColumnSearchProps('code')
+      //...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
@@ -209,7 +209,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
@@ -218,7 +218,7 @@ const TableList: React.FC = () => {
       dataIndex: 'valueFrom',
       valueType: 'textarea',
       key: 'valueFrom',
-      ...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.valueFrom === 0) {
           return null;
@@ -232,7 +232,7 @@ const TableList: React.FC = () => {
       dataIndex: 'valueTo',
       valueType: 'textarea',
       key: 'valueTo',
-      ...getColumnSearchProps('name'),
+     //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.valueTo > 200) {
           return null;
@@ -338,7 +338,7 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
+            <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
         request={() => customAPIGet({}, 'weight-gain-effects')}

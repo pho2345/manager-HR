@@ -1,36 +1,21 @@
-import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney } from '@ant-design/pro-components';
+import { customAPIGet } from '@/services/ant-design-pro/api';
+import {  SearchOutlined, TranslationOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage } from '@umijs/max';
-import { Button, message, Modal, Space, Input, Tooltip, Row, Col } from 'antd';
+import { Button, Space, Input, Tooltip, } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
+import SettlementCPassModal from '../SettlementMegaCancel';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 
 
 
-
-const handleAdd = async (fields: any, api: string) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    const updateTransaction = await customAPIAdd(
-      fields,
-      api);
-    hide();
-    if (updateTransaction) {
-      message.success('Thành công');
-    }
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error.response.data.error.message);
-    return false;
-  }
-};
 
 
 
@@ -39,11 +24,13 @@ const handleAdd = async (fields: any, api: string) => {
 
 const DialogTransfer = (props: any) => {
   const actionRef = useRef<ActionType>();
-  const [showTransfer, setShowTransfer] = useState<boolean>(false);
+  // const [showTransfer, setShowTransfer] = useState<boolean>(false);
 
 
-  const [currentRowUser, setCurrentRowUser] = useState<any>();
   const searchInput = useRef(null);
+
+   const [currentUserSettlementCancel, setCurrentUserSettlementCancel] = useState<any>();
+ const [showRegisteringSettlementCancel, setShowRegisteringSettlementCancel] = useState<boolean>(false);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -158,26 +145,6 @@ const DialogTransfer = (props: any) => {
   });
 
 
-  const confirm = (entity: any, message: string, api: string) => {
-    Modal.confirm({
-      title: 'Confirm',
-      icon: <ExclamationCircleOutlined />,
-      content: message,
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: async () => {
-
-        await handleAdd({
-          ...entity
-        }, api);
-        if (actionRef.current) {
-          actionRef.current.reload();
-          setShowTransfer(false);
-        }
-      }
-    });
-  };
-
 
 
 
@@ -191,15 +158,15 @@ const DialogTransfer = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+      title: configDefaultText['page.transfer.column.aleger'],
+      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
+
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
           <>
             <a
               onClick={() => {
-                setCurrentRowUser(entity);
-                //setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
             </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
@@ -213,33 +180,16 @@ const DialogTransfer = (props: any) => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
-      dataIndex: 'ale',
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      title: configDefaultText['page.transfer.column.totalMegaCPass'],
+      dataIndex: 'totalCPass',
       valueType: 'textarea',
-      key: 'ale',
+      key: 'totalCPass',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return text?.totalMegaCPass;
       }
     },
-    {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
-      dataIndex: 'produceAle',
-      valueType: 'textarea',
-      key: 'produceAle',
-      renderText: (_, text: any) => {
-        return text?.produceAle;
-      }
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
-      dataIndex: 'promoAle',
-      valueType: 'textarea',
-      key: 'promoAle',
-      renderText: (_, text: any) => {
-        return text?.promoAle;
-      }
-    },
+   
 
     {
       title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
@@ -249,18 +199,18 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={<FormattedMessage id='pages.dialogTransfer.transfer' defaultMessage='Chuyển đổi' />} > <TranslationOutlined
+            <Tooltip title={configDefaultText['page.transfer.transfer']} > <TranslationOutlined
               style={{
                 fontSize: 30,
                 color: '#00CC00'
               }}
               onClick={() => {
-                setShowTransfer(true);
-                setCurrentRowUser(text);
+                //setShowTransfer(true);
+                setShowRegisteringSettlementCancel(true);
+                setCurrentUserSettlementCancel(text?.id);
               }}
             /></Tooltip>
           </>,
-
         ]
       }
     },
@@ -284,7 +234,7 @@ const DialogTransfer = (props: any) => {
         submitter={false}
       >
         <ProTable
-          headerTitle='Chọn Aleger muốn chuyển Ale'
+          headerTitle={configDefaultText['page.listSettlement.modal.registeringSettlementCancel']}
           actionRef={actionRef}
           rowKey='id'
           search={false}
@@ -308,11 +258,10 @@ const DialogTransfer = (props: any) => {
 
           pagination={{
             locale: {
-             next_page: 'Trang sau',
-             prev_page: 'Trang trước',
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
-              console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
@@ -322,55 +271,19 @@ const DialogTransfer = (props: any) => {
         />
       </ModalForm>
 
-      {currentRowUser && (
-        <ModalForm
-
-          width={`30vh`}
-          open={showTransfer}
-          modalProps={{
-            destroyOnClose: true,
-            onCancel: () => {
-              setShowTransfer(false);
-            },
-          }}
-          onFinish={async (values) => {
-            confirm({
-              receiverId: currentRowUser.id,
-              senderId: props?.megaChoosen?.id,
-              ale: values?.ale
-            },
-              `Chắc chắn chuyển ${values.ale} Ale từ Aleger  ${props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - ${props?.megaChoosen?.id} 
-           sang Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}`,
-              'transactions/transfer-admin');
-
-            return true;
-          }}
-          submitter={{
-            searchConfig: {
-              resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
-            },
-          }}
-        >
-
-          <Row gutter={24} className="m-0">
-            <Col span={24} className="gutter-row p-0" >
-
-              <ProFormMoney
-                className='w-full'
-                label="Nhập giá trị Ale muốn chuyển"
-                placeholder="Ale"
-                name="ale"
-                min={1}
-                max={props?.megaChoosen?.availableBalance}
-                customSymbol='A'
-              />
-            </Col>
-          </Row>
-
-
-        </ModalForm>
-      )}
+      {currentUserSettlementCancel && (
+         <SettlementCPassModal
+         openModal={showRegisteringSettlementCancel}
+         userId={currentUserSettlementCancel}
+         onCloseModal={() => {
+           setCurrentUserSettlementCancel(undefined);
+           setShowRegisteringSettlementCancel(false);
+           if (actionRef.current) {
+             actionRef.current.reload();
+           }
+         }}
+       />)
+      }
 
     </>
   );

@@ -1,19 +1,23 @@
-import {  customAPIGetOne } from '@/services/ant-design-pro/api';
-import {   PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { customAPIGetOne } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, 
- // useParams 
-} 
+import {
+  FormattedMessage,
+  // useParams 
+}
   from '@umijs/max';
-import { Button, Typography,  Space, Input } from 'antd';
+import { Button, Typography, Space, Input } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import ConfirmRegisteringSettlement from './ConfirmSettlementMegaCancel';
+
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 // import DetailCPass from '../components/DetailCPass';
 // import DetailUser from '../components/DetailUser';
@@ -45,28 +49,28 @@ const { Text, } = Typography;
 
 export type SettlementCPassModal = {
   onCloseModal: () => void;
- // onSubmit: () => Promise<void>;
+  // onSubmit: () => Promise<void>;
   openModal: boolean;
   userId: number;
   //values: Partial<API.RuleListItem>;
 }
 
 export type userSettlement = {
- id: number,
- username: string,
- phone: string,
- fullname: string,
- email: string,
- passport: string,
- avaiLimitCPassSettlement: number,
- avaiCPassSettlement: number
+  id: number,
+  username: string,
+  phone: string,
+  fullname: string,
+  email: string,
+  passport: string,
+  avaiLimitCPassSettlement: number,
+  avaiCPassSettlement: number
 }
 
-const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) => {
+const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
- // const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
+  // const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
 
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
@@ -74,14 +78,12 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
   const [showConfirmSettlement, setShowConfirmSettlement] = useState<boolean>(false);
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
   //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-  
 
-  
+
+
   //const params = useParams<any>();
   const [userSettlement, setUserSettlement] = useState<userSettlement>();
-  
-  //const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
+
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -92,7 +94,7 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-   // setSearchText('');
+    // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -144,24 +146,24 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
         }}
       />
     ),
-    onFilter: (value:any, record: any) =>{
-      if(record[dataIndex]){
+    onFilter: (value: any, record: any) => {
+      if (record[dataIndex]) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
     }
-      ,
+    ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
         //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
-      
+
     // }
-      
+
   });
-  
+
 
   // const confirm = (entity: any, message: string, api: string, id: any) => {
   //   Modal.confirm({
@@ -171,7 +173,7 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
   //     okText: 'Có',
   //     cancelText: 'Không',
   //     onOk: async () => {
-        
+
   //       await handleUpdateMany({
   //         ...entity
   //       }, api, id);
@@ -199,7 +201,8 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
     {
       key: 'code',
       dataIndex: 'code',
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      title: configDefaultText['page.settlementMegaCancel.column.cPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
@@ -219,7 +222,8 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
+      title: configDefaultText['fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -231,32 +235,32 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
             }}
           >
             {entity?.fair}
-
-           </a>
-          
+          </a>
         );
       },
-    
+
     },
-   
+
     {
-      title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
+      title: configDefaultText['page.settlementMegaCancel.column.ageAndSlot'],
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
-      renderText: (_, text: any) =>  {
-        let age = `${text.age / 4 >= 1  ? `${(text.age / 4).toFixed(0)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}/S${text?.slotNow}`;
+      renderText: (_, text: any) => {
+        let age = `${text.age / 4 >= 1 ? `${(text.age / 4).toFixed(0)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}/S${text?.slotNow}`;
         return age;
       },
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title: configDefaultText['page.settlementMegaCancel.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-            return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -284,53 +288,59 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br/>tăng trọng</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br/>tăng trọng</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.wgePercentOne']}<br />{configDefaultText['page.listSettlement.column.wgePercentTwo']} </>),
       dataIndex: 'wgePercent',
       valueType: 'textarea',
       key: 'wgePercent',
       renderText: (_, text: any) => text?.wgePercent
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br/>trung bình<br/>(kg/Tuần)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br/>trung bình<br/>(kg/Tuần)</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br />{configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>),
       dataIndex: 'awgAvg',
       valueType: 'textarea',
       key: 'awgAvg',
       renderText: (_, text: any) => text?.awgAvg
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br/>Pnow<br/>(kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br/>Pnow<br/>(kg)</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.pZero']}<br />{configDefaultText['page.listSettlement.column.pNow']} </>),
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
       renderText: (_, text: any) => `${text?.pZero}/${text?.nowWeight}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br/>ProduceAle</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br/>ProduceAle</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br />{configDefaultText['page.settlementDeadOrSick.column.produceAle']} </>),
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => `${text?.megaDeltaWeight}/${text?.produceAle}`
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.megaP']} </>),
       dataIndex: 'megaP',
       valueType: 'textarea',
       key: 'megaP',
       renderText: (_, text: any) => text?.megaP
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      title: (<>{configDefaultText['page.listSettlement.column.megaE']} </>),
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
       renderText: (_, text: any) => text?.megaE
     },
-    
+
   ];
 
   return (
     <>
-    <ModalForm 
+      <ModalForm
         open={props.openModal}
         autoFocusFirstInput
         modalProps={{
@@ -341,126 +351,122 @@ const TableListRegisteringSettlement : React.FC<SettlementCPassModal> = (props) 
         }}
         submitTimeout={2000}
         submitter={false}
-        width='90vh'
-    >
-      Thông tin Mega: <br/>
-      <Text>{userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}, {userSettlement?.phone ? userSettlement?.phone : ''}</Text>
-      <Text>{userSettlement?.email ? ` | ${userSettlement?.email}` : ''}</Text>
-      <Text>{userSettlement?.passport ? `, CCCD/HC:${userSettlement?.passport}` : ''}</Text><br/>
-      <Text>Số cPass Mega có thể thanh quyết toán trong tuần: {userSettlement?.avaiLimitCPassSettlement}</Text><br/>
-      <Text>Số cPass PL có thể nhận thanh quyết toán trong tuần: {userSettlement?.avaiCPassSettlement}</Text>
+        width={`100vh`}
+      >
+        {configDefaultText['infoAleger']}: <br />
+        <Text>{userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}, {userSettlement?.phone ? userSettlement?.phone : ''}</Text>
+        <Text>{userSettlement?.email ? ` | ${userSettlement?.email}` : ''}</Text>
+        <Text>{userSettlement?.passport ? `, CCCD/HC:${userSettlement?.passport}` : ''}</Text><br />
+        <Text>{configDefaultText['limitCPassSettlementMega']}: {userSettlement?.avaiLimitCPassSettlement}</Text><br />
+        <Text>{configDefaultText['limitCPassSettlementPlaform']}: {userSettlement?.avaiCPassSettlement}</Text>
 
 
 
-    <ProTable
-        headerTitle={(<>
-         Danh sách CPass
-        </>)}
-        actionRef={actionRef}
-        rowKey='id'
-        search={false}
-        rowClassName={
-          (entity) => {
-            return entity.classColor
-          }
-        }
-
-        request={async () => {
-          const data = await customAPIGetOne(8, 'c-passes/get/cpass-of-mega', {});
-          setUserSettlement(data?.user);
-          //console.log('usersss', data);
-         
-          return {
-            data: data?.cPass,
-            success: true,
-            total: 0
-          }
-        }}
-        toolBarRender={() => [
-          <>
-          { selectedRowsCPass.length >= 1 && (<Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-             setShowConfirmSettlement(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Đăng kí' />
-          </Button>)}
-          </>
-        ]}
-
-        toolbar={{
-          settings:[{
-            key: 'reload',
-            tooltip: 'Tải lại',
-            icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
-                actionRef.current.reload();
-              }
+        <ProTable
+          headerTitle={configDefaultText['listCPass']}
+          actionRef={actionRef}
+          rowKey='id'
+          search={false}
+          rowClassName={
+            (entity) => {
+              return entity.classColor
             }
-          }]
-        }}
-        columns={columnCPass}
-      
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRowsCPass(selectedRows);
-          },
-        }}
-
-        pagination={{
-          locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
-          },
-          showTotal: (total, range) => {
-            console.log(range);
-            return `${range[range.length - 1]} / Tổng số: ${total}`
           }
-        }}
-      />
-      {currentRowCPass && (
-        <DetailCPass
-          openModal={showDetailCPass}
-          idCPass={currentRowCPass}
-          closeModal={() => {
-            setCurrentRowCPass(undefined);
-            setShowDetailCPass(false);
-            
 
+          request={async () => {
+            const data = await customAPIGetOne(props.userId, 'c-passes/get/cpass-of-mega', {});
+            setUserSettlement(data?.user);
+            //console.log('usersss', data);
+
+            return {
+              data: data?.cPass,
+              success: true,
+              total: 0
+            }
+          }}
+          toolBarRender={() => [
+            <>
+              {selectedRowsCPass.length >= 1 && (<Button
+                type='primary'
+                key='primary'
+                onClick={() => {
+                  setShowConfirmSettlement(true);
+                }}
+              >
+                <PlusOutlined /> <FormattedMessage id='pages.searchTable.add' defaultMessage='Đăng kí' />
+              </Button>)}
+            </>
+          ]}
+
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
+          }}
+          columns={columnCPass}
+          rowSelection={{
+            onChange: (_, selectedRows: any) => {
+              setSelectedRowsCPass(selectedRows);
+            },
+          }}
+
+          pagination={{
+            locale: {
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
+            },
+            showTotal: (total, range) => {
+              return `${range[range.length - 1]} / Tổng số: ${total}`
+            }
           }}
         />
-      )}
-     
-     {currentRowFair && (
-      <DetailFair
-        openModal={showDetailFair}
-        fairId={currentRowFair}
-        closeModal={() => {
-          setCurrentRowFair(undefined);
-          setShowDetailFair(false);
-        }}
-      />)
-    }
+        {currentRowCPass && (
+          <DetailCPass
+            openModal={showDetailCPass}
+            idCPass={currentRowCPass}
+            closeModal={() => {
+              setCurrentRowCPass(undefined);
+              setShowDetailCPass(false);
 
-    {
-      selectedRowsCPass.length >= 1 && (
-          <ConfirmRegisteringSettlement 
-            openModal={showConfirmSettlement}
-            cPass = {selectedRowsCPass}
-            onCloseModal={() => {
-              setShowConfirmSettlement(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+
             }}
           />
-      )
-    }
-    
-</ModalForm>
+        )}
+
+        {currentRowFair && (
+          <DetailFair
+            openModal={showDetailFair}
+            fairId={currentRowFair}
+            closeModal={() => {
+              setCurrentRowFair(undefined);
+              setShowDetailFair(false);
+            }}
+          />)
+        }
+
+        {
+          selectedRowsCPass.length >= 1 && (
+            <ConfirmRegisteringSettlement
+              openModal={showConfirmSettlement}
+              cPass={selectedRowsCPass}
+              onCloseModal={() => {
+                setShowConfirmSettlement(false);
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }}
+            />
+          )
+        }
+
+      </ModalForm>
     </>
   );
 };

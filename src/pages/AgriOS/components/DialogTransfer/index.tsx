@@ -327,11 +327,10 @@ const DialogTransfer = (props: any) => {
 
           pagination={{
             locale: {
-             next_page: 'Trang sau',
-             prev_page: 'Trang trước',
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
-              console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}

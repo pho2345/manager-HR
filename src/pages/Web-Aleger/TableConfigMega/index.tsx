@@ -12,7 +12,8 @@ import { FormattedMessage, useIntl } from '@umijs/max';
 import { Form, message, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdate = async (fields: any, id: any) => {
   console.log(fields);
@@ -161,11 +162,11 @@ const TableList: React.FC = () => {
         }}
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+           next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
+           
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}

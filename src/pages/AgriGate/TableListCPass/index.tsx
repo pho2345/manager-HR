@@ -678,7 +678,13 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className='m-0'>
           <Col span={12} className='gutter-row p-0' >
-            <ProFormDatePicker className='w-full' name='dateInStable'
+            <ProFormDatePicker
+              fieldProps={{
+                style: {
+                  width: '100%'
+                }
+              }}
+              name='dateInStable'
               label={configDefaultText['page.listCPass.modal.dateInStable']}
               placeholder={configDefaultText['page.listCPass.modal.dateInStable']}
               rules={[
@@ -1038,7 +1044,14 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className='m-0'>
           <Col span={12} className='gutter-row p-0' >
-            <ProFormDatePicker className='w-full' name='dateInStable'
+            <ProFormDatePicker
+
+              fieldProps={{
+                style: {
+                  width: '100%'
+                }
+              }}
+              name='dateInStable'
               label={configDefaultText['page.listCPass.modal.dateInStable']}
               placeholder={configDefaultText['page.listCPass.modal.dateInStable']}
               rules={[
@@ -1058,6 +1071,12 @@ const TableList: React.FC = () => {
           <Col span={12} className='gutter-row p-0'>
 
             <ProFormDatePicker name='birthdate'
+
+              fieldProps={{
+                style: {
+                  width: '100%'
+                }
+              }}
               label={configDefaultText['page.listCPass.column.birthdate']}
               placeholder={configDefaultText['page.listCPass.column.birthdate']}
               className='w-full'
@@ -1181,7 +1200,7 @@ const TableList: React.FC = () => {
         }}
       />}
 
-     
+
     </PageContainer>
 
   );

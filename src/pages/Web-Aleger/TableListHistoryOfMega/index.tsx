@@ -5,7 +5,8 @@ import {
   ProTable,
   
 } from '@ant-design/pro-components';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 import { FormattedMessage, useParams, useSearchParams } from '@umijs/max';
 import { Typography } from 'antd';
 import React, { useRef } from 'react';
@@ -114,11 +115,10 @@ const TableList: React.FC = () => {
         columns={columns}
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}

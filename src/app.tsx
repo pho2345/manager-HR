@@ -11,6 +11,7 @@ import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import React from 'react';
 import { ConfigProvider } from 'antd';
 import viVNIntl from 'antd/lib/locale/vi_VN';
+
 //const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 

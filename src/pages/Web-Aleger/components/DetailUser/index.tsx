@@ -769,7 +769,11 @@ const TableList = (props: any) => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDatePicker
-                className='w-full'
+                 fieldProps={{
+                  style:{
+                    width: '100%' 
+                  }
+                }}
                 name='birthdate'
                 // placeholder={`Ngày sinh`}
                 // label={<FormattedMessage id='pages.detailMega.birthdate' defaultMessage='Ngày sinh' />}
@@ -926,7 +930,11 @@ const TableList = (props: any) => {
           <Row gutter={24} className="m-0">
             <Col span={8} className="gutter-row p-0" >
             <ProFormDatePicker
-                className='w-full'
+                 fieldProps={{
+                  style:{
+                    width: '100%' 
+                  }
+                }}
                 name='birthdate'
                 // placeholder={`Ngày sinh`}
                 // label={<FormattedMessage id='pages.detailMega.birthdate' defaultMessage='Ngày sinh' />}
@@ -941,7 +949,11 @@ const TableList = (props: any) => {
 
             <Col span={8} className="gutter-row p-0" >
               <ProFormDatePicker
-                className='w-full'
+                 fieldProps={{
+                  style:{
+                    width: '100%' 
+                  }
+                }}
                 name='createdAt'
                 placeholder={`Ngày tạo`}
                 label={<FormattedMessage id='pages.detailMega.createdAt' defaultMessage='Ngày tạo' />}

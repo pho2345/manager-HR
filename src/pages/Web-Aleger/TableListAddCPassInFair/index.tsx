@@ -13,6 +13,8 @@ const { Text, } = Typography;
 import moment from 'moment';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -301,11 +303,10 @@ const TableListAddCPassInFair = (props: any) => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            console.log(range);
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}

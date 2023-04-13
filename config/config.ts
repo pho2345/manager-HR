@@ -48,12 +48,11 @@ export default defineConfig({
   
   locale: {
   
-    default: 'viVNIntl',
+    default: 'vi-cn',
      //default: 'en-US',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: false,
-    
   },
 
   antd: {},

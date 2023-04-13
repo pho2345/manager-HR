@@ -46,6 +46,7 @@ export type SettlementCPassModal = {
   // onSubmit: () => Promise<void>;
   openModal: boolean;
   //values: Partial<API.RuleListItem>;
+  userId: number;
 }
 
 
@@ -404,7 +405,6 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
              prev_page: 'Trang trước',
             },
             showTotal: (total, range) => {
-              console.log(range);
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}

@@ -19,6 +19,10 @@ export default {
     'menu':'Web-cPass',
     'menuFair': 'Danh sách đợt mở bán',
     'methodPayment.required': 'Chọn phương thức thanh toán',
+    'infoAleger': 'Thông tin Mega',
+    'limitCPassSettlementMega': 'Số cPass Mega có thể thanh quyết toán trong tuần',
+    'limitCPassSettlementPlaform': 'Số cPass PL có thể nhận thanh quyết toán trong tuần',
+    'listCPass': 'Danh sách cPass',
 
     'pages.login.failure': 'Đăng nhập thất bại',
     'pages.login.title': 'Đăng nhập',
@@ -382,6 +386,7 @@ export default {
 
 
     'page.transfer.column.aleger': 'Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)',
+    'page.transfer.column.totalMegaCPass': 'Số cPass đang sở hữu',
     'page.transfer.column.ale': 'Số dư Ale',
     'page.transfer.column.availableBalance': 'Số dư Ale khả dụng',
     'page.transfer.column.produceAle': 'Số dư ProduceAle',
@@ -392,7 +397,7 @@ export default {
     
     'page.transfer.transfer': 'Chuyển đổi',
     'page.transfer.transferProduceAle': 'Chuyển đổi ProduceAle',
-    'page.transfer.tooltip.buyAle': 'Chuyển đổi',
+    'page.transfer.tooltip.buyAle': 'Mua Ale',
 
 
     
@@ -466,7 +471,11 @@ export default {
     'page.listSettlement.column.reasonSettlement': 'Lý do',
     'page.listSettlement.registeringSettlementCancel': 'Đăng kí thanh quyết toán trước hạn',
     'page.listSettlement.registeringSettlementSickOrDeath': 'Đăng kí thanh quyết toán bệnh chết',
+    'page.listSettlement.modal.registeringSettlementCancel': 'Chọn Aleger muốn thanh quyết toán trước hạn',
 
+    'page.settlementMegaCancel.column.cPass': 'Thẻ tai|cPass',
+    'page.settlementMegaCancel.column.ageAndSlot': 'Tuổi/Snow',
+    'page.settlementMegaCancel.column.bodyCondition': 'Thể trạng',
 
     'page.confirmSettlementDeadOrSick.column.owner': 'Mega sở hữu',
     'page.confirmSettlementDeadOrSick.column.slot': 'Snow',
@@ -476,6 +485,7 @@ export default {
 
     'page.settlementDeadOrSick.column.cPass': 'Thẻ tai|cPass',
     'page.settlementDeadOrSick.column.ageAndSlot': 'Tuần tuổi/Snow',
+    'page.settlementDeadOrSick.column.produceAle': 'ProduceAle',
 
 
     // 'page.listSettlement.column.code': 'cPass',
@@ -491,6 +501,19 @@ export default {
     'page.confirmSettlementVnd.sender': 'Người giao dịch',
     'page.confirmSettlementVnd.reciever': 'Tài khoản đến',
 
+    //---------------------myAle------------------------
+
+    'page.myAle.code': 'Mã giao dịch',
+    'page.myAle.active': 'Hoạt động',
+    'page.myAle.receiver': 'Người nhận',
+    'page.myAle.ale': 'Ale',
+    'page.myAle.produceAle': 'ProduceAle',
+    'page.myAle.promoAle': 'PromoAle',
+    'page.myAle.rateFee': 'Phí giao dịch(%)',
+    'page.myAle.fee': 'Phí(VNĐ)',
+    'page.myAle.location': 'Vị trí',
+    // 'page.myAle.code': 'Mã',
+    // 'page.myAle.code': 'Mã',
 
 }
 

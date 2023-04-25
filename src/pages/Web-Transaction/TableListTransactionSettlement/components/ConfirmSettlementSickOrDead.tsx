@@ -3,14 +3,14 @@ import DetailFair from '@/pages/components/DetailFair';
 import DetailUser from '@/pages/components/DetailUser';
 import { customAPIAdd } from '@/services/ant-design-pro/api';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 // import { FormattedMessage } from '@umijs/max';
 import { Button, Space, Input, message } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
@@ -72,7 +72,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
-
+  const [showModalMethod, setShowModalMethod] = useState<boolean>(false);
 
   // const [searchText, setSearchText] = useState('');
   // const [searchedColumn, setSearchedColumn] = useState('');
@@ -159,12 +159,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
 
 
 
-
-  useEffect(() => {
-    const fetchDataFair = async () => {
-    }
-    fetchDataFair();
-  }, []);
 
 
   const columnCPass: ProColumns<any>[] = [
@@ -304,15 +298,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
           },
         }}
         onFinish={async () => {
-          const cPass = props?.cPass.map((e: any) => e.id);
-            const success = await handleCreate(
-            {
-              "cPass" : cPass,
-          }, 'transactions/settlement/sick-or-dead');
-        
-          if (success) {
-            props.onCloseModal();
-          }
+          setShowModalMethod(true);
           return true;
         }}
         submitter={{
@@ -402,6 +388,73 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
           />
         )
         }
+      </ModalForm>
+
+      <ModalForm
+        title='Chọn PTTT'
+        open={showModalMethod}
+        //form={form}
+        autoFocusFirstInput
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            setShowModalMethod(false);
+          },
+        }}
+        width={400}
+        submitTimeout={2000}
+        onFinish={async (values: any) => {
+          
+          const cPass = props?.cPass.map((e: any) => e.id);
+          const success = await handleCreate(
+          {
+            "cPass" : cPass,
+            'method': values.method || 'ale'
+        }, 'transactions/settlement/sick-or-dead');
+      
+        if (success) {
+          props.onCloseModal();
+        }
+         
+          actionRef.current?.reloadAndRest?.();
+
+          return true;
+        }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['submit'],
+          },
+        }}
+      >
+
+        <ProFormSelect
+
+          name='method'
+          fieldProps={{
+            defaultValue: 'ale'
+          }}
+          options={[
+            {
+              label: 'Ale',
+              value: 'ale'
+            },
+            {
+              label: 'VNĐ',
+              value: 'cash'
+            },
+          ]}
+        />
+
       </ModalForm>
     </>
   );

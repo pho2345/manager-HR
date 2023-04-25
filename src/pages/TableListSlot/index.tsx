@@ -1,12 +1,11 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
+import {  ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProDescriptionsItemProps,  ProFormDigit } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
-  ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
 
@@ -16,23 +15,6 @@ import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
-
-
-const handleAdd = async (fields: any) => {
-
-
-  const hide = message.loading('Đang chờ...');
-  try {
-    await customAPIAdd({ ...fields }, 'c-passes');
-    hide();
-    message.success('Thêm thành công');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Thêm thất bại!');
-    return false;
-  }
-};
 
 
 const handleUpdate = async (fields: any, id: any) => {
@@ -79,7 +61,6 @@ const handleUpdate = async (fields: any, id: any) => {
 
 const TableList: React.FC = () => {
 
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -227,26 +208,24 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'option',
       render: (_, entity: any) => {
-        let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
-        let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
-        if (dateEnd === currentDate) {
+        //let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
+        //let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
+        //if (dateEnd === currentDate) {
           return (<Button
             type='primary'
             key='primary'
             onClick={() => {
               handleUpdateModalOpen(true);
-              refIdSlot .current = entity.id;
+              refIdSlot.current = entity.id;
               // setCodeProvince(entity?.attributes?.code);
               // setNameProvince(entity?.attributes?.name);
               // setFullName(entity?.attributes?.fullname);
               // setFsmCode(entity?.attributes?.fsmCode);
-
             }}
           >
-            <FormattedMessage id='pages.searchTable.update' defaultMessage='New' />
+            Cập nhật
           </Button>)
-        }
-        return null
+        //return null
       }
     },
 
@@ -281,26 +260,11 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-        toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='Mới' />
-          </Button>,
-        ]}
+       
 
         request={() => customAPIGet({}, 'slots')}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-
-            setSelectedRows(selectedRows);
-          },
-        }}
+       
         toolbar={{
           settings: [{
             key: 'reload',
@@ -357,70 +321,8 @@ const TableList: React.FC = () => {
       )}
 
 
-      <ModalForm
-        title="Tạo mới"
-        open={createModalOpen}
-        form={form}
-        autoFocusFirstInput
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleModalOpen(false)
-          },
-        }}
-        submitTimeout={2000}
-        onFinish={async (values) => {
-          //await waitTime(2000);
-          console.log(values);
-          const success = await handleAdd(values as any);
-          if (success) {
-            handleModalOpen(false);
-            form.resetFields();
-           
-            if (actionRef.current) {
-              actionRef.current.reload();
-
-            }
-          }
-          //message.success('Success');
-          return true;
-        }}
-      >
-        <ProForm.Group>
-          <ProFormText
-            width="md"
-            name="code"
-            label="Mã"
-            placeholder="Mã"
-            rules={[
-              {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id='pages.searchTable.Code'
-                    defaultMessage='Rule name is required'
-                  />
-                ),
-              },
-            ]}
-          />
-
-          <ProFormSelect
-            width="md"
-  
-            name="cow"
-            label="Bò"
-          />
-
-
+     
         
-          <ProFormText width="md" name="pZero" label="P0" placeholder="P0" />
-          <ProFormText width="md" name="nowWeight" label="Cân nặng hiện tại" placeholder="Cân nặng hiện tại" />
-          <ProFormText width="md" name="price" label="Giá" placeholder="Giá" />
-      
-        </ProForm.Group>
-
-      </ModalForm>
 
 
       <ModalForm
@@ -434,6 +336,7 @@ const TableList: React.FC = () => {
             handleUpdateModalOpen(false)
           },
         }}
+        width={`35vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
@@ -494,3 +397,7 @@ const TableList: React.FC = () => {
 };
 
 export default TableList;
+
+
+
+

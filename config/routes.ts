@@ -75,7 +75,7 @@ export default [
       { path: '/agrigate/status-owner',hideInMenu: false,  name: 'Thể trạng', component: './AgriGate/TableListBodyCondition' },
       { path: '/agrigate/wge',hideInMenu: false,  name: 'Hiệu quả tăng trọng', component: './AgriGate/TableListWGE' },
       { path: '/agrigate/awg',hideInMenu: false,  name: 'Tăng trọng trung bình', component: './AgriGate/TableListAWG' },
-      { path: '/agrigate/range-p-zero', name: 'Khoản cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
+      { path: '/agrigate/range-p-zero', name: 'Khoảng cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
       
     ],
   },

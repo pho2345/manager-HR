@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -8,10 +8,10 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-
+import { SketchPicker } from 'react-color';
 // import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Col, Form, Input, InputRef, message, Row, Space, Tooltip } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -25,9 +25,9 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -43,9 +43,9 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -77,6 +77,63 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
+
+  const [color, setColor] = useState();
+  const [colorBackground, setColorBackground] = useState();
+
+  const [openColor, setOpenColor] = useState<boolean>(false);
+  const [openColorBackground, setOpenBackground] = useState<boolean>(false);
+
+  const pickerRef = useRef(null);
+  const handleColorChange = (newColor: any) => {
+    setColor(newColor.hex);
+    form.setFieldValue('color', newColor.hex);
+  };
+
+  const handleColorBackgroundChange = (newColor: any) => {
+    setColorBackground(newColor.hex);
+    form.setFieldValue('backgroundColor', newColor.hex);
+  };
+
+  const handleClickOutside = (event: any) => {
+    if (pickerRef.current && !pickerRef?.current?.contains(event.target)) {
+      setOpenColor(false);
+      setOpenBackground(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleColorPicker = () => {
+    // console.log('abc');
+    setOpenColor(!openColor);
+  };
+
+  const toggleColorBackgroundPicker = () => {
+    // console.log('abc');
+    setOpenBackground(!openColorBackground);
+  };
+
+  const confirm = (entity: any, textConfirm: any) => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: textConfirm,
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+        await handleRemove(entity);
+        if (actionRef.current) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      }
+    });
+  };
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -236,6 +293,8 @@ const TableList: React.FC = () => {
         ><MdOutlineEdit
             onClick={() => {
               handleUpdateModalOpen(true);
+              setColor(entity?.attributes?.color);
+              setColorBackground(entity?.attributes?.backgroundColor);
               refIdCateogry.current = entity.id;
               form.setFieldsValue({
                 code: entity?.attributes?.code,
@@ -329,7 +388,10 @@ const TableList: React.FC = () => {
         >
           <Button
             onClick={async () => {
-              await handleRemove(selectedRowsState);
+              //await handleRemove(selectedRowsState);
+              confirm(
+                selectedRowsState, configDefaultText['confirmDetele']
+              );
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
@@ -445,6 +507,8 @@ const TableList: React.FC = () => {
         </Row>
 
 
+      
+
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormText
@@ -452,23 +516,29 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.color']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.color'
-                  //     defaultMessage='Nhập màu chữ'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
               name='color'
               label={configDefaultText['page.color']}
               placeholder={configDefaultText['page.color']}
-            />
+              fieldProps={{
 
+                onFocus: toggleColorPicker,
+                onChange: (e: any) => {
+                  setColor(e.target.value);
+                }
+              }}
+
+            />
+            {openColor && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={color} onChange={handleColorChange} />
+              </div>
+            )}
           </Col>
         </Row>
+
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
@@ -486,14 +556,27 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
+
               className='w-full'
               name='backgroundColor'
               label={configDefaultText['page.backgroundColor']}
               placeholder={configDefaultText['page.backgroundColor']}
+              fieldProps={{
+                onFocus: toggleColorBackgroundPicker,
+                onChange: (e: any) => {
+                  setColorBackground(e.target.value);
+                }
+              }}
             />
+            {openColorBackground && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
+              </div>
+            )}
           </Col>
         </Row>
 
+       
 
 
 
@@ -614,23 +697,29 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.color']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.color'
-                  //     defaultMessage='Nhập màu chữ'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
               name='color'
               label={configDefaultText['page.color']}
               placeholder={configDefaultText['page.color']}
-            />
+              fieldProps={{
 
+                onFocus: toggleColorPicker,
+                onChange: (e: any) => {
+                  setColor(e.target.value);
+                }
+              }}
+
+            />
+            {openColor && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={color} onChange={handleColorChange} />
+              </div>
+            )}
           </Col>
         </Row>
+
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
@@ -648,11 +737,23 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
+
               className='w-full'
               name='backgroundColor'
               label={configDefaultText['page.backgroundColor']}
               placeholder={configDefaultText['page.backgroundColor']}
+              fieldProps={{
+                onFocus: toggleColorBackgroundPicker,
+                onChange: (e: any) => {
+                  setColorBackground(e.target.value);
+                }
+              }}
             />
+            {openColorBackground && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
+              </div>
+            )}
           </Col>
         </Row>
 

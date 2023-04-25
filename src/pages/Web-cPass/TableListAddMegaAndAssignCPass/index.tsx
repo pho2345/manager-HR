@@ -258,7 +258,7 @@ const TableListAssignCPass = () => {
       dataIndex: 'code',
 
       //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
-      title: configDefaultText['page.addMegaAndAssign.column.buyCPass'],
+      title: configDefaultText['page.addMegaAndAssign.column.cPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (

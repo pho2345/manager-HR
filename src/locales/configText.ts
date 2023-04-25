@@ -211,6 +211,7 @@ export default {
     'page.listCow.required.pZero': 'Nhập P0',
 
 
+    
     'page.listCPass.column.code': 'Thẻ tai',
     'page.listCPass.column.groupCow': 'Nhóm bò',
     'page.listCPass.column.farm': 'Trang trại',
@@ -267,7 +268,7 @@ export default {
     'page.listCategory.createdAt': 'Ngày tạo',
     'page.listCategory.createModal': 'Tạo mới giống bò',
     'page.listCategory.required.code': 'Mã',
-    'page.listCategory.required.name': 'Mã',
+    'page.listCategory.required.name': 'Tên',
     'page.listCategory.updateModal': 'Cập nhật giống bò',
 
 
@@ -345,7 +346,8 @@ export default {
 // bodyCondition
     'page.code': 'Mã',
     'page.classify': 'Phân loại',
-    'page.value': 'Giá trị',
+    'page.value': 'Tên tiếng anh',
+    'page.rangeValue': 'Khoảng giá trị',
     'page.color': 'Màu chữ',
     'page.backgroundColor': 'Màu nền',
     'page.createdAt': 'Ngày tạo',
@@ -353,14 +355,16 @@ export default {
     'modalCreate': 'Tạo mới',
     'modalUpdate': 'Cập nhật',
     'page.valueFrom': 'Giá trị dưới',
-    'page.valueTo': 'Giá trị dưới',
+    'page.valueTo': 'Giá trị trên',
     'page.name': 'Tên',
     'page.profit': 'Lợi nhuận(%)',
 
 /// AWG
+    'page.range': 'Khoảng',
     'page.rangeFrom': 'Giá trị dưới',
     'page.rangeTo': 'Giá trị trên',
     'page.required.rangFrom': 'Nhập giá trị dưới',
+    'page.required.range': 'Nhập khoảng',
     'page.required.rangTo': 'Nhập giá trị trên',
     'page.required.name': 'Nhập tên',
     'page.required.profit': 'Nhập tên',

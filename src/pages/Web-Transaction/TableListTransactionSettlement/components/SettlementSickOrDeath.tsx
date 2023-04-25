@@ -46,7 +46,6 @@ export type SettlementCPassModal = {
   // onSubmit: () => Promise<void>;
   openModal: boolean;
   //values: Partial<API.RuleListItem>;
-  userId: number;
 }
 
 
@@ -452,9 +451,9 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               cPass={selectedRowsCPass}
               onCloseModal={() => {
                 setShowConfirmSettlement(false);
-                
                 if (actionRef.current) {
-                  actionRef.current.reload();
+                setSelectedRowsCPass([]);
+                  actionRef.current?.reloadAndRest?.()
                 }
               }}
             />

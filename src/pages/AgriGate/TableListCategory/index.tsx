@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 
 // import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Col, Form, Row, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -27,9 +27,9 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -45,9 +45,9 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -81,6 +81,102 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   // const intl = useIntl();
+
+  
+  const confirm = (entity: any, textConfirm: any) => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: textConfirm,
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+        await handleRemove(entity);
+        if (actionRef.current) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      }
+    });
+  };
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
+  };
+  const handleReset = (clearFilters: any) => {
+    clearFilters();
+    // setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          // ref={configDefaultText[]}
+          placeholder={`Tìm kiếm`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+        onClick={() => {
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (record.attributes[dataIndex]) {
+        return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+      return null;
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        //setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
+  
   const columns: ProColumns<API.RuleListItem>[] = [
     {
       // title: (
@@ -105,6 +201,8 @@ const TableList: React.FC = () => {
           </a>
         );
       },
+      // filtered: true,
+      ...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
@@ -112,7 +210,8 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
-      renderText: (_, text: any) => text?.attributes?.name
+      renderText: (_, text: any) => text?.attributes?.name,
+      ...getColumnSearchProps('name')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
@@ -155,6 +254,7 @@ const TableList: React.FC = () => {
     },
 
   ];
+
 
   return (
     <PageContainer>
@@ -232,12 +332,15 @@ const TableList: React.FC = () => {
         >
           <Button
             onClick={async () => {
-              await handleRemove(selectedRowsState);
+              // await handleRemove(selectedRowsState);
+              confirm(
+                selectedRowsState, configDefaultText['confirmDetele']
+              );
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
             }}
           >
-            
+            {configDefaultText['delete']}
           </Button>
 
         </FooterToolbar>

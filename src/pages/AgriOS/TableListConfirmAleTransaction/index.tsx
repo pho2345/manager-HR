@@ -9,17 +9,20 @@ import {
   ModalForm,
   ProColumns,
   ProFormSelect,
+  ProFormDateRangePicker
 } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
+
 } from '@ant-design/pro-components';
 
 //import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Input, message, Modal, Space } from 'antd';
 import moment from 'moment';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
+import { values } from 'lodash';
 const configDefaultText = configText;
 
 
@@ -57,8 +60,8 @@ const TableList: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
 
   const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
-   //const [searchText, setSearchText] = useState('');
-   //const [searchedColumn, setSearchedColumn] = useState('');
+  //const [searchText, setSearchText] = useState('');
+  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
 
@@ -67,7 +70,7 @@ const TableList: React.FC = () => {
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-   // setSearchedColumn(dataIndex);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
@@ -84,7 +87,7 @@ const TableList: React.FC = () => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          // placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -147,19 +150,18 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(record);
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -186,8 +188,8 @@ const TableList: React.FC = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       const success = await  handleUpdateMany(entity, api, null);
-        if(success){
+        const success = await handleUpdateMany(entity, api, null);
+        if (success) {
           if (actionRef.current) {
             setShowModal(false);
             actionRef.current.reload();
@@ -219,7 +221,7 @@ const TableList: React.FC = () => {
           </>
         );
       },
-    
+
       //valueEnum: filterCode
       ...getColumnSearchProps('code')
     },
@@ -230,7 +232,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'types',
       renderText: (_, text: any) => {
-        if(text?.types === 'buyAle'){
+        if (text?.types === 'buyAle') {
           return `Mua Ale`;
         }
         else {
@@ -238,7 +240,7 @@ const TableList: React.FC = () => {
         }
       },
       filters: [
-        
+
         {
           text: 'Mua Ale',
           value: 'buyAle'
@@ -258,7 +260,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'username',
       renderText: (_, entity: any) => {
-        return `${entity?.fullname ? entity?.fullname : entity?.username}-${entity?.id}`;
+        return `${entity?.fullname ? entity?.fullname : entity?.username}-${entity?.userId}`;
       },
       ...getColumnSearchProps('mega')
     },
@@ -287,7 +289,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: (<>Tài khoản<br/>thanh toán</>),
+      title: (<>Tài khoản<br />thanh toán</>),
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
@@ -318,7 +320,55 @@ const TableList: React.FC = () => {
       key: 'createdAt',
       renderText: (_, text: any) => {
         return moment(text?.createdAt).format('DD/MM/YYYY HH:MM');
-      }
+      },
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+        <div style={{ padding: 8 }}>
+          <ProFormDateRangePicker
+            fieldProps={{
+              value: selectedKeys,
+              onChange: (values) => {
+                // console.log('values', values);
+                // console.log('selectedKeys', selectedKeys);
+                setSelectedKeys(values);
+              }
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Tìm kiếm
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                clearFilters();
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Reset
+            </Button>
+
+          </Space>
+        </div>
+      ),
+      onFilter: (value: any, record: any) => {
+        // console.log(value);
+        console.log(moment(value.$d).format('HH:MM:ss DD/MM/YYYY'));
+        return record
+      },
     },
     {
       // title: (
@@ -358,7 +408,7 @@ const TableList: React.FC = () => {
         }
       },
     },
-   
+
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
@@ -367,32 +417,32 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'priceVnd',
       render: (_, record: any) => {
-        if(record?.status === 'inProgress'){
+        if (record?.status === 'inProgress') {
           return [
             (<>
-             <SettingOutlined 
-              style={{
-                fontSize: 20
-              }}
-              onClick={() => {
-                setShowModal(true);
-                setSelectedRows([
-                  {
-                    id:record?.id,
-                    types: record?.types
-                  }
-                ])
-                
-              }}
-             />
+              <SettingOutlined
+                style={{
+                  fontSize: 20
+                }}
+                onClick={() => {
+                  setShowModal(true);
+                  setSelectedRows([
+                    {
+                      id: record?.id,
+                      types: record?.types
+                    }
+                  ])
+
+                }}
+              />
             </>),
-           
+
           ]
         }
       }
     },
 
-   
+
 
 
 
@@ -401,71 +451,71 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-       
+
         actionRef={actionRef}
         rowKey='id'
         search={false}
         toolBarRender={() => [
-         
+
         ]}
         request={async () => {
           const data = await customAPIGet(
             {
-             
+
             },
             'transactions/wait-confirm-ale');
 
-        //  const filter = data?.data.reduce((pre: any, cur: any) =>{
-        //   let element;
-        //   switch (cur?.status) {
-        //     case 'waitConfirm':
-        //       element = {
-        //         text: `Chờ Mega xác nhận`,
-        //         value: 'waitConfirm'
-        //       }
-        //       break;
-        //     case 'inProgress':
-        //       element = {
-        //         text: `Chờ xác nhận`,
-        //         value: 'inProgress'
-        //       }
-        //       break;
-  
-        //     case 'done':
-        //       element = {
-        //         text: `Hoàn thành`,
-        //         value: 'done'
-        //       }
-        //       break;
-  
-        //     case 'cancel':
-        //       element = {
-        //         text: `Đã hủy`,
-        //         value: 'cancel'
-        //       }
-        //       break;
-  
-        //     case 'waitRefund':
-        //       element = {
-        //         text: `Chờ xác nhận hoàn trả`,
-        //         value: 'waitRefund'
-        //       }
-        //       break;
+          //  const filter = data?.data.reduce((pre: any, cur: any) =>{
+          //   let element;
+          //   switch (cur?.status) {
+          //     case 'waitConfirm':
+          //       element = {
+          //         text: `Chờ Mega xác nhận`,
+          //         value: 'waitConfirm'
+          //       }
+          //       break;
+          //     case 'inProgress':
+          //       element = {
+          //         text: `Chờ xác nhận`,
+          //         value: 'inProgress'
+          //       }
+          //       break;
 
-        //     default:
-        //       break;
-        //   }
-        //   pre.push(element);
-        //   return pre;
-        //  }, []);
+          //     case 'done':
+          //       element = {
+          //         text: `Hoàn thành`,
+          //         value: 'done'
+          //       }
+          //       break;
 
-        //  console.log('filter', filter);
+          //     case 'cancel':
+          //       element = {
+          //         text: `Đã hủy`,
+          //         value: 'cancel'
+          //       }
+          //       break;
 
-        //  const uniqueArr = filter.filter((item: any, index: any, self: any) => {
-        //   return index === self.findIndex((t: any) => t.value === item.value);
-        // });
-        
-        // setFilterStatus(uniqueArr);
+          //     case 'waitRefund':
+          //       element = {
+          //         text: `Chờ xác nhận hoàn trả`,
+          //         value: 'waitRefund'
+          //       }
+          //       break;
+
+          //     default:
+          //       break;
+          //   }
+          //   pre.push(element);
+          //   return pre;
+          //  }, []);
+
+          //  console.log('filter', filter);
+
+          //  const uniqueArr = filter.filter((item: any, index: any, self: any) => {
+          //   return index === self.findIndex((t: any) => t.value === item.value);
+          // });
+
+          // setFilterStatus(uniqueArr);
           return {
             data: data?.data,
             success: true,
@@ -497,12 +547,12 @@ const TableList: React.FC = () => {
         }}
 
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -519,17 +569,17 @@ const TableList: React.FC = () => {
           }
         }}
       />
-      
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-               {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-               {`${configDefaultText['chosen']} `}
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
               {configDefaultText['selectedItem']}
-             
+
             </div>
           }
         >
@@ -541,12 +591,12 @@ const TableList: React.FC = () => {
               //actionRef.current?.reloadAndRest?.();
             }}
           >
-             {configDefaultText['page.confirm.column.implement']}
+            {configDefaultText['page.confirm.column.implement']}
           </Button>
 
         </FooterToolbar>
       )}
-      
+
 
       <ModalForm
         open={showModal}
@@ -554,11 +604,11 @@ const TableList: React.FC = () => {
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
-           setShowModal(false);
+            setShowModal(false);
           },
         }}
         onFinish={async (values) => {
-          if(values?.status === 1 || !values?.status){
+          if (values?.status === 1 || !values?.status) {
             confirm({
               transaction: selectedRows
             }, configDefaultText['page.confirm.column.textWaitToSubmit'], 'transactions/confirm-ale-admin');
@@ -568,11 +618,11 @@ const TableList: React.FC = () => {
               transaction: selectedRows
             }, configDefaultText['page.confirm.column.textWaitCancel'], 'transactions/cancel-ale-admin');
           }
-          
+
           return true
         }}
       >
-        
+
         <ProFormSelect width='md' options={[
           {
             label: 'Xác nhận',
@@ -587,7 +637,7 @@ const TableList: React.FC = () => {
             defaultValue: 1,
             // onChange: async (values: any) => {
             // }
-          }} 
+          }}
           required placeholder='Chọn tình trạng' name='status' label='Tình trạng' />
       </ModalForm>
 
@@ -605,9 +655,9 @@ const TableList: React.FC = () => {
       )
       }
 
-     
 
-      
+
+
     </PageContainer>
   );
 };

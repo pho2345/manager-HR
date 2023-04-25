@@ -21,12 +21,13 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-
-import { FormattedMessage, Link, getLocale } from '@umijs/max';
+import { FormattedMessage, Link,  } from '@umijs/max';
 import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import { SketchPicker, AlphaPicker, BlockPicker, CirclePicker, SliderPicker, TwitterPicker, GithubPicker } from 'react-color';
+
 import { MdOutlineEdit } from 'react-icons/md';
-import viVNIntl from 'antd/lib/locale/vi_VN';
+// import viVNIntl from 'antd/lib/locale/vi_VN';  
 
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -124,9 +125,9 @@ const confirm = (entity: any, message: string, actionRef: any) => {
 };
 
 const TableList: React.FC = () => {
-  console.log('vnd', getLocale());
-  console.log('vd', viVNIntl)
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [openColor, setOpenColor] = useState<boolean>(false);
+
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCow = useRef<any>();
@@ -142,6 +143,13 @@ const TableList: React.FC = () => {
     };
     getValues();
   }, []);
+
+  const [color, setColor] = useState("#ffffff");
+
+  const handleColorChange = (newColor: any) => {
+    console.log(newColor);
+    setColor(newColor.hex);
+  };
 
   //const intl = useIntl();
 
@@ -454,11 +462,12 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]} />
-
           </Col>
         </Row>
 
 
+       
+      
 
       </ModalForm>
 

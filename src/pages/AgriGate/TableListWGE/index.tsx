@@ -11,10 +11,11 @@ import {
 
 // import { FormattedMessage } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
+import { SketchPicker } from 'react-color';
 const configDefaultText = configText;
 
 
@@ -25,9 +26,10 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response?.data?.error?.message);
+    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -44,9 +46,10 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất!');
+    message.error(error?.response?.data?.error?.message);
+    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -79,6 +82,47 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
+  const pickerRef = useRef(null);
+
+  const [color, setColor] = useState();
+  const [colorBackground, setColorBackground] = useState();
+
+  const [openColor, setOpenColor] = useState<boolean>(false);
+  const [openColorBackground, setOpenBackground] = useState<boolean>(false);
+
+  const handleColorChange = (newColor: any) => {
+    setColor(newColor.hex);
+    form.setFieldValue('color', newColor.hex);
+  };
+
+  const handleColorBackgroundChange = (newColor: any) => {
+    setColorBackground(newColor.hex);
+    form.setFieldValue('background', newColor.hex);
+  };
+
+  const handleClickOutside = (event: any) => {
+    if (pickerRef.current && !pickerRef?.current?.contains(event.target)) {
+      setOpenColor(false);
+      setOpenBackground(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleColorPicker = () => {
+    // console.log('abc');
+    setOpenColor(!openColor);
+  };
+
+  const toggleColorBackgroundPicker = () => {
+    // console.log('abc');
+    setOpenBackground(!openColorBackground);
+  };
 
 
   const confirm = (entity: any, textConfirm: any) => {
@@ -201,7 +245,7 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      //...getColumnSearchProps('code')
+      ...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
@@ -209,7 +253,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      //...getColumnSearchProps('name'),
+      ...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
@@ -232,7 +276,7 @@ const TableList: React.FC = () => {
       dataIndex: 'valueTo',
       valueType: 'textarea',
       key: 'valueTo',
-     //...getColumnSearchProps('name'),
+      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.valueTo > 200) {
           return null;
@@ -242,7 +286,7 @@ const TableList: React.FC = () => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
-      title: configDefaultText['page.value'],
+      title: configDefaultText['page.rangeValue'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'profit',
@@ -326,7 +370,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-       
+
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -529,12 +573,13 @@ const TableList: React.FC = () => {
                 },
               ]}
               className='w-full'
-              name='valueFrom'
+              name='valueTo'
               label={configDefaultText['page.valueTo']}
               placeholder={configDefaultText['page.valueTo']}
             />
           </Col>
         </Row>
+
 
 
         <Row gutter={24} className="m-0">
@@ -544,20 +589,24 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.color']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.color'
-                  //     defaultMessage='Nhập màu chữ'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
               name='color'
               label={configDefaultText['page.color']}
               placeholder={configDefaultText['page.color']}
+              fieldProps={{
+
+                onClick: toggleColorPicker,
+                // onChange: handleColorSelect,
+              }}
+
             />
+            {openColor && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={color} onChange={handleColorChange} />
+              </div>
+            )}
           </Col>
         </Row>
 
@@ -577,16 +626,22 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
+
               className='w-full'
               name='background'
               label={configDefaultText['page.backgroundColor']}
               placeholder={configDefaultText['page.backgroundColor']}
+              fieldProps={{
+                onClick: toggleColorBackgroundPicker,
+              }}
             />
-
-
+            {openColorBackground && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
+              </div>
+            )}
           </Col>
         </Row>
-
 
 
       </ModalForm>
@@ -629,7 +684,7 @@ const TableList: React.FC = () => {
           },
         }}
       >
-        <Row gutter={24} className="m-0">
+        {/* <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormText
               rules={[
@@ -650,7 +705,7 @@ const TableList: React.FC = () => {
               placeholder={configDefaultText['page.code']}
             />
           </Col>
-        </Row>
+        </Row> */}
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
@@ -718,12 +773,13 @@ const TableList: React.FC = () => {
                 },
               ]}
               className='w-full'
-              name='valueFrom'
+              name='valueTo'
               label={configDefaultText['page.valueTo']}
               placeholder={configDefaultText['page.valueTo']}
             />
           </Col>
         </Row>
+
 
 
         <Row gutter={24} className="m-0">
@@ -733,20 +789,26 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.color']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.color'
-                  //     defaultMessage='Nhập màu chữ'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
               name='color'
               label={configDefaultText['page.color']}
               placeholder={configDefaultText['page.color']}
+              fieldProps={{
+
+                onClick: toggleColorPicker,
+                onChange: (e:any) => {
+                  setColor(e.target.value);
+                }
+              }}
+
             />
+            {openColor && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={color} onChange={handleColorChange} />
+              </div>
+            )}
           </Col>
         </Row>
 
@@ -766,13 +828,23 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
+
               className='w-full'
               name='background'
               label={configDefaultText['page.backgroundColor']}
               placeholder={configDefaultText['page.backgroundColor']}
+              fieldProps={{
+                onClick: toggleColorBackgroundPicker,
+                onChange: (e:any) => {
+                  setColorBackground(e.target.value);
+                }
+              }}
             />
-
-
+            {openColorBackground && (
+              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
+                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
+              </div>
+            )}
           </Col>
         </Row>
       </ModalForm>

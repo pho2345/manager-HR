@@ -20,13 +20,14 @@ const configDefaultText = configText;
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'rang-weight-zeros');
+    await customAPIAdd({ ...fields }, 'range-weight-zeros');
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response?.data?.error?.message);
+    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -38,14 +39,15 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    }, 'rang-weight-zeros', id.current);
+    }, 'range-weight-zeros', id.current);
     hide();
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất!');
+    message.error(error?.response?.data?.error?.message);
+    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -54,7 +56,7 @@ const handleRemove = async (selectedRows: any) => {
   const hide = message.loading('Đang xóa...');
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'rang-weight-zeros')
+      return customAPIDelete(e.id, 'range-weight-zeros')
     })
     await Promise.all(deleteRowss);
     hide();
@@ -200,7 +202,19 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      //...getColumnSearchProps('code')
+      ...getColumnSearchProps('code')
+    },
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
+      title: configDefaultText['page.range'],
+      dataIndex: 'index',
+      valueType: 'textarea',
+      key: 'index',
+      //...getColumnSearchProps('name'),
+      renderText: (_, text: any) => {
+
+        return text?.attributes?.index;
+      }
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
@@ -222,13 +236,12 @@ const TableList: React.FC = () => {
       key: 'valueTo',
       //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
-
         return text?.attributes?.valueTo;
       }
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
-      title: configDefaultText['page.value'],
+      title: configDefaultText['page.rangeValue'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'profit',
@@ -252,6 +265,7 @@ const TableList: React.FC = () => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
               form.setFieldsValue({
+                index: entity?.attributes?.index,
                 code: entity?.attributes?.code,
                 valueFrom: entity?.attributes?.valueFrom,
                 valueTo: entity?.attributes?.valueTo,
@@ -295,7 +309,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'rang-weight-zeros')}
+        request={() => customAPIGet({}, 'range-weight-zeros')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -421,6 +435,29 @@ const TableList: React.FC = () => {
               rules={[
                 {
                   required: true,
+                  message: configDefaultText['page.required.range']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeFrom'
+                  //     defaultMessage='Nhập giá trị dưới'
+                  //   />
+                  // ),
+                },
+              ]}
+              className='w-full'
+              name='index'
+              label={configDefaultText['page.range']}
+              placeholder={configDefaultText['page.range']}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
                   message: configDefaultText['page.required.rangFrom']
                   // (
                   //   <FormattedMessage
@@ -529,6 +566,30 @@ const TableList: React.FC = () => {
             />
           </Col>
         </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.required.range']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listWGE.rangeFrom'
+                  //     defaultMessage='Nhập giá trị dưới'
+                  //   />
+                  // ),
+                },
+              ]}
+              className='w-full'
+              name='index'
+              label={configDefaultText['page.range']}
+              placeholder={configDefaultText['page.range']}
+            />
+          </Col>
+        </Row>
+
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >

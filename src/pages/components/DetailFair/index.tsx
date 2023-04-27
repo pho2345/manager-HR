@@ -2,7 +2,7 @@
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PageContainer, ProColumns, ProDescriptions } from '@ant-design/pro-components';
 import {  Link,  } from '@umijs/max';
-import { Drawer,  } from 'antd';
+import { Button, Drawer, Switch,  } from 'antd';
 import moment from 'moment';
 import React, {  } from 'react';
 import configText from '@/locales/configText';
@@ -55,7 +55,7 @@ const TableList = (props: any) => {
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',
-      renderText: (_, text: any) => null
+      render: (_, text: any) => <Switch />
     },
 
     {
@@ -65,9 +65,9 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'switchNotify',
       render: () => (<>
-         <Link to={`/web-c-pass/fairs/` + props?.fairId}>
+        <Button> <Link to={`/web-c-pass/fairs/` + props?.fairId}>
              Danh sách cPass
-           </Link>
+           </Link></Button>
       </>)
     },
   ];

@@ -124,13 +124,13 @@ const TableList = (props: any) => {
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
-      title: configDefaultText['page.DetailFair.column.timeEnd'],
+      title: configDefaultText['page.DetailFair.column.dateStartFeed'],
       dataIndex: 'dateStartFeed',
       valueType: 'textarea',
       key: 'dateStartFeed',
       renderText: (_, text: any) => {
         {
-          const weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+          const weekday = moment(text?.dateStartFeed).weekday() === 0 ? 'CN' : `T${moment(text?.dateStartFeed).weekday() + 1}`;
           return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
         }
       }
@@ -138,7 +138,7 @@ const TableList = (props: any) => {
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
-      title: configDefaultText['page.DetailFair.column.timeEnd'],
+      title: configDefaultText['page.DetailFair.column.timeFeed'],
       dataIndex: 'timeFeed',
       valueType: 'textarea',
       key: 'timeFeed',
@@ -147,7 +147,7 @@ const TableList = (props: any) => {
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
-      title: configDefaultText['page.DetailFair.column.timeEnd'],
+      title: configDefaultText['page.DetailFair.column.unitPriceMeat'],
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',

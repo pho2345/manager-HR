@@ -40,7 +40,6 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
-    console.log(fields);
     let uploadImages = [];
     if(fields?.upload && fields.upload.length !== 0) {
       fields?.upload.map((e: any) => {

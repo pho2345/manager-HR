@@ -40,19 +40,25 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
-    let uploadImages = fields?.upload.map((e: any) => {
-      if (e.originFileObj) {
-        let formdata = new FormData();
-        formdata.append('files', e?.originFileObj);
-        formdata.append('ref', 'api::cow.cow');
-        formdata.append('refId', fields.cow.value);
-        formdata.append('field', 'photos');
-        return customAPIUpload({
-          data: formdata
-        })
-      }
-      return null;
-    });
+    console.log(fields);
+    let uploadImages = [];
+    if(fields?.upload && fields.upload.length !== 0) {
+      fields?.upload.map((e: any) => {
+        if (e.originFileObj) {
+          let formdata = new FormData();
+          formdata.append('files', e?.originFileObj);
+          formdata.append('ref', 'api::cow.cow');
+          formdata.append('refId', fields.cow.value);
+          formdata.append('field', 'photos');
+          uploadImages.push(customAPIUpload({
+            data: formdata
+          }))
+        }
+        return null;
+      });
+    }
+
+   
     let { category, farm, group_cow, cow, birthdate, ...other } = fields;
 
     let fieldCow = {
@@ -77,16 +83,19 @@ const handleUpdate = async (fields: any, id: any) => {
       'c-passes',
       id.current
     );
+
+    
     uploadImages.push(updateCow);
     uploadImages.push(updateCPass)
 
     await Promise.all(uploadImages);
     hide();
 
-    //   message.success('Cập nhật thành công');
+    message.success('Cập nhật thành công');
     return true;
   } catch (error: any) {
     hide();
+    console.log(error);
     message.error(error?.response?.data?.error?.message);
     return false;
   }

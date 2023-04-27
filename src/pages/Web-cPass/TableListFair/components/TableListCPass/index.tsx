@@ -15,7 +15,7 @@ import { FormattedMessage, Link, useIntl } from '@umijs/max';
 import { Avatar, Button,  Drawer, Form,  message, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import DetailUser from '../components/DetailUser';
+// import DetailUser from '../components/DetailUser';
 const { Text } = Typography;
 
 const handleAdd = async (fields: any) => {
@@ -34,36 +34,6 @@ const handleAdd = async (fields: any) => {
   }
 };
 
-const cascaderOptions = [
-  {
-    field: 'front end',
-    value: 'fe',
-    language: [
-      {
-        field: 'Javascript',
-        value: 'js',
-      },
-      {
-        field: 'Typescript',
-        value: 'ts',
-      },
-    ],
-  },
-  {
-    field: 'back end',
-    value: 'be',
-    language: [
-      {
-        field: 'Java',
-        value: 'java',
-      },
-      {
-        field: 'Go',
-        value: 'go',
-      },
-    ],
-  },
-];
 
 const handleUpdate = async (fields: any, id: any) => {
 
@@ -764,11 +734,10 @@ const TableList: React.FC = () => {
           <ProFormText width="sm" name="price" label="Giá" placeholder="Giá" />
           <ProFormSwitch name="activeAleTransfer" label="Tự động chuyển đổi Ale" />
         </ProForm.Group>
-
       </ModalForm>
 
 
-
+{/* 
       <Drawer
         width={600}
         open={showDetail}
@@ -791,16 +760,17 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-      </Drawer>
+      </Drawer> */}
 
-      <DetailUser
+      {/* <DetailUser
         onDetail={showDetailUser}
         currentRowUser={currentRowUser}
         onCloseDetail={() => {
           setCurrentRowUser(undefined);
           setShowDetailUser(false);
         }}
-      />
+      /> */}
+
     </PageContainer>
 
   );

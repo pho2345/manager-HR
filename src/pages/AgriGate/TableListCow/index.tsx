@@ -76,19 +76,25 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
-    const uploadImages = fields?.upload.map((e: any) => {
-      if (e.originFileObj) {
-        let formdata = new FormData();
-        formdata.append('files', e?.originFileObj);
-        formdata.append('ref', 'api::cow.cow');
-        formdata.append('refId', id.current);
-        formdata.append('field', 'photos');
-        return customAPIUpload({
-          data: formdata
-        })
-      }
-      return null;
-    });
+    let uploadImages: any[] = [];
+    console.log(fields);
+    if (fields?.upload && fields.upload.length !== 0) {
+      fields?.upload.map((e: any) => {
+        if (e.originFileObj) {
+          let formdata = new FormData();
+          formdata.append('files', e?.originFileObj);
+          formdata.append('ref', 'api::cow.cow');
+          formdata.append('refId', fields.cow.value);
+          formdata.append('field', 'photos');
+          uploadImages.push(customAPIUpload({
+            data: formdata
+          }))
+        }
+        return null;
+      });
+    }
+
+
     await Promise.all(uploadImages);
     await customAPIUpdate(
       {
@@ -314,6 +320,7 @@ const TableList: React.FC = () => {
               refIdCow.current = entity.id;
               const cow = await customAPIGetOne(entity.id, 'cows/find', {});
               const photos = cow.photos;
+              console.log(cow);
               if (photos) {
                 const photoCow = photos.map((e: any) => {
                   return { uid: e.id, status: 'done', url: SERVERURL + e.url };
@@ -333,11 +340,13 @@ const TableList: React.FC = () => {
               }
               else {
                 form.setFieldsValue({
-                  ...cow.data,
+                  ...cow,
                   category: cow.category?.id,
                   farm: cow.farm?.id,
-                  group_cow: cow?.group_cow?.id
-
+                  group_cow:  {
+                    label: cow?.group_cow?.name,
+                    value: cow?.group_cow?.id
+                  }
                   //upload: photoCow
 
                 })
@@ -628,8 +637,8 @@ const TableList: React.FC = () => {
                 className='w-full'
                 name='sex'
 
-                label={configDefaultText['page.listCow.column.birthdate']}
-                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                label={configDefaultText['page.listCow.column.sex']}
+                placeholder={configDefaultText['page.listCow.column.sex']}
                 options={[
                   {
                     label: 'Đực',
@@ -662,8 +671,8 @@ const TableList: React.FC = () => {
           />
 
           <ProFormTextArea
-            label={configDefaultText['page.listCow.column.upload']}
-            placeholder={configDefaultText['page.listCow.column.upload']}
+            label={configDefaultText['page.listCow.column.description']}
+            placeholder={configDefaultText['page.listCow.column.description']}
             name='description' />
         </ModalForm>
 
@@ -688,6 +697,7 @@ const TableList: React.FC = () => {
 
 
             if (success) {
+              console.log(refIdPicture.current);
               if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
                 if (refIdPicture.current !== null) {
                   const deletePicture = refIdPicture?.current.map((e: any) => {
@@ -745,8 +755,8 @@ const TableList: React.FC = () => {
                 className='w-full'
 
                 name='firstWeight'
-                label={configDefaultText['page.listCow.column.pZero']}
-                placeholder={configDefaultText['page.listCow.column.pZero']}
+                label={configDefaultText['page.listCow.column.firstWeight']}
+                placeholder={configDefaultText['page.listCow.column.firstWeight']}
                 rules={[
                   // { required: true, message: <FormattedMessage id='page.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
                 ]}
@@ -808,9 +818,9 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect className='w-full'
                 options={groupCow?.length ? groupCow : null}
-                disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
-                label={configDefaultText['page.listCow.column.farm']}
-                placeholder={configDefaultText['page.listCow.column.farm']}
+                // disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
+                label={configDefaultText['page.listCow.column.group_cow']}
+                placeholder={configDefaultText['page.listCow.column.group_cow']}
 
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
@@ -846,8 +856,8 @@ const TableList: React.FC = () => {
                 className='w-full'
                 name='sex'
 
-                label={configDefaultText['page.listCow.column.birthdate']}
-                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                label={configDefaultText['page.listCow.column.sex']}
+                placeholder={configDefaultText['page.listCow.column.sex']}
                 options={[
                   {
                     label: 'Đực',
@@ -875,13 +885,23 @@ const TableList: React.FC = () => {
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
+              onRemove(file) {
+                if (!file.lastModified) {
+                  if (refIdPicture.current) {
+                    refIdPicture.current = [...refIdPicture.current, file.uid];
+                  }
+                  else {
+                    refIdPicture.current = [file.uid];
+                  }
+                }
+              }
             }}
 
           />
 
           <ProFormTextArea
-            label={configDefaultText['page.listCow.column.upload']}
-            placeholder={configDefaultText['page.listCow.column.upload']}
+            label={configDefaultText['page.listCow.column.description']}
+            placeholder={configDefaultText['page.listCow.column.description']}
             name='description' />
 
 

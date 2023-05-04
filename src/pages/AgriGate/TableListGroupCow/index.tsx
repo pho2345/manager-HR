@@ -21,10 +21,9 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import { FormattedMessage, Link,  } from '@umijs/max';
+import {  Link, } from '@umijs/max';
 import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { SketchPicker, AlphaPicker, BlockPicker, CirclePicker, SliderPicker, TwitterPicker, GithubPicker } from 'react-color';
 
 import { MdOutlineEdit } from 'react-icons/md';
 // import viVNIntl from 'antd/lib/locale/vi_VN';  
@@ -126,7 +125,6 @@ const confirm = (entity: any, message: string, actionRef: any) => {
 
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-  const [openColor, setOpenColor] = useState<boolean>(false);
 
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
@@ -144,12 +142,7 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
-  const [color, setColor] = useState("#ffffff");
 
-  const handleColorChange = (newColor: any) => {
-    console.log(newColor);
-    setColor(newColor.hex);
-  };
 
   //const intl = useIntl();
 
@@ -336,10 +329,15 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+              {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
+              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
 
+              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+              {`${configDefaultText['chosen']} `}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+              {configDefaultText['selectedItem']}
             </div>
           }
         >
@@ -351,11 +349,13 @@ const TableList: React.FC = () => {
               await actionRef.current?.reloadAndRest?.();
             }}
           >
-            <FormattedMessage
+            {/* <FormattedMessage
               id='pages.searchTable.batchDeletion'
               defaultMessage='Batch deletion'
-            />
+            /> */}
+              {configDefaultText['delete']}
           </Button>
+          
 
         </FooterToolbar>
       )}
@@ -466,8 +466,8 @@ const TableList: React.FC = () => {
         </Row>
 
 
-       
-      
+
+
 
       </ModalForm>
 
@@ -571,7 +571,7 @@ const TableList: React.FC = () => {
         <ProFormSwitch name='active' label='Kích hoạt' fieldProps={{ defaultChecked: true, }} />
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-          <ProFormTextArea className='w-full' name='description'
+            <ProFormTextArea className='w-full' name='description'
               label={configDefaultText['page.listGroupCow.column.description']}
               placeholder={configDefaultText['page.listGroupCow.column.description']}
               rules={[

@@ -31,7 +31,7 @@ const handleCreate = async (fields: any, api: string) => {
     
   } catch (error: any) {
     hide();
-    message.error(error?.response.data.error.message);
+    message.error(error?.response?.data.error.message || null);
     return false;
   }
 };

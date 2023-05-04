@@ -192,9 +192,9 @@ export default {
     'page.listCow.column.firstWeight': 'Cân nặng sơ sinh',
     'page.listCow.column.photos': 'Hình ảnh',
     'page.listCow.column.sex': 'Giới tính',
-    'page.listCow.column.category': 'Giống loài',
+    'page.listCow.column.category': 'Giống',
     'page.listCow.column.age': 'Tuổi',
-    'page.listCow.column.titleOption': 'Ngày sinh',
+    'page.listCow.column.titleOption': 'Thao tác',
     'page.listCow.column.birthdate': 'Ngày sinh',
     'page.listCow.required.name': 'Vui lòng nhập tên',
     'page.listCow.required.firstWeight': 'Vui lòng nhập cân nặng sơ sinh',
@@ -209,6 +209,7 @@ export default {
     'page.listCow.column.description': 'Mô tả chi tiết',
     'page.listCow.column.pZero': 'P0',
     'page.listCow.required.pZero': 'Nhập P0',
+    'page.listCow.column.group_cow': 'Nhóm bò',
 
 
     

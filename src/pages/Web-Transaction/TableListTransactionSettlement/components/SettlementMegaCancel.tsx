@@ -456,6 +456,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
             <ConfirmRegisteringSettlement
               openModal={showConfirmSettlement}
               cPass={selectedRowsCPass}
+              userId={userSettlement?.id}
               onCloseModal={() => {
                 setShowConfirmSettlement(false);
                 if (actionRef.current) {

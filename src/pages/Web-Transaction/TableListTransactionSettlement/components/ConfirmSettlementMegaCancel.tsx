@@ -55,6 +55,7 @@ export type userSettlement = {
 }
 
 const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
+  console.log('props', props);
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
@@ -280,7 +281,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
          
           const success = await handleCreate({
             "cPass": cPass,
-            "userId": 8,
+            "userId": props.userId,
             "method": "vnd"
           }, 'transactions/settlement/create');
        

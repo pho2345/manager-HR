@@ -84,11 +84,9 @@ export default [
     name: 'Web-Aleger',
     icon: 'table',
     path: '/web-aleger',
-    //component: './TableListFair',
-    menuHeaderRender: false,
-    
+    // menuHeaderRender: false,
     routes: [
-      { path: '/web-aleger/mega', hideInMenu: false,name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
+      { path: '/web-aleger/mega',name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
       { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
       { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' },
       { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },

@@ -397,7 +397,6 @@ const TableList: React.FC = () => {
         return (<>
           <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
             onClick={() => {
-              alert(text?.awgAv);
             }}
           /></Tooltip>
         </>)

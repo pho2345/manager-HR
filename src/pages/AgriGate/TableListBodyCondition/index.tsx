@@ -216,14 +216,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
+         
+           <>{entity?.attributes?.code}</> 
 
-            }}
-          >
-            {entity?.attributes?.code}
-
-          </a>
         );
       },
       ...getColumnSearchProps('code')

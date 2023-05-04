@@ -512,14 +512,14 @@ const TableList: React.FC = () => {
            
           }}
 
-          tableAlertRender={({selectedRowKeys}: any) => {
-            return renderTableAlert(selectedRowKeys);
-          }}
+          // tableAlertRender={({selectedRowKeys}: any) => {
+          //   return renderTableAlert(selectedRowKeys);
+          // }}
 
 
-          tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
-           return renderTableAlertOption(selectedRows, onCleanSelected)
-          }}
+          // tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
+          //  return renderTableAlertOption(selectedRows, onCleanSelected)
+          // }}
 
           toolbar={{
             settings: [{

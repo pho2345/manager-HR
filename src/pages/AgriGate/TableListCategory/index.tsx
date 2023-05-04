@@ -20,7 +20,6 @@ const configDefaultText = configText;
 
 
 const handleAdd = async (fields: API.RuleListItem) => {
-  console.log(fields);
   const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'categories');
@@ -54,7 +53,6 @@ const handleUpdate = async (fields: any, id: any) => {
 
 
 const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
   const hide = message.loading('Đang xóa');
   if (!selectedRows) return true;
   try {
@@ -191,14 +189,7 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-             
-            }}
-          >
-            {entity?.attributes?.code}
-
-          </a>
+           <> {entity?.attributes?.code}</>
         );
       },
       // filtered: true,

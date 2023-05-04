@@ -821,7 +821,7 @@ const TableList: React.FC = () => {
                 // disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
                 label={configDefaultText['page.listCow.column.group_cow']}
                 placeholder={configDefaultText['page.listCow.column.group_cow']}
-
+                name={`group_cow`}
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
                   { required: true, message: configDefaultText['page.listCow.required.group_cow'] },

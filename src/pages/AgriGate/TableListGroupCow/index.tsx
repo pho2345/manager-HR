@@ -154,9 +154,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
-          <Link to={`/cows/` + entity.id}>
-            {entity?.code}
-          </Link>
+           <>{entity?.code}</>
         );
 
       },

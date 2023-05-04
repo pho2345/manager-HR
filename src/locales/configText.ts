@@ -13,6 +13,7 @@ export default {
     'fair': 'Đợt mở bán:',
     'refund': 'Hoàn trả',
     'submit': 'Xác nhận',
+    'createdAt': 'Ngày tạo',
     'pay': 'Pay',
     'titleOption': 'Thao tác',
     'methodPayment': 'Phương thức thanh toán',
@@ -187,7 +188,7 @@ export default {
     'page.ManagerCPass.column.titleOption': 'Thao tác', 
     'page.ManagerCPass.column.textConfirmPay': 'Chắc chắn muốn thanh toán MegaS của cPass:', 
 
-    'page.listCow.column.code': 'Code',
+    'page.listCow.column.code': 'Mã',
     'page.listCow.column.name': 'Tên',
     'page.listCow.column.firstWeight': 'Cân nặng sơ sinh',
     'page.listCow.column.photos': 'Hình ảnh',
@@ -210,6 +211,13 @@ export default {
     'page.listCow.column.pZero': 'P0',
     'page.listCow.required.pZero': 'Nhập P0',
     'page.listCow.column.group_cow': 'Nhóm bò',
+
+    'page.listFarm.column.code': 'Mã',
+    'page.listFarm.column.name': 'Tên',
+    'page.listFarm.column.phone': 'Số điện thoại',
+    'page.listFarm.column.taxId': 'Mã số thuế',
+    'page.listFarm.column.address': 'Địa chỉ',
+    
 
 
     

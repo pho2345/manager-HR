@@ -56,7 +56,7 @@ export default [
     //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
-      { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh đợt mở bán', component: './Web-cPass/TableListFair' },
+      { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh sách đợt mở bán', component: './Web-cPass/TableListFair' },
      
     ],
   },
@@ -68,6 +68,7 @@ export default [
     //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
+      { path: '/agrigate/farm', name: 'Danh sách trang trại', component: './AgriGate/TableListFarm' },
       { path: '/agrigate/cows',hideInMenu: false,  name: 'Danh sách bò', component: './AgriGate/TableListCow' },
       { path: '/agrigate/c-pass',hideInMenu: false,  name: 'Danh sách cPass', component: './AgriGate/TableListCPass' },
       { path: '/agrigate/group-cow',hideInMenu: false,  name: 'Danh sách nhóm', component: './AgriGate/TableListGroupCow' },
@@ -163,7 +164,7 @@ export default [
     //component: './TableListTransaction',
     routes: [
       { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
-      { path: '/transactions/confirm', name: 'Xác nhận Giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
+      { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
       { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
     ],
   },

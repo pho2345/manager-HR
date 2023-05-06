@@ -160,8 +160,8 @@ const TableListAssignCPass = () => {
                 setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
       },
@@ -197,7 +197,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'megaWeight',
       render: (_, record) => {
-        return <>{record?.megaWeight} | {record?.megaE}</>
+        return <>{record?.megaWeight || 0} | {record?.megaE || 0}</>
       }
     },
 
@@ -224,7 +224,7 @@ const TableListAssignCPass = () => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.detail' defaultMessage='Chi tiết' />,
-      title: configDefaultText['page.listAleger.column.ale'],
+      title: configDefaultText['page.listAleger.column.detail'],
       dataIndex: 'detail',
       valueType: 'textarea',
       key: 'detail',
@@ -234,7 +234,7 @@ const TableListAssignCPass = () => {
             setCurrentRowUser(record?.id);
             setShowDetailUser(true);
           }}
-        >{configDefaultText['page.listAleger.column.ale']}</Button>
+        >{configDefaultText['page.listAleger.column.detail']}</Button>
       }
     },
 

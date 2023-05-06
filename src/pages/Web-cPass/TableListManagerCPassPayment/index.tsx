@@ -252,6 +252,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         let button = [];
         if (entity?.status === 'done' && entity?.c_pass.statusTransaction === 'open') {

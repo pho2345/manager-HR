@@ -71,10 +71,12 @@ const TableList: React.FC = () => {
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  const [selectedRowsState, setSelectedRows] = useState<[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
   const pickerRef = useRef(null);
+  const [filter, setFilter] = useState<[]>([]);
+  
 
   const handleColorChange = (newColor: any) => {
     setColor(newColor.hex);
@@ -230,8 +232,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'name',
       //...getColumnSearchProps('name'),
+      filters: filter,
+      onFilter: (value, record: any) => {
+        return record?.id === value;
+      },
       renderText: (_, text: any) => text?.attributes?.name,
-      ...getColumnSearchProps('name')
+      //...getColumnSearchProps('name')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
@@ -337,7 +343,15 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'body-conditions')}
+        request={ async () => {
+          const data =  await customAPIGet({'sort[0]': 'createdAt:desc'}, 'body-conditions');
+          
+          const output = data?.data.map((item: any) => {
+            return {text: item.attributes.name, value: item.id};
+          });
+          setFilter(output);
+          return data;
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {

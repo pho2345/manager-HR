@@ -663,26 +663,62 @@ const TableList: React.FC = () => {
             ]}
           /> */}
 
-        <ProFormSelect
-          className='w-full'
-          options={cow}
-          name='cow'
-          label={configDefaultText['page.listCPass.modal.cow']}
-          placeholder={configDefaultText['page.listCPass.modal.cow']}
-          rules={[
-            {
-              required: true,
-              message: configDefaultText['page.listCPass.required.cow']
-              // (
-              //   <FormattedMessage
-              //     id='pages.Cpass.chosenCow'
-              //     defaultMessage='Vui lòng chọn Bò!'
-              //   />
-              // ),
-            },
-          ]}
-        />
 
+
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+
+
+            <ProFormSelect
+              className='w-full'
+              options={cow}
+              name='cow'
+              label={configDefaultText['page.listCPass.modal.cow']}
+              placeholder={configDefaultText['page.listCPass.modal.cow']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.cow']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.chosenCow'
+                  //     defaultMessage='Vui lòng chọn Bò!'
+                  //   />
+                  // ),
+                },
+              ]}
+            />
+
+          </Col>
+
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit className='w-full' name='pZero'
+              label={configDefaultText['page.listCow.column.pZero']}
+              min={1}
+              max={1500}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
+              placeholder={configDefaultText['page.listCow.column.pZero']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCow.required.pZero']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.pZero'
+                  //     defaultMessage='Nhập P0'
+                  //   />
+                  // ),
+                },
+              ]} />
+
+
+
+
+          </Col>
+        </Row>
 
 
         {/* <ProFormText width='md' name='pZero' label='P0' placeholder='P0'  rules={[

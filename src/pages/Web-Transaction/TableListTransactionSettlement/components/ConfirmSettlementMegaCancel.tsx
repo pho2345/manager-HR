@@ -291,7 +291,6 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
           return true;
         }}
         submitTimeout={2000}
-        width='90vh'
         submitter={{
           searchConfig: {
             resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,

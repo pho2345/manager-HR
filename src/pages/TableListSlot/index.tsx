@@ -98,7 +98,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.preWeight' defaultMessage='Cân nặng trước' />,
+      title: <FormattedMessage id='pages.searchTable.column.preWeight' defaultMessage='Cân nặng trước (kg)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'preWeight',
@@ -107,7 +107,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại' />,
+      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại (kg)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'nowWeight',
@@ -115,7 +115,7 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Chênh lệch cân nặng' />,
+      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Chênh lệch cân nặng (kg)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'deltaWeight',
@@ -125,7 +125,7 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega' />,
+      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega (kg)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'megaDeltaWeight',
@@ -133,7 +133,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nanoDeltaWeight' defaultMessage='Tăng trọng Nano' />,
+      title: <FormattedMessage id='pages.searchTable.column.nanoDeltaWeight' defaultMessage='Tăng trọng Nano (kg)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'nanoDeltaWeight',
@@ -165,7 +165,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='PHAT' />,
+      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='PAHT' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'plan',
@@ -189,21 +189,21 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => moment(text?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss')
     },
 
-    {
-      title: <FormattedMessage id='pages.searchTable.column.activeSlot' defaultMessage='Trạng thái' />,
-      dataIndex: 'activeSlot',
-      valueType: 'textarea',
-      key: 'activeSlot',
-      renderText: (_, text: any) => {
-        if (text?.attributes.activeSlot) {
-          return 'true'
-        }
-        return 'false'
-      }
-    },
+    // {
+    //   title: <FormattedMessage id='pages.searchTable.column.activeSlot' defaultMessage='Trạng thái' />,
+    //   dataIndex: 'activeSlot',
+    //   valueType: 'textarea',
+    //   key: 'activeSlot',
+    //   renderText: (_, text: any) => {
+    //     if (text?.attributes.activeSlot) {
+    //       return 'true'
+    //     }
+    //     return 'false'
+    //   }
+    // },
 
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Description' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
@@ -230,7 +230,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'create',
@@ -277,54 +277,8 @@ const TableList: React.FC = () => {
             }
           }]
         }}
-
-        
-
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' />
-              &nbsp;&nbsp;
-              <span>
-                <FormattedMessage
-                  id='pages.searchTable.totalServiceCalls'
-                  defaultMessage='Total number of service calls'
-                />{' '}
-
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-             // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
-          </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
-        </FooterToolbar>
-      )}
-
-
-     
-        
-
-
+    
       <ModalForm
         title="Cập nhật Slot"
         open={updateModalOpen}

@@ -163,9 +163,10 @@ const TableList: React.FC = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        await handleRemove(entity);
+       const removeFair =  await handleRemove(entity);
         if (actionRef.current) {
-          actionRef.current.reload();
+          await actionRef.current?.reloadAndRest?.();
+          setSelectedRows([]);
         }
       }
     });
@@ -351,6 +352,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         let configButton = [];
         configButton.push( /// button copy

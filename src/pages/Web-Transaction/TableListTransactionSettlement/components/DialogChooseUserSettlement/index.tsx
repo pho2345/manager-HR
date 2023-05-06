@@ -1,5 +1,5 @@
 import { customAPIGet } from '@/services/ant-design-pro/api';
-import {  SearchOutlined, TranslationOutlined } from '@ant-design/icons';
+import {  SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -13,13 +13,6 @@ import SettlementCPassModal from '../SettlementMegaCancel';
 import configText from '@/locales/configText';
 import { MdOutlineAdd } from 'react-icons/md';
 const configDefaultText = configText;
-
-
-
-
-
-
-
 
 
 
@@ -193,10 +186,11 @@ const DialogTransfer = (props: any) => {
    
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
+      title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
+      align: 'center',
       render: (_, text: any) => {
         return [
           <>
@@ -239,8 +233,7 @@ const DialogTransfer = (props: any) => {
           rowKey='id'
           search={false}
           rowClassName={
-
-            (entity) => {
+            () => {
               return 'user'
             }
           }

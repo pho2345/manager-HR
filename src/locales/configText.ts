@@ -536,6 +536,16 @@ export default {
     // 'page.myAle.code': 'Mã',
     // 'page.myAle.code': 'Mã',
 
+
+
+
+
+
+
+
+
+    //////page----slot
+
 }
 
 

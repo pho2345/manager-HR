@@ -83,7 +83,7 @@ const handleUpdate = async (fields: any, id: any) => {
           let formdata = new FormData();
           formdata.append('files', e?.originFileObj);
           formdata.append('ref', 'api::cow.cow');
-          formdata.append('refId', fields.cow.value);
+          formdata.append('refId', id.current);
           formdata.append('field', 'photos');
           uploadImages.push(customAPIUpload({
             data: formdata

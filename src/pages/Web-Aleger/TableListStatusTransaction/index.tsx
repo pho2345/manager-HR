@@ -123,7 +123,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -231,14 +231,7 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-
-            }}
-          >
-            {entity?.attributes?.code}
-
-          </a>
+         <>{entity?.attributes?.code}</>
         );
       },
       ...getColumnSearchProps('code')
@@ -257,7 +250,8 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.value'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
-      key: 'profit',
+      ...getColumnSearchProps('value'),
+      key: 'value',
       renderText: (_, text: any) => {
         return `${text?.attributes?.value}`
       }

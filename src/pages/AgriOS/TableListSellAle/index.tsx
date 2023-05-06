@@ -243,7 +243,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return text?.ale.toLocaleString();
       }
     },
     {
@@ -253,7 +253,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'availableBalance',
       renderText: (_, text: any) => {
-        return text?.availableBalance;
+        return text?.availableBalance.toLocaleString();
       }
     },
     {
@@ -263,7 +263,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'availableBalance',
       renderText: (_, text: any) => {
-        return text?.aleDeposit;
+        return text?.aleDeposit.toLocaleString();
       }
     },
     {
@@ -273,7 +273,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => {
-        return text?.timeSellAle;
+        return text?.timeSellAle.toLocaleString();
       }
     },
 
@@ -284,7 +284,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'promoAle',
       renderText: (_, text: any) => {
-        return `${text?.totalSellAle} | ${text?.totalVnd}`;
+        return `${text?.totalSellAle.toLocaleString()} | ${text?.totalVnd.toLocaleString()}`;
       }
     },
 
@@ -302,7 +302,7 @@ const TableListAssignCPass = () => {
                 style={{
                   fontSize: 20,
                   paddingLeft: 5,
-                  color: '#66FFFF'
+                 
                 }}
                 onClick={() => {
                   setShowModal(true);

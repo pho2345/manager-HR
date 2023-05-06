@@ -11,6 +11,7 @@ import React, { useRef, useState } from 'react';
 import "./styles.css";
 import SettlementCPassModal from '../SettlementMegaCancel';
 import configText from '@/locales/configText';
+import { MdOutlineAdd } from 'react-icons/md';
 const configDefaultText = configText;
 
 
@@ -199,10 +200,9 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.transfer']} > <TranslationOutlined
+            <Tooltip title={configDefaultText['page.settlementMegaCancel.column.settlement']} > <MdOutlineAdd
               style={{
-                fontSize: 30,
-                color: '#00CC00'
+                fontSize: 20
               }}
               onClick={() => {
                 //setShowTransfer(true);
@@ -241,7 +241,7 @@ const DialogTransfer = (props: any) => {
           rowClassName={
 
             (entity) => {
-              return entity.classColor
+              return 'user'
             }
           }
 
@@ -266,6 +266,7 @@ const DialogTransfer = (props: any) => {
             }
           }}
 
+          
 
 
         />

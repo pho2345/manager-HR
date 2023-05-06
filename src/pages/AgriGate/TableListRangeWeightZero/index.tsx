@@ -34,7 +34,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
@@ -84,7 +83,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -192,14 +191,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-
-            }}
-          >
+          <>
             {entity?.attributes?.code}
-
-          </a>
+          </>
         );
       },
       ...getColumnSearchProps('code')
@@ -210,7 +204,7 @@ const TableList: React.FC = () => {
       dataIndex: 'index',
       valueType: 'textarea',
       key: 'index',
-      //...getColumnSearchProps('name'),
+      ...getColumnSearchProps('index'),
       renderText: (_, text: any) => {
 
         return text?.attributes?.index;
@@ -309,7 +303,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'range-weight-zeros')}
+        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'range-weight-zeros')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -544,9 +538,9 @@ const TableList: React.FC = () => {
       >
 
 
-<Row gutter={24} className="m-0">
+        <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-          <ProFormText
+            <ProFormText
               rules={[
                 {
                   required: true,
@@ -593,7 +587,7 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-          <ProFormDigit
+            <ProFormDigit
               rules={[
                 {
                   required: true,
@@ -616,7 +610,7 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-          <ProFormDigit
+            <ProFormDigit
               rules={[
                 {
                   required: true,

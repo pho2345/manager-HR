@@ -6,7 +6,7 @@ import {
   customAPIGetOne,
 
 } from '@/services/ant-design-pro/api';
-import { CloseCircleOutlined, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SafetyOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SafetyOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -21,15 +21,17 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import {  Link, } from '@umijs/max';
-import { Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
+import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { MdOutlineEdit } from 'react-icons/md';
 // import viVNIntl from 'antd/lib/locale/vi_VN';  
 
 import configText from '@/locales/configText';
+import moment from 'moment';
 const configDefaultText = configText;
+
+const timeZone = new Date().getTimezoneOffset() / -60;
 
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
@@ -104,9 +106,8 @@ const getFarm = async () => {
 };
 
 const confirm = (entity: any, message: string, actionRef: any) => {
-  console.log(entity);
   Modal.confirm({
-    title: 'Confirm',
+    title: configDefaultText['titleConfirm'],
     icon: <ExclamationCircleOutlined />,
     content: `Bạn có muốn ${message}?`,
     okText: 'Có',
@@ -133,6 +134,87 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [farm, setFarm] = useState<any>();
 
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
+  };
+  const handleReset = (clearFilters: any) => {
+    clearFilters();
+    // setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          // ref={configDefaultText[]}
+          placeholder={`Tìm kiếm`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+        onClick={() => {
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (record?.[dataIndex]) {
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+      else if (dataIndex === 'farmName') {
+        return record?.farm?.name.toString().toLowerCase().includes(value.toLowerCase());
+      }
+      return null;
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        //setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
+
   const refIdPicture = useRef<any>();
   useEffect(() => {
     const getValues = async () => {
@@ -154,10 +236,10 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
-           <>{entity?.code}</>
+          <>{entity?.code}</>
         );
-
       },
+      ...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
@@ -166,14 +248,17 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'farm',
       renderText: (_, text: any) => text?.farm?.name,
+      ...getColumnSearchProps('farmName')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
-      title: configDefaultText['page.listGroupCow.column.farm'],
+      title: configDefaultText['page.listGroupCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.name,
+      ...getColumnSearchProps('name')
+
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.active' defaultMessage='Hoạt động' />,
@@ -195,6 +280,18 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.description,
     },
 
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.listCategory.createdAt'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'create',
+      renderText: (_, text: any) => {
+        return moment(text?.attributes?.createdAt).add(timeZone, 'hour').format('YYYY-MM-DD HH:mm:ss')
+      }
+
+    },
+
 
 
     {
@@ -207,9 +304,6 @@ const TableList: React.FC = () => {
         return (
           <>
             <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
-              style={{
-                fontSize: 25
-              }}
               onClick={async () => {
                 handleUpdateModalOpen(true);
                 refIdCow.current = entity.id;
@@ -227,7 +321,6 @@ const TableList: React.FC = () => {
             {
               entity.active ? (<Tooltip title={configDefaultText['page.listGroupCow.inActive']}>< CloseCircleOutlined
                 style={{
-                  fontSize: 25,
                   paddingLeft: 10
                 }}
                 onClick={async () => {
@@ -240,9 +333,8 @@ const TableList: React.FC = () => {
                 }}
 
               /></Tooltip>) :
-                (<Tooltip title={configDefaultText['page.listGroupCow.active']}><  SafetyOutlined
+                (<Tooltip title={configDefaultText['page.listGroupCow.active']}><SafetyOutlined
                   style={{
-                    fontSize: 25,
                     paddingLeft: 10
                   }}
                   onClick={async () => {
@@ -351,9 +443,9 @@ const TableList: React.FC = () => {
               id='pages.searchTable.batchDeletion'
               defaultMessage='Batch deletion'
             /> */}
-              {configDefaultText['delete']}
+            {configDefaultText['delete']}
           </Button>
-          
+
 
         </FooterToolbar>
       )}
@@ -459,7 +551,11 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
-              ]} />
+              ]}
+              fieldProps={{
+                maxLength: 100
+              }}
+            />
           </Col>
         </Row>
 
@@ -583,7 +679,11 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
-              ]} />
+              ]}
+              fieldProps={{
+                maxLength: 100
+              }}
+            />
 
           </Col>
         </Row>

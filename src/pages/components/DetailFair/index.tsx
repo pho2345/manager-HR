@@ -60,7 +60,7 @@ const TableList = (props: any) => {
 
     {
       //  title: <FormattedMessage id='pages.searchTable.column.listCPass' defaultMessage='Switch nhắc thanh toán:' />,
-      title: configDefaultText['page.DetailFair.column.listCPass'],
+      // title: configDefaultText['page.DetailFair.column.listCPass'],
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',

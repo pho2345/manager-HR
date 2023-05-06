@@ -17,11 +17,12 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import {useParams } from '@umijs/max';
-import { Button, Checkbox, Drawer, Form, message, Modal } from 'antd';
+import { Button, Checkbox, Drawer, Form, message, Modal, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import  configText from '@/locales/configText';
 const configDefaultText = configText;
 import "./styles.css";
+import { MdOutlineCurrencyExchange, MdOutlinePaid } from 'react-icons/md';
 
 
 
@@ -68,7 +69,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, message: any, api: string, types: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: 'Xác nhận',
       icon: <ExclamationCircleOutlined />,
       content: message,
       okText: 'Có',
@@ -127,7 +128,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.aleWallet.ale
+        return text?.aleWallet.ale.toLocaleString()
 
       }
     },
@@ -143,7 +144,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-     
       title: configDefaultText['page.ManagerCPass.column.cpass'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -164,7 +164,7 @@ const TableList: React.FC = () => {
       key: 'pZero',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.pZero}
+          {text?.c_pass?.pZero.toLocaleString()}
         </>)
       }
     },
@@ -178,7 +178,7 @@ const TableList: React.FC = () => {
       key: 'vs',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.vs}
+          {text?.c_pass?.vs.toLocaleString()}
         </>)
       }
     },
@@ -193,7 +193,7 @@ const TableList: React.FC = () => {
       key: 'vZero',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.vZero}
+          {text?.c_pass?.vZero.toLocaleString()}
         </>)
       }
     },
@@ -209,7 +209,7 @@ const TableList: React.FC = () => {
       key: 'megaS',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.megaS} <Checkbox disabled checked={(text?.status === 'done' && text?.method === 'vnd') || text?.status === 'inProgress' } /> | {text?.c_pass?.price} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
+          {text?.c_pass?.megaS.toLocaleString()} <Checkbox disabled checked={(text?.status === 'done' && text?.method === 'vnd') || text?.status === 'inProgress' } /> | {text?.c_pass?.price.toLocaleString()} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
         </>)
       }
     },
@@ -255,21 +255,44 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         let button = [];
         if (entity?.status === 'done' && entity?.c_pass.statusTransaction === 'open') {
-          button.push(<><Button
-            onClick={() => {
-              handleModalOpen(true);
-              refTransaction.current = entity.id
-            }}
-          >{configDefaultText['refund']}</Button></>);
+          button.push(
+          // button.push(<><Button
+          //   onClick={() => {
+          //     handleModalOpen(true);
+          //     refTransaction.current = entity.id
+          //   }}
+          // >{configDefaultText['refund']}</Button>
+          
+          
+          <Tooltip title={configDefaultText['refund']}>
+                <MdOutlineCurrencyExchange
+                    style={{
+                      fontSize: 20
+                    }}
+                   onClick={() => {
+                    confirm({
+                      transaction: [entity.id]
+                    }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
+                  }}
+                />
+              </Tooltip>);
         }
 
         if (entity?.status === 'waitConfirm' || entity?.status === 'inProgress' && entity?.method === 'vnd') {
           button.push(<>
-            <Button disabled={entity?.c_pass?.price > entity?.aleWallet?.ale} onClick={() => {
-              confirm({
-                transaction: [entity.id]
-              }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
-            }}>{configDefaultText['pay']}</Button>
+              <Tooltip title={configDefaultText['pay']}>
+                <MdOutlinePaid
+                  
+                  style={{
+                    fontSize: 20
+                  }}
+                   onClick={() => {
+                    confirm({
+                      transaction: [entity.id]
+                    }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
+                  }}
+                />
+              </Tooltip>
           </>)
 
         }
@@ -438,7 +461,7 @@ const TableList: React.FC = () => {
 
 
 
-      <Drawer
+      {/* <Drawer
         width={600}
         open={showDetail}
         onClose={() => {
@@ -460,7 +483,7 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-      </Drawer>
+      </Drawer> */}
     </PageContainer>
   );
 };

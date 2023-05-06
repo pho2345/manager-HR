@@ -105,7 +105,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -337,7 +337,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'body-conditions')}
+        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'body-conditions')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -385,7 +385,7 @@ const TableList: React.FC = () => {
           <Button
             onClick={async () => {
               confirm(
-                selectedRowsState, ``
+                selectedRowsState, configDefaultText['textConfirmDelete']
               );
 
               // await handleRemove(selectedRowsState);

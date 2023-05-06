@@ -261,9 +261,10 @@ const TableList: React.FC = () => {
       dataIndex: 'priceVnd',
       valueType: 'textarea',
       key: 'priceVnd',
-      renderText: (_, text: any) => text?.priceVnd
+      renderText: (_, text: any) => text?.priceVnd.toLocaleString()
     },
 
+  
    
 
 
@@ -328,6 +329,9 @@ const TableList: React.FC = () => {
                 //   }
                 // }
               ]
+            },
+            orderBy: {
+              createdAt: 'desc'
             }
           });
 

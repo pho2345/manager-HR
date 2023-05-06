@@ -356,7 +356,7 @@ const TableListFairDetail: React.FC = () => {
         // request={() => customAPIGet({}, 'banks')}
         request={async () => {
 
-          const data = await customAPIPostOne(params.id, 'fairs/cpassoffair', {});
+          const data = await customAPIPostOne(params.id, 'fairs/cpass-of-fair', {});
           const { c_passes, ...other } = data;
           setFair({
             ...other
@@ -370,44 +370,44 @@ const TableListFairDetail: React.FC = () => {
         //dataSource={} 
         columns={columns}
         dataSource={fair?.c_passes}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
 
-            setSelectedRows(selectedRows);
-          },
-        }}
+        //     setSelectedRows(selectedRows);
+        //   },
+        // }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length} hàng</a>{' '}
+      {/* {selectedRowsState?.length > 0 && (
+        // <FooterToolbar
+        //   extra={
+        //     <div>
+        //       <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+        //       <a style={{ fontWeight: 600 }}>{selectedRowsState.length} hàng</a>{' '}
 
 
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              //await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            />
-          </Button>
-          <Button type='primary'>
-            <FormattedMessage
-              id='pages.searchTable.batchApproval'
-              defaultMessage='Batch approval'
-            />
-          </Button>
-        </FooterToolbar>
-      )}
+        //     </div>
+        //   }
+        // >
+        //   <Button
+        //     onClick={async () => {
+        //       //await handleRemove(selectedRowsState);
+        //       setSelectedRows([]);
+        //       actionRef.current?.reloadAndRest?.();
+        //     }}
+        //   >
+        //     <FormattedMessage
+        //       id='pages.searchTable.batchDeletion'
+        //       defaultMessage='Batch deletion'
+        //     />
+        //   </Button>
+        //   <Button type='primary'>
+        //     <FormattedMessage
+        //       id='pages.searchTable.batchApproval'
+        //       defaultMessage='Batch approval'
+        //     />
+        //   </Button>
+        // </FooterToolbar>
+      )} */}
 
       {currentRow && (
         <DetailCPass

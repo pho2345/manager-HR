@@ -1,5 +1,5 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined, TranslationOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -11,6 +11,7 @@ import React, { useRef, useState } from 'react';
 import "./styles.css";
 import DialogTransfer from '../components/DialogTransfer';
 import configText from '@/locales/configText';
+import { MdCurrencyExchange, MdOutlineCompareArrows } from 'react-icons/md';
 const configDefaultText = configText;
 
 const { Text } = Typography;
@@ -266,10 +267,9 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.transfer']}> <TranslationOutlined
+            <Tooltip title={configDefaultText['page.transfer.transfer']}> <MdOutlineCompareArrows
               style={{
-                fontSize: 30,
-                color: '#00CC00'
+                fontSize: 20,
               }}
               onClick={() => {
                 setShowDialog(true);
@@ -279,11 +279,11 @@ const TableListAssignCPass = () => {
             /></Tooltip>
           </>,
           <>
-            <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}> <TransactionOutlined
+            <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}> <MdCurrencyExchange
               style={{
-                fontSize: 30,
+                fontSize: 20,
                 paddingLeft: 5,
-                color: '#66FFFF'
+                // color: '#66FFFF'
               }}
               onClick={() => {
                 setShowModal(true);

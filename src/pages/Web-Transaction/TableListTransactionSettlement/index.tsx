@@ -18,7 +18,7 @@ import {
 } from '@ant-design/pro-components';
 
 // import { FormattedMessage } from '@umijs/max';
-import { Button, message, Modal, Typography } from 'antd';
+import { Button, message, Modal, Space, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 // import SettlementCPassModal from './components/SettlementMegaCancel';
 import SettlementCPassSickOrDeath from './components/SettlementSickOrDeath';
@@ -308,14 +308,13 @@ const TableList: React.FC = () => {
       // title: (
       //   <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />
       // ),
-      title: <>{configDefaultText['page.listSettlement.column.reasonSettlement']}</>,
+      title: <>{configDefaultText['page.listSettlement.column.status']}</>,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'status',
       render: (_, text: any) => {
 
         return (<div style={{ color: text?.colorStatusTransaction }}>{text?.textStatusTransaction}</div>);
-
 
       },
     },
@@ -328,8 +327,12 @@ const TableList: React.FC = () => {
         let button = [];
         if (entity?.status === 'inProgress') {
           button.push((
-            <><Button onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)}>Settlement</Button>
-              <Button onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}>Delete</Button></>
+            <><Space><Button onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)} style={{
+              width: 90
+            }} >Xác nhận</Button>
+            <Button onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}  style={{
+              width: 90
+            }}>Xóa</Button></Space></>
           ))
         }
         return button

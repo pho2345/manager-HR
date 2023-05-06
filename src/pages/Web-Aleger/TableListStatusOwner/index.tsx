@@ -124,11 +124,11 @@ const TableList: React.FC = () => {
     setOpenBackground(!openColorBackground);
   };
 
-  const confirm = (entity: any, textConfirm: any) => {
+  const confirm = (entity: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: textConfirm,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -234,14 +234,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
+         <>
+            {entity?.attributes?.code}</>
 
-            }}
-          >
-            {entity?.attributes?.code}
-
-          </a>
         );
       },
       ...getColumnSearchProps('code')
@@ -397,7 +392,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
 
               confirm(
-                selectedRowsState, configDefaultText['confirmDetele']
+                selectedRowsState
               );
 
               // await handleRemove(selectedRowsState);

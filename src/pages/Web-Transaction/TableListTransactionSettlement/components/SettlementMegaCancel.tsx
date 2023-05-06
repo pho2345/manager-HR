@@ -353,7 +353,10 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         submitter={false}
         width={`100vh`}
       >
-        {configDefaultText['infoAleger']}: <br />
+       <p style={{
+          paddingLeft: '5vh'
+       }}>
+       {configDefaultText['infoAleger']}: <br />
         <Text>{userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}, {userSettlement?.phone ? userSettlement?.phone : ''}</Text>
         <Text>{userSettlement?.email ? ` | ${userSettlement?.email}` : ''}</Text>
         <Text>{userSettlement?.passport ? `, CCCD/HC:${userSettlement?.passport}` : ''}</Text><br />
@@ -361,9 +364,12 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         <Text>{configDefaultText['limitCPassSettlementPlaform']}: {userSettlement?.avaiCPassSettlement}</Text>
 
 
+       </p>
+
 
         <ProTable
-          headerTitle={configDefaultText['listCPass']}
+          headerTitle={<>
+          </>}
           actionRef={actionRef}
           rowKey='id'
           search={false}

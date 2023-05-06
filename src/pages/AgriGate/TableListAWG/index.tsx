@@ -26,7 +26,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
     // message.error('Thêm thất bại!');
@@ -36,7 +36,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
@@ -46,7 +45,7 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
     // message.error('Cập nhật thất!');
@@ -64,10 +63,11 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    
     hide();
-    message.error('Xóa thất bại!!');
+    message.error(error?.response?.data?.error?.message);
+
     return false;
   }
 };
@@ -127,7 +127,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -235,17 +235,13 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-
-            }}
-          >
+          <>
             {entity?.attributes?.code}
+          </>
 
-          </a>
         );
       },
-      //...getColumnSearchProps('code')
+      ...getColumnSearchProps('code')
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.rangeFrom' defaultMessage='Giá trị dưới' />,
@@ -281,7 +277,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      // ...getColumnSearchProps('name'),
+       ...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
@@ -291,16 +287,18 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'profit',
       renderText: (_, text: any) => {
-        if (text?.attributes?.rangeFrom >= 4.9) {
-          return `AWG > ${text?.attributes?.rangeFrom}%`
+        let {rangeFrom, rangeTo} = text?.attributes;
+        if(rangeFrom < 0 && rangeTo <= 0){
+            return `AWG <= ${rangeTo}%` 
         }
-        else if (text?.attributes?.rangeFrom >= 2) {
-          return ` ${text?.attributes?.rangeFrom}% < AWG <=  ${text?.attributes?.rangeTo}%`
-        } else if (text?.attributes?.rangeFrom >= 0) {
-          return ` ${text?.attributes?.rangeFrom}% < AWG <=  ${text?.attributes?.rangeTo}%`
-        } else if (text?.attributes?.rangeTo <= 0) {
-          return `AWG < ${text?.attributes?.rangeTo}%`
+        if(rangeFrom >= 0 && rangeTo > 0  && !(rangeTo - rangeFrom > 100)){
+          return ` ${rangeFrom}% < AWG <=  ${rangeTo}%`;
+        } 
+        else{
+          return `AWG > ${rangeFrom}%` 
         }
+
+     
       }
     },
     {
@@ -359,7 +357,6 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-
         return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
       }
 
@@ -386,7 +383,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
 
-        request={() => customAPIGet({}, 'average-weight-gains')}
+        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'average-weight-gains')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -435,7 +432,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
 
               confirm(
-                selectedRowsState, configDefaultText['confirmDetele']
+                selectedRowsState, configDefaultText['textConfirmDelete']
               );
 
               // await handleRemove(selectedRowsState);

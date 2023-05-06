@@ -10,6 +10,7 @@ import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Row, C
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 import configText from '@/locales/configText';
+import { MdAttachMoney } from 'react-icons/md';
 const configDefaultText = configText;
 const { Text, } = Typography;
 
@@ -233,7 +234,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return text?.ale.toLocaleString();
       }
     },
     {
@@ -243,7 +244,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'availableBalance',
       renderText: (_, text: any) => {
-        return text?.availableBalance;
+        return text?.availableBalance.toLocaleString();
       }
     },
     {
@@ -252,7 +253,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'availableBalance',
       renderText: (_, text: any) => {
-        return text?.aleDeposit;
+        return text?.aleDeposit.toLocaleString();
       }
     },
     {
@@ -262,7 +263,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'recharge',
       renderText: (_, text: any) => {
-        return text?.recharge;
+        return text?.recharge.toLocaleString();
       }
     },
 
@@ -273,7 +274,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'promoAle',
       renderText: (_, text: any) => {
-        return `${text?.quantityAleRecharge} | ${text?.exchangeVnd}`;
+        return `${text?.quantityAleRecharge.toLocaleString()} | ${text?.exchangeVnd.toLocaleString()}`;
       }
     },
 
@@ -287,11 +288,11 @@ const TableListAssignCPass = () => {
         return [
           <>
             <Tooltip title={configDefaultText['page.transfer.tooltip.buyAle']}>
-              <TransactionOutlined
+              <MdAttachMoney
                 style={{
                   fontSize: 20,
-                  paddingLeft: 5,
-                  color: '#66FFFF'
+                  paddingLeft: 5
+                  
                 }}
                 onClick={() => {
                   setShowModal(true);

@@ -18,7 +18,6 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
-
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
@@ -83,7 +82,7 @@ const TableList: React.FC = () => {
   
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -258,7 +257,6 @@ const TableList: React.FC = () => {
         options={
           {
             reload: (props: any) => {
-              console.log('props', props);
               return true;
             },
             setting: {
@@ -290,7 +288,7 @@ const TableList: React.FC = () => {
             }
           }]
         }}
-        request={() => customAPIGet({}, 'categories')}
+        request={() => customAPIGet({'sort[0]': 'createdAt:desc',  }, 'categories')}
         pagination={{
           locale: {
             next_page: configDefaultText['nextPage'],
@@ -325,7 +323,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               // await handleRemove(selectedRowsState);
               confirm(
-                selectedRowsState, configDefaultText['confirmDetele']
+                selectedRowsState, configDefaultText['textConfirmDelete']
               );
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();

@@ -36,7 +36,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
-  console.log(id);
   try {
     await customAPIUpdate({
      ...fields
@@ -45,16 +44,15 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại  !');
+    message.error(error?.response.data.error.message);
     return false;
   }
 };
 
 
 const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
   const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
@@ -66,9 +64,9 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Xóa thất bại!');
+    message.error(error?.response.data.error.message);
     return false;
   }
 };
@@ -76,7 +74,7 @@ const handleRemove = async (selectedRows: any) => {
 const confirm = (entity: any, message: string, actionRef: any) => {
   console.log(entity);
   Modal.confirm({
-    title: 'Confirm',
+    title: configDefaultText['titleConfirm'],
     icon: <ExclamationCircleOutlined />,
     content: `Bạn có muốn ${message}?`,
     okText: 'Có',
@@ -467,7 +465,7 @@ const TableList: React.FC = () => {
       <ModalForm
         form={form}
         title='Cập nhật'
-        width='400px'
+        width={`35vh`}
         open={updateModalOpen}
         modalProps={{
           destroyOnClose: true,

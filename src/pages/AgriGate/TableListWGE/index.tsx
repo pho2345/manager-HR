@@ -127,7 +127,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -235,14 +235,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
+         <>{entity?.attributes?.code}</>
 
-            }}
-          >
-            {entity?.attributes?.code}
-
-          </a>
         );
       },
       ...getColumnSearchProps('code')
@@ -291,16 +285,26 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'profit',
       renderText: (_, text: any) => {
-        if (text?.attributes?.valueFrom > 100) {
-          return `WGE > ${text?.attributes?.valueFrom}%`
+        let {valueFrom, valueTo} = text?.attributes;
+        if(valueFrom <= 0 && valueTo > 0){
+            return `WGE <= ${text?.attributes?.valueTo}%` 
         }
-        else if (text?.attributes?.valueFrom >= 95) {
-          return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
-        } else if (text?.attributes?.valueFrom >= 90) {
-          return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
-        } else if (text?.attributes?.valueFrom < 90) {
-          return `WGE < ${text?.attributes?.valueTo}%`
+        if(valueFrom > 0 && valueTo > 0 && valueTo - valueFrom < 100 ){
+          return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`;
+        } 
+        if(valueFrom >= 100 && valueTo >= 100){
+          return `WGE > ${text?.attributes?.valueFrom}%` 
         }
+        // if (text?.attributes?.valueFrom > 100) {
+        //   return `WGE > ${text?.attributes?.valueFrom}%`
+        // }
+        // else if (text?.attributes?.valueFrom >= 95) {
+        //   return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
+        // } else if (text?.attributes?.valueFrom >= 90) {
+        //   return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
+        // } else if (text?.attributes?.valueFrom < 90) {
+        //   return `WGE <= ${text?.attributes?.valueTo}%`
+        // }
       }
     },
     {
@@ -385,7 +389,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'weight-gain-effects')}
+        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'weight-gain-effects')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
@@ -434,7 +438,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
 
               confirm(
-                selectedRowsState, configDefaultText['confirmDetele']
+                selectedRowsState, configDefaultText['textConfirmDelete']
               );
               // await handleRemove(selectedRowsState);
               setSelectedRows([]);

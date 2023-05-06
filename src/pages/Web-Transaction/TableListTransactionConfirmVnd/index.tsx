@@ -302,6 +302,15 @@ const TableList: React.FC = () => {
       key: 'sender',
       renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
     },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      title: configDefaultText['createdAt'],
+      dataIndex: 'createdAt',
+      valueType: 'textarea',
+      key: 'priceVnd',
+      renderText: (_, text: any) =>  moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    },
   ];
 
   return (
@@ -344,6 +353,9 @@ const TableList: React.FC = () => {
                 //   }
                 // }
               }
+            },
+            orderBy: {
+              createdAt: 'desc'
             }
           });
 

@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -12,7 +12,7 @@ import {
 import { BsGraphUpArrow } from 'react-icons/bs';
 import { MdOutlineEdit } from 'react-icons/md';
 
-import { Avatar, Button, Col, Form, message, Row, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Col, Form, message, Modal, Row, Tooltip, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
@@ -29,9 +29,9 @@ const handleAdd = async (fields: any) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -41,7 +41,7 @@ const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
     let uploadImages = [];
-    if(fields?.upload && fields.upload.length !== 0) {
+    if (fields?.upload && fields.upload.length !== 0) {
       fields?.upload.map((e: any) => {
         if (e.originFileObj) {
           let formdata = new FormData();
@@ -57,7 +57,7 @@ const handleUpdate = async (fields: any, id: any) => {
       });
     }
 
-   
+
     let { category, farm, group_cow, cow, birthdate, ...other } = fields;
 
     let fieldCow = {
@@ -83,7 +83,7 @@ const handleUpdate = async (fields: any, id: any) => {
       id.current
     );
 
-    
+
     uploadImages.push(updateCow);
     uploadImages.push(updateCPass)
 
@@ -112,15 +112,31 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Xóa thất bại');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
 
+const disabledDate = (current: any) => {
+  return current && current > moment();
+};
 
+const formatter = (value: any) => {
+  if (value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  return '';
+};
+
+const parser = (value: any) => {
+  if (value) {
+    return value.replace(/\$\s?|(,*)/g, '');
+  }
+  return undefined;
+};
 
 const getCownotInCpass = async () => {
   const categories = await customAPIGet({ 'filters[c_pass][id][$null]': true }, 'cows');
@@ -201,6 +217,22 @@ const TableList: React.FC = () => {
     getValues();
   }, [])
 
+  const confirm = (entity: any, textConfirm: any) => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: textConfirm,
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+        await handleRemove(entity);
+        if (actionRef.current) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      }
+    });
+  };
+
 
   const columns: ProColumns<any>[] = [
 
@@ -233,7 +265,7 @@ const TableList: React.FC = () => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm' />,
-      title: configDefaultText['page.listCPass.column.code'],
+      title: configDefaultText['page.listCPass.column.groupCow'],
       dataIndex: 'groupCow',
       valueType: 'textarea',
       key: 'groupCow',
@@ -241,6 +273,15 @@ const TableList: React.FC = () => {
         return `${text?.descriptionGroup}`
 
       }
+    },
+
+    {
+      // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
+      title: configDefaultText['page.listCow.column.name'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'name',
+      renderText: (_, text: any) => text?.name,
     },
     {
       title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
@@ -276,7 +317,7 @@ const TableList: React.FC = () => {
             size='large'
             maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
           >
-            {text?.photos?.map((e: any, index: any) => {
+            {text?.photos && text?.photos?.length !== 0 ? text?.photos?.map((e: any, index: any) => {
               return (
                 <Avatar
                   key={index}
@@ -286,7 +327,14 @@ const TableList: React.FC = () => {
                   }
                 />
               );
-            })}
+            }) : (<Avatar
+              key={'defaultImage'}
+              src={
+                'https://aleger-server.process.vn/uploads/cow_Icon2_e7fd247cac.png'
+              }
+            />)
+            }
+
           </Avatar.Group>
         );
       }
@@ -456,7 +504,9 @@ const TableList: React.FC = () => {
                 price: cPass?.price,
                 nowWeight: cPass?.nowWeight,
                 activeAleTransfer: cPass?.activeAleTransfer,
-                upload: photoCow
+                upload: photoCow,
+                vZero: cPass?.vZero.toLocaleString(),
+                vs: cPass?.vs.toLocaleString()
               })
             }}
           /></Tooltip>
@@ -536,8 +586,10 @@ const TableList: React.FC = () => {
         >
           <Button
             onClick={async () => {
-              await handleRemove(selectedRowsState);
+              // await handleRemove(selectedRowsState);
+              confirm(selectedRowsState, 'Bạn có muốn xóa?');
               setSelectedRows([]);
+
               const getCow = await getCownotInCpass();
               setCow(getCow);
               actionRef.current?.reloadAndRest?.();
@@ -651,6 +703,10 @@ const TableList: React.FC = () => {
           <Col span={12} className='gutter-row p-0' >
             <ProFormDigit min={1} max={1000} className='w-full'
               name='nowWeight'
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               label={configDefaultText['page.listCPass.modal.pNow']}
               placeholder={configDefaultText['page.listCPass.modal.pNow']}
               rules={[
@@ -659,11 +715,17 @@ const TableList: React.FC = () => {
                   message: configDefaultText['page.listCPass.required.pNow']
                 },
               ]}
+
+
             />
           </Col>
 
           <Col span={12} className='gutter-row p-0'>
             <ProFormDigit min={1} max={1000} className='w-full' name='weightInStable'
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               label={configDefaultText['page.listCPass.modal.weightInStable']}
               placeholder={configDefaultText['page.listCPass.modal.weightInStable']}
               rules={[
@@ -689,7 +751,8 @@ const TableList: React.FC = () => {
               fieldProps={{
                 style: {
                   width: '100%'
-                }
+                },
+                disabledDate
               }}
               name='dateInStable'
               label={configDefaultText['page.listCPass.modal.dateInStable']}
@@ -713,6 +776,10 @@ const TableList: React.FC = () => {
             <ProFormDigit min={1} className='w-full' name='vs'
               label={configDefaultText['page.listCPass.modal.vs']}
               placeholder={configDefaultText['page.listCPass.modal.vs']}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               rules={[
                 {
                   required: true,
@@ -733,6 +800,10 @@ const TableList: React.FC = () => {
           <Col span={12} className='gutter-row p-0' >
             <ProFormDigit min={1} className='w-full' name='vZero'
               label={configDefaultText['page.listCPass.modal.vZero']}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               placeholder={configDefaultText['page.listCPass.modal.vZero']}
               rules={[
                 {
@@ -748,7 +819,6 @@ const TableList: React.FC = () => {
               ]}
 
             />
-
           </Col>
 
           <Col span={12} className='gutter-row p-0'>
@@ -956,6 +1026,10 @@ const TableList: React.FC = () => {
 
           <Col span={12} className='gutter-row p-0'>
             <ProFormDigit min={1} max={1000} className='w-full'
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               name='weightInStable'
               label={configDefaultText['page.listCPass.modal.weightInStable']}
               placeholder={configDefaultText['page.listCPass.modal.weightInStable']}
@@ -1056,7 +1130,8 @@ const TableList: React.FC = () => {
               fieldProps={{
                 style: {
                   width: '100%'
-                }
+                },
+                disabledDate
               }}
               name='dateInStable'
               label={configDefaultText['page.listCPass.modal.dateInStable']}
@@ -1082,7 +1157,8 @@ const TableList: React.FC = () => {
               fieldProps={{
                 style: {
                   width: '100%'
-                }
+                },
+                disabledDate
               }}
               label={configDefaultText['page.listCPass.column.birthdate']}
               placeholder={configDefaultText['page.listCPass.column.birthdate']}
@@ -1109,8 +1185,14 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className='m-0'>
           <Col span={12} className='gutter-row p-0' >
-            <ProFormText className='w-full' name='pZero'
+            <ProFormDigit className='w-full' name='pZero'
               label={configDefaultText['page.listCow.column.pZero']}
+              min={1}
+              max={1500}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               placeholder={configDefaultText['page.listCow.column.pZero']}
               rules={[
                 {
@@ -1128,7 +1210,11 @@ const TableList: React.FC = () => {
           </Col>
 
           <Col span={12} className='gutter-row p-0'>
-            <ProFormDigit min={1} max={1000} className='w-full'
+            <ProFormDigit min={1} max={1500} className='w-full'
+              fieldProps={{
+                formatter,
+                parser,
+              }}
               name='nowWeight'
               label={configDefaultText['page.listCPass.modal.pNow']}
               placeholder={configDefaultText['page.listCPass.modal.pNow']}
@@ -1146,7 +1232,7 @@ const TableList: React.FC = () => {
 
 
         <Row gutter={24} className='m-0'>
-          <Col span={12} className='gutter-row p-0' >
+          {/* <Col span={12} className='gutter-row p-0' >
             <ProFormText className='w-full' name='price'
               label={configDefaultText['page.listCPass.modal.price']}
               placeholder={configDefaultText['page.listCPass.modal.price']}
@@ -1162,10 +1248,8 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
-
             />
-
-          </Col>
+          </Col> */}
 
           <Col span={12} className='gutter-row p-0'>
 
@@ -1174,11 +1258,62 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormDigit min={1} className='w-full' name='vs'
+              fieldProps={{
+                formatter,
+                parser,
+              }}
+              label={configDefaultText['page.listCPass.modal.vs']}
+              placeholder={configDefaultText['page.listCPass.modal.vs']}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.vs']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.pZero'
+                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
+                  //   />
+                  // ),
+                },
+              ]} />
+          </Col>
+
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormDigit min={1} className='w-full' name='vZero'
+              label={configDefaultText['page.listCPass.modal.vZero']}
+              placeholder={configDefaultText['page.listCPass.modal.vZero']}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.vZero']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.pZero'
+                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
+                  //   />
+                  // ),
+                },
+              ]}
+
+            />
+          </Col>
+
+
+        </Row>
+
+
         <ProFormUploadButton
           name='upload'
           label='Upload'
           title='Upload'
-
+          max={5}
           fieldProps={{
             name: 'file',
             listType: 'picture-card',
@@ -1191,7 +1326,18 @@ const TableList: React.FC = () => {
                   refIdPicture.current = [file.uid];
                 }
               }
+            },
+            accept: 'image/*',
+            multiple: true,
+            maxCount: 5,
+            beforeUpload: (fileList, listSize) => {
+              if (listSize.length > 5) {
+                message.error('Chỉ có thể upload 5 hình ảnh');
+                return false;
+              }
+              return true;
             }
+
           }}
         //action={() => customAPIUpload({})}
         />

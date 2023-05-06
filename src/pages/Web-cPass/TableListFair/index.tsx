@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SettingOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -10,7 +10,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link } from '@umijs/max';
-import { Alert, Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
+import {  Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
@@ -43,9 +43,9 @@ const handleAdd = async (fields: any) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error:any) {
     hide();
-    message.error('Thêm thất bại!');
+    message.error(error?.response.data.error.message);
     return false;
   }
 };
@@ -94,9 +94,9 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {  
     hide();
-    message.error('Xóa thất bại');
+    message.error(error?.response?.data.error.message);
     return false;
   }
 };
@@ -145,7 +145,7 @@ const TableList: React.FC = () => {
     const getData = async () => {
       const getPlan = await getPlans();
       setPlan(getPlan);
-      
+
     };
     getData();
   }, []);
@@ -274,7 +274,21 @@ const TableList: React.FC = () => {
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
-      renderText: (_, text: any) => text?.status,
+      renderText: (_, text: any) => {
+        switch (text?.status) {
+          case 'noOpen':
+            return 'Chưa mở'
+            break;
+          case 'opening':
+            return 'Đang mở'
+            break;
+          case 'closed':
+            return 'Đã đóng'
+            break;
+          default:
+            break;
+        }
+      },
       filters: true,
       onFilter: true,
       valueEnum: () => {
@@ -444,31 +458,31 @@ const TableList: React.FC = () => {
 
   // const [intl, setIntl] = useState('zhCNIntl');
 
-  function renderTableAlert(selectedRowKeys: any) {
-    return (
-      <Alert
-        message={
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
-        }
-        type="info"
-        showIcon
-      />
-    );
-  }
-  
+  // function renderTableAlert(selectedRowKeys: any) {
+  //   return (
+  //     <Alert
+  //       message={
+  //         <Fragment>
+  //           Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+  //         </Fragment>
+  //       }
+  //       type="info"
+  //       showIcon
+  //     />
+  //   );
+  // }
 
-  function renderTableAlertOption( selectedRows: any, onCleanSelected: any) {
-    return (
-    <>
-      
-      <Fragment>
-        <Button onClick={() => onCleanSelected()}>Bỏ chọn</Button>
-      </Fragment>
-    </>
-    );
-  }
+
+  // function renderTableAlertOption(selectedRows: any, onCleanSelected: any) {
+  //   return (
+  //     <>
+
+  //       <Fragment>
+  //         <Button onClick={() => onCleanSelected()}>Bỏ chọn</Button>
+  //       </Fragment>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -483,6 +497,14 @@ const TableList: React.FC = () => {
             }
             return '';
           }}
+          tableStyle={
+            {
+              borderStartEndRadius: 0,
+              borderEndEndRadius: 0,
+              borderEndStartRadius: 0,
+              borderStartStartRadius: 0
+            }
+          }
           rowKey='id'
           search={false}
           toolBarRender={() => [
@@ -508,8 +530,15 @@ const TableList: React.FC = () => {
               setSelectedRows(selectedRows);
             },
             alwaysShowAlert: false,
-            
-           
+            // getCheckboxProps: (record: any) => ({
+            //   className: '',
+            //   style: {
+            //     borderStartEndRadius: '0px',
+            //   },
+
+            // })
+
+
           }}
 
           // tableAlertRender={({selectedRowKeys}: any) => {
@@ -631,7 +660,7 @@ const TableList: React.FC = () => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='timeFeed' placeholder='Thời gian nuôi'
+              <ProFormDigit className='w-full' name='timeFeed' placeholder='Thời gian nuôi' min={1} max={100}
                 // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
                 label={configDefaultText['page.listFair.column.timeFeed']}
                 rules={[
@@ -643,7 +672,10 @@ const TableList: React.FC = () => {
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='unitPriceMeat' placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
+              <ProFormDigit className='w-full'
+                name='unitPriceMeat' 
+                placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
+                min={1000}
                 //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
                 label={configDefaultText['page.listFair.column.unitPriceMeat']}
                 rules={[
@@ -887,12 +919,13 @@ const TableList: React.FC = () => {
             </Col>
 
             <Col span={12} className="gutter-row p-0" >
-              <ProFormText
+              <ProFormDigit
                 fieldProps={{
                   style: {
                     width: '100%'
                   }
                 }} name='timeFeed' placeholder='Thời gian nuôi'
+                min={1}
                 // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
                 label={configDefaultText['page.listFair.column.timeFeed']}
                 rules={[
@@ -916,7 +949,7 @@ const TableList: React.FC = () => {
                   },
                   {
                     label: 'Đang mở',
-                    value: 'Opening',
+                    value: 'opening',
                   },
                   {
                     label: 'Đã đóng',
@@ -1033,13 +1066,19 @@ const TableList: React.FC = () => {
           }}
         >
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText className='w-full' name='code' placeholder={configDefaultText['page.listFair.columns.code']} disabled
-                //label={<FormattedMessage id='page.listFair.code' defaultMessage='Mã phiên mở bán' />}
-                label={configDefaultText['page.listFair.columns.code']}
+          <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect
+                name="c_passes"
+                label={configDefaultText['page.listFair.column.c_passes']}
+                // valueEnum={}
+                request={getCPassNotFair}
+                fieldProps={{
+                  mode: 'multiple',
+                }}
+                className='w-full'
+                placeholder={configDefaultText['page.listFair.column.c_passes']}
               />
             </Col>
-
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeStart"
                 fieldProps={{
@@ -1199,7 +1238,7 @@ const TableList: React.FC = () => {
           </Row>
 
           <Row gutter={24} className="m-0">
-            <Col span={24} className="gutter-row p-0" >
+            <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 name="c_passes"
                 label={configDefaultText['page.listFair.column.c_passes']}

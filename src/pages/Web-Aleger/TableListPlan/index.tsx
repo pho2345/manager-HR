@@ -121,7 +121,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -229,15 +229,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-              // setCurrentRow(entity?.attributes?.code);
-              // setShowDetail(true);
-            }}
-          >
-            {entity?.attributes?.code}
+         
+            <>{entity?.attributes?.code}</>
 
-          </a>
         );
       },
       ...getColumnSearchProps('code')
@@ -390,7 +384,7 @@ const TableList: React.FC = () => {
             onClick={async () => {
               //await handleRemove(selectedRowsState);
               confirm(
-                selectedRowsState, configDefaultText['confirmDetele']
+                selectedRowsState, configDefaultText['textConfirmDelete']
               );
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();

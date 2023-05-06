@@ -6,7 +6,7 @@ import {
   customAPIUpload,
   customAPIGetOne,
 } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -35,7 +35,7 @@ import {
   // FormattedMessage, 
   useParams
 } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Row, Tooltip, message } from 'antd';
+import { Avatar, Button, Col, Drawer, Form, Modal, Row, Tooltip, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';
@@ -65,7 +65,6 @@ const handleAdd = async (fields: any) => {
     return true;
   } catch (error: any) {
     //hide();
-    console.log(error);
     // message.error('poi')
     message.error(error?.response?.data?.error?.message);
     return false;
@@ -104,12 +103,11 @@ const handleUpdate = async (fields: any, id: any) => {
       id.current,
     );
     hide();
-
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -128,9 +126,9 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Xóa thất bại');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -168,6 +166,8 @@ const getGroupFarm = async (id: number) => {
   return configGroupFarm;
 }
 
+
+
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -195,6 +195,23 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
+
+  const confirm = (entity: any, textConfirm: any) => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: textConfirm,
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+        await handleRemove(entity);
+        if (actionRef.current) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      }
+    });
+  };
+
   const columns: ProColumns<any>[] = [
     {
       // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
@@ -215,7 +232,6 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'name',
       renderText: (_, text: any) => text?.name,
-
     },
     {
       // title: (
@@ -244,7 +260,8 @@ const TableList: React.FC = () => {
             size='large'
             maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
           >
-            {text?.photos?.map((e: any, index: any) => {
+
+            {text?.photos && text?.photos?.length !== 0 ? text?.photos?.map((e: any, index: any) => {
               return (
                 <Avatar
                   key={index}
@@ -254,7 +271,14 @@ const TableList: React.FC = () => {
                   }
                 />
               );
-            })}
+            }) : (<Avatar
+              key={'defaultImage'}
+              src={
+                'https://aleger-server.process.vn/uploads/cow_Icon2_e7fd247cac.png'
+              }
+            />)
+            }
+
           </Avatar.Group>
         );
       },
@@ -320,7 +344,6 @@ const TableList: React.FC = () => {
               refIdCow.current = entity.id;
               const cow = await customAPIGetOne(entity.id, 'cows/find', {});
               const photos = cow.photos;
-              console.log(cow);
               if (photos) {
                 const photoCow = photos.map((e: any) => {
                   return { uid: e.id, status: 'done', url: SERVERURL + e.url };
@@ -343,7 +366,7 @@ const TableList: React.FC = () => {
                   ...cow,
                   category: cow.category?.id,
                   farm: cow.farm?.id,
-                  group_cow:  {
+                  group_cow: {
                     label: cow?.group_cow?.name,
                     value: cow?.group_cow?.id
                   }
@@ -368,6 +391,10 @@ const TableList: React.FC = () => {
       },
     },
   ];
+
+  const disabledDate = (current: any) => {
+    return current && current > moment();
+  };
 
   return (
     !params.id ? (
@@ -406,8 +433,8 @@ const TableList: React.FC = () => {
               icon: <ReloadOutlined></ReloadOutlined>,
               onClick: () => {
                 if (actionRef.current) {
-                  console.log(actionRef);
-                }
+                  actionRef.current.reload();               
+                 }
               }
             }]
           }}
@@ -451,9 +478,11 @@ const TableList: React.FC = () => {
           >
             <Button
               onClick={async () => {
-                await handleRemove(selectedRowsState);
+
+                confirm(selectedRowsState, 'Bạn có muốn xóa?')
+                // await handleRemove(selectedRowsState);
                 setSelectedRows([]);
-                actionRef.current?.reloadAndRest?.();
+                // actionRef.current?.reloadAndRest?.();
               }}
             >
               {configDefaultText['delete']}
@@ -477,7 +506,6 @@ const TableList: React.FC = () => {
           submitTimeout={2000}
           onFinish={async (values) => {
             //await waitTime(2000);
-            console.log('groupcow', values.group_cow);
             const success = await handleAdd(values as any);
             if (success) {
               handleModalOpen(false);
@@ -596,10 +624,10 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect className='w-full'
                 options={groupCow?.length ? groupCow : null}
-                disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
-                label={configDefaultText['page.listCow.column.farm']}
-                placeholder={configDefaultText['page.listCow.column.farm']}
-
+                // disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
+                label={configDefaultText['page.listCow.column.group_cow']}
+                placeholder={configDefaultText['page.listCow.column.group_cow']}
+                name={`group_cow`}
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
                   { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
@@ -619,7 +647,8 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
-                  }
+                  },
+                  disabledDate: disabledDate
                 }}
                 name='birthdate'
                 label={configDefaultText['page.listCow.column.birthdate']}
@@ -627,8 +656,9 @@ const TableList: React.FC = () => {
                 rules={[
                   //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
                   { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
-
                 ]}
+
+
               />
             </Col>
 
@@ -662,10 +692,21 @@ const TableList: React.FC = () => {
 
             title={configDefaultText['page.listCow.column.upload']}
             label={configDefaultText['page.listCow.column.upload']}
-            max={2}
+            max={5}
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
+              accept: 'image/*',
+              multiple: true,
+              maxCount: 5,
+              beforeUpload: (fileList, abc) => {
+                console.log(abc)
+                if (abc.length > 5) {
+                  message.error('Chỉ có thể upload 5 hình ảnh');
+                  return false;
+                }
+                return true;
+              }
             }}
 
           />
@@ -673,7 +714,15 @@ const TableList: React.FC = () => {
           <ProFormTextArea
             label={configDefaultText['page.listCow.column.description']}
             placeholder={configDefaultText['page.listCow.column.description']}
-            name='description' />
+            name='description'
+            rules={[
+              // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
+              { required: true, message: configDefaultText['page.listCow.required.description'] }
+            ]}
+            fieldProps={{
+              maxLength: 500
+            }}
+          />
         </ModalForm>
 
         <ModalForm
@@ -697,7 +746,6 @@ const TableList: React.FC = () => {
 
 
             if (success) {
-              console.log(refIdPicture.current);
               if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
                 if (refIdPicture.current !== null) {
                   const deletePicture = refIdPicture?.current.map((e: any) => {
@@ -839,7 +887,8 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
-                  }
+                  },
+                  disabledDate: disabledDate
                 }}
                 label={configDefaultText['page.listCow.column.birthdate']}
                 placeholder={configDefaultText['page.listCow.column.birthdate']}
@@ -881,7 +930,7 @@ const TableList: React.FC = () => {
 
             title={configDefaultText['page.listCow.column.upload']}
             label={configDefaultText['page.listCow.column.upload']}
-            max={2}
+            max={5}
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
@@ -894,6 +943,16 @@ const TableList: React.FC = () => {
                     refIdPicture.current = [file.uid];
                   }
                 }
+              },
+              accept: 'image/*',
+              multiple: true,
+              maxCount: 5,
+              beforeUpload: (fileList, fileSize) => {
+                if (fileSize.length > 5) {
+                  message.error('Chỉ có thể upload 5 hình ảnh');
+                  return false;
+                }
+                return true;
               }
             }}
 
@@ -902,9 +961,12 @@ const TableList: React.FC = () => {
           <ProFormTextArea
             label={configDefaultText['page.listCow.column.description']}
             placeholder={configDefaultText['page.listCow.column.description']}
-            name='description' />
-
-
+            name='description' 
+            rules={[
+              // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
+              { required: true, message: configDefaultText['page.listCow.required.description'] }
+            ]}
+            />
 
         </ModalForm>
 
@@ -1014,7 +1076,6 @@ const TableList: React.FC = () => {
               title: 'Ảnh',
               key: 'photo',
               render: (_, entity) => {
-                console.log(entity);
                 const photo = entity.photo.map((e: any) => {
                   return (
                     <><Field

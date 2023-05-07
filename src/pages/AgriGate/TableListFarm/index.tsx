@@ -256,6 +256,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
+          style={{
+            textAlign: 'center'
+          }}
         ><MdOutlineEdit
             onClick={() => {
               handleUpdateModalOpen(true);

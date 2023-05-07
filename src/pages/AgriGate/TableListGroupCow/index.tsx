@@ -43,7 +43,6 @@ const handleAdd = async (fields: any) => {
       return true;
     }
   } catch (error: any) {
-    console.log(error);
     message.error(error?.response?.data?.error?.message);
     return false;
   }
@@ -65,9 +64,9 @@ const handleUpdate = async (fields: any, api: string, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -86,9 +85,9 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Xóa thất bại');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -300,6 +299,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         return (
           <>

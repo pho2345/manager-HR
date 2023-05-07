@@ -64,10 +64,10 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     hide();
-    message.error('Xóa thất bại!!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };

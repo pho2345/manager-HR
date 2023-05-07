@@ -268,6 +268,7 @@ const TableListFairDetail: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
 
         if (entity.check === 'order') {

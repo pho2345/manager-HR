@@ -319,6 +319,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
       dataIndex: 'refundVs',
       valueType: 'textarea',
       key: 'refundVs',
+      align: 'center',
       render: (_, text: any) => {
         return <Checkbox disabled checked={text?.checkRefund}></Checkbox>
       }

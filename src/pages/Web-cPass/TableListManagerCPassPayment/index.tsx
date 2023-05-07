@@ -6,18 +6,16 @@ import { ExclamationCircleOutlined, ReloadOutlined, } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
-  ProDescriptionsItemProps,
   ProFormSelect,
 } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProTable,
 } from '@ant-design/pro-components';
 import {useParams } from '@umijs/max';
-import { Button, Checkbox, Drawer, Form, message, Modal, Tooltip } from 'antd';
+import { Button, Checkbox, Form, message, Modal, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import  configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -112,8 +110,8 @@ const TableList: React.FC = () => {
               setShowDetail(true);
             }}>
             {entity?.sender?.fullname ? entity?.sender?.fullname : entity?.sender?.username}-{entity?.sender?.id}
-          </a><br /> {entity?.sender?.phone}{`${entity?.sender.email ? `|${entity?.sender.email}` : null}`}
-            <br /> CCCD/HC: {entity?.sender.passport}
+          </a><br />{entity?.sender.phone}{ entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
+            <br />{entity?.sender.passport ? `CCCD/HC:${entity?.sender.passport}` : ``}
           </>
         );
       },
@@ -252,6 +250,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         let button = [];
         if (entity?.status === 'done' && entity?.c_pass.statusTransaction === 'open') {

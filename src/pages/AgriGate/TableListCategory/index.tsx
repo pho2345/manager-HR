@@ -65,7 +65,7 @@ const handleRemove = async (selectedRows: any) => {
     return true;
   } catch (error) {
     hide();
-    message.error('Xóa thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };

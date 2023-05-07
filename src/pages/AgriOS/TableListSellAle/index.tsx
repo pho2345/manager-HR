@@ -66,9 +66,12 @@ const TableListAssignCPass = () => {
     // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -80,7 +83,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-          // placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -102,7 +105,7 @@ const TableListAssignCPass = () => {
             Tìm kiếm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -110,28 +113,7 @@ const TableListAssignCPass = () => {
           >
             Làm mới
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
-          </Button>
+          
         </Space>
       </div>
     ),
@@ -218,9 +200,9 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(entity?.id);
                 //setShowDetailUser(true);
               }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+                 {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
       },
@@ -294,6 +276,7 @@ const TableListAssignCPass = () => {
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
+      align: 'center',
       render: (_, text: any) => {
         return [
           <>
@@ -369,7 +352,7 @@ const TableListAssignCPass = () => {
       />
 
       <ModalForm
-        title='Mua Ale'
+        title='Bán Ale'
         open={showModal}
         form={form}
         width={300}

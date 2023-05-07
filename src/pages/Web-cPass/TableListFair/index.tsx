@@ -2,7 +2,6 @@ import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPI
 import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SettingOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProFormText,
@@ -165,8 +164,8 @@ const TableList: React.FC = () => {
       onOk: async () => {
        const removeFair =  await handleRemove(entity);
         if (actionRef.current) {
-          await actionRef.current?.reloadAndRest?.();
-          setSelectedRows([]);
+          // await actionRef.current?.reloadAndRest?.();
+          // setSelectedRows([]);
         }
       }
     });
@@ -460,31 +459,30 @@ const TableList: React.FC = () => {
 
   // const [intl, setIntl] = useState('zhCNIntl');
 
-  // function renderTableAlert(selectedRowKeys: any) {
-  //   return (
-  //     <Alert
-  //       message={
-  //         <Fragment>
-  //           Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-  //         </Fragment>
-  //       }
-  //       type="info"
-  //       showIcon
-  //     />
-  //   );
-  // }
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+     
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
 
 
-  // function renderTableAlertOption(selectedRows: any, onCleanSelected: any) {
-  //   return (
-  //     <>
-
-  //       <Fragment>
-  //         <Button onClick={() => onCleanSelected()}>Bỏ chọn</Button>
-  //       </Fragment>
-  //     </>
-  //   );
-  // }
+  function renderTableAlertOption(selectedRows: any) {
+    console.log(selectedRows);
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            await confirm(selectedRowsState);
+            setSelectedRows([]);
+            actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
 
   return (
     <>
@@ -543,14 +541,14 @@ const TableList: React.FC = () => {
 
           }}
 
-          // tableAlertRender={({selectedRowKeys}: any) => {
-          //   return renderTableAlert(selectedRowKeys);
-          // }}
+          tableAlertRender={({selectedRowKeys}: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
 
 
-          // tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
-          //  return renderTableAlertOption(selectedRows, onCleanSelected)
-          // }}
+          tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
+           return renderTableAlertOption(selectedRows, onCleanSelected)
+          }}
 
           toolbar={{
             settings: [{
@@ -582,36 +580,7 @@ const TableList: React.FC = () => {
 
         />
 
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-                {`${configDefaultText['chosen']} `}
-                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-                {configDefaultText['selectedItem']}
-
-              </div>
-            }
-          >
-            <Button
-              onClick={async () => {
-                //await handleRemove(selectedRowsState);
-                await confirm(selectedRowsState);
-                setSelectedRows([]);
-                //actionRef.current?.reloadAndRest?.();
-              }}
-            >
-              {/* <FormattedMessage
-                id='buttonDelete'
-                defaultMessage='Xóa'
-              /> */}
-              {configDefaultText['delete']}
-            </Button>
-
-          </FooterToolbar>
-        )}
+       
 
         <ModalForm
           // title={<FormattedMessage id='page.listFair.create' defaultMessage='Tạo mới Phiên mở bán' />}

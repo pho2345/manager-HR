@@ -6,7 +6,7 @@ import {
   customAPIUpload,
   customAPIGetOne,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -35,8 +35,8 @@ import {
   // FormattedMessage, 
   useParams
 } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Modal, Row, Tooltip, message } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import Field from '@ant-design/pro-field';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -139,6 +139,7 @@ const getCategory = async () => {
     return {
       value: e?.id,
       label: e?.attributes?.name,
+      text: e?.attributes?.name
     };
   });
   return data;
@@ -149,6 +150,7 @@ const getFarm = async () => {
   let data = categories.data.map((e: any) => {
     return {
       value: e?.id,
+      text :e?.attributes?.name,
       label: e?.attributes?.name,
     };
   });
@@ -175,12 +177,12 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
   const [groupCow, setGroupCow] = useState<any>([]);
-
+  const searchInput = useRef(null);
 
 
   const params = useParams();
@@ -194,23 +196,126 @@ const TableList: React.FC = () => {
     };
     getValues();
   }, []);
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+         
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+
+    // }
+
+  });
 
 
-  const confirm = (entity: any, textConfirm: any) => {
+  const confirm = (entity: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: textConfirm,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
         await handleRemove(entity);
         if (actionRef.current) {
-         // actionRef.current?.reloadAndRest?.();
+          // actionRef.current?.reload();
+          actionRef.current?.reloadAndRest?.();
         }
       }
     });
   };
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            confirm(selectedRows);
+            // actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
 
   const columns: ProColumns<any>[] = [
     {
@@ -218,20 +323,39 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.listCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           <>{entity?.code}</>
         );
-
       },
     },
+    
     {
       // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
       title: configDefaultText['page.listCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
+      ...getColumnSearchProps('name'),
+
       renderText: (_, text: any) => text?.name,
+    },
+
+    {
+      // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
+      title: configDefaultText['page.listCow.column.farm'],
+      key: 'code',
+      dataIndex: 'atrributes',
+      render: (_, entity: any) => {
+        return (
+          <>{entity?.farm?.name}</>
+        );
+      },
+      filters: farm,
+      onFilter: (value, record) => {
+        return record?.farm?.id === value;
+      },
     },
     {
       // title: (
@@ -287,7 +411,7 @@ const TableList: React.FC = () => {
     {
       // title: <FormattedMessage id='page.searchTable.column.sex' defaultMessage='Giới tính' />,
       title: configDefaultText['page.listCow.column.sex'],
-      dataIndex: 'atrributes',
+      dataIndex: 'sex',
       valueType: 'textarea',
       key: 'sex',
       renderText: (_, text: any) => {
@@ -296,6 +420,17 @@ const TableList: React.FC = () => {
         }
         return 'Cái';
       },
+      filters: [
+        {
+          text: 'Đực',
+          value: 'male'
+        },
+        {
+          text: 'Cái',
+          value: 'female'
+        },
+      ],
+      onFilter: true
     },
 
     {
@@ -303,10 +438,15 @@ const TableList: React.FC = () => {
       //   <FormattedMessage id='page.searchTable.column.category' defaultMessage='Giống loài' />
       // ),
       title: configDefaultText['page.listCow.column.category'],
-      dataIndex: 'atrributes',
+      dataIndex: 'category',
       valueType: 'textarea',
       key: 'category',
       renderText: (_, text: any) => text?.category?.name,
+      filters: category,
+      onFilter: (value, record) => {
+       return record.category.id === value;
+
+      }
     },
     {
       // title: <FormattedMessage id='page.searchTable.column.age' defaultMessage='Tuổi' />,
@@ -316,7 +456,11 @@ const TableList: React.FC = () => {
       key: 'age',
       renderText: (_, text: any) => {
         let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if(age === 0){
+          return `0`;
+        }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        
         return confiAge;
       }
     },
@@ -385,16 +529,16 @@ const TableList: React.FC = () => {
       },
     },
 
-    {
-      // title: <FormattedMessage id='page.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
-      title: configDefaultText['buttonUpdate'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-        return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
+    // {
+    //   // title: <FormattedMessage id='page.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
+    //   title: configDefaultText['buttonUpdate'],
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'create',
+    //   renderText: (_, text: any) => {
+    //     return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    //   },
+    // },
   ];
 
   const disabledDate = (current: any) => {
@@ -463,38 +607,50 @@ const TableList: React.FC = () => {
           }
           columns={columns}
           rowSelection={{
-            onChange: (_, selectedRows: any) => {
-              setSelectedRows(selectedRows);
-            },
+            // onChange: (_, selectedRows: any) => {
+            //   setSelectedRows(selectedRows);
+            // },
           }}
+
+          tableAlertRender={({selectedRowKeys}: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+  
+  
+          tableAlertOptionRender={({  selectedRows}: any) => {
+           return renderTableAlertOption(selectedRows)
+          }}
+  
         />
-        {selectedRowsState?.length > 0 && (
-          <FooterToolbar
-            extra={
-              <div>
-                {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-                {`${configDefaultText['chosen']} `}
-                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-                {configDefaultText['selectedItem']}
+        {
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
 
-              </div>
-            }
-          >
-            <Button
-              onClick={async () => {
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
 
-                confirm(selectedRowsState, 'Bạn có muốn xóa?')
-                // await handleRemove(selectedRowsState);
-                setSelectedRows([]);
-                actionRef.current?.reloadAndRest?.();
-              }}
-            >
-              {configDefaultText['delete']}
-            </Button>
+        //         confirm(selectedRowsState, 'Bạn có muốn xóa?')
+        //         // await handleRemove(selectedRowsState);
+        //         setSelectedRows([]);
+        //         actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {configDefaultText['delete']}
+        //     </Button>
 
-          </FooterToolbar>
-        )}
+        //   </FooterToolbar>
+        // )
+        }
 
         <ModalForm
           title={configDefaultText['modalCreate']}

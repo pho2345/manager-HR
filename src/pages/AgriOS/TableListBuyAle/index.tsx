@@ -54,19 +54,22 @@ const TableListAssignCPass = () => {
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
 
-  //const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
+    confirm({
+      closeDropdown: false,
+    });
     //setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -79,10 +82,10 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-          // placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm,dataIndex )}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -91,7 +94,7 @@ const TableListAssignCPass = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm)}
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{
@@ -101,7 +104,7 @@ const TableListAssignCPass = () => {
             Tìm kiếm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -109,28 +112,7 @@ const TableListAssignCPass = () => {
           >
             Làm mới
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
-          </Button>
+         
         </Space>
       </div>
     ),
@@ -219,8 +201,8 @@ const TableListAssignCPass = () => {
                 //setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
       },
@@ -284,6 +266,7 @@ const TableListAssignCPass = () => {
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
+      align: 'center',
       render: (_, text: any) => {
         return [
           <>

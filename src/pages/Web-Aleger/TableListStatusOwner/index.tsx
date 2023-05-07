@@ -13,7 +13,7 @@ import {
 //   //FormattedMessage, 
 //   useIntl } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -140,15 +140,42 @@ const TableList: React.FC = () => {
     });
   };
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+          <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            confirm(selectedRows);
+            // actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
+
+
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
     //setSearchedColumn(dataIndex);
     //console.log('selectedKeys',selectedKeys[0] );
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     // setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -182,7 +209,7 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size='small'
             style={{
               width: 90,
@@ -281,11 +308,23 @@ const TableList: React.FC = () => {
       }
     },
     {
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.createdAt'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'create',
+      width: '20vh',
+      renderText: (_, text: any) => {
+        return moment(text?.attributes?.createdAt).format('DD/HH/YYYY HH:mm')
+      }
+    },
+    {
       // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
@@ -302,27 +341,11 @@ const TableList: React.FC = () => {
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
               })
-
             }}
           /></Tooltip>
-
         )
       }
     },
-
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
-      title: configDefaultText['page.createdAt'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
-      }
-
-    },
-
   ];
 
   return (
@@ -375,36 +398,46 @@ const TableList: React.FC = () => {
         }}
 
 
+        tableAlertRender={({ selectedRowKeys }: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
+        }}
+
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-              {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
+      {
+      // selectedRowsState?.length > 0 && (
+      //   <FooterToolbar
+      //     extra={
+      //       <div>
+      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+      //         {`${configDefaultText['chosen']} `}
+      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+      //         {configDefaultText['selectedItem']}
+      //       </div>
+      //     }
+      //   >
+      //     <Button
+      //       onClick={async () => {
 
-              confirm(
-                selectedRowsState
-              );
+      //         confirm(
+      //           selectedRowsState
+      //         );
 
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {configDefaultText['delete']}
-          </Button>
-
-        </FooterToolbar>
-      )}
+      //         // await handleRemove(selectedRowsState);
+      //         setSelectedRows([]);
+      //         actionRef.current?.reloadAndRest?.();
+      //       }}
+      //     >
+      //       {configDefaultText['delete']}
+      //     </Button>
+      //   </FooterToolbar>
+      // )
+      }
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}

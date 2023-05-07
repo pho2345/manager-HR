@@ -5,11 +5,9 @@ import {
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  FooterToolbar,
   ModalForm,
   ProColumns,
   ProFormSelect,
-  ProFormDateRangePicker
 } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -20,9 +18,8 @@ import {
 //import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Input, message, Modal, Space } from 'antd';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { values } from 'lodash';
 const configDefaultText = configText;
 
 
@@ -57,7 +54,7 @@ const TableList: React.FC = () => {
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedRows, setSelectedRows] = useState<any>([]);
+  // const [selectedRows, setSelectedRows] = useState<any>([]);
 
   const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
   //const [searchText, setSearchText] = useState('');
@@ -87,7 +84,7 @@ const TableList: React.FC = () => {
       >
         <Input
           ref={searchInput}
-          // placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -117,28 +114,7 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
-          </Button>
+
         </Space>
       </div>
     ),
@@ -192,8 +168,9 @@ const TableList: React.FC = () => {
         if (success) {
           if (actionRef.current) {
             setShowModal(false);
-            actionRef.current.reload();
-            setSelectedRows([]);
+            // actionRef.current.reload();
+            actionRef.current?.reloadAndRest?.();
+            setSelectedRowsState([]);
           }
         }
       }
@@ -321,49 +298,49 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => {
         return moment(text?.createdAt).format('DD/MM/YYYY HH:MM');
       },
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-        <div style={{ padding: 8 }}>
-          <ProFormDateRangePicker
-            fieldProps={{
-              value: selectedKeys,
-              onChange: (values) => {
-                // console.log('values', values);
-                // console.log('selectedKeys', selectedKeys);
-                setSelectedKeys(values);
-              }
-            }}
-          />
-          <Space>
-            <Button
-              type="primary"
-              onClick={() => {
-                confirm();
-              }}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{
-                width: 90,
-              }}
-            >
-              Tìm kiếm
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                clearFilters();
-              }}
-              icon={<SearchOutlined />}
-              size="small"
-              style={{
-                width: 90,
-              }}
-            >
-              Reset
-            </Button>
+      // filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      //   <div style={{ padding: 8 }}>
+      //     <ProFormDateRangePicker
+      //       fieldProps={{
+      //         value: selectedKeys,
+      //         onChange: (values) => {
+      //           // console.log('values', values);
+      //           // console.log('selectedKeys', selectedKeys);
+      //           setSelectedKeys(values);
+      //         }
+      //       }}
+      //     />
+      //     <Space>
+      //       <Button
+      //         type="primary"
+      //         onClick={() => {
+      //           confirm();
+      //         }}
+      //         icon={<SearchOutlined />}
+      //         size="small"
+      //         style={{
+      //           width: 90,
+      //         }}
+      //       >
+      //         Tìm kiếm
+      //       </Button>
+      //       <Button
+      //         type="primary"
+      //         onClick={() => {
+      //           clearFilters();
+      //         }}
+      //         icon={<SearchOutlined />}
+      //         size="small"
+      //         style={{
+      //           width: 90,
+      //         }}
+      //       >
+      //         Reset
+      //       </Button>
 
-          </Space>
-        </div>
-      ),
+      //     </Space>
+      //   </div>
+      // ),
       onFilter: (value: any, record: any) => {
         // console.log(value);
         console.log(moment(value.$d).format('HH:MM:ss DD/MM/YYYY'));
@@ -416,6 +393,7 @@ const TableList: React.FC = () => {
       dataIndex: 'priceVnd',
       valueType: 'textarea',
       key: 'priceVnd',
+      align: 'center',
       render: (_, record: any) => {
         if (record?.status === 'inProgress') {
           return [
@@ -441,17 +419,41 @@ const TableList: React.FC = () => {
         }
       }
     },
-
-
-
-
-
   ];
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+          <Button onClick={async () => {
+            const confitSelectedRows = selectedRows.map((e: any) => {
+              return {
+                id: e?.id,
+                types: e?.types
+              }
+            });
+            setSelectedRowsState(confitSelectedRows);
+            setShowModal(true);
+            // actionRef.current?.reloadAndRest?.();
+          }}>Thực hiện</Button>
+        </Fragment>
+      </>
+    );
+  }
 
   return (
     <PageContainer>
       <ProTable
-
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -465,57 +467,7 @@ const TableList: React.FC = () => {
             },
             'transactions/wait-confirm-ale');
 
-          //  const filter = data?.data.reduce((pre: any, cur: any) =>{
-          //   let element;
-          //   switch (cur?.status) {
-          //     case 'waitConfirm':
-          //       element = {
-          //         text: `Chờ Mega xác nhận`,
-          //         value: 'waitConfirm'
-          //       }
-          //       break;
-          //     case 'inProgress':
-          //       element = {
-          //         text: `Chờ xác nhận`,
-          //         value: 'inProgress'
-          //       }
-          //       break;
 
-          //     case 'done':
-          //       element = {
-          //         text: `Hoàn thành`,
-          //         value: 'done'
-          //       }
-          //       break;
-
-          //     case 'cancel':
-          //       element = {
-          //         text: `Đã hủy`,
-          //         value: 'cancel'
-          //       }
-          //       break;
-
-          //     case 'waitRefund':
-          //       element = {
-          //         text: `Chờ xác nhận hoàn trả`,
-          //         value: 'waitRefund'
-          //       }
-          //       break;
-
-          //     default:
-          //       break;
-          //   }
-          //   pre.push(element);
-          //   return pre;
-          //  }, []);
-
-          //  console.log('filter', filter);
-
-          //  const uniqueArr = filter.filter((item: any, index: any, self: any) => {
-          //   return index === self.findIndex((t: any) => t.value === item.value);
-          // });
-
-          // setFilterStatus(uniqueArr);
           return {
             data: data?.data,
             success: true,
@@ -525,22 +477,22 @@ const TableList: React.FC = () => {
         }
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRowsState(selectedRows);
-            const confitSelectedRows = selectedRows.map((e: any) => {
-              return {
-                id: e?.id,
-                types: e?.types
-              }
-            });
-            setSelectedRows(confitSelectedRows);
-            // setSelectedRows([
-            //   {
-            //     id:record?.id,
-            //     types: record?.types
-            //   }
-            // ])
-          },
+          // onChange: (_, selectedRows: any) => {
+          //   setSelectedRowsState(selectedRows);
+          //   const confitSelectedRows = selectedRows.map((e: any) => {
+          //     return {
+          //       id: e?.id,
+          //       types: e?.types
+          //     }
+          //   });
+          //   setSelectedRows(confitSelectedRows);
+          //   // setSelectedRows([
+          //   //   {
+          //   //     id:record?.id,
+          //   //     types: record?.types
+          //   //   }
+          //   // ])
+          // },
           getCheckboxProps: (record: any) => ({
             disabled: record?.status === 'inProgress' ? false : true, // Column configuration not to be checked
           }),
@@ -568,34 +520,47 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        tableAlertRender={({ selectedRowKeys }: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
+        }}
+
       />
 
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-              {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
 
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              //await handleRemove(selectedRowsState);
-              setShowModal(true);
-              //setSelectedRows([]);
-              //actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {configDefaultText['page.confirm.column.implement']}
-          </Button>
+      {
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
 
-        </FooterToolbar>
-      )}
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
+        //         //await handleRemove(selectedRowsState);
+        //         setShowModal(true);
+        //         //setSelectedRows([]);
+        //         //actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {configDefaultText['page.confirm.column.implement']}
+        //     </Button>
+
+        //   </FooterToolbar>
+        // )
+      }
 
 
       <ModalForm
@@ -610,12 +575,12 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           if (values?.status === 1 || !values?.status) {
             confirm({
-              transaction: selectedRows
+              transaction: selectedRowsState
             }, configDefaultText['page.confirm.column.textWaitToSubmit'], 'transactions/confirm-ale-admin');
           }
           else {
             confirm({
-              transaction: selectedRows
+              transaction: selectedRowsState
             }, configDefaultText['page.confirm.column.textWaitCancel'], 'transactions/cancel-ale-admin');
           }
 

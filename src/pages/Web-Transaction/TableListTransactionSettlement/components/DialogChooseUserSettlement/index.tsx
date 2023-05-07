@@ -46,7 +46,7 @@ const DialogTransfer = (props: any) => {
       >
         <Input
           ref={searchInput}
-          // placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}

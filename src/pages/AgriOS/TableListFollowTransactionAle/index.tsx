@@ -76,7 +76,7 @@ const TableList: React.FC = () => {
       >
         <Input
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -95,7 +95,7 @@ const TableList: React.FC = () => {
               width: 90,
             }}
           >
-            Search
+            Tìm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -104,21 +104,9 @@ const TableList: React.FC = () => {
               width: 90,
             }}
           >
-            Reset
+            Làm mới
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-             // setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
+          
         </Space>
       </div>
     ),

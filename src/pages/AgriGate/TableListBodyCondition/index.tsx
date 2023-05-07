@@ -1,12 +1,12 @@
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { FooterToolbar, ModalForm, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
+import {  ModalForm, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
 // import { FormattedMessage } from '@umijs/max';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 const configDefaultText = configText;
 import { SketchPicker } from 'react-color';
@@ -71,7 +71,7 @@ const TableList: React.FC = () => {
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  const [selectedRowsState, setSelectedRows] = useState<[]>([]);
+  // const [selectedRowsState, setSelectedRows] = useState<[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
   const pickerRef = useRef(null);
@@ -105,11 +105,11 @@ const TableList: React.FC = () => {
     };
   }, []);
 
-  const confirm = (entity: any, textConfirm: any) => {
+  const confirm = (entity: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: textConfirm,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -129,9 +129,12 @@ const TableList: React.FC = () => {
     //setSearchedColumn(dataIndex);
     //console.log('selectedKeys',selectedKeys[0] );
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     // setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -166,7 +169,7 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size='small'
             style={{
               width: 90,
@@ -270,12 +273,27 @@ const TableList: React.FC = () => {
         return `${text?.attributes?.background}`
       }
     },
+   
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.createdAt'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'create',
+      renderText: (_, text: any) => {
+        return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
+      }
+
+    },
+
     {
       // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
@@ -298,19 +316,6 @@ const TableList: React.FC = () => {
       }
     },
 
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
-      title: configDefaultText['page.createdAt'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
-      }
-
-    },
-
   ];
 
 
@@ -323,6 +328,33 @@ const TableList: React.FC = () => {
     // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
+
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+     
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            confirm(selectedRows);
+            // actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
+
+  
 
 
   return (
@@ -354,10 +386,10 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows: any) => {
+          // onChange: (_, selectedRows: any) => {
 
-            setSelectedRows(selectedRows);
-          },
+          //   setSelectedRows(selectedRows);
+          // },
         }}
 
         toolbar={{
@@ -383,35 +415,46 @@ const TableList: React.FC = () => {
           }
         }}
 
+        tableAlertRender={({selectedRowKeys}: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({  selectedRows}: any) => {
+         return renderTableAlertOption(selectedRows)
+        }}
+
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-              {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              confirm(
-                selectedRowsState, configDefaultText['textConfirmDelete']
-              );
+      {
+      // selectedRowsState?.length > 0 && (
+      //   <FooterToolbar
+      //     extra={
+      //       <div>
+      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+      //         {`${configDefaultText['chosen']} `}
+      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+      //         {configDefaultText['selectedItem']}
+      //       </div>
+      //     }
+      //   >
+      //     <Button
+      //       onClick={async () => {
+      //         confirm(
+      //           selectedRowsState, configDefaultText['textConfirmDelete']
+      //         );
 
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {configDefaultText['delete']}
-          </Button>
+      //         // await handleRemove(selectedRowsState);
+      //         setSelectedRows([]);
+      //         actionRef.current?.reloadAndRest?.();
+      //       }}
+      //     >
+      //       {configDefaultText['delete']}
+      //     </Button>
 
-        </FooterToolbar>
-      )}
+      //   </FooterToolbar>)
+        
+        }
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}

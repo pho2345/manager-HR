@@ -58,13 +58,14 @@ const handleUpdate = async (fields: any, id: any) => {
     }
 
 
-    let { category, farm, group_cow, cow, birthdate, ...other } = fields;
+    let { category, farm, group_cow, cow, birthdate, sex, ...other } = fields;
 
     let fieldCow = {
       category: category?.value || category,
       farm: farm?.value || farm,
       group_cow: group_cow?.value || group_cow,
-      birthdate: birthdate
+      birthdate: birthdate,
+      sex
     }
     const updateCow = customAPIUpdate(
       {
@@ -73,8 +74,6 @@ const handleUpdate = async (fields: any, id: any) => {
       'cows',
       cow.value
     );
-
-
     const updateCPass = customAPIUpdate(
       {
         ...other
@@ -281,7 +280,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
-      renderText: (_, text: any) => text?.name,
+      renderText: (_, text: any) => text?.nameCow,
     },
     {
       title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
@@ -751,8 +750,6 @@ const TableList: React.FC = () => {
                   message: configDefaultText['page.listCPass.required.pNow']
                 },
               ]}
-
-
             />
           </Col>
 
@@ -862,6 +859,62 @@ const TableList: React.FC = () => {
 
           </Col>
         </Row>
+
+        <Row gutter={24} className='m-0'>
+          <Col span={12} className='gutter-row p-0' >
+            <ProFormSelect
+              className='w-full'
+              //options={groupCow?.length !== 0 ? groupCow : null}
+              options={[
+                {
+                  value: 'good',
+                  label: 'Tốt'
+                },
+                {
+                  value: 'malnourished',
+                  label: 'Suy dinh dưỡng'
+                },
+                {
+                  value: 'weak',
+                  label: 'Yếu'
+                },
+                {
+                  value: 'sick',
+                  label: 'Bệnh'
+                },
+                {
+                  value: 'dead',
+                  label: 'Chết'
+                }
+              ]}
+
+
+
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.listCPass.required.bodyCondition']
+
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.Cpass.required.bodyCondition'
+                  //     defaultMessage='Thể trạng'
+                  //   />
+                  // ),
+                },
+              ]}
+
+              placeholder={configDefaultText['page.listCPass.column.bodyCondition']}
+              name='bodyCondition'
+              label={configDefaultText['page.listCPass.column.bodyCondition']} />
+          </Col>
+
+          {/* <Col span={12} className='gutter-row p-0'>
+            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
+
+          </Col> */}
+        </Row>
+
 
 
 
@@ -1143,9 +1196,12 @@ const TableList: React.FC = () => {
               name='farm'
               fieldProps={{
                 onChange: async (value) => {
-                  const groupCow = await getGroupFarm(value);
-                  setGroupCow(groupCow);
-                  form.setFieldValue('group_cow', null);
+                  console.log(value);
+                  if (typeof value !== 'undefined') {
+                    const groupCow = await getGroupFarm(value);
+                    setGroupCow(groupCow);
+                    form.setFieldValue('group_cow', null);
+                  }
                 }
               }}
             />

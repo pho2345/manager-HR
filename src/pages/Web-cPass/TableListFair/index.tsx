@@ -1184,7 +1184,7 @@ const TableList: React.FC = () => {
                   },
                   {
                     label: 'Đang mở',
-                    value: 'Opening',
+                    value: 'opening',
                   },
                   {
                     label: 'Đã đóng',
@@ -1239,22 +1239,7 @@ const TableList: React.FC = () => {
             </Col>
           </Row>
 
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect
-                name="c_passes"
-                label={configDefaultText['page.listFair.column.c_passes']}
-                // valueEnum={}
-                request={getCPassNotFair}
-                fieldProps={{
-                  mode: 'multiple',
-                }}
-                className='w-full'
-                placeholder={configDefaultText['page.listFair.column.c_passes']}
-              />
-            </Col>
-          </Row>
-
+       
         </ModalForm>
 
 

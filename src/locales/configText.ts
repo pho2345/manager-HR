@@ -147,7 +147,7 @@ export default {
     'page.addMegaAndAssign.column.cPass': 'Thẻ tai|cPass',
     'page.addMegaAndAssign.column.farm': 'Trang trại',
     'page.addMegaAndAssign.column.birthdate': 'Ngày sinh',
-    'page.addMegaAndAssign.column.firstWeight': 'Pss (Kg)',
+    'page.addMegaAndAssign.column.firstWeight': 'Pss (kg)',
     'page.addMegaAndAssign.column.age': 'Tuổi',
     'page.addMegaAndAssign.column.bodyCondition': 'Thể trạng',
     'page.addMegaAndAssign.column.pZero': 'P0 (kg)',

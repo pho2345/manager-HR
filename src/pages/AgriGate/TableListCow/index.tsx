@@ -198,7 +198,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, textConfirm: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: textConfirm,
       okText: 'Có',
@@ -206,7 +206,7 @@ const TableList: React.FC = () => {
       onOk: async () => {
         await handleRemove(entity);
         if (actionRef.current) {
-          actionRef.current?.reloadAndRest?.();
+         // actionRef.current?.reloadAndRest?.();
         }
       }
     });
@@ -314,7 +314,11 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'age',
-      renderText: (_, text: any) => text?.age,
+      renderText: (_, text: any) => {
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
+      }
     },
 
     {
@@ -326,7 +330,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
-        return moment(text?.birthdate).format('YYYY-MM-DD HH:mm:ss');
+        return moment(text?.birthdate).format('DD/MM/YYYY');
       },
     },
 
@@ -336,6 +340,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
         return (
           <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
@@ -433,8 +438,8 @@ const TableList: React.FC = () => {
               icon: <ReloadOutlined></ReloadOutlined>,
               onClick: () => {
                 if (actionRef.current) {
-                  actionRef.current.reload();               
-                 }
+                  actionRef.current.reload();
+                }
               }
             }]
           }}
@@ -482,7 +487,7 @@ const TableList: React.FC = () => {
                 confirm(selectedRowsState, 'Bạn có muốn xóa?')
                 // await handleRemove(selectedRowsState);
                 setSelectedRows([]);
-                // actionRef.current?.reloadAndRest?.();
+                actionRef.current?.reloadAndRest?.();
               }}
             >
               {configDefaultText['delete']}
@@ -585,8 +590,8 @@ const TableList: React.FC = () => {
               />
             </Col>
 
-            <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='age'
+            {/* <Col span={12} className="gutter-row p-0">
+              <ProFormDigit className='w-full' name='age'
                 label={configDefaultText['page.listCow.column.age']}
                 placeholder={configDefaultText['page.listCow.column.age']}
                 rules={[
@@ -595,6 +600,29 @@ const TableList: React.FC = () => {
                 ]}
               />
 
+            </Col> */}
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker
+
+                // className='w-full
+                // style={{ width: '100%' }}
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  },
+                  disabledDate: disabledDate
+                }}
+                name='birthdate'
+                label={configDefaultText['page.listCow.column.birthdate']}
+                placeholder={configDefaultText['page.listCow.column.birthdate']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
+                ]}
+
+
+              />
             </Col>
           </Row>
 
@@ -639,7 +667,7 @@ const TableList: React.FC = () => {
 
 
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
+            {/* <Col span={12} className="gutter-row p-0" >
               <ProFormDatePicker
 
                 // className='w-full
@@ -660,7 +688,7 @@ const TableList: React.FC = () => {
 
 
               />
-            </Col>
+            </Col> */}
 
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect
@@ -961,12 +989,12 @@ const TableList: React.FC = () => {
           <ProFormTextArea
             label={configDefaultText['page.listCow.column.description']}
             placeholder={configDefaultText['page.listCow.column.description']}
-            name='description' 
+            name='description'
             rules={[
               // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
               { required: true, message: configDefaultText['page.listCow.required.description'] }
             ]}
-            />
+          />
 
         </ModalForm>
 

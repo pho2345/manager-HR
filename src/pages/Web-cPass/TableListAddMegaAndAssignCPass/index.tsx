@@ -223,9 +223,9 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(entity?.id);
                 setShowDetailUser(true);
               }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+             {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
       },

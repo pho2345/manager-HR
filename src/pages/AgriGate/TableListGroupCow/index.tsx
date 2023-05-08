@@ -15,14 +15,13 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  Fragment, useEffect, useRef, useState } from 'react';
 
 import { MdOutlineEdit } from 'react-icons/md';
 // import viVNIntl from 'antd/lib/locale/vi_VN';  
@@ -104,11 +103,30 @@ const getFarm = async () => {
   return data;
 };
 
-const confirm = (entity: any, message: string, actionRef: any) => {
+
+const TableList: React.FC = () => {
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+
+  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const actionRef = useRef<ActionType>();
+  const refIdCow = useRef<any>();
+  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  const [form] = Form.useForm<any>();
+  const [farm, setFarm] = useState<any>();
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
+  };
+
+  
+const confirm = (entity: any) => {
   Modal.confirm({
     title: configDefaultText['titleConfirm'],
     icon: <ExclamationCircleOutlined />,
-    content: `Bạn có muốn ${message}?`,
+    content: configDefaultText['textConfirmDelete'],
     okText: 'Có',
     cancelText: 'Không',
     onOk: async () => {
@@ -122,26 +140,12 @@ const confirm = (entity: any, message: string, actionRef: any) => {
     }
   });
 };
-
-const TableList: React.FC = () => {
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>();
-  const refIdCow = useRef<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
-  const [form] = Form.useForm<any>();
-  const [farm, setFarm] = useState<any>();
-
-  const handleSearch = (selectedKeys: any, confirm: any) => {
-    confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
-  };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     // setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -175,7 +179,7 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -225,6 +229,29 @@ const TableList: React.FC = () => {
 
 
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+     
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            confirm(selectedRows);
+            //actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
   //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
@@ -286,7 +313,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).add(timeZone, 'hour').format('YYYY-MM-DD HH:mm:ss')
+        return moment(text?.createdAt).format('DD/MM/YYYY HH:MM')
       }
 
     },
@@ -399,9 +426,9 @@ const TableList: React.FC = () => {
         columns={columns}
 
         rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRows(selectedRows);
-          },
+          // onChange: (_, selectedRows: any) => {
+          //   setSelectedRows(selectedRows);
+          // },
         }}
 
         pagination={{
@@ -414,41 +441,51 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+        tableAlertRender={({selectedRowKeys}: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({  selectedRows}: any) => {
+         return renderTableAlertOption(selectedRows)
+        }}
+
+        
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
+      {
+      // selectedRowsState?.length > 0 && (
+      //   <FooterToolbar
+      //     extra={
+      //       <div>
+      //         {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+      //         <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
 
-              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-              {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await confirm(selectedRowsState as any, 'xóa', actionRef);
-              setSelectedRows([]);
+      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+      //         {`${configDefaultText['chosen']} `}
+      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+      //         {configDefaultText['selectedItem']}
+      //       </div>
+      //     }
+      //   >
+      //     <Button
+      //       onClick={async () => {
+      //         await confirm(selectedRowsState as any, 'xóa', actionRef);
+      //         setSelectedRows([]);
 
-              await actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {/* <FormattedMessage
-              id='pages.searchTable.batchDeletion'
-              defaultMessage='Batch deletion'
-            /> */}
-            {configDefaultText['delete']}
-          </Button>
-
-
-        </FooterToolbar>
-      )}
+      //         await actionRef.current?.reloadAndRest?.();
+      //       }}
+      //     >
+      //       {/* <FormattedMessage
+      //         id='pages.searchTable.batchDeletion'
+      //         defaultMessage='Batch deletion'
+      //       /> */}
+      //       {configDefaultText['delete']}
+      //     </Button>
+      //   </FooterToolbar>
+      // )
+      }
 
       <ModalForm
         title={configDefaultText['page.listGroupCow.newGroup']}

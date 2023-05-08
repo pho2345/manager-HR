@@ -13,10 +13,18 @@ import {
 
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Drawer, Form, message, Switch } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
-
+function renderTableAlertOption(selectedRows: any, onCleanSelected: any) {
+  return (
+    <>
+      <Fragment>
+        <Button onClick={() => onCleanSelected()}>Bỏ chọn</Button>
+      </Fragment>
+    </>
+  );
+}
 const handleAdd = async (fields: any) => {
   console.log(fields);
 

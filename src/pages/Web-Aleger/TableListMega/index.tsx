@@ -1,5 +1,5 @@
 import { customAPIGet } from '@/services/ant-design-pro/api';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ActionType, PageContainer, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -35,12 +35,15 @@ const TableListAssignCPass = () => {
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-   // setSearchedColumn(dataIndex);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -52,7 +55,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-         // placeholder={`Search ${dataIndex}`}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -74,35 +77,13 @@ const TableListAssignCPass = () => {
             Tìm kiếm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
             Làm mới
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
           </Button>
         </Space>
       </div>
@@ -118,15 +99,15 @@ const TableListAssignCPass = () => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -160,7 +141,7 @@ const TableListAssignCPass = () => {
                 setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
@@ -192,12 +173,12 @@ const TableListAssignCPass = () => {
 
     {
       // title: (<>Tổng MegaP (kg) <br />MegaE (VNĐ)</>),
-      title: (<>{configDefaultText['page.listAleger.column.totalMegaP']}<br/> {configDefaultText['page.listAleger.column.megaE']}</>),
+      title: (<>{configDefaultText['page.listAleger.column.totalMegaP']}<br /> {configDefaultText['page.listAleger.column.megaE']}</>),
       dataIndex: 'megaWeight',
       valueType: 'textarea',
       key: 'megaWeight',
       render: (_, record) => {
-        return <>{record?.megaWeight || 0} | {record?.megaE || 0}</>
+        return <>{record?.megaWeight?.toLocaleString() || 0} | {record?.megaE?.toLocaleString() || 0}</>
       }
     },
 
@@ -208,7 +189,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'produceAle',
       render: (_, record) => {
-        return <>{record?.produceAle}</>
+        return <>{record?.produceAle?.toLocaleString()}</>
       }
     },
 
@@ -219,7 +200,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'ale',
       render: (_, record) => {
-        return <>{record?.ale}</>
+        return <>{record?.ale?.toLocaleString()}</>
       }
     },
     {
@@ -228,6 +209,7 @@ const TableListAssignCPass = () => {
       dataIndex: 'detail',
       valueType: 'textarea',
       key: 'detail',
+      align: 'center',
       render: (_, record) => {
         return <Button
           onClick={() => {
@@ -240,70 +222,67 @@ const TableListAssignCPass = () => {
 
   ];
 
-
-
-
-
   return (
     <>
-      <ProTable
-        actionRef={actionRef}
-        rowKey='id'
-        search={false}
-        rowClassName={
-          (entity) => {
-            return entity.classColor
-          }
-        }
-
-        toolbar={{
-          settings: [{
-            key: 'reload',
-            tooltip: configDefaultText['reload'],
-            icon: <ReloadOutlined />,
-            onClick: () => {
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+      <PageContainer>
+        <ProTable
+          actionRef={actionRef}
+          rowKey='id'
+          search={false}
+          rowClassName={
+            (entity) => {
+              return entity.classColor
             }
-          }]
-        }}
-
-        request={async () => {
-          const data = await customAPIGet({}, 'users/aleger');
-          return data;
-        }}
-        columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
-        //     console.log(selectedRows);
-        //     if (selectedRows.length > 1) {
-        //       message.error('Chỉ được chọn 1 Mega!');
-
-        //     }
-
-        //     //setSelectedRowsMega(selectedRows);
-        //   },
-        //   // getCheckboxProps: (record: any) => ({
-        //   //   disabled: false, // Column configuration not to be checked
-        //   //  //name: record.name,
-        //   // }),
-        // }}
-
-        pagination={{
-          locale: {
-            next_page: configDefaultText['nextPage'],
-            prev_page: configDefaultText['prePage'],
-          },
-          showTotal: (total, range) => {
-            return `${range[range.length - 1]} / Tổng số: ${total}`
           }
-        }}
-      />
+
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: configDefaultText['reload'],
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
+          }}
+
+          request={async () => {
+            const data = await customAPIGet({}, 'users/aleger');
+            return data;
+          }}
+          columns={columns}
+          // rowSelection={{
+          //   onChange: (_, selectedRows: any) => {
+          //     console.log(selectedRows);
+          //     if (selectedRows.length > 1) {
+          //       message.error('Chỉ được chọn 1 Mega!');
+
+          //     }
+
+          //     //setSelectedRowsMega(selectedRows);
+          //   },
+          //   // getCheckboxProps: (record: any) => ({
+          //   //   disabled: false, // Column configuration not to be checked
+          //   //  //name: record.name,
+          //   // }),
+          // }}
+
+          pagination={{
+            locale: {
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
+            },
+            showTotal: (total, range) => {
+              return `${range[range.length - 1]} / Tổng số: ${total}`
+            }
+          }}
+        />
 
 
 
-      {/* {currentRowCPass && (
+        {/* {currentRowCPass && (
         <DetailCPass
           openModal={showDetailCPass}
           idCPass={currentRowCPass}
@@ -315,23 +294,23 @@ const TableListAssignCPass = () => {
       )}
  */}
 
-      {currentRowUser && (
-        <DetailUser
-          onDetail={showDetailUser}
-          currentRowUser={currentRowUser}
-          onCloseDetail={() => {
-            setCurrentRowUser(undefined);
-            setShowDetailUser(false);
-          }}
-          onReset ={() => {
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }}
-        />
-      )
-      }
-
+        {currentRowUser && (
+          <DetailUser
+            onDetail={showDetailUser}
+            currentRowUser={currentRowUser}
+            onCloseDetail={() => {
+              setCurrentRowUser(undefined);
+              setShowDetailUser(false);
+            }}
+            onReset={() => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+          />
+        )
+        }
+      </PageContainer>
     </>
   );
 };

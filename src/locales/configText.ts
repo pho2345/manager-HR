@@ -13,6 +13,8 @@ export default {
     'fair': 'Đợt mở bán:',
     'refund': 'Hoàn trả',
     'submit': 'Xác nhận',
+    'implement': 'Thực hiện',
+    'search': 'Tìm kiếm',
     'createdAt': 'Ngày tạo',
     'titleConfirm': 'Xác nhận',
     'pay': 'Thanh toán',

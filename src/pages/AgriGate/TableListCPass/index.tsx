@@ -1,8 +1,7 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProFormText,
@@ -12,8 +11,8 @@ import {
 import { BsGraphUpArrow } from 'react-icons/bs';
 import { MdOutlineEdit } from 'react-icons/md';
 
-import { Avatar, Button, Col, Form, message, Modal, Row, Tooltip, Typography } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, Button, Col, Form, Input, message, Modal, Row, Space, Tooltip, Typography } from 'antd';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
 import configText from '@/locales/configText';
@@ -161,11 +160,24 @@ const getCategory = async () => {
 
 
 const getFarm = async () => {
-  const categories = await customAPIGet({}, 'farms');
-  let data = categories.data.map((e: any) => {
+  const farm = await customAPIGet({}, 'farms');
+  let data = farm.data.map((e: any) => {
     return {
       value: e?.id,
       label: e?.attributes?.name,
+      text: e?.attributes?.name
+    };
+  });
+  return data;
+};
+
+const getGroup = async () => {
+  const farm = await customAPIGet({}, 'group-cows');
+  let data = farm.data.map((e: any) => {
+    return {
+      value: e?.id,
+      label: e?.attributes?.name,
+      text: e?.attributes?.description
     };
   });
   return data;
@@ -192,7 +204,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
 
@@ -200,6 +212,8 @@ const TableList: React.FC = () => {
   const [farm, setFarm] = useState<any>();
   const refIdPicture = useRef<any>();
   const [groupCow, setGroupCow] = useState<any>([]);
+  const [getAllGroup, setGetAllGroup] = useState<any>([]);
+  const searchInput = useRef(null);
 
   // const [currentRowUser, setCurrentRowUser] = useState<any>();
   // const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
@@ -208,30 +222,135 @@ const TableList: React.FC = () => {
       let getCow = await getCownotInCpass();
       let getCate = await getCategory();
       let getFarms = await getFarm();
+      let getGroups = await getGroup();
       setCategory(getCate);
       setFarm(getFarms);
       setCow(getCow);
-
+      setGetAllGroup(getGroups);
     }
     getValues();
   }, [])
 
-  const confirm = (entity: any, textConfirm: any) => {
+  const confirm = (entity: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: textConfirm,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
         await handleRemove(entity);
         if (actionRef.current) {
           actionRef.current?.reloadAndRest?.();
+          const getCow = await getCownotInCpass();
+          setCow(getCow);
         }
       }
     });
   };
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+          <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            confirm(selectedRows);
+           
+            // actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
+
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+         
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
 
   const columns: ProColumns<any>[] = [
 
@@ -245,6 +364,7 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.listCPass.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
 
         return (
@@ -270,7 +390,11 @@ const TableList: React.FC = () => {
       key: 'groupCow',
       renderText: (_, text: any) => {
         return `${text?.descriptionGroup}`
-
+      },
+      filters: getAllGroup,
+      filterSearch: true,
+      onFilter:(value, record) => {
+        return record?.groupId === value
       }
     },
 
@@ -298,6 +422,11 @@ const TableList: React.FC = () => {
           {text?.farm}<br />
           {`${text?.category}-${sex}`}
         </>)
+      },
+      filterSearch: true,
+      filters: farm,
+      onFilter: (value, record) => {
+        return value === record.farmId
       }
     },
 
@@ -538,9 +667,9 @@ const TableList: React.FC = () => {
         request={() => customAPIGet({}, 'c-passes/get/c-pass-agrigate')}
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRows(selectedRows);
-          },
+          // onChange: (_, selectedRows: any) => {
+          //   setSelectedRows(selectedRows);
+          // },
         }}
 
         toolbar={{
@@ -568,36 +697,47 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        tableAlertRender={({ selectedRowKeys }: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
+        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-              {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
+      {
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
 
 
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              confirm(selectedRowsState, 'Bạn có muốn xóa?');
-              setSelectedRows([]);
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
+        //         // await handleRemove(selectedRowsState);
+        //         confirm(selectedRowsState, 'Bạn có muốn xóa?');
+        //         setSelectedRows([]);
 
-              const getCow = await getCownotInCpass();
-              setCow(getCow);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {configDefaultText['delete']}
-          </Button>
-        </FooterToolbar>
-      )}
+        //         const getCow = await getCownotInCpass();
+        //         setCow(getCow);
+        //         actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {configDefaultText['delete']}
+        //     </Button>
+        //   </FooterToolbar>
+        // )
+      }
 
 
       <ModalForm

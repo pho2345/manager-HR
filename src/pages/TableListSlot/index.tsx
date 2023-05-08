@@ -2,7 +2,6 @@ import { customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
 import {  ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps,  ProFormDigit } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
@@ -66,7 +65,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdSlot  = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
 
   const intl = useIntl();
@@ -177,7 +175,7 @@ const TableList: React.FC = () => {
       dataIndex: 'timeStart',
       valueType: 'textarea',
       key: 'timeStart',
-      renderText: (_, text: any) => moment(text?.attributes.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss')
+      renderText: (_, text: any) => moment(text?.attributes.timeStart).format('DD/MM/YYYY HH:mm')
 
     },
 
@@ -186,7 +184,7 @@ const TableList: React.FC = () => {
       dataIndex: 'timeEnd',
       valueType: 'textarea',
       key: 'timeEnd',
-      renderText: (_, text: any) => moment(text?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss')
+      renderText: (_, text: any) => moment(text?.attributes.timeEnd).format('DD/MM/YYYY HH:mm')
     },
 
     // {
@@ -229,15 +227,15 @@ const TableList: React.FC = () => {
       }
     },
 
-    {
-      title: configDefaultText['createdAt'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
-      },
-    },
+    // {
+    //   title: configDefaultText['createdAt'],
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'create',
+    //   renderText: (_, text: any) => {
+    //     return moment(text?.attributes?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+    //   },
+    // },
 
   ];
 

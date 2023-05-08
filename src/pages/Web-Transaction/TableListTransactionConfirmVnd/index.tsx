@@ -19,7 +19,7 @@ import "./styles.css";
 // import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
@@ -62,9 +62,9 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, message: string, api: string) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: message,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -72,7 +72,8 @@ const TableList: React.FC = () => {
           transaction: [...entity]
         }, api);
         if (actionRef.current) {
-          actionRef.current.reload();
+            actionRef.current?.reloadAndRest?.();
+            setOpenModalStatus(false);
           setSelectedRows([]);
         }
 
@@ -80,6 +81,30 @@ const TableList: React.FC = () => {
     });
   };
 
+
+  
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+     
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+             setOpenModalStatus(true);
+            // actionRef.current?.reloadAndRest?.();
+          }}>{configDefaultText['implement']}</Button>
+        </Fragment>
+      </>
+    );
+  }
 
 
   // const intl = useIntl();
@@ -416,30 +441,41 @@ const TableList: React.FC = () => {
           }
         }}
 
+        tableAlertRender={({selectedRowKeys}: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({  selectedRows}: any) => {
+         return renderTableAlertOption(selectedRows)
+        }}
+
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-               {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-               {`${configDefaultText['chosen']} `}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-              {configDefaultText['selectedItem']}
+      {
+      // selectedRowsState?.length > 0 && (
+      //   <FooterToolbar
+      //     extra={
+      //       <div>
+      //          {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+      //          {`${configDefaultText['chosen']} `}
+      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+      //         {configDefaultText['selectedItem']}
 
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              setOpenModalStatus(true);
-            }}
-          >
-           {configDefaultText['submit']}
-          </Button>
+      //       </div>
+      //     }
+      //   >
+      //     <Button
+      //       onClick={async () => {
+      //         setOpenModalStatus(true);
+      //       }}
+      //     >
+      //      {configDefaultText['submit']}
+      //     </Button>
 
-        </FooterToolbar>
-      )}
+      //   </FooterToolbar>
+      // )
+      }
 
       <ModalForm
         title='Chọn tình trạng'
@@ -463,15 +499,13 @@ const TableList: React.FC = () => {
           });
           let typeApi = parseInt(values?.method) === 1 || !values?.method ? 'transactions/done-many' : 'transactions/cancel-many';
           confirm(transaction, 'Chắn chắn tiến hành thay đổi Tình trạng xác nhận hàng loạt?', typeApi);
-          if (actionRef.current) {
-            actionRef.current.reload();
-            setOpenModalStatus(false);
-          }
-          setSelectedRows([]);
-          actionRef.current?.reloadAndRest?.();
+         
+
 
           return true;
         }}
+
+        
 
         submitter={{
           // render: (_, dom) => (

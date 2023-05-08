@@ -38,9 +38,9 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
       message.success('Cập nhật thành công');
     }
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
@@ -56,7 +56,7 @@ const TableList: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   // const [selectedRows, setSelectedRows] = useState<any>([]);
 
-  const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
+  const [selectedRowsState, setSelectedRowsState] = useState<any>([]);
   //const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -404,12 +404,13 @@ const TableList: React.FC = () => {
                 }}
                 onClick={() => {
                   setShowModal(true);
-                  setSelectedRows([
+                  setSelectedRowsState([
                     {
                       id: record?.id,
                       types: record?.types
                     }
-                  ])
+                  ]);
+                  
 
                 }}
               />

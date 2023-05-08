@@ -9,7 +9,6 @@ import {
   ProFormSelect,
 } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProTable,
@@ -64,7 +63,7 @@ const TableList: React.FC = () => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: configDefaultText['textConfirmDelete'],
+      content: configDefaultText['textConfirmChangeStatus'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -93,7 +92,7 @@ const TableList: React.FC = () => {
   }
 
 
-  function renderTableAlertOption(selectedRows: any) {
+  function renderTableAlertOption() {
     return (
       <>
         <Fragment>

@@ -14,10 +14,10 @@ import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
-import {useParams } from '@umijs/max';
+import { useParams } from '@umijs/max';
 import { Button, Checkbox, Form, message, Modal, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import  configText from '@/locales/configText';
+import configText from '@/locales/configText';
 const configDefaultText = configText;
 import "./styles.css";
 import { MdOutlineCurrencyExchange, MdOutlinePaid } from 'react-icons/md';
@@ -41,9 +41,10 @@ const handleUpdate = async (fields: any, api: any, value: any) => {
 
     }
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
+
     return false;
   }
 };
@@ -110,7 +111,7 @@ const TableList: React.FC = () => {
               setShowDetail(true);
             }}>
             {entity?.sender?.fullname ? entity?.sender?.fullname : entity?.sender?.username}-{entity?.sender?.id}
-          </a><br />{entity?.sender.phone}{ entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
+          </a><br />{entity?.sender.phone}{entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
             <br />{entity?.sender.passport ? `CCCD/HC:${entity?.sender.passport}` : ``}
           </>
         );
@@ -127,9 +128,21 @@ const TableList: React.FC = () => {
       key: 'ale',
       renderText: (_, text: any) => {
         return text?.aleWallet.ale.toLocaleString()
-
       }
     },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
+      title: configDefaultText['page.ManagerCPass.column.availableAle'],
+      width: 60,
+      dataIndex: 'availableAle',
+      valueType: 'textarea',
+      key: 'availableAle',
+      renderText: (_, text: any) => {
+        return text?.aleWallet.availableBalance.toLocaleString()
+      }
+    },
+
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.cPassBuy' defaultMessage='Số cPass đã mua' />,
@@ -138,7 +151,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'cPassBuy',
       renderText: (_, text: any) => {
-          return text?.cPassBuy
+        return text?.cPassBuy
       }
     },
     {
@@ -207,14 +220,14 @@ const TableList: React.FC = () => {
       key: 'megaS',
       render: (_, text: any) => {
         return (<>
-          {text?.c_pass?.megaS.toLocaleString()} <Checkbox disabled checked={(text?.status === 'done' && text?.method === 'vnd') || text?.status === 'inProgress' } /> | {text?.c_pass?.price.toLocaleString()} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
+          {text?.c_pass?.megaS.toLocaleString()} <Checkbox disabled checked={(text?.status === 'done' && text?.method === 'vnd') || text?.status === 'inProgress'} /> | {text?.c_pass?.price.toLocaleString()} <Checkbox disabled checked={text?.status === 'done' && text?.method === 'ale'} />
         </>)
       }
     },
 
 
     {
-      
+
       title: configDefaultText['page.ManagerCPass.column.statusTransaction'],
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
@@ -225,9 +238,9 @@ const TableList: React.FC = () => {
           case 'waitConfirm':
             status = `Chờ xác nhận thanh toán`
             break;
-            case 'inProgress':
-              status = `Đã thanh toán bằng VNĐ, Chờ xác nhận`
-              break;
+          case 'inProgress':
+            status = `Đã thanh toán bằng VNĐ, Chờ xác nhận`
+            break;
           case 'done':
             if (text?.method === 'vnd') {
               status = `Đã thanh toán bằng VNĐ`;
@@ -255,43 +268,46 @@ const TableList: React.FC = () => {
         let button = [];
         if (entity?.status === 'done' && entity?.c_pass.statusTransaction === 'open') {
           button.push(
-          // button.push(<><Button
-          //   onClick={() => {
-          //     handleModalOpen(true);
-          //     refTransaction.current = entity.id
-          //   }}
-          // >{configDefaultText['refund']}</Button>
-          
-          
-          <Tooltip title={configDefaultText['refund']}>
-                <MdOutlineCurrencyExchange
-                    style={{
-                      fontSize: 20
-                    }}
-                   onClick={() => {
-                    confirm({
-                      transaction: [entity.id]
-                    }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
-                  }}
-                />
-              </Tooltip>);
+            // button.push(<><Button
+            //   onClick={() => {
+            //     handleModalOpen(true);
+            //     refTransaction.current = entity.id
+            //   }}
+            // >{configDefaultText['refund']}</Button>
+
+
+            <Tooltip title={configDefaultText['refund']}>
+              <MdOutlineCurrencyExchange
+                style={{
+                  fontSize: 20
+                }}
+                onClick={() => {
+
+                  handleModalOpen(true);
+                  refTransaction.current = entity.id
+                  // confirm({
+                  //   transaction: [entity.id]
+                  // }, `${configDefaultText['page.ManagerCPass.column.textConfirmRefund']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/refund', '');
+                }}
+              />
+            </Tooltip>);
         }
 
-        if (entity?.status === 'waitConfirm' || entity?.status === 'inProgress' && entity?.method === 'vnd') {
+        if (entity?.status === 'waitConfirm' || (entity?.status === 'inProgress' && entity?.method === 'vnd') && entity?.ale <= entity?.aleWallet?.availableBalance) {
           button.push(<>
-              <Tooltip title={configDefaultText['pay']}>
-                <MdOutlinePaid
-                  
-                  style={{
-                    fontSize: 20
-                  }}
-                   onClick={() => {
-                    confirm({
-                      transaction: [entity.id]
-                    }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
-                  }}
-                />
-              </Tooltip>
+            <Tooltip title={configDefaultText['pay']}>
+              <MdOutlinePaid
+
+                style={{
+                  fontSize: 20
+                }}
+                onClick={() => {
+                  confirm({
+                    transaction: [entity.id]
+                  }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
+                }}
+              />
+            </Tooltip>
           </>)
 
         }
@@ -305,7 +321,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-       
+
         actionRef={actionRef}
         rowKey='id'
         rowClassName={(record) => {
@@ -332,14 +348,14 @@ const TableList: React.FC = () => {
         }
         }
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRows(selectedRows);
-          },
-          getCheckboxProps: record => ({
-            disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
-          })
-        }}
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
+        //     setSelectedRows(selectedRows);
+        //   },
+        //   getCheckboxProps: record => ({
+        //     disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
+        //   })
+        // }}
 
         pagination={{
           locale: {
@@ -354,7 +370,7 @@ const TableList: React.FC = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip:  configDefaultText['reload'],
+            tooltip: configDefaultText['reload'],
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -377,8 +393,8 @@ const TableList: React.FC = () => {
           <Button
             onClick={async () => {
               let text = '';
-              const transaction = selectedRowsState.map((e: any, index: number)  => {
-                text += index === 0 ? e?.c_pass?.code : `, ${e?.c_pass?.code}` ;
+              const transaction = selectedRowsState.map((e: any, index: number) => {
+                text += index === 0 ? e?.c_pass?.code : `, ${e?.c_pass?.code}`;
                 return e?.id
               })
               console.log('transaction', transaction);
@@ -389,13 +405,13 @@ const TableList: React.FC = () => {
               //actionRef.current?.reloadAndRest?.();
             }}
           >
-           {configDefaultText['pay']}
+            {configDefaultText['pay']}
           </Button>
         </FooterToolbar>
       )}
 
       <ModalForm
-        
+
         open={createModalOpen}
         //form={form}
         autoFocusFirstInput
@@ -452,7 +468,7 @@ const TableList: React.FC = () => {
               value: 'ale'
             },
           ]}
-         
+
         />
 
       </ModalForm>

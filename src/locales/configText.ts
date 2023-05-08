@@ -20,6 +20,7 @@ export default {
     'pay': 'Thanh toán',
     'titleOption': 'Thao tác',
     'textConfirmDelete': 'Bạn có muốn xóa?',
+    'textConfirmChangeStatus': 'Bạn có muốn thay đổi tình trạng?',
     'methodPayment': 'Phương thức thanh toán',
     'menu':'Web-cPass',
     'menuFair': 'Danh sách đợt mở bán',
@@ -180,6 +181,7 @@ export default {
 
     'page.ManagerCPass.column.mega' : 'Mega',
     'page.ManagerCPass.column.ale' : 'Số dư Ale',
+    'page.ManagerCPass.column.availableAle' : 'Số dư Ale khả dụng',
     'page.ManagerCPass.column.cPassBuy' : 'Số cPass đã mua',
     'page.ManagerCPass.column.cpass' : 'cPass',
     'page.ManagerCPass.column.pZero' : 'P0 (kg)',
@@ -191,6 +193,7 @@ export default {
 
     'page.ManagerCPass.column.titleOption': 'Thao tác', 
     'page.ManagerCPass.column.textConfirmPay': 'Chắc chắn muốn thanh toán MegaS của cPass:', 
+    'page.ManagerCPass.column.textConfirmRefund': 'Chắc chắn muốn Hoàn trả MegaS của cPass:', 
 
     'page.listCow.column.code': 'Mã',
     'page.listCow.column.name': 'Tên',

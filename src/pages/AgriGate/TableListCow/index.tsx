@@ -261,7 +261,10 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      console.log('value', dataIndex)
+      if(typeof value !== 'number'){
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
 
     }
     ,
@@ -353,9 +356,10 @@ const TableList: React.FC = () => {
         );
       },
       filters: farm,
-      onFilter: (value, record) => {
-        return record?.farm?.id === value;
-      },
+      // onFilter: (value, record) => {
+      //   console.log('filter',value);
+      //   return record?.farm?.id === value;
+      // },
     },
     {
       // title: (

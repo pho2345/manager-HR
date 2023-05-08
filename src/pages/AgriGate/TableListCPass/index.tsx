@@ -71,10 +71,10 @@ const handleUpdate = async (fields: any, id: any) => {
         ...fieldCow,
       },
       'cows',
-      cow.value
     );
     const updateCPass = customAPIUpdate(
       {
+        cow,
         ...other
       },
       'c-passes',
@@ -1146,6 +1146,7 @@ const TableList: React.FC = () => {
               className='w-full'
               options={cow}
               name='cow'
+              disabled
               label={configDefaultText['page.listCPass.modal.cow']}
               placeholder={configDefaultText['page.listCPass.modal.cow']}
               rules={[

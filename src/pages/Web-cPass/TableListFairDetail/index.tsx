@@ -1,13 +1,13 @@
 import { customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined, LogoutOutlined, RollbackOutlined } from '@ant-design/icons';
-import { ActionType, FooterToolbar, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
 
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useParams } from '@umijs/max';
-import { Button, Checkbox, Input, message, Modal, Tooltip, Typography } from 'antd';
+import { Checkbox, Input, List, message, Modal, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
@@ -36,20 +36,13 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
   }
 };
 
-
-
-
-
-
-
-
 const TableListFairDetail: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
 
   const [currentCPass, setCurrentCPass] = useState<any>();
   const [showModalMega, setShowModalMega] = useState<boolean>(false);
@@ -272,15 +265,15 @@ const TableListFairDetail: React.FC = () => {
       render: (_, entity: any) => {
 
         if (entity.check === 'order') {
-          return (  <Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
-            <RollbackOutlined 
-               style={{
+          return (<Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
+            <RollbackOutlined
+              style={{
                 fontSize: 20,
                 paddingLeft: 5,
                 color: 'red'
               }}
-            onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)}/>
-            </Tooltip>);
+              onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)} />
+          </Tooltip>);
         }
 
         if (entity.check === 'none') {
@@ -298,12 +291,12 @@ const TableListFairDetail: React.FC = () => {
                 }} /></Tooltip>
             <Tooltip title={<FormattedMessage id='pages.searchTable.remove' defaultMessage='Loại bỏ khỏi phiên' />} >
               <LogoutOutlined
-               style={{
-                fontSize: 20,
-                paddingLeft: 5,
-                color: 'red'
-              }}
-              onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)} />
+                style={{
+                  fontSize: 20,
+                  paddingLeft: 5,
+                  color: 'red'
+                }}
+                onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)} />
             </Tooltip>
           </>);
         }
@@ -312,16 +305,51 @@ const TableListFairDetail: React.FC = () => {
     },
   ];
 
-
+  const listData = [
+    {
+      title: 'Đợt mở bán',
+      value: fair?.code
+    },
+    {
+      title: 'Ngày mở bán',
+      value: fair?.timeStart ? `${moment(fair?.timeStart).format('DD/MM/YYYY HH:mm')}` : ''
+    },
+    {
+      title: 'Ngày đóng bán',
+      value: fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}`: ''
+    },
+    {
+      title: 'Ngày bắt đầu nuôi',
+      value: fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).format('DD/MM/YYYY HH:mm')}` : ''
+    },
+  ];
 
 
   return (
     <>
-      <Text>{`Đợt mở bán: ${fair?.code}`}</Text>
-      <Text>{`Ngày mở bán: ${fair?.timeStart ? `${moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''} `}</Text>
-      <Text>{`Ngày đóng bán: ${fair?.timeEnd ? `${moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
-      <Text>{`Ngày bắt đầu nuôi: ${fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').toISOString()}` : ''}`}</Text>
-      <br/>
+      {/* <Text>{`Đợt mở bán: ${fair?.code}`}</Text>
+      <Text>{`Ngày mở bán: ${fair?.timeStart ? `${moment(fair?.timeStart).format('DD/MM/YYYY HH:mm')}` : ''} `}</Text>
+      <Text>{`Ngày đóng bán: ${fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}` : ''}`}</Text>
+      <Text>{`Ngày bắt đầu nuôi: ${fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).format('DD/MM/YYYY HH:mm')}` : ''}`}</Text>
+      <br /> */}
+      <div className='list-fair'>
+        <List
+          itemLayout="horizontal"
+          dataSource={listData}
+          renderItem={(item) => (
+            <List.Item>
+              <List.Item.Meta
+                title={<span style={{
+                  marginTop: '4px'
+                }}>{item.title}</span>}
+              />
+              <div>{ item.value }</div>
+            </List.Item>
+          )}
+        />
+      </div>
+
+
       <ProTable
         headerTitle={(<>Danh sách cPass</>)}
         actionRef={actionRef}
@@ -346,8 +374,8 @@ const TableListFairDetail: React.FC = () => {
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: 'Trang sau',
+            prev_page: 'Trang trước',
           },
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
@@ -371,12 +399,12 @@ const TableListFairDetail: React.FC = () => {
         //dataSource={} 
         columns={columns}
         dataSource={fair?.c_passes}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
+      // rowSelection={{
+      //   onChange: (_, selectedRows: any) => {
 
-        //     setSelectedRows(selectedRows);
-        //   },
-        // }}
+      //     setSelectedRows(selectedRows);
+      //   },
+      // }}
       />
       {/* {selectedRowsState?.length > 0 && (
         // <FooterToolbar

@@ -222,6 +222,25 @@ const TableListFairDetail: React.FC = () => {
     },
 
     {
+      title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='Đã thanh toán' />,
+      dataIndex: 'megaS',
+      valueType: 'textarea',
+      key: 'megaS',
+      align: 'center',
+      render: (_, text: any) => {
+        if (text.check === 'owner') {
+          return (<>
+            <Checkbox checked disabled > </Checkbox>
+          </>)
+        }
+        return (<>
+          <Checkbox disabled > </Checkbox>
+        </>)
+
+      }
+    },
+
+    {
       title: <FormattedMessage id='pages.searchTable.column.mega' defaultMessage='Mega' />,
       dataIndex: 'mega',
       valueType: 'textarea',
@@ -229,20 +248,18 @@ const TableListFairDetail: React.FC = () => {
       render: (_, text: any) => {
         if (text.check === 'owner') {
           return (
-            <><Checkbox checked disabled > </Checkbox>
-              <a
-                onClick={() => {
-                  setCurrentRowUser(text.owner.id);
-                  setShowDetailUser(true);
-                }}
-              >
-                {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner.id}`}
-              </a>
-
-            </>)
+            <a
+              onClick={() => {
+                setCurrentRowUser(text.owner.id);
+                setShowDetailUser(true);
+              }}
+            >
+              {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner.id}`}
+            </a>
+          )
         }
         if (text.check === 'order') {
-          return (<><Checkbox disabled ></Checkbox>
+          return (
             <a
               onClick={() => {
                 setCurrentRowUser(text.megaOrder.id);
@@ -251,7 +268,7 @@ const TableListFairDetail: React.FC = () => {
             >
               {`${text?.megaOrder.fullname ? text?.megaOrder.fullname : text?.megaOrder.username} - ${text?.megaOrder.id}`}
             </a>
-          </>)
+          )
         }
       }
     },
@@ -316,7 +333,7 @@ const TableListFairDetail: React.FC = () => {
     },
     {
       title: 'Ngày đóng bán',
-      value: fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}`: ''
+      value: fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}` : ''
     },
     {
       title: 'Ngày bắt đầu nuôi',
@@ -332,26 +349,28 @@ const TableListFairDetail: React.FC = () => {
       <Text>{`Ngày đóng bán: ${fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}` : ''}`}</Text>
       <Text>{`Ngày bắt đầu nuôi: ${fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).format('DD/MM/YYYY HH:mm')}` : ''}`}</Text>
       <br /> */}
-      <div className='list-fair'>
-        <List
-          itemLayout="horizontal"
-          dataSource={listData}
-          renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                title={<span style={{
-                  marginTop: '4px'
-                }}>{item.title}</span>}
-              />
-              <div>{ item.value }</div>
-            </List.Item>
-          )}
-        />
-      </div>
+
 
 
       <ProTable
-        headerTitle={(<>Danh sách cPass</>)}
+        headerTitle={(<>
+          <div className='list-fair'>
+            <List
+              itemLayout="horizontal"
+              dataSource={listData}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    title={<span style={{
+                      marginTop: '4px'
+                    }}>{item.title}</span>}
+                  />
+                  <div>{item.value}</div>
+                </List.Item>
+              )}
+            />
+          </div>
+        </>)}
         actionRef={actionRef}
         rowKey='id'
         search={false}

@@ -1,8 +1,8 @@
 import DetailUser from '@/pages/components/DetailUser';
 import {
-  customAPIGet, 
+  customAPIGet,
 } from '@/services/ant-design-pro/api';
-import {  ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -48,7 +48,7 @@ const TableList: React.FC = () => {
 
 
   //const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
- // const [searchText, setSearchText] = useState('');
+  // const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
@@ -61,9 +61,11 @@ const TableList: React.FC = () => {
 
 
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-
+    confirm({
+      closeDropdown: false,
+    });
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -98,7 +100,7 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
@@ -106,7 +108,7 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-          
+
         </Space>
       </div>
     ),
@@ -214,7 +216,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'app',
       renderText: (_, entity: any) => {
-        return `${entity.fullname}`;
+        return ``;
       },
       //...getColumnSearchProps('mega')
     },
@@ -224,46 +226,50 @@ const TableList: React.FC = () => {
       dataIndex: 'types',
       valueType: 'textarea',
       key: 'types',
-      renderText: (_, text: any) => {
+      render: (_, text: any) => {
+        let types;
+
+        (<span style={{
+          color: 'green'
+        }}> </span>)
         switch (text?.types) {
           case 'buyAle':
-            return `Mua Ale`;
+            return (<span style={{
+              color: 'green'
+            }}>Mua Ale</span>) ;
             break;
 
           case 'sellAle':
-            return `Bán Ale`;
+            types = (<span style={{
+              color: 'green'
+            }}>Bán Ale </span>);
             break;
 
           case 'megaDeltaWeightproduceAle':
-            return `Nhận ProduceAle`;
+            types = `Nhận ProduceAle`;
             break;
           case 'qrCode':
-            return `Nạp Ale qua QRCode`;
+            types = `Nạp Ale qua QRCode`;
             break;
           case 'aleTransfer':
-            return `Chuyển Ale`;
+            types = `Chuyển Ale`;
             break;
           case 'produceAleExchangeAle':
-            return `Chuyển đổi ProduceAle`;
+            types = `Chuyển đổi ProduceAle`;
             break;
           case 'produceAleExchangePromo':
-            return `Chuyển đổi ProduceAle sang PromoAle`;
+            types = `Chuyển đổi ProduceAle sang PromoAle`;
             break;
-            case 'cpassPayment':
-              return `Thanh toán cPass`;
-              break;
-              case 'cpassSettlement':
-                return `Thanh quyết toán cPass`;
-                break;
+          case 'cpassPayment':
+            types = `Thanh toán cPass`;
+            break;
+          case 'cpassSettlement':
+            types = `Thanh quyết toán cPass`;
+            break;
           default:
             break;
         }
-        if (text?.types === 'buyAle') {
-          return `Mua Ale`;
-        }
-
-        else {
-        }
+        return types
       },
       filters: [
         {
@@ -275,8 +281,8 @@ const TableList: React.FC = () => {
           value: 'sellAle'
         }
       ],
-      onFilter:(value, record) => {
-        if(record.types === value){
+      onFilter: (value, record) => {
+        if (record.types === value) {
           return record
         }
         return null;
@@ -316,7 +322,7 @@ const TableList: React.FC = () => {
       dataIndex: 'location',
       valueType: 'textarea',
       key: 'location',
-      renderText: (_, text: any) => text?.location  ? text?.location : 'N/A'
+      renderText: (_, text: any) => text?.location ? text?.location : 'N/A'
     },
 
 
@@ -490,12 +496,12 @@ const TableList: React.FC = () => {
         columns={columns}
 
         toolbar={{
-          settings:[{
+          settings: [{
             key: 'reload',
             tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
+            onClick: () => {
+              if (actionRef.current) {
                 actionRef.current.reload();
               }
             }
@@ -512,7 +518,7 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-        
+
       // rowSelection={{
       //   onChange: (_, selectedRows: any) => {
       //     setSelectedRowsState(selectedRows);
@@ -561,7 +567,7 @@ const TableList: React.FC = () => {
       )} */}
 
 
-     
+
 
 
       {currentRowUser && (

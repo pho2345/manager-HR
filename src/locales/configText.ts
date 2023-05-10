@@ -129,6 +129,10 @@ export default {
     'page.DetailCPass.column.statusTransaction':'Tình trạng giao dịch',
     'page.DetailCPass.column.reasonSettlement':'Lý do quyết toán',
 
+    'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
+    'page.DetailCPass.message.removeCPassFair':'Loại bỏ cPass khỏi phiên?',
+
+
     'page.DetailFair.column.cPassPublished': 'cPass phát hành/Đã bán',
     'page.DetailFair.column.quantityMegeBuy': 'Số lượng Mega đã góp vốn',
     'page.DetailFair.column.switchNotify': 'Nhắc thanh toán',
@@ -424,15 +428,15 @@ export default {
     'page.transfer.transfer': 'Tặng Ale',
     'page.transfer.transferProduceAle': 'Chuyển đổi ProduceAle',
     'page.transfer.tooltip.buyAle': 'Mua Ale',
-
+    'page.transfer.choosen': 'Chọn Aleger',
 
     
      'page.transfer.produceAle': 'ProduceAle muốn chuyển',
      'page.transfer.rePromoAle': 'PromoAle nhận được',
      'page.transfer.reAle': 'Ale nhận được',
      'page.transfer.method': 'Phương thức chuyển đổi',
-     'page.transfer.ale': 'Nhập giá trị Ale muốn chuyển',
-     'page.buyAle.ale': 'Nhập giá trị Ale muốn mua',
+     'page.transfer.ale': 'Nhập số lượng Ale muốn chuyển',
+     'page.buyAle.ale': 'Nhập số lượng Ale muốn mua',
      'page.buyAle.vnd': 'Giá(VNĐ)',
      'page.buyAle.required.ale': 'Vui lòng nhập số lượng Ale',
 
@@ -441,7 +445,7 @@ export default {
     'page.sellAle.column.totalBuyAndConvert': 'Tổng Ale đã bán |VNĐ qui đổi (VNĐ)',
     'page.sellAle.column.timeSellAle': 'Số lần bán',
     'page.sellAle.tooltip.sellAle': 'Đặt bán Ale',
-    'page.sellAle.ale': 'Giá trị Ale muốn mua',
+    'page.sellAle.ale': 'Số lượng Ale muốn bán',
     'page.sellAle.required.ale': 'Vui lòng nhập số lượng Ale',
 
     //--------------------confirm transaction sell/buy ------------------
@@ -505,6 +509,7 @@ export default {
     'page.settlementMegaCancel.column.ageAndSlot': 'Tuổi/Snow',
     'page.settlementMegaCancel.column.bodyCondition': 'Thể trạng',
     'page.settlementMegaCancel.column.settlement': 'Thanh quyết toán',
+    'page.settlementMegaCancel.column.fair': 'Đợt mở bán',
 
     'page.confirmSettlementDeadOrSick.column.owner': 'Mega sở hữu',
     'page.confirmSettlementDeadOrSick.column.slot': 'Snow',

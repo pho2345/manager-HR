@@ -175,7 +175,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'vs',
       renderText: (_, text: any) => {
-        return text?.vs;
+        return text?.vs.toLocaleString();
       }
     },
     {
@@ -194,7 +194,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaS',
       valueType: 'textarea',
       key: 'megaS',
-      renderText: (_, text: any) => text?.megaS
+      renderText: (_, text: any) => text?.megaS.toLocaleString()
     },
 
     {

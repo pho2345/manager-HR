@@ -2,7 +2,7 @@ import {
   customAPIGetOne,
   customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -15,7 +15,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { useParams } from '@umijs/max';
-import { Button, Checkbox, Form, message, Modal, Tooltip } from 'antd';
+import { Button, Checkbox, Form, Input, message, Modal, Space, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -96,13 +96,121 @@ const TableList: React.FC = () => {
   }, []);
 
 
+  const searchInput = useRef(null);
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+
+    console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    // setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+    if(dataIndex === 'user'){
+      if (record.sender['id'] && record.sender['id'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.sender['id'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+      if (record.sender['username'] && record.sender['username'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.sender['username'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if (record.sender['email'] && record.sender['email'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.sender['email'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if (record.sender['phone'] && record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      if (record.sender['passport'] && record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+    }
+
+    if(dataIndex === 'cPass'){
+
+    }if (record.c_pass['code'] && record.c_pass['code'].toString().toLowerCase().includes(value.toLowerCase())) {
+        return record.c_pass['code'].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      return null;
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        //setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+
+    // }
+
+  });
+
 
   const columns: ProColumns<any>[] = [
     {
       // title: <FormattedMessage id='pages.searchTable.column.mega' defaultMessage='Mega' />,
       title: configDefaultText['page.ManagerCPass.column.mega'],
       key: 'code',
+      width: '30vh',
       dataIndex: 'atrributes',
+      ...getColumnSearchProps('user'),
       render: (_, entity: any) => {
         return (
           <><a
@@ -159,6 +267,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'category',
+      ...getColumnSearchProps('cPass'),
       render: (_, text: any) => {
         return (<>
           {text?.c_pass?.code}
@@ -236,7 +345,7 @@ const TableList: React.FC = () => {
         let status;
         switch (text?.status) {
           case 'waitConfirm':
-            status = `Chờ xác nhận thanh toán`
+            status = text?.colorStatusTransaction?.name
             break;
           case 'inProgress':
             status = `Đã thanh toán bằng VNĐ, Chờ xác nhận`
@@ -253,7 +362,9 @@ const TableList: React.FC = () => {
           default:
             break;
         }
-        return status;
+        return <span style={{
+          color: text?.colorStatusTransaction?.color || 'black'
+        }}>{status}</span>;
       }
     },
 
@@ -293,7 +404,10 @@ const TableList: React.FC = () => {
             </Tooltip>);
         }
 
-        if (entity?.status === 'waitConfirm' || (entity?.status === 'inProgress' && entity?.method === 'vnd') && entity?.ale <= entity?.aleWallet?.availableBalance) {
+        if ((entity?.status === 'waitConfirm' || (entity?.status === 'inProgress' && entity?.method === 'vnd')) && entity?.ale <= entity?.aleWallet?.availableBalance) {
+          console.log(
+            'day', entity.id
+          )
           button.push(<>
             <Tooltip title={configDefaultText['pay']}>
               <MdOutlinePaid

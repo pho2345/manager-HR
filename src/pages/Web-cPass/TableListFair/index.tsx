@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
-import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SettingOutlined } from '@ant-design/icons';
+import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link } from '@umijs/max';
-import {  Button, Col, Form, message, Modal, Row, Tooltip } from 'antd';
+import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
@@ -42,7 +42,7 @@ const handleAdd = async (fields: any) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error:any) {
+  } catch (error: any) {
     hide();
     message.error(error?.response.data.error.message);
     return false;
@@ -93,7 +93,7 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error: any) {  
+  } catch (error: any) {
     hide();
     message.error(error?.response?.data.error.message);
     return false;
@@ -136,6 +136,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [plan, setPlan] = useState<any>();
+  const searchInput = useRef(null);
 
   const [currentFair, setCurrentFair] = useState<any>();
   const [showModalCPass, setShowModalCPass] = useState<boolean>(false);
@@ -149,6 +150,83 @@ const TableList: React.FC = () => {
     getData();
   }, []);
 
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          width={`15px`}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+         
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
 
 
   // Generate the intl object
@@ -156,14 +234,14 @@ const TableList: React.FC = () => {
   const confirm = (entity: any) => {
     Modal.confirm({
 
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: 'Bạn có muốn xóa?',
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       const removeFair =  await handleRemove(entity);
-        if (actionRef.current) {
+        const removeFair = await handleRemove(entity);
+        if (actionRef.current && removeFair) {
           // await actionRef.current?.reloadAndRest?.();
           // setSelectedRows([]);
         }
@@ -182,6 +260,7 @@ const TableList: React.FC = () => {
       dataIndex: 'code',
       // title: <FormattedMessage id='page.listFair.columns.code' defaultMessage='Đợt mở bán' />,
       title: configDefaultText['page.listFair.columns.code'],
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           <a
@@ -227,7 +306,11 @@ const TableList: React.FC = () => {
       key: 'dateStartFeed',
       renderText: (_, text: any) => {
         {
-          const weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+          let indexWeek = moment(text?.dateStartFeed).weekday();
+          let weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+          if(indexWeek === 0) {
+            weekday = 'CN';
+          }
           return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
         }
       }
@@ -356,65 +439,79 @@ const TableList: React.FC = () => {
         let configButton = [];
         configButton.push( /// button copy
           <>
-            <Tooltip title={configDefaultText['page.listFair.copy']}><CopyTwoTone
-              style={{
-                fontSize: 20,
-                paddingLeft: 5
-              }}
-
-              onClick={async () => {
-                handleCopyModalOpen(true);
-                const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
-                fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                delete fair.c_passes;
-                const plans = fair.plans.map((e: any) => {
-                  return e?.id
-                })
-                form.setFieldsValue({
-                  ...fair,
-                  plans
-                })
-              }
-              }
-            /></Tooltip>
-
-            <Tooltip title={configDefaultText['page.listFair.addCPass']}>
-              <FileAddTwoTone
+            <Row gutter={[16, 16]}>
+              <Col span={6}> <Tooltip title={configDefaultText['page.listFair.copy']}><CopyTwoTone
                 style={{
                   fontSize: 20,
                   paddingLeft: 5
                 }}
-                onClick={() => {
-                  setCurrentFair(entity?.id);
-                  setShowModalCPass(true);
-                }}
 
-              ></FileAddTwoTone></Tooltip>
-
-            <Tooltip title={configDefaultText['page.listFair.assign']}>
-              <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
-                <PlusOutlined
+                onClick={async () => {
+                  handleCopyModalOpen(true);
+                  const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+                  fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                  delete fair.c_passes;
+                  const plans = fair.plans.map((e: any) => {
+                    return e?.id
+                  })
+                  form.setFieldsValue({
+                    ...fair,
+                    plans
+                  })
+                }
+                }
+              /></Tooltip>
+              </Col>
+              <Col span={6} style={{
+                   paddingLeft: '15px'
+              }}>  <Tooltip title={configDefaultText['page.listFair.addCPass']}>
+                <FileAddTwoTone
                   style={{
                     fontSize: 20,
                     paddingLeft: 5
                   }}
                   onClick={() => {
+                    setCurrentFair(entity?.id);
+                    setShowModalCPass(true);
                   }}
-                />
-              </Link></Tooltip>
 
-            <Tooltip title={configDefaultText['page.listFair.manager']}>
-              <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
-                <SettingOutlined
-                  style={{
-                    fontSize: 20,
-                    paddingLeft: 5
-                  }}
-                />
-              </Link> </Tooltip>
+                ></FileAddTwoTone></Tooltip> </Col>
+            </Row>
+
+
+            <Row gutter={[16, 16]}>
+              <Col span={6}>  <Tooltip title={configDefaultText['page.listFair.assign']}>
+                <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
+                  <PlusOutlined
+                    style={{
+                      fontSize: 20,
+                      paddingLeft: 5
+                    }}
+                    onClick={() => {
+                    }}
+                  />
+                </Link></Tooltip>
+              </Col>
+              <Col span={6} style={{
+                paddingLeft: '15px'
+              }}>  <Tooltip title={configDefaultText['page.listFair.manager']}>
+                <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
+                  <SettingOutlined
+                    style={{
+                      fontSize: 20,
+                      paddingLeft: 5
+                    }}
+                  />
+                </Link> </Tooltip> </Col>
+            </Row>
+
+
+
+
+
           </>
         )
         if (entity?.status === 'noOpen') {
@@ -461,10 +558,10 @@ const TableList: React.FC = () => {
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-     
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
+
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
@@ -474,7 +571,7 @@ const TableList: React.FC = () => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
+          <Button onClick={async () => {
             await confirm(selectedRowsState);
             setSelectedRows([]);
             actionRef.current?.reloadAndRest?.();
@@ -541,13 +638,13 @@ const TableList: React.FC = () => {
 
           }}
 
-          tableAlertRender={({selectedRowKeys}: any) => {
+          tableAlertRender={({ selectedRowKeys }: any) => {
             return renderTableAlert(selectedRowKeys);
           }}
 
 
-          tableAlertOptionRender={({  selectedRows, onCleanSelected}: any) => {
-           return renderTableAlertOption(selectedRows, onCleanSelected)
+          tableAlertOptionRender={({ selectedRows }: any) => {
+            return renderTableAlertOption(selectedRows)
           }}
 
           toolbar={{
@@ -580,7 +677,7 @@ const TableList: React.FC = () => {
 
         />
 
-       
+
 
         <ModalForm
           // title={<FormattedMessage id='page.listFair.create' defaultMessage='Tạo mới Phiên mở bán' />}
@@ -644,7 +741,7 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDigit className='w-full'
-                name='unitPriceMeat' 
+                name='unitPriceMeat'
                 placeholder={configDefaultText['page.listFair.column.unitPriceMeat']}
                 min={1000}
                 //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
@@ -1037,7 +1134,7 @@ const TableList: React.FC = () => {
           }}
         >
           <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
+            <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 name="c_passes"
                 label={configDefaultText['page.listFair.column.c_passes']}
@@ -1208,7 +1305,7 @@ const TableList: React.FC = () => {
             </Col>
           </Row>
 
-       
+
         </ModalForm>
 
 

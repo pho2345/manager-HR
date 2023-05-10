@@ -89,7 +89,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
-        return moment(text?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY');
+        return moment(text?.birthdate).format('DD/MM/YYYY');
       }
 
     },
@@ -110,7 +110,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'dateInStable',
       renderText: (_, text: any) => {
-        return text?.dateInStable
+        return  moment(text?.dateInStable).format('DD/MM/YYYY')
       }
     },
 
@@ -131,8 +131,13 @@ const TableList = (props: any) => {
       key: 'age',
       renderText: (_, text: any) => {
         let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `0`;
+        }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+
         return confiAge;
+
       }
     },
 
@@ -152,21 +157,8 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-        switch (text?.bodyCondition) {
-          case 'good':
-            return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
-          case 'malnourished':
-            return (<Text>Suy dinh dưỡng</Text>);
-          case 'weak':
-            return (<Text style={{ color: '#FF9900' }}>Yếu</Text>);
-          case 'sick':
-            return (<Text style={{ color: '#FF3333' }}>Bệnh</Text>);
-          case 'dead':
-            return (<Text style={{ color: '#FF0000' }}>Chết</Text>)
-          default:
-            break;
-        }
-        return null;
+       
+        return (<Text style={{ color: text?.colorBodyCondition?.color }}>{text?.colorBodyCondition?.name}</Text>);
       },
       filters: true,
       onFilter: true,

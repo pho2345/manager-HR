@@ -55,7 +55,7 @@ const TableListFairDetail: React.FC = () => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: configDefaultText['textConfirmRemoveMegaCPass'],
+      content: message,
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -350,9 +350,8 @@ const TableListFairDetail: React.FC = () => {
               style={{
                 fontSize: 20,
                 paddingLeft: 5,
-                color: 'red'
               }}
-              onClick={() => confirm(entity, 'loại bỏ Mega khỏi cPass', 'c-passes/update/removemega', null as any)} />
+              onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassMega'], 'c-passes/update/removemega', null as any)} />
           </Tooltip>);
         }
 
@@ -363,7 +362,6 @@ const TableListFairDetail: React.FC = () => {
                 style={{
                   fontSize: 20,
                   paddingLeft: 5,
-                  color: 'blue'
                 }}
                 onClick={() => {
                   setCurrentCPass(entity.id);
@@ -374,9 +372,8 @@ const TableListFairDetail: React.FC = () => {
                 style={{
                   fontSize: 20,
                   paddingLeft: 5,
-                  color: 'red'
                 }}
-                onClick={() => confirm(entity, 'loại bỏ cPass khỏi phiên', 'fairs/remove-cpasses', params.id)} />
+                onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)} />
             </Tooltip>
           </>);
         }

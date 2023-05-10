@@ -223,7 +223,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      title: configDefaultText['fair'],
+      title: configDefaultText['page.settlementMegaCancel.column.fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -411,6 +411,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               setSelectedRowsCPass(selectedRows);
             },
           }}
+
+         
 
           pagination={{
             locale: {

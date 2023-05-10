@@ -247,22 +247,24 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'edit',
       render: (_, record) => {
-        return [
-          (<><Button
+        return (<><Button
             onClick={() => {
               handleUpdateModalOpen(true);
               form.setFieldsValue({
                 ...detailUser?.user
               })
             }}
-          >Sửa Thông tin</Button></>),
-          (<><Button
+          >Sửa Thông tin</Button>
+          <Button
             type="primary"
+            style={{
+              marginLeft: '10px'
+            }}
             onClick={() => confirm({
               userId: record?.id
             }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], 'users/disabled')} danger
           >{record?.disabled ? configDefaultText['page.DetailAleger.column.openDisabled'] : configDefaultText['page.DetailAleger.column.disabled']}</Button></>)
-        ]
+        
       }
     },
 
@@ -276,7 +278,7 @@ const TableList = (props: any) => {
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
-      renderText: (_, text) => text?.ale
+      renderText: (_, text) => text?.ale.toLocaleString()
     },
 
     {
@@ -285,7 +287,7 @@ const TableList = (props: any) => {
       dataIndex: 'quantityAleRecharge',
       valueType: 'textarea',
       key: 'quantityAleRecharge',
-      renderText: (_, text) => text?.quantityAleRecharge
+      renderText: (_, text) => text?.quantityAleRecharge.toLocaleString()
     },
 
     {
@@ -294,7 +296,7 @@ const TableList = (props: any) => {
       dataIndex: 'aleUsed',
       valueType: 'textarea',
       key: 'aleUsed',
-      renderText: (_, text) => text?.aleUsed
+      renderText: (_, text) => text?.aleUsed.toLocaleString()
     },
 
     {
@@ -303,7 +305,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
-      renderText: (_, text) => text?.produceAle
+      renderText: (_, text) => text?.produceAle.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
@@ -311,7 +313,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'promoAle',
-      renderText: (_, text) => text?.promoAle
+      renderText: (_, text) => text?.promoAle.toLocaleString()
     },
     {
       title: '',
@@ -334,7 +336,7 @@ const TableList = (props: any) => {
       dataIndex: 'totalCPassCurrent',
       valueType: 'textarea',
       key: 'totalCPassCurrent',
-      renderText: (_, text) => text?.totalCPassCurrent
+      renderText: (_, text) => text?.totalCPassCurrent.toLocaleString()
     },
 
     {
@@ -343,7 +345,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaDeltaWeightCurrent',
       valueType: 'textarea',
       key: 'megaDeltaWeightCurrent',
-      renderText: (_, text) => text?.megaDeltaWeightCurrent
+      renderText: (_, text) => text?.megaDeltaWeightCurrent.toLocaleString()
     },
 
     {
@@ -352,7 +354,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAleCurrent',
       valueType: 'textarea',
       key: 'megaWeightCurrent',
-      renderText: (_, text) => text?.megaWeightCurrent
+      renderText: (_, text) => text?.megaWeightCurrent.toLocaleString()
     },
 
     {
@@ -361,7 +363,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaWeightCurrent',
       valueType: 'textarea',
       key: 'megaWeightCurrent',
-      renderText: (_, text) => text?.megaWeightCurrent
+      renderText: (_, text) => text?.megaWeightCurrent.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaECurrent' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
@@ -369,7 +371,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaECurrent',
       valueType: 'textarea',
       key: 'megaECurrent',
-      renderText: (_, text) => text?.megaECurrent
+      renderText: (_, text) => text?.megaECurrent.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaCPRCurrent' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
@@ -424,7 +426,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaEHistory',
       valueType: 'textarea',
       key: 'megaEHistory',
-      renderText: (_, text) => text?.megaEHistory
+      renderText: (_, text) => text?.megaEHistory.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaCPRHistory' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,

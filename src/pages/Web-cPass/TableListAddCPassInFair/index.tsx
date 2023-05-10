@@ -1,13 +1,13 @@
 import { customAPIGet, customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, message, Modal } from 'antd';
+import { Button, Input, message, Modal, Space } from 'antd';
 import { Typography } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
 import "./styles.css";
@@ -43,11 +43,14 @@ const getFair = async (id: number) => {
 
 
 
+
+
 const TableListAddCPassInFair = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  const searchInput = useRef(null);
 
 
 
@@ -65,7 +68,8 @@ const TableListAddCPassInFair = (props: any) => {
           ...entity
         }, api, id);
         if (actionRef.current) {
-          actionRef.current.reload();
+          actionRef.current?.reloadAndRest?.();
+          setSelectedRows([]);
         }
       }
     });
@@ -81,12 +85,90 @@ const TableListAddCPassInFair = (props: any) => {
     fetchDataFair();
   }, [props.currentFair]);
 
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e: any) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+         
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
+
   const columns: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
       //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.addCPassInFair.column.code'],
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           // <Text>{`${entity.code}|${entity.id}`}</Text>
@@ -213,6 +295,30 @@ const TableListAddCPassInFair = (props: any) => {
 
 
 
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+  
+  
+  function renderTableAlertOption(selectedRows: any, clean: any) {
+    return (
+      <>
+        <Fragment>
+          <Button onClick={async () => {
+            // await confirm(selectedRows as any, 'xóa', actionRef);
+            clean();
+          }}>Bỏ chọn</Button>
+        </Fragment>
+      </>
+    );
+  }
+  
+
   return (
     <>
 
@@ -300,6 +406,14 @@ const TableListAddCPassInFair = (props: any) => {
               }
             }]
           }}
+
+          tableAlertRender={({ selectedRowKeys }: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+  
+  
+          tableAlertOptionRender={false}
+  
         />
         {currentRow && (
           <DetailCPass

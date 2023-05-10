@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import {  ExclamationCircleOutlined, ReloadOutlined, SearchOutlined  } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect } from '@ant-design/pro-components';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -172,6 +172,7 @@ const TableListAssignCPass = () => {
           actionRef.current.reload();
           setShowModal(false);
           setConvertAle(0);
+          setConvertVnd(0);
 
         }
 
@@ -304,46 +305,48 @@ const TableListAssignCPass = () => {
 
   const handleFeeTransaction = (value: number) => {
     let rateFee;
-    for(let i = 0; i < rateConvert.feeTransaction.length; i++) {
-      let e =  rateConvert.feeTransaction[i];
-    
-      if(value > e?.rangeFrom && value < e?.rangeTo && e?.rangeFrom === 0 && e?.typeValue === 'lesser'){
-          rateFee = e;
-          break;
+    for (let i = 0; i < rateConvert.feeTransaction.length; i++) {
+      let e = rateConvert.feeTransaction[i];
+
+      if (value > e?.rangeFrom && value < e?.rangeTo && e?.rangeFrom === 0 && e?.typeValue === 'lesser') {
+        rateFee = e;
+        break;
       }
 
-      if(value >= e?.rangeFrom && value < e?.rangeTo){
-          rateFee = e;
-          break;
+      if (value >= e?.rangeFrom && value <= e?.rangeTo && e?.typeValue === 'range') {
+        rateFee = e;
+        break;
       }
 
-      if (value >= e?.rangeFrom && e?.rangeTo === 0 && e?.typeValue === 'greater') {
-          rateFee = e;
-          break;
-        }
-   }
+      if (value > e?.rangeFrom && e?.rangeTo === 0 && e?.typeValue === 'greater') {
+        rateFee = e;
+        break;
+      }
+    }
 
-   let priceVnd = 0, fee;
-   
-   switch (rateFee.types) {
-     case 'free':
-       fee = 0;
-       priceVnd = rateConvert?.rateAle * value;
-       break;
-     case 'cash':
-       priceVnd = rateConvert?.rateAle * value - rateFee.valueFee;
-       fee = rateFee.valueFee;
-       break;
-     case 'percent':
-       priceVnd = rateConvert?.rateAle * value;
-       fee = Math.floor((priceVnd * rateFee.valueFee)/ 1000) * 1000;
-       priceVnd = priceVnd - fee;
-       break;
-     default:
-       break;
-   }
-   
-   setConvertVnd(priceVnd);
+    let priceVnd = 0, fee;
+    console.log('rateFee', rateFee);
+
+    switch (rateFee.types) {
+      case 'free':
+        fee = 0;
+        priceVnd = rateConvert?.rateAle * value;
+        break;
+      case 'cash':
+        priceVnd = rateConvert?.rateAle * value - rateFee.valueFee;
+        fee = rateFee.valueFee;
+        break;
+      case 'percent':
+        priceVnd = rateConvert?.rateAle * value;
+        fee = Math.round((priceVnd * rateFee.valueFee / 100) / 1000) * 1000;
+        // fee = (priceVnd * rateFee.valueFee / 100);
+        priceVnd = priceVnd - fee;
+        break;
+      default:
+        break;
+    }
+
+    setConvertVnd(priceVnd);
   }
 
 
@@ -446,18 +449,27 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormMoney
+            <ProFormDigit
               label={configDefaultText['page.sellAle.ale']}
               name="ale"
               min={1}
               max={currentRowUser?.availableBalance}
-              customSymbol='A'
               placeholder='Ale'
               fieldProps={{
                 onChange: (e: any) => {
-                  setConvertAle(e);
-                  handleFeeTransaction(e)
-                }
+                  console.log(e);
+                  if (typeof e !== 'undefined') {
+                    setConvertAle(e);
+                    handleFeeTransaction(e)
+                  }
+                  else {
+                    setConvertVnd(0)
+                  }
+
+                },
+                formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                precision: 2
+
               }}
               rules={[
                 {
@@ -518,18 +530,9 @@ const TableListAssignCPass = () => {
                 value: convertVnd
               }}
             />
-
           </Col>
         </Row>
-
-
-
-
-
-
-
       </ModalForm>
-
     </>
   );
 };

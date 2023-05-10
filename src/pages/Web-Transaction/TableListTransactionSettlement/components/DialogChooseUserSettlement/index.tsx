@@ -1,11 +1,11 @@
 import { customAPIGet } from '@/services/ant-design-pro/api';
-import {  SearchOutlined } from '@ant-design/icons';
+import {  SearchOutlined ,ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
+
 import { Button, Space, Input, Tooltip, } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
@@ -259,7 +259,18 @@ const DialogTransfer = (props: any) => {
             }
           }}
 
-          
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: configDefaultText['reload'],
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
+          }}
 
 
         />

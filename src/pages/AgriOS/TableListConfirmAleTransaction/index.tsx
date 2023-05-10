@@ -211,12 +211,12 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         if (text?.types === 'buyAle') {
           return (<span style={{
-            color: 'red'
+            color: 'green'
           }}> Mua Ale</span>);
         }
         else {
           return   (<span style={{
-            color: 'green'
+            color: 'red'
           }}> Bán Ale</span>);;
         }
       },

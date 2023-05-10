@@ -204,7 +204,9 @@ const TableList: React.FC = () => {
           types: types
         }, api);
         if (actionRef.current) {
-          actionRef.current.reload();
+          // actionRef.current.reload();
+          actionRef.current?.reloadAndRest?.();
+
         }
       }
     });
@@ -246,7 +248,7 @@ const TableList: React.FC = () => {
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      title: configDefaultText['fair'],
+      title: configDefaultText['page.settlementMegaCancel.column.fair'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -433,27 +435,27 @@ const TableList: React.FC = () => {
 
 
 
-  function renderTableAlert(selectedRowKeys: any) {
-    return (
-      <Fragment>
-        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-      </Fragment>
-    );
-  }
+  // function renderTableAlert(selectedRowKeys: any) {
+  //   return (
+  //     <Fragment>
+  //       Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+  //     </Fragment>
+  //   );
+  // }
 
 
-  function renderTableAlertOption(selectedRows: any) {
-    return (
-      <>
-        <Fragment>
-          <Button onClick={async () => {
-            // await confirm(selectedRows as any, 'xóa', actionRef);
-            actionRef.current?.reloadAndRest?.();
-          }}>Xóa</Button>
-        </Fragment>
-      </>
-    );
-  }
+  // function renderTableAlertOption(selectedRows: any) {
+  //   return (
+  //     <>
+  //       <Fragment>
+  //         <Button onClick={async () => {
+  //           // await confirm(selectedRows as any, 'xóa', actionRef);
+  //           actionRef.current?.reloadAndRest?.();
+  //         }}>Xóa</Button>
+  //       </Fragment>
+  //     </>
+  //   );
+  // }
 
 
   return (
@@ -512,14 +514,14 @@ const TableList: React.FC = () => {
 
         }
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-            setSelectedRows(selectedRows);
-          },
-          getCheckboxProps: record => ({
-            disabled: record.status === 'done'
-          })
-        }}
+        // rowSelection={{
+        //   // onChange: (_, selectedRows: any) => {
+        //   //   setSelectedRows(selectedRows);
+        //   // },
+        //   // getCheckboxProps: record => ({
+        //   //   disabled: record.status === 'done'
+        //   // })
+        // }}
 
         toolbar={{
           settings: [{
@@ -544,14 +546,10 @@ const TableList: React.FC = () => {
           }
         }}
 
-        tableAlertRender={({ selectedRowKeys }: any) => {
-          return renderTableAlert(selectedRowKeys);
-        }}
+        tableAlertRender={false}
 
 
-        tableAlertOptionRender={({ selectedRows }: any) => {
-          return renderTableAlertOption(selectedRows)
-        }}
+        tableAlertOptionRender={false}
 
       />
       {

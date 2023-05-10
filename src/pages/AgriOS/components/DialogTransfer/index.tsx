@@ -1,5 +1,5 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -167,7 +167,7 @@ const DialogTransfer = (props: any) => {
 
   const confirm = (entity: any, message: string, api: string) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: message,
       okText: 'Có',
@@ -225,7 +225,7 @@ const DialogTransfer = (props: any) => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return text?.ale.toLocaleString();
       }
     },
     {
@@ -235,7 +235,7 @@ const DialogTransfer = (props: any) => {
       valueType: 'textarea',
       key: 'availableBalance',
       renderText: (_, text: any) => {
-        return text?.availableBalance;
+        return text?.availableBalance.toLocaleString();
       }
     },
     {
@@ -245,7 +245,7 @@ const DialogTransfer = (props: any) => {
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => {
-        return text?.produceAle;
+        return text?.produceAle.toLocaleString();
       }
     },
 
@@ -256,7 +256,7 @@ const DialogTransfer = (props: any) => {
       valueType: 'textarea',
       key: 'promoAle',
       renderText: (_, text: any) => {
-        return text?.promoAle;
+        return text?.promoAle.toLocaleString();
       }
     },
     {
@@ -268,7 +268,7 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.transfer']}> <MdOutlineCompareArrows
+            <Tooltip title={configDefaultText['page.transfer.choosen']}> <MdOutlineCompareArrows
               style={{
                 fontSize: 25,
               }}
@@ -334,7 +334,18 @@ const DialogTransfer = (props: any) => {
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
-
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: configDefaultText['reload'],
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
+          }}
 
 
         />

@@ -71,6 +71,7 @@ const handleUpdate = async (fields: any, id: any) => {
         ...fieldCow,
       },
       'cows',
+      cow.value
     );
     const updateCPass = customAPIUpdate(
       {
@@ -498,8 +499,13 @@ const TableList: React.FC = () => {
       key: 'age',
       renderText: (_, text: any) => {
         let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `0`;
+        }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+
         return confiAge;
+
       }
     },
     {

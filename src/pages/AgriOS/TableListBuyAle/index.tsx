@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney, } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -383,18 +383,20 @@ const TableListAssignCPass = () => {
         <br />
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormMoney
+            <ProFormDigit
               className='w-full'
               label={configDefaultText['page.buyAle.ale']}
               name="ale"
               min={1}
-              customSymbol='A'
+              
               placeholder={configDefaultText['page.buyAle.ale']}
               fieldProps={{
                 value: convertAle,
                 onChange: (e: any) => {
                   setConvertAle(e);
-                }
+                },
+               //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                precision: 2
               }}
               rules={[
                 {

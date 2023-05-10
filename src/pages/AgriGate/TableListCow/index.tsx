@@ -64,7 +64,6 @@ const handleAdd = async (fields: any) => {
     return true;
   } catch (error: any) {
     //hide();
-    // message.error('poi')
     message.error(error?.response?.data?.error?.message);
     return false;
   }
@@ -91,8 +90,6 @@ const handleUpdate = async (fields: any, id: any) => {
         return null;
       });
     }
-
-
     await Promise.all(uploadImages);
     await customAPIUpdate(
       {
@@ -149,7 +146,7 @@ const getFarm = async () => {
   let data = categories.data.map((e: any) => {
     return {
       value: e?.id,
-      text :e?.attributes?.name,
+      text: e?.attributes?.name,
       label: e?.attributes?.name,
     };
   });
@@ -195,6 +192,7 @@ const TableList: React.FC = () => {
     };
     getValues();
   }, []);
+
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
@@ -248,7 +246,7 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -260,7 +258,7 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
@@ -270,7 +268,6 @@ const TableList: React.FC = () => {
     },
     // render: (text: any) =>{
     // }
-
   });
 
 
@@ -293,9 +290,9 @@ const TableList: React.FC = () => {
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
@@ -304,7 +301,7 @@ const TableList: React.FC = () => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
+          <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
             // actionRef.current?.reloadAndRest?.();
@@ -320,14 +317,14 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.listCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
-     ...getColumnSearchProps('code'),
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           <>{entity?.code}</>
         );
       },
     },
-    
+
     {
       // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
       title: configDefaultText['page.listCow.column.name'],
@@ -442,7 +439,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.category?.name,
       filters: category,
       onFilter: (value, record) => {
-       return record.category.id === value;
+        return record.category.id === value;
 
       }
     },
@@ -454,11 +451,11 @@ const TableList: React.FC = () => {
       key: 'age',
       renderText: (_, text: any) => {
         let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
-        if(age === 0){
+        if (age === 0) {
           return `0`;
         }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
-        
+
         return confiAge;
       }
     },
@@ -610,44 +607,44 @@ const TableList: React.FC = () => {
             // },
           }}
 
-          tableAlertRender={({selectedRowKeys}: any) => {
+          tableAlertRender={({ selectedRowKeys }: any) => {
             return renderTableAlert(selectedRowKeys);
           }}
-  
-  
-          tableAlertOptionRender={({  selectedRows}: any) => {
-           return renderTableAlertOption(selectedRows)
+
+
+          tableAlertOptionRender={({ selectedRows }: any) => {
+            return renderTableAlertOption(selectedRows)
           }}
-  
+
         />
         {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
+          // selectedRowsState?.length > 0 && (
+          //   <FooterToolbar
+          //     extra={
+          //       <div>
+          //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+          //         {`${configDefaultText['chosen']} `}
+          //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+          //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+          //         {configDefaultText['selectedItem']}
 
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
+          //       </div>
+          //     }
+          //   >
+          //     <Button
+          //       onClick={async () => {
 
-        //         confirm(selectedRowsState, 'Bạn có muốn xóa?')
-        //         // await handleRemove(selectedRowsState);
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['delete']}
-        //     </Button>
+          //         confirm(selectedRowsState, 'Bạn có muốn xóa?')
+          //         // await handleRemove(selectedRowsState);
+          //         setSelectedRows([]);
+          //         actionRef.current?.reloadAndRest?.();
+          //       }}
+          //     >
+          //       {configDefaultText['delete']}
+          //     </Button>
 
-        //   </FooterToolbar>
-        // )
+          //   </FooterToolbar>
+          // )
         }
 
         <ModalForm
@@ -1010,15 +1007,27 @@ const TableList: React.FC = () => {
             </Col>
 
             <Col span={12} className="gutter-row p-0">
-              <ProFormText className='w-full' name='age'
-                label={configDefaultText['page.listCow.column.age']}
-                placeholder={configDefaultText['page.listCow.column.age']}
+              <ProFormSelect
+                className='w-full'
+                name='sex'
+
+                label={configDefaultText['page.listCow.column.sex']}
+                placeholder={configDefaultText['page.listCow.column.sex']}
+                options={[
+                  {
+                    label: 'Đực',
+                    value: 'male',
+                  },
+                  {
+                    label: 'Cái',
+                    value: 'female',
+                  },
+                ]}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
-                  { required: true, message: configDefaultText['page.listCow.required.age'] },
+                  // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
+                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
                 ]}
               />
-
             </Col>
           </Row>
 
@@ -1082,29 +1091,7 @@ const TableList: React.FC = () => {
               />
             </Col>
 
-            <Col span={12} className="gutter-row p-0">
-              <ProFormSelect
-                className='w-full'
-                name='sex'
 
-                label={configDefaultText['page.listCow.column.sex']}
-                placeholder={configDefaultText['page.listCow.column.sex']}
-                options={[
-                  {
-                    label: 'Đực',
-                    value: 'male',
-                  },
-                  {
-                    label: 'Cái',
-                    value: 'female',
-                  },
-                ]}
-                rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
-                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
-                ]}
-              />
-            </Col>
           </Row>
 
           <ProFormUploadButton

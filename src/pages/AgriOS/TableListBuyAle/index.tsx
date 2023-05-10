@@ -1,5 +1,5 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney, } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -157,20 +157,19 @@ const TableListAssignCPass = () => {
 
   const confirm = (entity: any, content: string, api: string) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: content,
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        await handleAdd(entity, api);
+       const checkSuccess = await handleAdd(entity, api);
 
-        if (actionRef.current) {
+        if (actionRef.current && checkSuccess) {
           actionRef.current.reload();
           setShowModal(false);
           setConvertAle(0);
           // setTypeConvert(false);
-
         }
 
       }
@@ -359,7 +358,7 @@ const TableListAssignCPass = () => {
           },
             `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện mua ${convertAle} Ale?`,
             'transactions/buy-ale-admin');
-          form.resetFields();
+         // form.resetFields();
 
           return true
         }}
@@ -379,7 +378,7 @@ const TableListAssignCPass = () => {
           },
         }}
       >
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle.toLocaleString()} VNĐ</Text>
 
         <br />
         <Row gutter={24} className="m-0">

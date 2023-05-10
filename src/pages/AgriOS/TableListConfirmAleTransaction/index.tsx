@@ -158,7 +158,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, content: string, api: string) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: content,
       okText: 'Có',
@@ -208,12 +208,16 @@ const TableList: React.FC = () => {
       dataIndex: 'types',
       valueType: 'textarea',
       key: 'types',
-      renderText: (_, text: any) => {
+      render: (_, text: any) => {
         if (text?.types === 'buyAle') {
-          return `Mua Ale`;
+          return (<span style={{
+            color: 'red'
+          }}> Mua Ale</span>);
         }
         else {
-          return `Bán Ale`;
+          return   (<span style={{
+            color: 'green'
+          }}> Bán Ale</span>);;
         }
       },
       filters: [

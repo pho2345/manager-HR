@@ -85,7 +85,7 @@ const confirm = (entity: any, message: string, actionRef: any) => {
       // }, api, id);
       await handleRemove(entity);
       if (actionRef.current) {
-        actionRef.current.reload();
+        actionRef.current?.reloadAndRest?.();
       }
     }
   });
@@ -315,7 +315,7 @@ const TableList: React.FC = () => {
         <Fragment>
         <Button onClick={async () => {
              await confirm(selectedRows as any, 'xóa', actionRef);
-            actionRef.current?.reloadAndRest?.();
+            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -346,7 +346,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({ 'populate[0]': 'address.ward.district.province', 'populate[1]': 'owner' }, 'farms')}
+        request={() => customAPIGet({ 'populate[0]': 'address.ward.district.province', 'populate[1]': 'owner',  'sort[0]': 'createdAt:desc' }, 'farms')}
         columns={columns}
         rowSelection={{
           // onChange: (_, selectedRows: any) => {

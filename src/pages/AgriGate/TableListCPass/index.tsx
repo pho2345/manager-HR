@@ -404,6 +404,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'name',
+      ...getColumnSearchProps('nameCow'),
       renderText: (_, text: any) => text?.nameCow,
     },
     {

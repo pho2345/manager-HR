@@ -193,7 +193,7 @@ const TableList: React.FC = () => {
 
   const confirm = (entity: any, message: string, api: string, types: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: message,
       okText: 'Có',

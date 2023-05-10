@@ -57,6 +57,7 @@ export default [
     menuHeaderRender: false,
     routes: [
       { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh sách đợt mở bán', component: './Web-cPass/TableListFair' },
+      { path: '/web-c-pass/c-pass-mega',hideInMenu: false,  name: 'Danh sách CPass Mega', component: './Web-cPass/TableListCPass' },
      
     ],
   },

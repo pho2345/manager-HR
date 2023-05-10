@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
-import {  ReloadOutlined } from '@ant-design/icons';
+import {  ReloadOutlined, SettingOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProDescriptionsItemProps,  ProFormDigit } from '@ant-design/pro-components';
 import {
   ModalForm,
@@ -70,123 +70,93 @@ const TableList: React.FC = () => {
   const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
-    {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Mã'
-      //   />
-      // ),
-      title: configDefaultText['page.code'],
-      key: 'code',
-      dataIndex: 'atrributes',
-      render: (_, entity: any) => {
-        ;
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity?.attributes?.code);
-              setShowDetail(true);
-            }}
-          >
-            {entity?.attributes?.code}
 
-          </a>
-        );
-      },
-    },
     {
-      title: <FormattedMessage id='pages.searchTable.column.preWeight' defaultMessage='Cân nặng trước (kg)' />,
-      dataIndex: 'atrributes',
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'index',
+    },
+    // {
+    //   // title: (
+    //   //   <FormattedMessage
+    //   //     id='pages.searchTable.column.code'
+    //   //     defaultMessage='Mã'
+    //   //   />
+    //   // ),
+    //   title: configDefaultText['page.code'],
+    //   key: 'code',
+    //   dataIndex: 'atrributes',
+    //   render: (_, entity: any) => {
+    //     ;
+    //     return (
+    //       <a
+    //         onClick={() => {
+    //           setCurrentRow(entity?.attributes?.code);
+    //           setShowDetail(true);
+    //         }}
+    //       >
+    //         {entity?.attributes?.code}
+
+    //       </a>
+    //     );
+    //   },
+    // },
+    {
+      title: configDefaultText['page.slot.columns.farm'],
+      dataIndex: 'farm',
       valueType: 'textarea',
-      key: 'preWeight',
-      renderText: (_, text: any) => text?.attributes?.preWeight,
-      sorter: (a, b) => a?.attributes?.preWeight - b?.attributes?.preWeight,
+      key: 'farm',
+      renderText: (_, text: any) => text?.farmName,
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại (kg)' />,
-      dataIndex: 'atrributes',
+      title: configDefaultText['page.slot.columns.code'],
+      dataIndex: 'codeCow',
       valueType: 'textarea',
-      key: 'nowWeight',
-      renderText: (_, text: any) => text?.attributes?.currentWeight
+      key: 'codeCow',
+      renderText: (_, text: any) => text?.codeCow
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.deltaWeight' defaultMessage='Chênh lệch cân nặng (kg)' />,
-      dataIndex: 'atrributes',
+      title: configDefaultText['page.slot.columns.codeCPass'],
+      dataIndex: 'codeCPass',
       valueType: 'textarea',
-      key: 'deltaWeight',
-      renderText: (_, text: any) => text?.attributes?.deltaWeight
-    },
-
-
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tăng trọng Mega (kg)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'megaDeltaWeight',
-      renderText: (_, text: any) => text?.attributes?.megaDeltaWeight
+      key: 'codeCPass',
+      renderText: (_, text: any) => text?.codeCPass
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nanoDeltaWeight' defaultMessage='Tăng trọng Nano (kg)' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'nanoDeltaWeight',
-      renderText: (_, text: any) => text?.attributes?.nanoDeltaWeight
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.indexSlot' defaultMessage='Thứ tự Slot' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'indexSlot',
-      renderText: (_, text: any) => text?.attributes?.indexSlot
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'c_pass',
-      renderText: (_, text: any) => text?.attributes?.c_pass
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='produceAle' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'produceAle',
-      renderText: (_, text: any) => text?.attributes?.produceAle
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.plan' defaultMessage='PAHT' />,
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'plan',
-      renderText: (_, text: any) => text?.attributes?.plan
-    },
-
-    {
-      title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Thời gian bắt đầu' />,
+      title: configDefaultText['page.slot.columns.timeStart'],
       dataIndex: 'timeStart',
       valueType: 'textarea',
       key: 'timeStart',
-      renderText: (_, text: any) => moment(text?.attributes.timeStart).format('DD/MM/YYYY HH:mm')
-
+      renderText: (_, text: any) => moment(text?.timeStart).format('DD/MM/YYYY')
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Thời gian kết thúc' />,
+      title: configDefaultText['page.slot.columns.timeEnd'],
       dataIndex: 'timeEnd',
       valueType: 'textarea',
       key: 'timeEnd',
-      renderText: (_, text: any) => moment(text?.attributes.timeEnd).format('DD/MM/YYYY HH:mm')
+      renderText: (_, text: any) => moment(text?.timeEnd).format('DD/MM/YYYY')
     },
 
+    {
+      title: configDefaultText['page.slot.columns.preWeight'],
+      dataIndex: 'preWeight',
+      valueType: 'textarea',
+      key: 'preWeight',
+      renderText: (_, text: any) => text?.preWeight
+    },
+
+    {
+      title: configDefaultText['page.slot.columns.currentWeight'],
+      dataIndex: 'currentWeight',
+      valueType: 'textarea',
+      key: 'currentWeight',
+      renderText: (_, text: any) => text?.currentWeight
+    },
+   
     // {
     //   title: <FormattedMessage id='pages.searchTable.column.activeSlot' defaultMessage='Trạng thái' />,
     //   dataIndex: 'activeSlot',
@@ -204,14 +174,14 @@ const TableList: React.FC = () => {
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
+      align: 'center',
       key: 'option',
       render: (_, entity: any) => {
         //let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
         //let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
         //if (dateEnd === currentDate) {
-          return (<Button
-            type='primary'
-            key='primary'
+
+          return (<SettingOutlined
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdSlot.current = entity.id;
@@ -220,9 +190,7 @@ const TableList: React.FC = () => {
               // setFullName(entity?.attributes?.fullname);
               // setFsmCode(entity?.attributes?.fsmCode);
             }}
-          >
-            Cập nhật
-          </Button>)
+          />)
         //return null
       }
     },
@@ -242,10 +210,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+       
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -260,7 +225,7 @@ const TableList: React.FC = () => {
         }}
        
 
-        request={() => customAPIGet({}, 'slots')}
+        request={() => customAPIGet({}, 'c-passes/get/c-pass-slot')}
         columns={columns}
        
         toolbar={{

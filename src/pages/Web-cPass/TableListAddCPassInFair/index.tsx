@@ -55,7 +55,7 @@ const TableListAddCPassInFair = (props: any) => {
   //const params = useParams();
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: `Bạn có muốn ${message}?`,
       okText: 'Có',

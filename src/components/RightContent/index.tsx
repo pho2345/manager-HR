@@ -41,14 +41,14 @@ const GlobalHeaderRight: React.FC = () => {
 
   return (
     <div className={className}>
-      <span
+      {/* <span
         className={actionClassName}
         // onClick={() => {
         //   window.open('https://pro.ant.design/docs/getting-started');
         // }}
       >
-        {/* <QuestionCircleOutlined /> */}
-      </span>
+        <QuestionCircleOutlined /> 
+      </span> */}
       <Avatar />
       {/* <SelectLang className={actionClassName} /> */}
     </div>

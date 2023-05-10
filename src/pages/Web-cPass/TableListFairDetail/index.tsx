@@ -7,7 +7,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useParams } from '@umijs/max';
-import { Checkbox, Input, List, message, Modal, Tooltip, Typography } from 'antd';
+import { Button, Checkbox, Input, List, message, Modal, Space, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
@@ -15,7 +15,8 @@ import "./styles.css";
 import DetailUser from '@/pages/components/DetailUser';
 import DetailCPass from '@/pages/components/DetailCPass';
 import TableListAssignCPass from '../TableListAssignCPass';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -47,13 +48,14 @@ const TableListFairDetail: React.FC = () => {
   const [currentCPass, setCurrentCPass] = useState<any>();
   const [showModalMega, setShowModalMega] = useState<boolean>(false);
   const [fair, setFair] = useState<any>();
+  const searchInput = useRef(null);
   const params = useParams();
 
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: `Bạn có muốn ${message}?`,
+      content: configDefaultText['textConfirmRemoveMegaCPass'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -68,11 +70,94 @@ const TableListFairDetail: React.FC = () => {
   };
 
 
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+    //console.log('selectedKeys', selectedKeys[0]);
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={configDefaultText['search']}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+         
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      console.log('value', dataIndex)
+      if(typeof value !== 'number'){
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        // setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
+
+
   const columns: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
       title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
+      ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           // <Text>{`${entity.code}|${entity.id}`}</Text>
@@ -88,32 +173,7 @@ const TableListFairDetail: React.FC = () => {
         );
       },
 
-      filterDropdown: () => (
-        <div style={{ padding: 8 }}>
-          <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }}
-          />
-        </div>
-      ),
-      filterIcon: (filtered) => {
-        return (
-          <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-        )
-      },
-      filterSearch: (input, record) => {
-        console.log(input, record);
-        // if (input === record?.code) {
-        //   return record;
-        // }
-        return true;
-      },
-      filters: true,
-
-      onFilter: (value: any, record: any) => {
-        if (value === record.code) {
-          return record;
-        }
-        return false;
-      },
+    
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
@@ -130,13 +190,13 @@ const TableListFairDetail: React.FC = () => {
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
-        return moment(text?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY');
+        return moment(text?.birthdate).format('DD/MM/YYYY');
       }
 
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss (kg)' />,
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
@@ -148,8 +208,11 @@ const TableListFairDetail: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = `${text.age / 4 >= 1 ? `${Math.floor(text.age / 4)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
-        return age;
+        let age = text.age / 4;
+        if(age === 0){
+          return 0;
+        }
+         return `${text.age / 4 >= 1 ? `${Math.floor(text.age / 4)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
 
       }
     },
@@ -187,7 +250,7 @@ const TableListFairDetail: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0 (kg)' />,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -196,7 +259,7 @@ const TableListFairDetail: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
+      title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs (VNĐ)' />,
       dataIndex: 'vs',
       valueType: 'textarea',
       key: 'vs',
@@ -205,7 +268,7 @@ const TableListFairDetail: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
+      title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0 (VNĐ)' />,
       dataIndex: 'vZero',
       valueType: 'textarea',
       key: 'vZero',

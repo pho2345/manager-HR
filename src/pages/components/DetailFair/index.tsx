@@ -13,7 +13,6 @@ const configDefaultText = configText;
 
   return (<><ProDescriptions
     column={1}
-    title='Thông tin cPass'
     request={async () => {
       const getFair =  await customAPIGetOne(props.fairId, 'fairs/fairadmin', {});
       return {

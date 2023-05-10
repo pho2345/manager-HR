@@ -8,7 +8,7 @@ import {
 import moment from 'moment';
 import {  useParams } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
@@ -68,9 +68,12 @@ const TableListAssignCPass = () => {
    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
-  const handleReset = (clearFilters: any) => {
+  const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -104,35 +107,13 @@ const TableListAssignCPass = () => {
             Tìm kiếm
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
             size="small"
             style={{
               width: 90,
             }}
           >
             Làm mới
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
           </Button>
         </Space>
       </div>
@@ -178,15 +159,16 @@ const TableListAssignCPass = () => {
 
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: message,
+      content: configDefaultText['page.addMegaAndAssign.textConfirmAssign'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
 
         await handleUpdateMany({
-          ...entity
+          ...entity,
+          fairId: params?.id
         }, api, id);
         if (actionRef.current && actionRefMega.current) {
           setSelectedRowsCPass([]);
@@ -207,6 +189,17 @@ const TableListAssignCPass = () => {
     fetchDataFair();
   }, []);
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+      Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+    </Fragment>
+    );
+  }
+
+
+
+
 
   const columns: ProColumns<any>[] = [
     {
@@ -224,8 +217,10 @@ const TableListAssignCPass = () => {
                 setShowDetailUser(true);
               }}>
              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
-            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
+            </a>
+            
+           {(entity?.phone || entity?.email) ? <br/> : '' }  {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            {entity?.passport ?  <><br />CCCD/HC:{entity?.passport}</> : ``}
           </>
         );
       },
@@ -457,11 +452,17 @@ const TableListAssignCPass = () => {
             }
             setSelectedRowsMega(selectedRows);
           },
+          type: 'radio'
           // getCheckboxProps: (record: any) => ({
           //   disabled: false, // Column configuration not to be checked
           //  //name: record.name,
           // }),
         }}
+
+        tableAlertRender={false}
+
+        tableAlertOptionRender={false}
+ 
 
       />
 
@@ -540,6 +541,11 @@ const TableListAssignCPass = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        tableAlertRender={({selectedRowKeys}: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
 
       />
       {currentRowCPass && (

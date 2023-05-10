@@ -23,12 +23,15 @@ export default {
     'textConfirmChangeStatus': 'Bạn có muốn thay đổi tình trạng?',
     'methodPayment': 'Phương thức thanh toán',
     'menu':'Web-cPass',
+    'noChosen': 'Bỏ Chọn',
+
     'menuFair': 'Danh sách đợt mở bán',
     'methodPayment.required': 'Chọn phương thức thanh toán',
     'infoAleger': 'Thông tin Mega',
     'limitCPassSettlementMega': 'Số cPass Mega có thể thanh quyết toán trong tuần',
     'limitCPassSettlementPlaform': 'Số cPass PL có thể nhận thanh quyết toán trong tuần',
     'listCPass': 'Danh sách cPass',
+    'textConfirmRemoveMegaCPass': 'Bạn có muốn loại bỏ Mega khỏi cPass?',
 
     'pages.login.failure': 'Đăng nhập thất bại',
     'pages.login.title': 'Đăng nhập',
@@ -487,9 +490,9 @@ export default {
     'page.listSettlement.column.awgAvgTwo': 'trung bình',
     'page.listSettlement.column.awgAvgThree': '(kg/Tuần)',
     'page.listSettlement.column.pZero': 'P0 (kg)',
-    'page.listSettlement.column.pNow': 'Pnow(kg)',
-    'page.listSettlement.column.megaDeltaP': 'MegaΔP(kg)',
-    'page.listSettlement.column.megaP': 'MegaP(kg)',
+    'page.listSettlement.column.pNow': 'Pnow (kg)',
+    'page.listSettlement.column.megaDeltaP': 'MegaΔP (kg)',
+    'page.listSettlement.column.megaP': 'MegaP (kg)',
     'page.listSettlement.column.megaE': 'MegaE (VNĐ)',
     'page.listSettlement.column.reasonSettlement': 'Lý do',
     'page.listSettlement.registeringSettlementCancel': 'Đăng kí thanh quyết toán trước hạn',
@@ -542,6 +545,15 @@ export default {
     // 'page.myAle.code': 'Mã',
 
 
+
+
+    'page.slot.columns.farm': 'Trang trại',
+    'page.slot.columns.code': 'Thẻ tai',
+    'page.slot.columns.codeCPass': 'cPass',
+    'page.slot.columns.timeStart': 'Ngày cân 1',
+    'page.slot.columns.timeEnd': 'Ngày cân 2',
+    'page.slot.columns.preWeight': 'Cân nặng trước',
+    'page.slot.columns.currentWeight': 'Cân nặng hiện tại',
 
 
 

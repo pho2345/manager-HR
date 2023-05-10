@@ -1,5 +1,5 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TransactionOutlined, } from '@ant-design/icons';
+import {  ExclamationCircleOutlined, ReloadOutlined, SearchOutlined  } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -11,13 +11,14 @@ import React, { useRef, useState } from 'react';
 import "./styles.css";
 import configText from '@/locales/configText';
 const configDefaultText = configText;
-
+import { AiOutlineLine } from "react-icons/ai";
 const { Text, } = Typography;
 // function delay(time: number) {
 //   return new Promise((resolve: any) => {
 //     setTimeout(resolve, time);
 //   });
 // }
+
 
 
 const handleAdd = async (fields: any, api: string) => {
@@ -54,6 +55,7 @@ const TableListAssignCPass = () => {
   const [convertAle, setConvertAle] = useState<number>(0);
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
+  const [convertVnd, setConvertVnd] = useState<number>(0);
 
   //const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
@@ -113,7 +115,7 @@ const TableListAssignCPass = () => {
           >
             Làm mới
           </Button>
-          
+
         </Space>
       </div>
     ),
@@ -200,8 +202,8 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(entity?.id);
                 //setShowDetailUser(true);
               }}>
-                 {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
@@ -281,11 +283,11 @@ const TableListAssignCPass = () => {
         return [
           <>
             <Tooltip title={configDefaultText['page.sellAle.tooltip.sellAle']}>
-              <TransactionOutlined
+              <AiOutlineLine
                 style={{
                   fontSize: 20,
                   paddingLeft: 5,
-                 
+
                 }}
                 onClick={() => {
                   setShowModal(true);
@@ -300,6 +302,50 @@ const TableListAssignCPass = () => {
   ];
 
 
+  const handleFeeTransaction = (value: number) => {
+    let rateFee;
+    for(let i = 0; i < rateConvert.feeTransaction.length; i++) {
+      let e =  rateConvert.feeTransaction[i];
+    
+      if(value > e?.rangeFrom && value < e?.rangeTo && e?.rangeFrom === 0 && e?.typeValue === 'lesser'){
+          rateFee = e;
+          break;
+      }
+
+      if(value >= e?.rangeFrom && value < e?.rangeTo){
+          rateFee = e;
+          break;
+      }
+
+      if (value >= e?.rangeFrom && e?.rangeTo === 0 && e?.typeValue === 'greater') {
+          rateFee = e;
+          break;
+        }
+   }
+
+   let priceVnd = 0, fee;
+   
+   switch (rateFee.types) {
+     case 'free':
+       fee = 0;
+       priceVnd = rateConvert?.rateAle * value;
+       break;
+     case 'cash':
+       priceVnd = rateConvert?.rateAle * value - rateFee.valueFee;
+       fee = rateFee.valueFee;
+       break;
+     case 'percent':
+       priceVnd = rateConvert?.rateAle * value;
+       fee = Math.floor((priceVnd * rateFee.valueFee)/ 1000) * 1000;
+       priceVnd = priceVnd - fee;
+       break;
+     default:
+       break;
+   }
+   
+   setConvertVnd(priceVnd);
+  }
+
 
   return (
     <>
@@ -313,11 +359,13 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
-        
+
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger/get/sell-ale');
-          console.log('data', data);
-          setRateConvert(data?.data.rate);
+          setRateConvert(
+            data?.data.rate,
+
+          );
           return {
             data: data?.data?.user,
             success: true,
@@ -381,8 +429,6 @@ const TableListAssignCPass = () => {
           },
             `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle} Ale?`,
             'transactions/sell-ale-admin');
-          form.resetFields();
-
           return true
         }}
 
@@ -390,37 +436,42 @@ const TableListAssignCPass = () => {
       >
 
 
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle} VNĐ,</Text>
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> Phí = {rateConvert?.feeTransaction}%</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'black' }}> 1 Ale = {rateConvert?.rateAle.toLocaleString()} VNĐ,</Text> <br />
+
+        {rateConvert?.fee &&
+          rateConvert?.fee.map((value: any, index: any) => {
+            return (<> <Text style={{ fontWeight: 'bolder', color: 'black' }} key={index}>{value?.text} {value?.value}</Text> <br /></>)
+          })
+        }
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-          <ProFormMoney
-          label={configDefaultText['page.sellAle.ale']}
-          name="ale"
-          min={1}
-          max={currentRowUser?.availableBalance}
-          customSymbol='A'
-          placeholder='ProduceAle'
-          fieldProps={{
-            value: convertAle,
-            onChange: (e: any) => {
-              setConvertAle(e);
-            }
-          }}
-          rules={[
-            {
-              required: true,
-              message:  configDefaultText['page.sellAle.required.ale']
-              // (
-              //   <FormattedMessage
-              //     id='pages.sellAle.required.ale'
-              //     defaultMessage='Vui lòng nhập Ale'
-              //   />
-              // ),
-            }
-          ]}
-        />
+            <ProFormMoney
+              label={configDefaultText['page.sellAle.ale']}
+              name="ale"
+              min={1}
+              max={currentRowUser?.availableBalance}
+              customSymbol='A'
+              placeholder='Ale'
+              fieldProps={{
+                onChange: (e: any) => {
+                  setConvertAle(e);
+                  handleFeeTransaction(e)
+                }
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.sellAle.required.ale']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.sellAle.required.ale'
+                  //     defaultMessage='Vui lòng nhập Ale'
+                  //   />
+                  // ),
+                }
+              ]}
+            />
           </Col>
         </Row>
 
@@ -464,8 +515,7 @@ const TableListAssignCPass = () => {
               customSymbol='VNĐ'
               placeholder='ProduceAle'
               fieldProps={{
-                value: convertAle * rateConvert?.rateAle - (convertAle * rateConvert?.rateAle * rateConvert?.feeTransaction),
-
+                value: convertVnd
               }}
             />
 

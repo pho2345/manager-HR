@@ -7,7 +7,7 @@ import {
 
 import moment from 'moment';
 import { FormattedMessage, useParams } from '@umijs/max';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import DetailCPass from '../components/DetailCPass';
 import DetailUser from '../components/DetailUser';
 
@@ -93,13 +93,13 @@ const TableList: React.FC = () => {
         if (record?.owner) {
           return (
             <a
-                onClick={() => {
-                  setCurrentRowUser(record.owner.id);
-                  setShowDetailUser(true);
-                }}
-              >
-                {`${record?.owner?.fullname ? record?.owner?.fullname : record?.owner?.username} - ${record?.owner.id}`}
-              </a>
+              onClick={() => {
+                setCurrentRowUser(record.owner.id);
+                setShowDetailUser(true);
+              }}
+            >
+              {`${record?.owner?.fullname ? record?.owner?.fullname : record?.owner?.username} - ${record?.owner.id}`}
+            </a>
           );
         }
         return `PLAFORM`;
@@ -153,9 +153,9 @@ const TableList: React.FC = () => {
         headerTitle={(<>cPass:
           <a
             onClick={() => {
-        
-             // setCurrentRow(cPass?.id);
-             // setShowDetail(true);
+
+              // setCurrentRow(cPass?.id);
+              // setShowDetail(true);
             }}
           >
             {/* {cPass?.attributes?.code} */}

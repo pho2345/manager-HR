@@ -333,7 +333,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
-      renderText: (_, text: any) => text?.megaE
+      renderText: (_, text: any) => text?.megaE.toLocaleString()
     },
 
   ];

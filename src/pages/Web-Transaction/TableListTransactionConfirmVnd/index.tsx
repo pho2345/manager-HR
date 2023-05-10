@@ -333,7 +333,7 @@ const TableList: React.FC = () => {
       dataIndex: 'createdAt',
       valueType: 'textarea',
       key: 'priceVnd',
-      renderText: (_, text: any) =>  moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss')
+      renderText: (_, text: any) =>  moment(text?.createdAt).format('DD/MM/YYYY HH:mm')
     },
   ];
 

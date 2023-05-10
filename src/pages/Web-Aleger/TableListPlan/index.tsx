@@ -366,7 +366,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'plans')}
+        request={() => customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'plans')}
         columns={columns}
         rowSelection={{
           // onChange: (_, selectedRows: any) => {

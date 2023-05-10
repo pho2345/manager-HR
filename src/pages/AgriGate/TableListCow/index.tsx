@@ -19,7 +19,6 @@ import {
   ProFormUploadButton,
 } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   ModalForm,
   PageContainer,
   ProDescriptions,
@@ -261,11 +260,7 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log('value', dataIndex)
-      if(typeof value !== 'number'){
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-      }
-
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
@@ -274,7 +269,6 @@ const TableList: React.FC = () => {
       }
     },
     // render: (text: any) =>{
-
     // }
 
   });
@@ -326,7 +320,7 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.listCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
-      ...getColumnSearchProps('code'),
+     ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           <>{entity?.code}</>
@@ -348,7 +342,7 @@ const TableList: React.FC = () => {
     {
       // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
       title: configDefaultText['page.listCow.column.farm'],
-      key: 'code',
+      key: 'farmName',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         return (
@@ -356,10 +350,10 @@ const TableList: React.FC = () => {
         );
       },
       filters: farm,
-      // onFilter: (value, record) => {
-      //   console.log('filter',value);
-      //   return record?.farm?.id === value;
-      // },
+      onFilter: (value, record) => {
+        console.log('');
+        return record?.farm?.id === value;
+      },
     },
     {
       // title: (

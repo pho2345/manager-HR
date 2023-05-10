@@ -10,6 +10,7 @@ import { Button, message, Modal, Space, Input, Tooltip, Row, Col } from 'antd';
 import React, { useRef, useState } from 'react';
 import './styles.css';
 import configText from '@/locales/configText';
+import { MdOutlineCompareArrows } from 'react-icons/md';
 const configDefaultText = configText;
 
 
@@ -267,10 +268,9 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.transfer']}> <TranslationOutlined
+            <Tooltip title={configDefaultText['page.transfer.transfer']}> <MdOutlineCompareArrows
               style={{
-                fontSize: 30,
-                color: '#00CC00'
+                fontSize: 25,
               }}
               onClick={() => {
                 setShowTransfer(true);

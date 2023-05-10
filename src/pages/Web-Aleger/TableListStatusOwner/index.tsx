@@ -282,6 +282,7 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.value'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
+      ...getColumnSearchProps('value'),
       key: 'profit',
       renderText: (_, text: any) => {
         return `${text?.attributes?.value}`
@@ -366,7 +367,7 @@ const TableList: React.FC = () => {
             <PlusOutlined />  {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({}, 'status-owners')}
+        request={() => customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'status-owners')}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows: any) => {

@@ -374,6 +374,7 @@ export default {
     'page.classify': 'Phân loại',
     'page.value': 'Tên tiếng anh',
     'page.rangeValue': 'Khoảng giá trị',
+    'page.required.rangeValue': 'Khoảng giá trị',
     'page.color': 'Màu chữ',
     'page.backgroundColor': 'Màu nền',
     'page.createdAt': 'Ngày tạo',
@@ -559,7 +560,6 @@ export default {
     'page.slot.columns.timeEnd': 'Ngày cân 2',
     'page.slot.columns.preWeight': 'Cân nặng trước',
     'page.slot.columns.currentWeight': 'Cân nặng hiện tại',
-
 
 
 

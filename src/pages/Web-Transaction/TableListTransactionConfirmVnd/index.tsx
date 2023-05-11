@@ -180,7 +180,7 @@ const TableList: React.FC = () => {
             return (<div style={{ color: 'blue' }}>Chuyển đổi ale</div>);
 
           case 'refund':
-            return (<div style={{ color: 'yellow' }}>Hoàn trả</div>);
+            return (<div style={{ color: 'black' }}>Hoàn trả</div>);
           default:
 
             break;
@@ -369,14 +369,20 @@ const TableList: React.FC = () => {
               colorStatusTransaction: true
             },
             filters: {
-              c_pass: {
-                // /statusTransaction: 'open',
-                // colorStatusTransaction: {
-                //   id: {
-                //     $null: true
-                //   }
-                // }
-              }
+              $and: [
+                  {
+                    $not: {
+                      $and: [
+                        {
+                          types: 'cpassPayment'
+                        },
+                        {
+                          status: 'waitRefund'
+                        }
+                      ]
+                    }
+                  }
+              ]
             },
             orderBy: {
               createdAt: 'desc'

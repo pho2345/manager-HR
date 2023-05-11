@@ -277,7 +277,10 @@ const TableList: React.FC = () => {
                 code: entity?.attributes?.code,
                 valueFrom: entity?.attributes?.valueFrom,
                 valueTo: entity?.attributes?.valueTo,
-              })
+              });
+
+              const {valueFrom, valueTo} = entity?.attributes;
+              form.setFieldValue('rangeValue', `${valueFrom} < P0 <= ${valueTo}`)
             }}
           /></Tooltip>
 
@@ -285,14 +288,14 @@ const TableList: React.FC = () => {
       }
     },
 
-    
+
   ];
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
@@ -301,7 +304,7 @@ const TableList: React.FC = () => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
+          <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
             // actionRef.current?.reloadAndRest?.();
@@ -329,7 +332,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({'sort[0]': 'createdAt:desc'}, 'range-weight-zeros')}
+        request={() => customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'range-weight-zeros')}
         columns={columns}
         rowSelection={{
           // onChange: (_, selectedRows: any) => {
@@ -361,47 +364,47 @@ const TableList: React.FC = () => {
           }
         }}
 
-        tableAlertRender={({selectedRowKeys}: any) => {
+        tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
 
 
-        tableAlertOptionRender={({  selectedRows}: any) => {
-         return renderTableAlertOption(selectedRows)
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
         }}
 
 
       />
       {
-      // selectedRowsState?.length > 0 && (
-      //   <FooterToolbar
-      //     extra={
-      //       <div>
-      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-      //         {`${configDefaultText['chosen']} `}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-      //         {configDefaultText['selectedItem']}
-      //       </div>
-      //     }
-      //   >
-      //     <Button
-      //       onClick={async () => {
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
 
-      //         confirm(
-      //           selectedRowsState, configDefaultText['confirmDetele']
-      //         );
+        //         confirm(
+        //           selectedRowsState, configDefaultText['confirmDetele']
+        //         );
 
-      //         // await handleRemove(selectedRowsState);
-      //         setSelectedRows([]);
-      //         actionRef.current?.reloadAndRest?.();
-      //       }}
-      //     >
-      //       {configDefaultText['delete']}
-      //     </Button>
+        //         // await handleRemove(selectedRowsState);
+        //         setSelectedRows([]);
+        //         actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {configDefaultText['delete']}
+        //     </Button>
 
-      //   </FooterToolbar>
-      // )
+        //   </FooterToolbar>
+        // )
       }
       <ModalForm
         form={form}
@@ -475,6 +478,7 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+
               ]}
               className='w-full'
               name='index'
@@ -498,6 +502,16 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueTo = getFieldValue('valueTo');
+                    if (value && valueTo && Number(value) >= Number(valueTo)) {
+                      return Promise.reject('Giá trị dưới phải nhỏ hơn giá trị trên!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+
               ]}
               className='w-full'
               name='valueFrom'
@@ -521,12 +535,66 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueFrom = getFieldValue('valueFrom');
+                    if (value && valueFrom && Number(value) <= Number(valueFrom)) {
+                      return Promise.reject('Giá trị trên phải lớn hơn giá trị dưới!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+
               ]}
+
+              fieldProps={{
+                onChange: (value: any) => {
+                  // const name = form.getFieldValue('name');
+                  const valueFrom = form.getFieldValue('valueFrom');
+                  if (typeof value === 'undefined') {
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+
+                  if (value > valueFrom) {
+                    form.setFieldValue('rangeValue', `${valueFrom} < P0 <= ${value}`);
+                    return;
+                  }
+                  form.setFieldValue('rangeValue', null);
+                  return;
+                }
+              }}
               //label='Nhập giá trị trên'
+              min={0}
               className='w-full'
               name='valueTo'
               label={configDefaultText['page.rangeTo']}
               placeholder={configDefaultText['page.rangeTo']}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.required.rangeValue']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]}
+              disabled
+              className='w-full'
+              name='rangeValue'
+              label={configDefaultText['page.rangeValue']}
+              placeholder={configDefaultText['page.rangeValue']}
             />
           </Col>
         </Row>
@@ -613,6 +681,7 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                
               ]}
               className='w-full'
               name='index'
@@ -637,6 +706,15 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueTo = getFieldValue('valueTo');
+                    if (value && valueTo && Number(value) >= Number(valueTo)) {
+                      return Promise.reject('Giá trị dưới phải nhỏ hơn giá trị trên!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
               className='w-full'
               name='valueFrom'
@@ -660,6 +738,16 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueFrom = getFieldValue('valueFrom');
+                    if (value && valueFrom && Number(value) <= Number(valueFrom)) {
+                      return Promise.reject('Giá trị trên phải lớn hơn giá trị dưới!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+
               ]}
               //label='Nhập giá trị trên'
               className='w-full'
@@ -669,6 +757,31 @@ const TableList: React.FC = () => {
             />
           </Col>
         </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.required.rangeValue']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]}
+              disabled
+              className='w-full'
+              name='rangeValue'
+              label={configDefaultText['page.rangeValue']}
+              placeholder={configDefaultText['page.rangeValue']}
+            />
+          </Col>
+        </Row>
+
 
       </ModalForm>
 

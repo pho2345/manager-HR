@@ -295,10 +295,10 @@ const TableList: React.FC = () => {
       key: 'profit',
       renderText: (_, text: any) => {
         let { rangeFrom, rangeTo } = text?.attributes;
-        if (rangeFrom < 0 && rangeTo <= 0) {
+        if (rangeFrom <= 0 && rangeTo <= 0) {
           return `AWG <= ${rangeTo}%`
         }
-        if (rangeFrom >= 0 && rangeTo > 0 && !(rangeTo - rangeFrom > 100)) {
+        if (rangeFrom >= 0 && rangeTo > 0) {
           return ` ${rangeFrom}% < AWG <=  ${rangeTo}%`;
         }
         else {
@@ -359,7 +359,18 @@ const TableList: React.FC = () => {
                 rangeTo: entity?.attributes?.rangeTo,
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
-              })
+              });
+
+              const {rangeFrom, rangeTo} = entity?.attributes;
+              if(rangeFrom === 0 && rangeTo === 0){
+                form.setFieldValue('rangeValue', `AWG <= ${rangeFrom}%`);
+              }
+              else if(rangeFrom >= 0 && rangeTo > 0 && rangeFrom < rangeTo){
+                form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${rangeTo}%`);
+              }
+              else if(rangeFrom > 0 && rangeTo === 0){
+                form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
+              }
 
             }}
           /></Tooltip>
@@ -571,6 +582,7 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
+             
               className='w-full'
               name='name'
               label={configDefaultText['page.classify']}
@@ -578,6 +590,8 @@ const TableList: React.FC = () => {
             />
           </Col>
         </Row>
+
+        
 
 
         <Row gutter={24} className='m-0'>
@@ -594,7 +608,53 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueTo = getFieldValue('rangeTo');
+                    if (value && valueTo && Number(value) >= Number(valueTo)) {
+                      return Promise.reject('Giá trị dưới phải nhỏ hơn giá trị trên');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
+              fieldProps={{
+                onChange: (value: any) => {
+                  // const name = form.getFieldValue('name');
+                  const rangeTo = form.getFieldValue('rangeTo');
+                  if(typeof rangeTo === 'undefined' && typeof value === 'undefined'){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if(typeof rangeTo === 'undefined' &&  value === 0 || (typeof value === 'undefined')){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if( rangeTo === 0 &&  value === 0){
+                    form.setFieldValue('rangeValue', 'AWG <= 0%');
+                    return;
+                  }
+                  if (rangeTo <= value && rangeTo !== 0) {
+                    form.setFieldValue('rangeValue', null);
+                    return
+                  }
+                  if(rangeTo > 0 && value === 0){
+                    form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
+                    return;
+                  }
+                  else
+                    if (rangeTo && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `${value}% < AWG <= ${rangeTo}%`);
+                    }
+                    else if ( rangeTo && value === 0) {
+                      form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
+                    }
+                    else if (!rangeTo && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `AWG > ${value}%`);
+                    }
+                }
+              }}
               className='w-full'
               name='rangeFrom'
               label={configDefaultText['page.rangeFrom']}
@@ -618,12 +678,85 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueFrom = getFieldValue('rangeFrom');
+                    if (value && valueFrom && Number(value) <= Number(valueFrom)) {
+                      return Promise.reject('Giá trị trên phải lớn hơn giá trị dưới!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
               //label='Nhập giá trị trên'
+
+              fieldProps={{
+                onChange: (value: any) => {
+                  // const name = form.getFieldValue('name');
+                  const rangeFrom = form.getFieldValue('rangeFrom');
+                  if(typeof rangeFrom === 'undefined' && typeof value === 'undefined'){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if( rangeFrom === 0 &&  value === 0){
+                    form.setFieldValue('rangeValue', 'AWG <= 0%');
+                    return;
+                  } else if((rangeFrom === 0 && typeof value === 'undefined') || ( typeof rangeFrom === 'undefined' &&  value === 0)) {
+                    form.setFieldValue('rangeValue', null);
+                    return
+                  }
+
+                  if (value <= rangeFrom && value !== 0) {
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+
+                  if(rangeFrom > 0 && value === 0){
+                    form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
+                    return;
+                  }
+                  
+                  else
+                    if ( rangeFrom && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${value}%`);
+                    }
+                    else if (rangeFrom && value === 0) {
+                      form.setFieldValue('rangeValue', `AWG >${rangeFrom}%`);
+                    }
+                    else  if(rangeFrom === 0 && value){
+                      form.setFieldValue('rangeValue', `AWG <= ${value}%`);
+                    }
+                }
+              }}
+
               className='w-full'
               name='rangeTo'
               label={configDefaultText['page.rangeTo']}
               placeholder={configDefaultText['page.rangeTo']}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.required.rangeValue']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]}
+              disabled
+              className='w-full'
+              name='rangeValue'
+              label={configDefaultText['page.rangeValue']}
+              placeholder={configDefaultText['page.rangeValue']}
             />
           </Col>
         </Row>
@@ -844,7 +977,57 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueTo = getFieldValue('rangeTo');
+                    if (value && valueTo && Number(value) >= Number(valueTo)) {
+                      return Promise.reject('Giá trị dưới phải nhỏ hơn giá trị trên');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
+              fieldProps={{
+                onChange: (value: any) => {
+                  // const name = form.getFieldValue('name');
+                  const rangeTo = form.getFieldValue('rangeTo');
+                  console.log(rangeTo, value);
+                  if(typeof rangeTo === 'undefined' && typeof value === 'undefined'){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if(typeof rangeTo === 'undefined' &&  value === 0 || ( typeof value === 'undefined')){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if( rangeTo === 0 &&  value === 0){
+                    form.setFieldValue('rangeValue', 'AWG <= 0%');
+                    return;
+                  }
+                  if (rangeTo <= value && rangeTo !== 0) {
+                    form.setFieldValue('rangeValue', null);
+                    return
+                  }
+                  if(rangeTo > 0 && value === 0){
+                    form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
+                    return;
+                  }
+                  if(rangeTo === 0 && value > 0){
+                    form.setFieldValue('rangeValue', `AWG > ${value}%`);
+                    return;
+                  }
+                  else
+                    if (rangeTo && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `${value}% < AWG <= ${rangeTo}%`);
+                    }
+                    else if ( rangeTo && value === 0) {
+                      form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
+                    }
+                    else if (!rangeTo && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `AWG > ${value}%`);
+                    }
+                }
+              }}
               className='w-full'
               name='rangeFrom'
               label={configDefaultText['page.rangeFrom']}
@@ -868,12 +1051,84 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const valueFrom = getFieldValue('rangeFrom');
+                    if (value && valueFrom && Number(value) <= Number(valueFrom)) {
+                      return Promise.reject('Giá trị trên phải lớn hơn giá trị dưới!');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
               //label='Nhập giá trị trên'
+
+              fieldProps={{
+                onChange: (value: any) => {
+                  // const name = form.getFieldValue('name');
+                  const rangeFrom = form.getFieldValue('rangeFrom');
+                  if(typeof rangeFrom === 'undefined' && typeof value === 'undefined'){
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+                  if( rangeFrom === 0 &&  value === 0){
+                    form.setFieldValue('rangeValue', 'AWG <= 0%');
+                    return;
+                  } else if((rangeFrom === 0 && typeof value === 'undefined') || ( typeof rangeFrom === 'undefined' &&  value === 0)) {
+                    form.setFieldValue('rangeValue', null);
+                    return
+                  }
+
+                  if (value <= rangeFrom && value !== 0) {
+                    form.setFieldValue('rangeValue', null);
+                    return;
+                  }
+
+                  if(rangeFrom > 0 && value === 0){
+                    form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
+                    return;
+                  }
+                  else
+                    if ( rangeFrom && typeof value !== 'undefined' && value !== 0) {
+                      form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${value}%`);
+                    }
+                    else if (rangeFrom && value === 0) {
+                      form.setFieldValue('rangeValue', `AWG >${rangeFrom}%`);
+                    }
+                    else  if(rangeFrom === 0 && value){
+                      form.setFieldValue('rangeValue', `AWG <= ${value}%`);
+                    }
+                }
+              }}
+
               className='w-full'
               name='rangeTo'
               label={configDefaultText['page.rangeTo']}
               placeholder={configDefaultText['page.rangeTo']}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.required.rangeValue']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listBodyCondition.name'
+                  //     defaultMessage='Nhập tên'
+                  //   />
+                  // ),
+                },
+              ]}
+              disabled
+              className='w-full'
+              name='rangeValue'
+              label={configDefaultText['page.rangeValue']}
+              placeholder={configDefaultText['page.rangeValue']}
             />
           </Col>
         </Row>
@@ -901,6 +1156,8 @@ const TableList: React.FC = () => {
               }}
 
             />
+
+
             {openColor && (
               <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
                 <SketchPicker color={color} onChange={handleColorChange} />

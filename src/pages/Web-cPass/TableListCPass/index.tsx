@@ -200,9 +200,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
-        Giống bò-Giới tính</>)} />,
-      width: 200,
+      title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
+      {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
+      width: 130,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
@@ -218,7 +218,7 @@ const TableList: React.FC = () => {
         }
         return (<>
           {text?.cow?.farm?.name}<br />
-          {`${text?.cow?.category?.name}-${sex}`}
+          {text?.cow?.category?.name}<br />{sex}
         </>)
       }
     },
@@ -277,7 +277,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: 'P0(kg)/Pnow@Snow (kg)',
+      title: 'P0/Pnow@Snow',
       dataIndex: 'P0andPnow',
       valueType: 'textarea',
       key: 'P0andPnow',

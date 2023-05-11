@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit,  ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -67,7 +67,9 @@ const TableListAssignCPass = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, 
+      //close 
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -433,17 +435,21 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormMoney
+            <ProFormDigit
               label={configDefaultText['page.transfer.produceAle']}
               name="ale"
               min={1}
-              customSymbol='A'
+              max={currentRowUser?.produceAle}
               placeholder={configDefaultText['page.transfer.produceAle']}
               fieldProps={{
-                value: convertAle,
+                value: convertAle === 0 ? null : convertAle,
                 onChange: (e: any) => {
-                  setConvertAle(e);
-                }
+                  if(typeof e !== 'undefined'){
+                    setConvertAle(e);
+                  }
+                },
+               //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                precision: 2
               }}
               required
             />

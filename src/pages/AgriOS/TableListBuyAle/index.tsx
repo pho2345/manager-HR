@@ -124,7 +124,6 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(record);
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
@@ -391,9 +390,11 @@ const TableListAssignCPass = () => {
               
               placeholder={configDefaultText['page.buyAle.ale']}
               fieldProps={{
-                value: convertAle,
+                value: convertAle === 0 ? null : convertAle,
                 onChange: (e: any) => {
-                  setConvertAle(e);
+                  if(typeof e !== 'undefined'){
+                    setConvertAle(e);
+                  }
                 },
                //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 precision: 2

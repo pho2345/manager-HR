@@ -424,7 +424,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'statusOwner',
       render: (_, text: any) => {
-        return (<Text style={{ color: text?.colorStatusOwner.color }}>{text?.colorStatusOwner.name}</Text>);
+        return (<Text style={{ color: text?.colorStatusOwner?.color }}>{text?.colorStatusOwner?.name}</Text>);
 
 
       }

@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -160,7 +160,7 @@ const TableListAssignCPass = () => {
 
   const confirm = (entity: any, content: string, api: string) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: content,
       okText: 'Có',

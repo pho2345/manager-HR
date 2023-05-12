@@ -407,7 +407,7 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
           getCheckboxProps: record => ({
-            disabled: record.status === 'cancel' || record.status === 'done' && record.types === 'cpassSettlement'
+            disabled: record.status !== 'inProgress'
           })
         }}
         rowClassName={(record: any) => {
@@ -451,8 +451,8 @@ const TableList: React.FC = () => {
         }}
 
 
-        tableAlertOptionRender={({  selectedRows}: any) => {
-         return renderTableAlertOption(selectedRows)
+        tableAlertOptionRender={({ }: any) => {
+         return renderTableAlertOption()
         }}
 
       />

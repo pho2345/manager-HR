@@ -410,8 +410,7 @@ const TableList: React.FC = () => {
     },
     {
       title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
-        {configDefaultText['page.listCPass.column.category']}-{configDefaultText['page.listCPass.column.sex']}</>),
-      width: 200,
+        {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
@@ -422,7 +421,7 @@ const TableList: React.FC = () => {
         }
         return (<>
           {text?.farm}<br />
-          {`${text?.category}-${sex}`}
+          {text?.category}<br />{sex}
         </>)
       },
       filterSearch: true,

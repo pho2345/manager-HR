@@ -180,7 +180,7 @@ const TableList: React.FC = () => {
             return (<div style={{ color: 'blue' }}>Chuyển đổi ale</div>);
 
           case 'refund':
-            return (<div style={{ color: 'yellow' }}>Hoàn trả</div>);
+            return (<div style={{ color: 'black' }}>Hoàn trả</div>);
           default:
 
             break;
@@ -369,14 +369,20 @@ const TableList: React.FC = () => {
               colorStatusTransaction: true
             },
             filters: {
-              c_pass: {
-                // /statusTransaction: 'open',
-                // colorStatusTransaction: {
-                //   id: {
-                //     $null: true
-                //   }
-                // }
-              }
+              $and: [
+                  {
+                    $not: {
+                      $and: [
+                        {
+                          types: 'cpassPayment'
+                        },
+                        {
+                          status: 'waitRefund'
+                        }
+                      ]
+                    }
+                  }
+              ]
             },
             orderBy: {
               createdAt: 'desc'
@@ -401,7 +407,7 @@ const TableList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
           getCheckboxProps: record => ({
-            disabled: record.status === 'cancel' || record.status === 'done' && record.types === 'cpassSettlement'
+            disabled: record.status !== 'inProgress'
           })
         }}
         rowClassName={(record: any) => {
@@ -445,8 +451,8 @@ const TableList: React.FC = () => {
         }}
 
 
-        tableAlertOptionRender={({  selectedRows}: any) => {
-         return renderTableAlertOption(selectedRows)
+        tableAlertOptionRender={({ }: any) => {
+         return renderTableAlertOption()
         }}
 
       />

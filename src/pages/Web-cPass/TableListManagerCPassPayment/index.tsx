@@ -1,6 +1,7 @@
 import {
   customAPIGetOne,
   customAPIUpdateMany,
+  customAPIAdd
 } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, } from '@ant-design/icons';
 import {
@@ -23,6 +24,31 @@ import "./styles.css";
 import { MdOutlineCurrencyExchange, MdOutlinePaid } from 'react-icons/md';
 
 
+
+
+const handleCreate = async (fields: any, api: any) => {
+  console.log('fields', fields);
+  const hide = message.loading('Đang tạo...');
+  try {
+
+    const updateTransaction = await customAPIAdd(
+      { ...fields },
+      api,
+    );
+
+    hide();
+    if (updateTransaction) {
+      message.success('Thành công');
+
+    }
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.error?.message);
+
+    return false;
+  }
+};
 
 const handleUpdate = async (fields: any, api: any, value: any) => {
   //console.log('fields', fields);
@@ -539,9 +565,9 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
-          const refund = await handleUpdate({
-            data: { types: values.method, transaction: [refTransaction.current] }
-          }, 'transactions/refund', null);
+          const refund = await handleCreate({
+             types: values.method, transaction: [refTransaction.current] 
+          }, 'transactions/refund/create');
           if (refund) {
             handleModalOpen(false);
             form.resetFields();
@@ -574,7 +600,7 @@ const TableList: React.FC = () => {
             {
               label: 'VNĐ',
               options: [
-                { label: 'Ví điện tử', value: '1' },
+                { label: 'Ví điện tử', value: 'vnd' },
               ],
             },
             {

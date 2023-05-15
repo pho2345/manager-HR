@@ -85,7 +85,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'birthdate',
       renderText: (_, text: any) => {
-        return moment(text?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY');
+        return moment(text?.cowBirthdate).format('DD/MM/YYYY');
       }
 
     },
@@ -106,8 +106,12 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = `${text.cowAge / 4 >= 1 ? `${text.cowAge / 4}Th` : ''} ${text.cowAge % 4 !== 0 ? (text.cowAge % 4) + 'T' : ''}`;
-        return age;
+        let age = Math.floor(moment(moment()).diff(text?.cowBirthdate, 'days') / 7);
+        if (age === 0) {
+          return 0;
+        }
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
       }
     },
     {
@@ -117,21 +121,9 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-        switch (text?.bodyCondition) {
-          case 'good':
-            return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
-          case 'malnourished':
-            return (<Text>Suy dinh dưỡng</Text>);
-          case 'weak':
-            return (<Text style={{ color: '#FF9900' }}>Yếu</Text>);
-          case 'sick':
-            return (<Text style={{ color: '#FF3333' }}>Bệnh</Text>);
-          case 'dead':
-            return (<Text style={{ color: '#FF0000' }}>Chết</Text>)
-          default:
-            break;
-        }
-        return null;
+       
+            return (<Text style={{ color: text?.colorBodyCondition?.color }}>{text?.colorBodyCondition?.name}</Text>)
+      
       },
       filters: true,
       onFilter: true,
@@ -185,7 +177,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'vZero',
       renderText: (_, text: any) => {
-        return text?.vZero;
+        return text?.vZero?.toLocaleString();
       }
     },
     {
@@ -228,7 +220,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'wge',
       render: (_, text: any) => {
-        return (<Text className={`${text?.wge}`}>{`${text?.wge}-${text?.wgePercent}`}</Text>)
+        return (<Text className={`${text?.wge}`}>{`${text?.wge || 0}-${text?.wgePercent || 0}`}</Text>)
       }
     },
 
@@ -239,7 +231,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'awgAvg',
       render: (_, text: any) => {
-        <Text className={`${text?.awg}`}>{`${text?.awg}-${text?.awgAvg}`}</Text>
+        <Text className={`${text?.awg}`}>{`${text?.awg || 0}-${text?.awgAvg || 0}`}</Text>
       }
     },
 
@@ -283,7 +275,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'produceAle',
       renderText: (_, text: any) => {
-        return text?.produceAle
+        return text?.produceAle.toLocaleString()
       }
     },
 
@@ -330,7 +322,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'dateInStable',
       renderText: (_, text: any) => {
-        return text?.dateInStable
+        return moment(text?.dateInStable).format('DD/MM/YYYY')
       }
     },
 
@@ -342,7 +334,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'dateInmegaEStable',
       renderText: (_, text: any) => {
-        return text?.megaE
+        return text?.megaE.toLocaleString()
       }
     },
 
@@ -356,7 +348,22 @@ const TableList = (props: any) => {
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
       key: 'statusTransaction',
-      renderText: (_, text: any) => text?.statusTransaction
+      render: (_, text: any) => {
+        if(text?.check === 'owner'){
+          return <span style={{
+            color: text?.colorStatusOwner?.color
+          }}>
+            {text?.colorStatusOwner?.name}
+          </span>
+        }
+        if(text?.check === 'order'){
+          return <span style={{
+            color: text?.colorStatusTransaction?.color
+          }}>
+            {text?.colorStatusTransaction?.name}
+          </span>
+        }
+      }
     },
 
     {
@@ -365,7 +372,13 @@ const TableList = (props: any) => {
       dataIndex: 'reasonSettlement',
       valueType: 'textarea',
       key: 'reasonSettlement',
-      renderText: (_, text: any) => text?.reasonSettlement
+      render: (_, text: any) =>{
+        return (<>
+        <span style={{
+          color: text?.colorSettlement?.color
+        }}> {text?.colorSettlement?.name} </span>
+        </>)
+      }
     },
 
 

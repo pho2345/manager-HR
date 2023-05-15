@@ -282,7 +282,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'P0andPnow',
       render: (_, text: any) => {
-        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot}`
+        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot || 0}`
       }
     },
 
@@ -306,7 +306,7 @@ const TableList: React.FC = () => {
         //   default:
         //     break;
         // }
-        return (<Text style={{ color: text?.colorBodyCondition.color }}>{text?.colorBodyCondition.name}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition?.color || 'black' }}>{text?.colorBodyConditio?.name}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -424,7 +424,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'statusOwner',
       render: (_, text: any) => {
-        return (<Text style={{ color: text?.colorStatusOwner?.color }}>{text?.colorStatusOwner?.name}</Text>);
+        return (<Text style={{ color: text?.colorStatusOwner?.color || 'black' }}>{text?.colorStatusOwner?.name}</Text>);
 
 
       }
@@ -438,7 +438,7 @@ const TableList: React.FC = () => {
       key: 'statusTransaction',
       render: (_, text: any) => {
         return (<>
-          <Text style={{ color: text?.colorStatusTransaction?.color }}>{text?.colorStatusTransaction?.name}</Text>
+          <Text style={{ color: text?.colorStatusTransaction?.color || 'black' }}>{text?.colorStatusTransaction?.name}</Text>
         </>);
       }
     },
@@ -450,7 +450,7 @@ const TableList: React.FC = () => {
       key: 'reasonSettlement',
       render: (_, text: any) => {
         return (<>
-          <Text style={{ color: text?.colorSettlement?.color }}>{text?.colorSettlement?.name}</Text>
+          <Text style={{ color: text?.colorSettlement?.color || 'black' }}>{text?.colorSettlement?.name}</Text>
         </>);
       }
     },

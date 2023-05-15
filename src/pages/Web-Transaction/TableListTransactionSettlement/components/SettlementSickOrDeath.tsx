@@ -7,7 +7,7 @@ import {
 
 import { FormattedMessage } from '@umijs/max';
 import { Button, Typography, Space, Input, Checkbox } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import ConfirmRegisteringSettlementSickOrDead from './ConfirmSettlementSickOrDead';
@@ -16,27 +16,6 @@ import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 const { Text, } = Typography;
-
-
-// const handleUpdateMany = async (fields: any, api: string, id: any) => {
-//   const hide = message.loading('Đang cập nhật...');
-//   try {
-//     const updateTransaction = await customAPIUpdateMany(
-//       fields,
-//       api,
-//       id);
-//     hide();
-//     if (updateTransaction) {
-//       message.success('Cập nhật thành công');
-//     }
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Cập nhật thất bại!');
-//     return false;
-//   }
-// };
-
 
 
 
@@ -193,7 +172,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      title: configDefaultText['fair'],
+      title: configDefaultText['page.listFair.columns.code'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
@@ -311,7 +290,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
-      renderText: (_, text: any) => text?.megaE
+      renderText: (_, text: any) => text?.megaE.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Trả lại Vs</>} />,
@@ -324,8 +303,28 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         return <Checkbox disabled checked={text?.checkRefund}></Checkbox>
       }
     },
-
   ];
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(onCleanSelected: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            onCleanSelected()
+          }}>Bỏ chọn</Button>
+        </Fragment>
+      </>
+    );
+  }
 
   return (
     <>
@@ -408,6 +407,14 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
+
+          tableAlertRender={({ selectedRowKeys }: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+  
+          tableAlertOptionRender={({  onCleanSelected }: any) => {
+            return renderTableAlertOption( onCleanSelected)
+           }}
         />
         {currentRowCPass && (
           <DetailCPass

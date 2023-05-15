@@ -17,12 +17,18 @@ export default {
     'search': 'Tìm kiếm',
     'createdAt': 'Ngày tạo',
     'titleConfirm': 'Xác nhận',
+    'addCPass':'Thêm cPass',
+    'assignCPass': 'Chỉ định cPass',
+    'manager': 'Quản lý',
     'pay': 'Thanh toán',
+    'copy': 'Sao chép',
+    'handle': 'Xử lý',
     'titleOption': 'Thao tác',
     'textConfirmDelete': 'Bạn có muốn xóa?',
     'textConfirmChangeStatus': 'Bạn có muốn thay đổi tình trạng?',
     'methodPayment': 'Phương thức thanh toán',
     'menu':'Web-cPass',
+    
     'noChosen': 'Bỏ Chọn',
 
     'menuFair': 'Danh sách đợt mở bán',
@@ -113,7 +119,7 @@ export default {
     'page.DetailCPass.column.pZero': 'P0 (kg)',
     'page.DetailCPass.column.vs': 'Vs (VNĐ)',
     'page.DetailCPass.column.vZero': 'V0 (VNĐ)',
-    'page.DetailCPass.column.megaS': 'MegaS',
+    'page.DetailCPass.column.megaS': 'MegaS (VNĐ)',
     'page.DetailCPass.column.mega': 'Mega',
     'page.DetailCPass.column.wge': 'Hiệu quả tăng trọng',
     'page.DetailCPass.column.awgAvg': 'Tăng trọng trung bình',
@@ -122,12 +128,16 @@ export default {
     'page.DetailCPass.column.megaDeltaWeight': 'Cân nặng Mega được hưởng (kg)',
     'page.DetailCPass.column.produceAle': 'ProduceAle tích lũy',
     'page.DetailCPass.column.megaCPR':'Tỷ suất lợi nhuận tích lũy Mega',
-    'page.DetailCPass.column.megaDeltaWeightTransfer':'Số megaDeltaWeight đã chuyễn sang produceAle',
+    'page.DetailCPass.column.megaDeltaWeightTransfer':'Số MegaΔP đã chuyễn sang produceAle',
     'page.DetailCPass.column.weightInStable':'Cân nặng lúc nhập chuồng',
     'page.DetailCPass.column.dateInStable':'Ngày nhập chuồng',
-    'page.DetailCPass.column.megaE':'megaE(Vnđ)',
+    'page.DetailCPass.column.megaE':'MegaE (VNĐ)',
     'page.DetailCPass.column.statusTransaction':'Tình trạng giao dịch',
     'page.DetailCPass.column.reasonSettlement':'Lý do quyết toán',
+    'page.DetailCPass.menu.removeMega':'Loại bỏ Mega',
+    'page.DetailCPass.menu.assignMega':'Chỉ định',
+    'page.DetailCPass.menu.removeCPass':'Loại bỏ cPass',
+
 
     'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
     'page.DetailCPass.message.removeCPassFair':'Loại bỏ cPass khỏi phiên?',
@@ -533,9 +543,9 @@ export default {
     'page.confirmSettlementVnd.statusTransaction': 'Tình trạng',
     'page.confirmSettlementVnd.priceVnd': 'Giá trị (VNĐ)',
     'page.confirmSettlementVnd.codeCPass': 'cPass',
-    'page.confirmSettlementVnd.sender': 'Người giao dịch',
+    'page.confirmSettlementVnd.sender': 'Mega',
     'page.confirmSettlementVnd.reciever': 'Tài khoản đến',
-
+    'page.confirmSettlementVnd.ale': 'Số Ale',
     //---------------------myAle------------------------
 
     'page.myAle.code': 'Mã giao dịch',
@@ -566,7 +576,6 @@ export default {
 
 
 
-    //////page----slot
 
 }
 

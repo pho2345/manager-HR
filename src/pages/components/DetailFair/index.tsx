@@ -78,7 +78,21 @@ const TableList = (props: any) => {
       dataIndex: 'status',
       valueType: 'textarea',
       key: 'status',
-      renderText: (_, text: any) => text?.status
+      renderText: (_, text: any) => {
+        switch (text?.status) {
+          case 'noOpen':
+            return 'Chưa mở'
+            break;
+          case 'opening':
+            return 'Đang mở'
+            break;
+          case 'closed':
+            return 'Đã đóng'
+            break;
+          default:
+            break;
+        }
+      },
     },
     {
       key: 'code',
@@ -103,10 +117,14 @@ const TableList = (props: any) => {
       dataIndex: 'timeStart',
       valueType: 'textarea',
       key: 'timeStart',
-      renderText: (_, text) => {
-        const weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+      renderText: (_, text) =>  {
+        let indexWeek = moment(text?.timeStart).weekday();
+        let weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+        if(indexWeek === 0) {
+          weekday = 'CN';
+        }
         return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-      }
+    }
     },
 
     {
@@ -115,10 +133,14 @@ const TableList = (props: any) => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'timeEnd',
-      renderText: (_, text: any) => {
-        const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
+      renderText: (_, text: any) =>  {
+        let indexWeek = moment(text?.timeEnd).weekday();
+        let weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
+        if(indexWeek === 0) {
+          weekday = 'CN';
+        }
         return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-      }
+    }
     },
 
     {
@@ -129,9 +151,13 @@ const TableList = (props: any) => {
       key: 'dateStartFeed',
       renderText: (_, text: any) => {
         {
-          const weekday = moment(text?.dateStartFeed).weekday() === 0 ? 'CN' : `T${moment(text?.dateStartFeed).weekday() + 1}`;
+          let indexWeek = moment(text?.dateStartFeed).weekday();
+          let weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+          if(indexWeek === 0) {
+            weekday = 'CN';
+          }
           return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-        }
+      }
       }
     },
 
@@ -150,7 +176,7 @@ const TableList = (props: any) => {
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',
-      renderText: (_, text: any) => `${text?.unitPriceMeat}`
+      renderText: (_, text: any) => `${text?.unitPriceMeat.toLocaleString()}`
     },
 
 

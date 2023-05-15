@@ -11,7 +11,7 @@ import {
 }
   from '@umijs/max';
 import { Button, Typography, Space, Input } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import ConfirmRegisteringSettlement from './ConfirmSettlementMegaCancel';
@@ -338,6 +338,30 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
   ];
 
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(onCleanSelected: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            onCleanSelected()
+            // actionRef.current?.reloadAndRest?.();
+          }}>Bỏ chọn</Button>
+        </Fragment>
+      </>
+    );
+  }
+
   return (
     <>
       <ModalForm
@@ -423,6 +447,14 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               return `${range[range.length - 1]} / Tổng số: ${total}`
             }
           }}
+
+          tableAlertRender={({ selectedRowKeys }: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+  
+          tableAlertOptionRender={({  onCleanSelected }: any) => {
+            return renderTableAlertOption( onCleanSelected)
+           }}
         />
         {currentRowCPass && (
           <DetailCPass
@@ -457,7 +489,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               onCloseModal={() => {
                 setShowConfirmSettlement(false);
                 if (actionRef.current) {
-                  actionRef.current.reload();
+                  actionRef.current?.reloadAndRest?.();
                 }
               }}
             />

@@ -227,8 +227,12 @@ const TableListAddCPassInFair = (props: any) => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = `${text.age / 4 >= 1 ? `${text.age / 4}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
-        return age;
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `0`;
+        }
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
       }
     },
     {
@@ -238,21 +242,9 @@ const TableListAddCPassInFair = (props: any) => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-        switch (text?.bodyCondition) {
-          case 'good':
-            return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
-          case 'malnourished':
-            return (<Text>Suy dinh dưỡng</Text>);
-          case 'weak':
-            return (<Text style={{ color: '#FF9900' }}>Yếu</Text>);
-          case 'sick':
-            return (<Text style={{ color: '#FF3333' }}>Bệnh</Text>);
-          case 'dead':
-            return (<Text style={{ color: '#FF0000' }}>Chết</Text>)
-          default:
-            break;
-        }
-        return 'abc';
+       
+            return (<Text style={{ color: text?.colorBodyCondition?.color }}> {text?.colorBodyCondition?.name}</Text>);
+       
       },
       filters: true,
       onFilter: true,
@@ -339,7 +331,7 @@ const TableListAddCPassInFair = (props: any) => {
 
         <ProTable
           headerTitle={(<>
-          {configDefaultText.fair}  : {fair?.code}
+          {configDefaultText.fair} {fair?.code}
           </>)}
           actionRef={actionRef}
           rowKey='id'

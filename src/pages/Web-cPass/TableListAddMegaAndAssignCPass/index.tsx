@@ -6,14 +6,14 @@ import {
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import {  useParams } from '@umijs/max';
+import { useParams } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
 const { Text, } = Typography;
-import  configText from '@/locales/configText';
+import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
@@ -65,7 +65,7 @@ const TableListAssignCPass = () => {
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
-   // setSearchedColumn(dataIndex);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
@@ -85,7 +85,7 @@ const TableListAssignCPass = () => {
       >
         <Input
           ref={searchInput}
-         placeholder={configDefaultText['search']}
+          placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm)}
@@ -130,15 +130,15 @@ const TableListAssignCPass = () => {
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
-      if(record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['fullname'] && record['fullname'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['fullname'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['email'] && record['email'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['email'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
-      if(record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())){
+      if (record['passport'] && record['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record['passport'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -192,12 +192,25 @@ const TableListAssignCPass = () => {
   function renderTableAlert(selectedRowKeys: any) {
     return (
       <Fragment>
-      Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-    </Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
 
+  function renderTableAlertOption(onCleanSelected: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            onCleanSelected()
+            // actionRef.current?.reloadAndRest?.();
+          }}>Bỏ chọn</Button>
+        </Fragment>
+      </>
+    );
+  }
 
 
 
@@ -216,11 +229,11 @@ const TableListAssignCPass = () => {
                 setCurrentRowUser(entity?.id);
                 setShowDetailUser(true);
               }}>
-             {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
             </a>
-            
-           {(entity?.phone || entity?.email) ? <br/> : '' }  {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
-            {entity?.passport ?  <><br />CCCD/HC:{entity?.passport}</> : ``}
+
+            {(entity?.phone || entity?.email) ? <br /> : ''}  {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            {entity?.passport ? <><br />CCCD/HC:{entity?.passport}</> : ``}
           </>
         );
       },
@@ -309,9 +322,12 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = `${text.age / 4 >= 1 ? `${Math.floor(text.age / 4)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
-        return age;
-
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `0`;
+        }
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
       }
     },
     {
@@ -394,18 +410,18 @@ const TableListAssignCPass = () => {
   return (
     <>
       <ProTable
-      toolbar={{
-        settings: [{
-          key: 'reload',
-          tooltip: configDefaultText['reload'],
-          icon: <ReloadOutlined />,
-          onClick: () => {
-            if (actionRefMega.current) {
-              actionRefMega.current.reload();
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: configDefaultText['reload'],
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRefMega.current) {
+                actionRefMega.current.reload();
+              }
             }
-          }
-        }]
-      }}
+          }]
+        }}
         headerTitle={configDefaultText['page.addMegaAndAssign.titleAleger']}
         actionRef={actionRefMega}
         rowKey='id'
@@ -419,8 +435,8 @@ const TableListAssignCPass = () => {
 
         pagination={{
           locale: {
-           next_page: configDefaultText['nextPage'],
-           prev_page: configDefaultText['prePage'],
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
@@ -446,7 +462,7 @@ const TableListAssignCPass = () => {
         dataSource={fair?.c_passes}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-            
+
             if (selectedRows.length > 1) {
               message.error(configDefaultText['page.addMegaAndAssign.errorOnlyAleger']);
             }
@@ -462,14 +478,14 @@ const TableListAssignCPass = () => {
         tableAlertRender={false}
 
         tableAlertOptionRender={false}
- 
+
 
       />
 
 
       <ProTable
         headerTitle={(<>
-         {configDefaultText['fair']}: {fair?.code}
+          {configDefaultText['fair']}: {fair?.code}
         </>)}
         actionRef={actionRef}
         rowKey='id'
@@ -534,18 +550,21 @@ const TableListAssignCPass = () => {
 
         pagination={{
           locale: {
-          next_page: configDefaultText['nextPage'],
-           prev_page: configDefaultText['prePage'],
+            next_page: configDefaultText['nextPage'],
+            prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
 
-        tableAlertRender={({selectedRowKeys}: any) => {
+        tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
 
+        tableAlertOptionRender={({  onCleanSelected }: any) => {
+          return renderTableAlertOption( onCleanSelected)
+         }}
 
       />
       {currentRowCPass && (

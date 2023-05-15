@@ -39,22 +39,7 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
-    let uploadImages = [];
-    if (fields?.upload && fields.upload.length !== 0) {
-      fields?.upload.map((e: any) => {
-        if (e.originFileObj) {
-          let formdata = new FormData();
-          formdata.append('files', e?.originFileObj);
-          formdata.append('ref', 'api::cow.cow');
-          formdata.append('refId', fields.cow.value);
-          formdata.append('field', 'photos');
-          uploadImages.push(customAPIUpload({
-            data: formdata
-          }))
-        }
-        return null;
-      });
-    }
+
 
 
     let { category, farm, group_cow, cow, birthdate, sex, ...other } = fields;
@@ -66,14 +51,14 @@ const handleUpdate = async (fields: any, id: any) => {
       birthdate: birthdate,
       sex
     }
-    const updateCow = customAPIUpdate(
+    const updateCow = await customAPIUpdate(
       {
         ...fieldCow,
       },
       'cows',
       cow.value
     );
-    const updateCPass = customAPIUpdate(
+    const updateCPass = await customAPIUpdate(
       {
         cow,
         ...other
@@ -82,18 +67,35 @@ const handleUpdate = async (fields: any, id: any) => {
       id.current
     );
 
+    console.log('updateCPass', updateCPass);
 
-    uploadImages.push(updateCow);
-    uploadImages.push(updateCPass)
-
-    await Promise.all(uploadImages);
+    if (updateCow && updateCPass) {
+      let uploadImages: Array<any> = [];
+      if (fields?.upload && fields.upload.length !== 0) {
+        fields?.upload.map((e: any) => {
+          if (e.originFileObj) {
+            let formdata = new FormData();
+            formdata.append('files', e?.originFileObj);
+            formdata.append('ref', 'api::cow.cow');
+            formdata.append('refId', fields.cow.value);
+            formdata.append('field', 'photos');
+            uploadImages.push(customAPIUpload({
+              data: formdata
+            }))
+          }
+          return null;
+        });
+      }
+      await Promise.all(uploadImages);
+    }
+    // uploadImages.push(updateCow);
+    // uploadImages.push(updateCPass)
+    //await Promise.all(uploadImages);
     hide();
-
     message.success('Cập nhật thành công');
     return true;
   } catch (error: any) {
     hide();
-    console.log(error);
     message.error(error?.response?.data?.error?.message);
     return false;
   }
@@ -266,7 +268,7 @@ const TableList: React.FC = () => {
           <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-           
+
             // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
@@ -289,7 +291,7 @@ const TableList: React.FC = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div
         style={{
           padding: 8,
@@ -328,7 +330,7 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -394,7 +396,7 @@ const TableList: React.FC = () => {
       },
       filters: getAllGroup,
       filterSearch: true,
-      onFilter:(value, record) => {
+      onFilter: (value, record) => {
         return record?.groupId === value
       }
     },
@@ -502,9 +504,7 @@ const TableList: React.FC = () => {
           return `0`;
         }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
-
         return confiAge;
-
       }
     },
     {
@@ -1006,7 +1006,7 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-        <Row gutter={24} className='m-0'>
+        {/* <Row gutter={24} className='m-0'>
           <Col span={12} className='gutter-row p-0' >
             <ProFormSelect
               className='w-full'
@@ -1055,11 +1055,7 @@ const TableList: React.FC = () => {
               label={configDefaultText['page.listCPass.column.bodyCondition']} />
           </Col>
 
-          {/* <Col span={12} className='gutter-row p-0'>
-            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
-
-          </Col> */}
-        </Row>
+        </Row> */}
 
 
 
@@ -1122,7 +1118,8 @@ const TableList: React.FC = () => {
                 const deletePicture = refIdPicture?.current.map((e: any) => {
                   return customAPIDelete(e as any, 'upload/files');
                 })
-                await Promise.all(deletePicture);
+                const deletePicturea = await Promise.all(deletePicture);
+                console.log('deletePicturea', deletePicturea)
               }
             }
             handleUpdateModalOpen(false);
@@ -1286,7 +1283,7 @@ const TableList: React.FC = () => {
         </Row>
 
         <Row gutter={24} className='m-0'>
-          <Col span={12} className='gutter-row p-0' >
+          {/* <Col span={12} className='gutter-row p-0' >
             <ProFormSelect
               className='w-full'
               //options={groupCow?.length !== 0 ? groupCow : null}
@@ -1331,7 +1328,7 @@ const TableList: React.FC = () => {
               placeholder={configDefaultText['page.listCPass.column.bodyCondition']}
               name='bodyCondition'
               label={configDefaultText['page.listCPass.column.bodyCondition']} />
-          </Col>
+          </Col> */}
 
           <Col span={12} className='gutter-row p-0'>
             <ProFormSelect

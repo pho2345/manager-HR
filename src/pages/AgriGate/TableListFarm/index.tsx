@@ -26,9 +26,9 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Thêm thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Thêm thất bại');
+    message.error(error?.response?.data?.error.message);
     return false;
   }
 };
@@ -46,7 +46,7 @@ const handleUpdate = async (fields: any, id: any) => {
     return true;
   } catch (error: any) {
     hide();
-    message.error(error?.response.data.error.message);
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };

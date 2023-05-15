@@ -232,7 +232,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
       key: 'refundVs',
       renderText: (_, text: any) => {
         if(text?.refundVs > text?.slotNow){
-          return text?.vs;
+          return text?.vs.toLocaleString();
         }
         else {
           return `N/A`;
@@ -261,7 +261,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
-      renderText: (_, text: any) => text?.megaE
+      renderText: (_, text: any) => text?.megaE.toLocaleString()
     },
   ];
 

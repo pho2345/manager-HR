@@ -1,5 +1,5 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
-import { CopyTwoTone, DollarOutlined, EditTwoTone, ExclamationCircleOutlined, FileAddTwoTone, PlusOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDateTimePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link } from '@umijs/max';
-import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
+import { Button, Col, Dropdown, Form, Input, Menu, message, Modal, Row, Space } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
@@ -24,7 +24,6 @@ const configDefaultText = configText;
 // const intlMap = {
 //   viVNIntl,
 // };
-
 
 
 
@@ -133,7 +132,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdFair = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
+  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [plan, setPlan] = useState<any>();
   const searchInput = useRef(null);
@@ -164,7 +163,9 @@ const TableList: React.FC = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      // close
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -204,7 +205,7 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -216,7 +217,7 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
     }
     ,
     onFilterDropdownOpenChange: (visible: any) => {
@@ -227,6 +228,9 @@ const TableList: React.FC = () => {
     // render: (text: any) =>{
     // }
   });
+
+
+
 
 
   // Generate the intl object
@@ -242,8 +246,8 @@ const TableList: React.FC = () => {
       onOk: async () => {
         const removeFair = await handleRemove(entity);
         if (actionRef.current && removeFair) {
-          // await actionRef.current?.reloadAndRest?.();
-          // setSelectedRows([]);
+          await actionRef.current?.reloadAndRest?.();
+          //  setSelectedRows([]);
         }
       }
     });
@@ -283,7 +287,11 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'timeStart',
       renderText: (_, text) => {
-        const weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+        let indexWeek = moment(text?.timeStart).weekday();
+        let weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+        if (indexWeek === 0) {
+          weekday = 'CN';
+        }
         return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
       }
     },
@@ -294,7 +302,11 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'timeEnd',
       renderText: (_, text: any) => {
-        const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
+        let indexWeek = moment(text?.dateStartFeed).weekday();
+        let weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+        if (indexWeek === 0) {
+          weekday = 'CN';
+        }
         return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
       }
     },
@@ -305,14 +317,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'dateStartFeed',
       renderText: (_, text: any) => {
-        {
-          let indexWeek = moment(text?.dateStartFeed).weekday();
-          let weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
-          if(indexWeek === 0) {
-            weekday = 'CN';
-          }
-          return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+        let indexWeek = moment(text?.dateStartFeed).weekday();
+        let weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
+        if (indexWeek === 0) {
+          weekday = 'CN';
         }
+        return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
       }
     },
     {
@@ -409,25 +419,146 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.nameFarm
     },
 
-    {
-      // title: <FormattedMessage id='page.listFair.payment' defaultMessage='Thanh toán' />,
-      title: configDefaultText['page.listFair.payment'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'payment',
-      render: (_, entity: any) => {
-        if (entity?.status === 'noOpen') {
-          return (<DollarOutlined
-            style={{
-              fontSize: 20
-            }}
-            onClick={() => {
+    // {
+    //   // title: <FormattedMessage id='page.listFair.payment' defaultMessage='Thanh toán' />,
+    //   title: configDefaultText['page.listFair.payment'],
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'payment',
+    //   render: (_, entity: any) => {
+    //     if (entity?.status === 'noOpen') {
+    //       return (<DollarOutlined
+    //         style={{
+    //           fontSize: 20
+    //         }}
+    //         onClick={() => {
 
-            }} />)
-        }
-        return null;
-      }
-    },
+    //         }} />)
+    //     }
+    //     return null;
+    //   }
+    // },
+    // {
+    //   // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
+    //   title: configDefaultText['page.listFair.titleOption'],
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'option',
+    //   align: 'center',
+    //   render: (_, entity: any) => {
+    //     let configButton = [];
+    //     configButton.push( /// button copy
+    //       <>
+    //         <Row gutter={[16, 16]}>
+    //           <Col span={6}> <Tooltip title={configDefaultText['page.listFair.copy']}><CopyTwoTone
+    //             style={{
+    //               fontSize: 20,
+
+    //             }}
+
+    //             onClick={async () => {
+    //               handleCopyModalOpen(true);
+    //               const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+    //               fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //               fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //               fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //               fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //               delete fair.c_passes;
+    //               const plans = fair.plans.map((e: any) => {
+    //                 return e?.id
+    //               })
+    //               form.setFieldsValue({
+    //                 ...fair,
+    //                 plans
+    //               })
+    //             }
+    //             }
+    //           /></Tooltip>
+    //           </Col>
+    //           <Col span={6} style={{
+    //                paddingLeft: '15px'
+    //           }}>  <Tooltip title={configDefaultText['page.listFair.addCPass']}>
+    //             <FileAddTwoTone
+    //               style={{
+    //                 fontSize: 20,
+    //               }}
+    //               onClick={() => {
+    //                 setCurrentFair(entity?.id);
+    //                 setShowModalCPass(true);
+    //               }}
+
+    //             ></FileAddTwoTone></Tooltip> </Col>
+    //         </Row>
+
+
+    //         <Row gutter={[16, 16]}>
+    //           <Col span={6}>  <Tooltip title={configDefaultText['page.listFair.assign']}>
+    //             <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
+    //               <PlusOutlined
+    //                 style={{
+    //                   fontSize: 20,
+    //                 }}
+    //                 onClick={() => {
+    //                 }}
+    //               />
+    //             </Link></Tooltip>
+    //           </Col>
+    //           <Col span={6} style={{
+    //             paddingLeft: '15px'
+    //           }}>  <Tooltip title={configDefaultText['page.listFair.manager']}>
+    //             <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
+    //               <SettingOutlined
+    //                 style={{
+    //                   fontSize: 20,
+    //                 }}
+    //               />
+    //             </Link> </Tooltip> </Col>
+    //         </Row>
+
+
+
+
+
+    //       </>
+    //     )
+    //     if (entity?.status === 'noOpen') {
+    //       // button edit
+    //       configButton.push(<>
+    //         <Tooltip title={configDefaultText['edit']}><EditTwoTone
+    //           style={{
+    //             fontSize: 20,
+    //             paddingLeft: 5
+    //           }}
+    //           onClick={async () => {
+    //             handleUpdateModalOpen(true);
+    //             refIdFair.current = entity.id;
+    //             const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+    //             fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //             fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //             fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //             fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+    //             const c_passes = fair?.c_passes.map((e: any) => {
+    //               return {
+    //                 label: e?.cow?.name,
+    //                 value: e?.id
+    //               }
+    //             })
+    //             const plans = fair.plans.map((e: any) => {
+    //               return e?.id
+    //             })
+    //             form.setFieldsValue({
+    //               ...fair,
+    //               c_passes,
+    //               plans
+    //             })
+    //           }}
+    //         /></Tooltip>
+    //       </>);
+    //     }
+    //     return configButton;
+    //   }
+    // },
+
     {
       // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
@@ -436,92 +567,49 @@ const TableList: React.FC = () => {
       key: 'option',
       align: 'center',
       render: (_, entity: any) => {
-        let configButton = [];
-        configButton.push( /// button copy
-          <>
-            <Row gutter={[16, 16]}>
-              <Col span={6}> <Tooltip title={configDefaultText['page.listFair.copy']}><CopyTwoTone
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5
-                }}
-
-                onClick={async () => {
-                  handleCopyModalOpen(true);
-                  const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
-                  fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                  delete fair.c_passes;
-                  const plans = fair.plans.map((e: any) => {
-                    return e?.id
-                  })
-                  form.setFieldsValue({
-                    ...fair,
-                    plans
-                  })
-                }
-                }
-              /></Tooltip>
-              </Col>
-              <Col span={6} style={{
-                   paddingLeft: '15px'
-              }}>  <Tooltip title={configDefaultText['page.listFair.addCPass']}>
-                <FileAddTwoTone
-                  style={{
-                    fontSize: 20,
-                    paddingLeft: 5
-                  }}
-                  onClick={() => {
-                    setCurrentFair(entity?.id);
-                    setShowModalCPass(true);
-                  }}
-
-                ></FileAddTwoTone></Tooltip> </Col>
-            </Row>
+        const menu = (
+          <Menu>
+            <Menu.Item key="1"
+              onClick={async () => {
+                handleCopyModalOpen(true);
+                const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+                fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                delete fair.c_passes;
+                const plans = fair.plans.map((e: any) => {
+                  return e?.id
+                })
+                form.setFieldsValue({
+                  ...fair,
+                  plans
+                })
+              }
+              }
+            >{configDefaultText['copy']}</Menu.Item>
 
 
-            <Row gutter={[16, 16]}>
-              <Col span={6}>  <Tooltip title={configDefaultText['page.listFair.assign']}>
-                <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
-                  <PlusOutlined
-                    style={{
-                      fontSize: 20,
-                      paddingLeft: 5
-                    }}
-                    onClick={() => {
-                    }}
-                  />
-                </Link></Tooltip>
-              </Col>
-              <Col span={6} style={{
-                paddingLeft: '15px'
-              }}>  <Tooltip title={configDefaultText['page.listFair.manager']}>
-                <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
-                  <SettingOutlined
-                    style={{
-                      fontSize: 20,
-                      paddingLeft: 5
-                    }}
-                  />
-                </Link> </Tooltip> </Col>
-            </Row>
+            <Menu.Item key="2"
+              onClick={() => {
+                setCurrentFair(entity?.id);
+                setShowModalCPass(true);
+              }}>{configDefaultText['addCPass']}</Menu.Item>
 
 
+            <Menu.Item key="3">
+              <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
+                {configDefaultText['assignCPass']}
+              </Link>
+            </Menu.Item>
 
+            <Menu.Item key="4">
+              <Link to={`/web-c-pass/fairs/manager/` + entity.id}>
+                {configDefaultText['manager']}
+              </Link>
+            </Menu.Item>
 
-
-          </>
-        )
-        if (entity?.status === 'noOpen') {
-          // button edit
-          configButton.push(<>
-            <Tooltip title={configDefaultText['edit']}><EditTwoTone
-              style={{
-                fontSize: 20,
-                paddingLeft: 5
-              }}
+            {entity?.status === 'noOpen' ? (<Menu.Item key="5"
               onClick={async () => {
                 handleUpdateModalOpen(true);
                 refIdFair.current = entity.id;
@@ -545,16 +633,26 @@ const TableList: React.FC = () => {
                   plans
                 })
               }}
-            /></Tooltip>
-          </>);
-        }
-        return configButton;
+            >{configDefaultText['edit']}</Menu.Item>) : (<></>)}
+
+
+
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+              {configDefaultText['handle']}
+            </a>
+          </Dropdown>
+        )
       }
     },
   ];
 
 
-  // const [intl, setIntl] = useState('zhCNIntl');
+
+
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
@@ -572,9 +670,8 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            await confirm(selectedRowsState);
-            setSelectedRows([]);
-            actionRef.current?.reloadAndRest?.();
+            await confirm(selectedRows);
+            // setSelectedRows([]);
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -623,8 +720,8 @@ const TableList: React.FC = () => {
           }}
           columns={columns}
           rowSelection={{
-            onChange: (_, selectedRows: any) => {
-              setSelectedRows(selectedRows);
+            onChange: () => {
+              // setSelectedRows(selectedRows);
             },
             alwaysShowAlert: false,
             // getCheckboxProps: (record: any) => ({
@@ -773,6 +870,30 @@ const TableList: React.FC = () => {
               />
             </Col>
 
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDateTimePicker name="timeEnd"
+                fieldProps={{
+                  style: {
+                    width: '100%'
+                  }
+                }}
+                placeholder={configDefaultText['page.listFair.column.timeEnd']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeEnd' defaultMessage='Thời gian đóng' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
+                ]}
+                label={
+                  configDefaultText['page.listFair.column.timeEnd']
+                }
+              />
+            </Col>
+
+
+          </Row>
+
+          <Row gutter={24} className="m-0">
+
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
                 fieldProps={{
@@ -792,21 +913,7 @@ const TableList: React.FC = () => {
                 ]}
               />
             </Col>
-          </Row>
 
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText name='nameFarm'
-
-                placeholder={configDefaultText['page.listFair.column.nameFarm']}
-                //label={<FormattedMessage id='page.listFair.nameFarm' defaultMessage='Tên trang trại' />}
-                label={configDefaultText['page.listFair.column.nameFarm']}
-                rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
-                  { required: true, message: configDefaultText['page.listFair.required.nameFarm'] }
-                ]}
-              />
-            </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
@@ -845,6 +952,19 @@ const TableList: React.FC = () => {
                 rules={[
                   // { required: true, message: <FormattedMessage id='page.listFair.required.plans' defaultMessage='Vui lòng chọn PAHT' /> },
                   { required: true, message: configDefaultText['page.listFair.required.plans'] },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText name='nameFarm'
+
+                placeholder={configDefaultText['page.listFair.column.nameFarm']}
+                //label={<FormattedMessage id='page.listFair.nameFarm' defaultMessage='Tên trang trại' />}
+                label={configDefaultText['page.listFair.column.nameFarm']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.nameFarm' defaultMessage='Vui lòng nhập trang trại' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.nameFarm'] }
                 ]}
               />
             </Col>
@@ -927,6 +1047,7 @@ const TableList: React.FC = () => {
           </Row>
 
           <Row gutter={24} className="m-0">
+
             <Col span={12} className="gutter-row p-0" >
               <ProFormDateTimePicker name="timeEnd"
                 fieldProps={{

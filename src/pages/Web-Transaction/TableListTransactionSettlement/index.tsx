@@ -12,20 +12,19 @@ import {
   ProColumns,
 } from '@ant-design/pro-components';
 import {
-  FooterToolbar,
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
 // import { FormattedMessage } from '@umijs/max';
-import { Button, Input, message, Modal, Space, Typography } from 'antd';
+import { Button, Dropdown, Input, Menu, message, Modal, Space, Typography } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 // import SettlementCPassModal from './components/SettlementMegaCancel';
 import SettlementCPassSickOrDeath from './components/SettlementSickOrDeath';
 import DialogTransfer from './components/DialogChooseUserSettlement';
 const { Text } = Typography;
 import configText from '@/locales/configText';
-import data from '@/locales/localeConfig';
+import moment from 'moment';
 const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: any) => {
@@ -101,7 +100,6 @@ const TableList: React.FC = () => {
 
 
 
-  const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
 
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -297,8 +295,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'ageAndSlot',
       renderText: (_, text: any) => {
-        let age = `${text.age / 4 >= 1 ? `${text.age / 4}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}/S${text?.slotNow}`;
-        return age;
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `${age}/S${text?.slotNow}`;
+        }
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return `${confiAge}/S${text?.slotNow}`;
       },
     },
 
@@ -382,7 +384,7 @@ const TableList: React.FC = () => {
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
-      renderText: (_, text: any) => text?.megaE
+      renderText: (_, text: any) => text?.megaE.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage={<>Lý do</>} />,
@@ -411,26 +413,59 @@ const TableList: React.FC = () => {
 
       },
     },
+    // {
+    //   title: <>{configDefaultText['titleOption']}</>,
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'option',
+    //   render: (_, entity: any) => {
+    //     let button = [];
+    //     if (entity?.status === 'inProgress') {
+    //       button.push((
+    //         <><Space><Button onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)} style={{
+    //           width: 90
+    //         }} >Xác nhận</Button>
+    //           <Button onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)} style={{
+    //             width: 90
+    //           }}>Xóa</Button></Space></>
+    //       ))
+    //     }
+    //     return button
+    //   },
+    // },
     {
-      title: <>{configDefaultText['titleOption']}</>,
+      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
+      title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
+      align: 'center',
       render: (_, entity: any) => {
-        let button = [];
-        if (entity?.status === 'inProgress') {
-          button.push((
-            <><Space><Button onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)} style={{
-              width: 90
-            }} >Xác nhận</Button>
-              <Button onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)} style={{
-                width: 90
-              }}>Xóa</Button></Space></>
-          ))
-        }
-        return button
-      },
-    }
+        const menu = (
+          <Menu>
+            
+              <Menu.Item key="1"
+                onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)}
+              >{configDefaultText['submit']}</Menu.Item>
+              <Menu.Item key="2"
+                onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}
+              >{configDefaultText['delete']}</Menu.Item>
+          
+          </Menu>
+        );
+        return (
+          entity?.status === 'inProgress' ? (<>
+          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+              {configDefaultText['handle']}
+            </a>
+          </Dropdown>
+          </>) : (<></>)
+        
+          
+        )
+      }
+    },
   ];
 
 

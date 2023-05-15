@@ -1,6 +1,6 @@
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
-import DetailUser from '@/pages/components/DetailUser';
+import DetailUser from '@/pages/Web-Aleger/components/DetailUser';
 import {
   customAPIPost,
 } from '@/services/ant-design-pro/api';
@@ -85,21 +85,30 @@ const TableList: React.FC = () => {
       dataIndex: 'sender',
       valueType: 'textarea',
       key: 'sender',
-      renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
+      render: (_, text: any) => {
+       return (
+        <a
+        onClick={() => {
+          setCurrentRowUser(text?.sender?.id);
+          setShowDetailUser(true);
+        }}
+        >{text?.sender?.fullname || text?.sender?.username} - {text?.sender?.id}</a>
+       )
+      },
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-      title: configDefaultText['fair'],
+      title: configDefaultText['page.listFair.columns.code'],
       key: 'fair',
       dataIndex: 'fair',
       render: (_, entity: any) => {
         return (
           <a
           onClick={() => {
-            setCurrentRowFair(entity.c_pass?.fair?.id);
+            setCurrentRowFair(entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.id : entity.c_pass?.fair?.id);
             setShowDetailFair(true);
           }}
-          >{entity?.c_pass?.fair?.code}</a>
+          >{entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.code : entity.c_pass?.fair?.code}</a>
         );
       },
     },
@@ -263,7 +272,14 @@ const TableList: React.FC = () => {
       key: 'priceVnd',
       renderText: (_, text: any) => text?.priceVnd.toLocaleString()
     },
-
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
+      title: configDefaultText['page.confirmSettlementVnd.ale'],
+      dataIndex: 'ale',
+      valueType: 'textarea',
+      key: 'ale',
+      renderText: (_, text: any) => text?.ale.toLocaleString()
+    },
   
    
 
@@ -290,7 +306,7 @@ const TableList: React.FC = () => {
              
             },
             'transactions/findadmin', {
-            fields: ['id', 'code', 'types', 'method', 'status', 'priceVnd', 'c_pass', 'sender', 'createdAt'],
+            fields: ['id', 'code', 'types', 'method', 'status', 'priceVnd', 'c_pass', 'sender', 'createdAt', 'ale'],
             populate: {
               sender: {
                 select: ['id', 'username', 'fullname']
@@ -311,7 +327,7 @@ const TableList: React.FC = () => {
                 select: ['id', 'code'],
                 populate: {
                   fair: {
-                    select: ['code']
+                    select: ['code', 'id']
                   }
                 }
               }

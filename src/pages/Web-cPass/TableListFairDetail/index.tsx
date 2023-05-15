@@ -1,5 +1,5 @@
 import { customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined, LogoutOutlined, RollbackOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
 
@@ -7,7 +7,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useParams } from '@umijs/max';
-import { Button, Checkbox, Input, List, message, Modal, Space, Tooltip, Typography } from 'antd';
+import { Button, Checkbox, Dropdown, Input, List, Menu, message, Modal, Space,  Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
@@ -60,7 +60,8 @@ const TableListFairDetail: React.FC = () => {
       cancelText: 'Không',
       onOk: async () => {
         await handleUpdateMany({
-          cPass: [entity.id]
+          cPass: [entity.id],
+          fairId: params?.id
         }, api, id);
         if (actionRef.current) {
           actionRef.current.reload();
@@ -84,7 +85,9 @@ const TableListFairDetail: React.FC = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+       //close
+       }: any) => (
       <div
         style={{
           padding: 8,
@@ -123,7 +126,7 @@ const TableListFairDetail: React.FC = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -136,7 +139,7 @@ const TableListFairDetail: React.FC = () => {
     ),
     onFilter: (value: any, record: any) => {
       console.log('value', dataIndex)
-      if(typeof value !== 'number'){
+      if (typeof value !== 'number') {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -169,11 +172,8 @@ const TableListFairDetail: React.FC = () => {
           >
             {`${entity.code}|${entity.id}`}
           </a>
-
         );
       },
-
-    
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
@@ -208,12 +208,12 @@ const TableListFairDetail: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = text.age / 4;
-        if(age === 0){
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
           return 0;
         }
-         return `${text.age / 4 >= 1 ? `${Math.floor(text.age / 4)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
-
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
       }
     },
     {
@@ -277,7 +277,7 @@ const TableListFairDetail: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
+      title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS (VNĐ)' />,
       dataIndex: 'megaS',
       valueType: 'textarea',
       key: 'megaS',
@@ -336,48 +336,91 @@ const TableListFairDetail: React.FC = () => {
       }
     },
 
+    // {
+    //   title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
+    //   dataIndex: 'atrributes',
+    //   valueType: 'textarea',
+    //   key: 'option',
+    //   align: 'center',
+    //   render: (_, entity: any) => {
+
+    //     if () {
+    //       return (<Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
+    //         <RollbackOutlined
+    //           style={{
+    //             fontSize: 20,
+    //             paddingLeft: 5,
+    //           }}
+    //           onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassMega'], 'c-passes/update/removemega', null as any)} />
+    //       </Tooltip>);
+    //     }
+
+    //     if (entity.check === 'none') {
+    //       return (<>
+    //         <Tooltip title={<FormattedMessage id='pages.searchTable.assign' defaultMessage='Chỉ định' />} >
+    //           <PlusOutlined
+    //             style={{
+    //               fontSize: 20,
+    //               paddingLeft: 5,
+    //             }}
+    //             onClick={() => {
+    //               setCurrentCPass(entity.id);
+    //               setShowModalMega(true)
+    //             }} /></Tooltip>
+    //         <Tooltip title={<FormattedMessage id='pages.searchTable.remove' defaultMessage='Loại bỏ khỏi phiên' />} >
+    //           <LogoutOutlined
+    //             style={{
+    //               fontSize: 20,
+    //               paddingLeft: 5,
+    //             }}
+    //             onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)} />
+    //         </Tooltip>
+    //       </>);
+    //     }
+    //     return null;
+    //   }
+    // },
+
     {
-      title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
+      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
+      title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'option',
       align: 'center',
       render: (_, entity: any) => {
+        const menu = (
+          <Menu>
+            {entity.check === 'order' ? (<Menu.Item key="1"
+              onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassMega'], 'c-passes/update/removemega', null as any)}
+            >{configDefaultText['page.DetailCPass.menu.removeMega']}</Menu.Item>)
+              : (<></>)
+            }
 
-        if (entity.check === 'order') {
-          return (<Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
-            <RollbackOutlined
-              style={{
-                fontSize: 20,
-                paddingLeft: 5,
-              }}
-              onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassMega'], 'c-passes/update/removemega', null as any)} />
-          </Tooltip>);
-        }
-
-        if (entity.check === 'none') {
-          return (<>
-            <Tooltip title={<FormattedMessage id='pages.searchTable.assign' defaultMessage='Chỉ định' />} >
-              <PlusOutlined
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5,
-                }}
+            {entity.check === 'none' ? (
+              <>
+              <Menu.Item key="2"
                 onClick={() => {
                   setCurrentCPass(entity.id);
                   setShowModalMega(true)
-                }} /></Tooltip>
-            <Tooltip title={<FormattedMessage id='pages.searchTable.remove' defaultMessage='Loại bỏ khỏi phiên' />} >
-              <LogoutOutlined
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5,
                 }}
-                onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)} />
-            </Tooltip>
-          </>);
-        }
-        return null;
+              >{configDefaultText['page.DetailCPass.menu.assignMega']}</Menu.Item>
+              
+              <Menu.Item key="3"
+                onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)}
+              >{configDefaultText['page.DetailCPass.menu.removeCPass']}</Menu.Item>
+              </>
+
+            ) : (<></>)}
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+              {configDefaultText['handle']}
+            </a>
+          </Dropdown>
+        )
       }
     },
   ];
@@ -450,6 +493,19 @@ const TableListFairDetail: React.FC = () => {
           //   <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
           // </Button>,
         ]}
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: configDefaultText['reload'],
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
 
         pagination={{
           locale: {

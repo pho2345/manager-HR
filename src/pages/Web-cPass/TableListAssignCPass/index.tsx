@@ -1,13 +1,12 @@
 import {  customAPIGetOne,  customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import {  ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import {  ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
@@ -27,7 +26,6 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
     }
     return true;
   } catch (error: any) {
-    console.log(error);
     hide();
     message.error(error?.response.data.error.message);
     return false;
@@ -61,6 +59,7 @@ const TableListAssignCPass = (props: any) => {
       cancelText: 'Không',
       onOk: async () => {
         
+        console.log('props.fairId', props.fairId);
         await handleUpdateMany({
           ...entity
         }, api, id);
@@ -126,7 +125,29 @@ const TableListAssignCPass = (props: any) => {
     
   ];
 
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+     
+          <Fragment>
+            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+          </Fragment>
+    );
+  }
 
+
+  function renderTableAlertOption(selectedRows: any, onCleanSelected: any) {
+    return (
+      <>
+        <Fragment>
+        <Button onClick={async () => {
+            //  await confirm(selectedRows as any, 'xóa', actionRef);
+            onCleanSelected()
+            // actionRef.current?.reloadAndRest?.();
+          }}>Bỏ chọn</Button>
+        </Fragment>
+      </>
+    );
+  }
 
 
   return (
@@ -162,7 +183,6 @@ const TableListAssignCPass = (props: any) => {
 
         request={async () => {
           const data = await customAPIGetOne(props.fairId, 'users/list-and-cpass', {});
-          console.log('usersss', data);
 
           return {
             data: data,
@@ -176,14 +196,14 @@ const TableListAssignCPass = (props: any) => {
             type='primary'
             key='primary'
             onClick={() => {
-             console.log(selectedRowsState)
             
              confirm(
               {
                 data: {
                   cPassId: [props.currentCPass],
-                  userId: selectedRowsState[0]?.id
-               }
+                  userId: selectedRowsState[0]?.id,
+               },
+               fairId: props.fairId
               }, configDefaultText['page.assign.textConfirmAssign'], 'c-passes/update/assign', null);
             }}
           >
@@ -195,13 +215,10 @@ const TableListAssignCPass = (props: any) => {
         dataSource={fair?.c_passes}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-            if(selectedRows.length > 1){
-              message.error('Chỉ được chọn 1 Mega!');
-              setSelectedRows(selectedRows);
-              return;
-            }
+           
             setSelectedRows(selectedRows);
           },
+          type: 'radio'
         }}
 
         pagination={{
@@ -213,6 +230,30 @@ const TableListAssignCPass = (props: any) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        
+        tableAlertRender={({selectedRowKeys}: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({  selectedRows, onCleanSelected }: any) => {
+         return renderTableAlertOption(selectedRows, onCleanSelected)
+        }}
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
+
       />
       {currentRowCPass && (
         <DetailCPass

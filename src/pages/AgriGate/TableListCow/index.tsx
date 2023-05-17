@@ -455,7 +455,6 @@ const TableList: React.FC = () => {
           return `0`;
         }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
-
         return confiAge;
       }
     },

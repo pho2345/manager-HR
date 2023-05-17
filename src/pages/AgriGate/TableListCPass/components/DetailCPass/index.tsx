@@ -20,8 +20,6 @@ const ListImage = (image: any) => {
 
 const TableList = (props: any) => {
   const [image, setImage] = useState<any>();
-
-
   const columnsDetailCPass: ProColumns<any>[] = [
     {
       key: 'code',
@@ -32,8 +30,6 @@ const TableList = (props: any) => {
           // <Text>{`${entity.code}|${entity.id}`}</Text>
           <>
             {`${entity.code}|${entity.id}`}</>
-         
-
         );
       },
       

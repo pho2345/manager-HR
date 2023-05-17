@@ -186,15 +186,11 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <a
-            onClick={() => {
-              setCurrentRowCPass(entity.id);
-              setShowDetailCPass(true);
-            }}
+          <
           >
             {entity?.code}
 
-          </a>
+          </>
 
         );
       },
@@ -292,6 +288,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
+        console.log(text?.colorBodyCondition);
         // switch (text?.bodyCondition) {
         //   case 'good':
         //     return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
@@ -306,7 +303,7 @@ const TableList: React.FC = () => {
         //   default:
         //     break;
         // }
-        return (<Text style={{ color: text?.colorBodyCondition?.color || 'black' }}>{text?.colorBodyConditio?.name}</Text>);
+        return (<Text style={{ color: text?.colorBodyCondition?.color || 'black' }}>{text?.colorBodyCondition?.name}</Text>);
       },
       filters: true,
       onFilter: true,
@@ -375,13 +372,17 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)| MegaE (VNĐ)<br />MegaCPR</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br/>MegaE (VNĐ)<br />MegaCPR</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'plan',
+      width: 120,
+      align: 'center',
       render: (_, text: any) => {
         return (<>
-          {`${text?.megaP ? text?.megaP : '-'} | ${text?.megaE.toLocaleString()}`} <br /> {`${text?.megaCPR}%`}
+        { text?.megaP || 0 }<br/>
+        {text?.megaE.toLocaleString() || 0} <br/>
+        {text?.megaCPR}%
         </>)
       }
     },

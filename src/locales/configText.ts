@@ -28,6 +28,8 @@ export default {
     'textConfirmChangeStatus': 'Bạn có muốn thay đổi tình trạng?',
     'methodPayment': 'Phương thức thanh toán',
     'menu':'Web-cPass',
+    'dowloadTemplate': 'Template',
+    'uploadTemplate': 'Nhập dữ liệu',
     
     'noChosen': 'Bỏ Chọn',
 
@@ -570,6 +572,17 @@ export default {
     'page.slot.columns.timeEnd': 'Ngày cân 2',
     'page.slot.columns.preWeight': 'Cân nặng trước',
     'page.slot.columns.currentWeight': 'Cân nặng hiện tại',
+    'page.slot.upload': 'Upload',
+    'page.slot.click': 'Nhấp vào đây',
+    'page.slot.limitUpload': 'Chỉ có thể upload 1 file',
+    'page.slot.typeTemplate': 'Chọn kiểu template',
+    'page.slot.cPass': 'Nhập theo cPass',
+    'page.slot.code': 'Nhập theo Mã thẻ tai',
+    'page.slot.required.template': 'Vui lòng chọn kiểu template',
+    'page.slot.dowload.template': 'Tải template',
+    'page.slot.required.upload': 'Vui lòng upload file',
+   
+
 
 
 

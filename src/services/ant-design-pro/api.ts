@@ -1,8 +1,5 @@
-
 import { request } from '@umijs/max';
-
- 
-
+import axios from 'axios';
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {
@@ -16,15 +13,13 @@ export async function currentUser(options?: { [key: string]: any }) {
   return data;
 }
 
-
 export async function outLogin() {
   // return request<Record<string, any>>('/api/login/outLogin', {
   //   method: 'POST',
   //   ...(options || {}),
   // });
-  localStorage.setItem('access_token', '')
+  localStorage.setItem('access_token', '');
 }
-
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
   return request<API.LoginResult>(SERVERURL + '/api/auth/local', {
@@ -33,10 +28,9 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       'Content-Type': 'application/json',
     },
     data: body,
-    ...(options || {}), 
+    ...(options || {}),
   });
 }
-
 
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {
@@ -45,12 +39,10 @@ export async function getNotices(options?: { [key: string]: any }) {
   });
 }
 
-
 export async function rule(
   params: {
-    
     current?: number;
-  
+
     pageSize?: number;
   },
   options?: { [key: string]: any },
@@ -63,7 +55,6 @@ export async function rule(
     ...(options || {}),
   });
 }
-
 
 export async function updateRule(options?: { [key: string]: any }) {
   return request<API.RuleListItem>('/api/rule', {
@@ -79,7 +70,6 @@ export async function addRule(options?: { [key: string]: any }) {
   });
 }
 
-
 export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/rule', {
     method: 'DELETE',
@@ -88,138 +78,209 @@ export async function removeRule(options?: { [key: string]: any }) {
 }
 
 export async function customAPIGet(values?: { [key: string]: any }, collection?: string) {
-
-  const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
-    method: "GET",
+  const fetchData = await request<any>(SERVERURL + '/api/' + collection, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
     params: {
       ...values,
     },
   });
- 
+
   return {
-    data : fetchData.data ? fetchData.data : fetchData,
+    data: fetchData.data ? fetchData.data : fetchData,
     success: true,
-    total : fetchData?.meta?.pagination?.total
-  }
+    total: fetchData?.meta?.pagination?.total,
+  };
 }
 
-export async function customAPIPost(values?: { [key: string]: any }, collection?: string, body?: any) {
-  const fetchData = await request<any>(SERVERURL+'/api/'+collection, {
-    method: "POST",
+export async function customAPIPost(
+  values?: { [key: string]: any },
+  collection?: string,
+  body?: any,
+) {
+  const fetchData = await request<any>(SERVERURL + '/api/' + collection, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
     params: {
       ...values,
     },
     data: {
-      ...body
-    }
+      ...body,
+    },
   });
- 
+
   return {
-    data : fetchData.data ? fetchData.data : fetchData,
+    data: fetchData.data ? fetchData.data : fetchData,
     success: true,
-    total : fetchData?.meta?.pagination?.total
-  }
+    total: fetchData?.meta?.pagination?.total,
+  };
 }
 
 export async function customAPIAdd(values?: { [key: string]: any }, collection?: string) {
-  
-  return request<any>(SERVERURL+'/api/'+collection, {
-    method: "POST",
+  return request<any>(SERVERURL + '/api/' + collection, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    data : {
-      data : values
-    }
+    data: {
+      data: values,
+    },
   });
 }
 
-
-export async function customAPIUpdate(values?: { [key: string]: any }, collection?: string, id?: any) {
-  return request<any>(SERVERURL +'/api/'+collection + `/${id}`, {
-    method: "PUT",
+export async function customAPIUpdate(
+  values?: { [key: string]: any },
+  collection?: string,
+  id?: any,
+) {
+  return request<any>(SERVERURL + '/api/' + collection + `/${id}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    data : {
-      data : values
-    }
+    data: {
+      data: values,
+    },
   });
 }
-
 
 export async function customAPIDelete(values?: { [key: string]: any }, collection?: string) {
- 
-  return request<any>(SERVERURL +'/api/'+collection +'/'+ values, {
-    method: "DELETE",
+  return request<any>(SERVERURL + '/api/' + collection + '/' + values, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   });
 }
 
-export async function customAPIGetOne(values?: any, collection?: string, params?: { [key: string]: any }) {
-
-  return request<any>( SERVERURL +'/api/'+ collection +'/'+ values, {
-    method: "GET",
+export async function customAPIGetOne(
+  values?: any,
+  collection?: string,
+  params?: { [key: string]: any },
+) {
+  return request<any>(SERVERURL + '/api/' + collection + '/' + values, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
-    },
-    params: {
-      ...params
-    }
-  });
-}
-
-export async function customAPIPostOne(values?: any, collection?: string, params?: { [key: string]: any }) {
-
-  return request<any>( SERVERURL +'/api/'+ collection +'/'+ values, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
     params: {
-      ...params
-    }
+      ...params,
+    },
   });
 }
 
+export async function customAPIPostOne(
+  values?: any,
+  collection?: string,
+  params?: { [key: string]: any },
+) {
+  return request<any>(SERVERURL + '/api/' + collection + '/' + values, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    params: {
+      ...params,
+    },
+  });
+}
 
 export async function customAPIUpload(values?: { [key: string]: any }) {
   console.log(values);
- 
-  return request<any>( SERVERURL +'/api/upload', {
-    method: "POST",
+
+  return request<any>(SERVERURL + '/api/upload', {
+    method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    data : values?.data
+    data: values?.data,
   });
 }
 
 export async function customAPIUpdateMany(values?: any, collection?: string, id?: any) {
-  return request<any>(`${SERVERURL}/api/${collection}${id ?`/${id}` : '' }`, {
-    method: "PUT",
+  return request<any>(`${SERVERURL}/api/${collection}${id ? `/${id}` : ''}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      "Authorization" : `Bearer ${localStorage.getItem('access_token')}` 
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    data : {
-     ...values
-    }
+    data: {
+      ...values,
+    },
   });
+}
+
+export async function customAPIGetFile(values?: { [key: string]: any }, collection?: string) {
+  const data = await fetch(SERVERURL + '/api/' + collection, {
+    headers: {
+      'Content-Type': 'application/xml',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  });
+
+  if (data.status === 200) {
+    const blob = await data.blob();
+    const anchor = document.createElement('a');
+    anchor.href = URL.createObjectURL(blob);
+    anchor.download = 'inputWeight.xlsx';
+
+    // Programmatically trigger the download
+    anchor.click();
+
+    // Clean up the temporary anchor
+    URL.revokeObjectURL(anchor.href);
+  } else {
+  }
+  // .then((response) => {
+  //   console.log(response);
+  //   return response.blob();
+  // })
+  // .then((blob) => {
+  //   // Create a temporary anchor element
+  //   console.log(blob);
+  //   const anchor = document.createElement('a');
+  //   anchor.href = URL.createObjectURL(blob);
+  //   anchor.download = 'inputWeight.xlsx';
+
+  //   // Programmatically trigger the download
+  //   anchor.click();
+
+  //   // Clean up the temporary anchor
+  //   URL.revokeObjectURL(anchor.href);
+  // })
+  // .catch(err =>  {
+  //   console.log('err', err);
+  // })
+  // ;
+}
+
+export async function customAPIUpdateFile(values?: any, collection?: string) {
+  let data = new FormData();
+  data.append('file', values.upload[0].originFileObj);
+
+  let config = {
+    method: 'put',
+    maxBodyLength: Infinity,
+    url: `${SERVERURL}/api/${collection}`,
+    headers: {
+      "Content-Type": "multipart/form-data" ,
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    data: data,
+  };
+
+ await axios.request(config);
+    
 }

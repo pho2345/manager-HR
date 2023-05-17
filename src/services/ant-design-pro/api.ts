@@ -222,7 +222,7 @@ export async function customAPIUpdateMany(values?: any, collection?: string, id?
   });
 }
 
-export async function customAPIGetFile(values?: { [key: string]: any }, collection?: string) {
+export async function customAPIGetFile(types?: string, collection?: string) {
   const data = await fetch(SERVERURL + '/api/' + collection, {
     headers: {
       'Content-Type': 'application/xml',
@@ -234,7 +234,7 @@ export async function customAPIGetFile(values?: { [key: string]: any }, collecti
     const blob = await data.blob();
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(blob);
-    anchor.download = 'inputWeight.xlsx';
+    anchor.download = types === 'code' ? 'input_weight_code.xlsx' : 'input_weight_c_pass.xlsx';
 
     // Programmatically trigger the download
     anchor.click();
@@ -269,7 +269,6 @@ export async function customAPIGetFile(values?: { [key: string]: any }, collecti
 export async function customAPIUpdateFile(values?: any, collection?: string) {
   let data = new FormData();
   data.append('file', values.upload[0].originFileObj);
-
   let config = {
     method: 'put',
     maxBodyLength: Infinity,

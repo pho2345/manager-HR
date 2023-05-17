@@ -22,8 +22,7 @@ import configText from '@/locales/configText';
 const configDefaultText = configText;
 import "./styles.css";
 import { MdOutlineCurrencyExchange, MdOutlinePaid } from 'react-icons/md';
-
-
+import DetailCPass from '@/pages/AgriGate/TableListCPass/components/DetailCPass';
 
 
 const handleCreate = async (fields: any, api: any) => {
@@ -137,7 +136,9 @@ const TableList: React.FC = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, 
+      //close 
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -241,8 +242,8 @@ const TableList: React.FC = () => {
         return (
           <><a
             onClick={() => {
-              setCurrentRow(entity?.id);
-              setShowDetail(true);
+              // setCurrentRow(entity?.id);
+              // setShowDetail(true);
             }}>
             {entity?.sender?.fullname ? entity?.sender?.fullname : entity?.sender?.username}-{entity?.sender?.id}
           </a><br />{entity?.sender.phone}{entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
@@ -295,9 +296,14 @@ const TableList: React.FC = () => {
       key: 'category',
       ...getColumnSearchProps('cPass'),
       render: (_, text: any) => {
-        return (<>
+        return (<a
+          onClick={() => {
+            setCurrentRow(text?.c_pass.id);
+            setShowDetail(true);
+          }}
+        >
           {text?.c_pass?.code}
-        </>)
+        </a>)
       }
     },
     {
@@ -615,30 +621,15 @@ const TableList: React.FC = () => {
 
 
 
-
-      {/* <Drawer
-        width={600}
-        open={showDetail}
-        onClose={() => {
-          setCurrentRow(undefined);
+      {currentRow && <DetailCPass
+        openModal={showDetail}
+        cPassId={currentRow}
+        closeModal={() => {
           setShowDetail(false);
+          setCurrentRow(undefined);
         }}
-        closable={false}
-      >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
-            column={2}
-            title={currentRow?.name}
-            request={async () => ({
-              data: currentRow || {},
-            })}
-            params={{
-              id: currentRow?.name,
-            }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-          />
-        )}
-      </Drawer> */}
+      />}
+      
     </PageContainer>
   );
 };

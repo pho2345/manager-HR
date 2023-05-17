@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormMoney } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -388,14 +388,16 @@ const DialogTransfer = (props: any) => {
           <Row gutter={24} className='m-0'>
             <Col span={24} className='gutter-row p-0' >
 
-              <ProFormMoney
+              <ProFormDigit
                 className='w-full'
                 label={configDefaultText['page.transfer.ale']}
                 placeholder={configDefaultText['page.transfer.ale']}
                 name='ale'
                 min={1}
                 max={props?.megaChoosen?.availableBalance}
-                customSymbol='A'
+                fieldProps={{
+                  precision: 2
+                }}
               />
             </Col>
           </Row>

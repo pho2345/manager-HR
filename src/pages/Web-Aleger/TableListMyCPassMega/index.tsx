@@ -1,21 +1,25 @@
 import {  customAPIGetOne } from '@/services/ant-design-pro/api';
-import {  ProColumns} from '@ant-design/pro-components';
+import {  ActionType, ProColumns} from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
-import { Avatar, Button,   Typography } from 'antd';
-import React from 'react';
+import { Avatar, Tooltip, Typography } from 'antd';
+import React, { useRef } from 'react';
 import moment from 'moment';
+import { MdOutlineHistory } from 'react-icons/md';
 const { Text } = Typography;
-
+import configText from '@/locales/configText';
+import { ReloadOutlined } from '@ant-design/icons';
+const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
   const intl = useIntl();
   const params = useParams<number>();
+  const actionRef = useRef<ActionType>();
   const columns: ProColumns<any>[] = [
     {
       title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
@@ -60,8 +64,7 @@ const TableList: React.FC = () => {
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
-        Giống bò-Giới tính</>)} />,
-      width: 200,
+        Giống bò<br/>Giới tính</>)} />,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
@@ -72,7 +75,9 @@ const TableList: React.FC = () => {
         }
         return (<>
           {text?.cow?.farm?.name}<br />
-          {`${text?.cow?.category?.name}-${sex}`}
+          {`${text?.cow?.category?.name}`}
+          <br/>
+          {sex}
         </>)
       }
     },
@@ -90,7 +95,7 @@ const TableList: React.FC = () => {
             size='large'
             maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
           >
-            {text?.cow?.photos?.map((e: any, index: any) => {
+            {text?.cow?.photos && text?.cow?.photos.length !== 0 ? text?.cow?.photos?.map((e: any, index: any) => {
               return (
                 <Avatar
                   key={index}
@@ -100,7 +105,15 @@ const TableList: React.FC = () => {
                   }
                 />
               );
-            })}
+            }) :
+              (<Avatar
+                key={'defaultImage'}
+                src={
+                  'https://aleger-server.process.vn/uploads/cow_Icon2_e7fd247cac.png'
+                }
+              />)
+            }
+
           </Avatar.Group>
         );
       }
@@ -111,9 +124,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = `${text?.cow?.age / 4 >= 1 ? `${text?.cow?.age / 4}Th` : ''} ${text?.cow?.age % 4 !== 0 ? (text?.cow?.age % 4) + 'T' : ''}`;
-        return age;
-
+        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        if (age === 0) {
+          return `0`;
+        }
+        let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
+        return confiAge;
       }
     },
     {
@@ -178,13 +194,17 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)| MegaE(VNĐ)<br />MegaCPR</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br/>MegaE (VNĐ)<br />MegaCPR</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
-      key: 'plan',
+      width: 120,
+      key: 'megaP',
+      align:'center',
       render: (_, text: any) => {
         return (<>
-          {`${text?.megaP ? text?.megaP : '-'} | ${text?.megaE}`} <br /> {`${text?.megaCPR}%`}
+        {text?.megaP || 0} <br/>
+        {text?.megaE.toLocaleString() || 0} <br/>
+        {text?.megaCPR || 0}%
         </>)
       }
     },
@@ -203,6 +223,7 @@ const TableList: React.FC = () => {
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
+      align: 'center',
       render: (_, text: any) => {
         let id = text?.id;
         if(text?.checkHistory){
@@ -212,11 +233,10 @@ const TableList: React.FC = () => {
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
-          <Button>
-            <Link to={`/web-aleger/mega/slot-c-pass/${id}?user-id=${params?.id}&fair-id=${text?.fair?.id}`}>
-              HISTORY
-            </Link>
-          </Button>
+          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/` + id}><MdOutlineHistory style={{
+            fontSize: '20px'
+          }}>
+          </MdOutlineHistory></Link></Tooltip>
         </>)
       }
     },
@@ -250,15 +270,10 @@ const TableList: React.FC = () => {
         onBack={() => window.history.back()}
     >
       <ProTable
-
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
         rowKey='id'
         search={false}
 
-       
+       actionRef={actionRef}
         request={ async() => {
             const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
             return {
@@ -279,6 +294,18 @@ const TableList: React.FC = () => {
           }
         }}
 
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: configDefaultText['reload'],
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
       />
       
 

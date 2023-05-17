@@ -6,7 +6,7 @@ import {
   customAPIGetOne,
 
 } from '@/services/ant-design-pro/api';
-import { CloseCircleOutlined, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SafetyOutlined, SearchOutlined } from '@ant-design/icons';
+import {  ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -25,12 +25,11 @@ import React, {  Fragment, useEffect, useRef, useState } from 'react';
 
 import { MdOutlineEdit } from 'react-icons/md';
 // import viVNIntl from 'antd/lib/locale/vi_VN';  
-
-import configText from '@/locales/configText';
 import moment from 'moment';
+import configText from '@/locales/configText';
+
 const configDefaultText = configText;
 
-const timeZone = new Date().getTimezoneOffset() / -60;
 
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
@@ -346,35 +345,37 @@ const confirm = (entity: any) => {
 
 
             {
-              entity.active ? (<Tooltip title={configDefaultText['page.listGroupCow.inActive']}>< CloseCircleOutlined
-                style={{
-                  paddingLeft: 10
-                }}
-                onClick={async () => {
-                  await handleUpdate({
-                    active: !entity.active
-                  }, 'group-cows/update', entity.id);
-                  if (actionRef.current) {
-                    actionRef.current.reload();
-                  }
-                }}
+              // entity.active ? (<Tooltip title={configDefaultText['page.listGroupCow.inActive']}>< CloseCircleOutlined
+              //   style={{
+              //     paddingLeft: 10
+              //   }}
+              //   onClick={async () => {
+              //     await handleUpdate({
+              //       active: !entity.active
+              //     }, 'group-cows/update', entity.id);
+              //     if (actionRef.current) {
+              //       actionRef.current.reload();
+              //     }
+              //   }}
 
-              /></Tooltip>) :
-                (<Tooltip title={configDefaultText['page.listGroupCow.active']}><SafetyOutlined
-                  style={{
-                    paddingLeft: 10
-                  }}
-                  onClick={async () => {
-                    await handleUpdate({
-                      active: !entity.active
-                    }, 'group-cows/update', entity.id);
-                    if (actionRef.current) {
-                      actionRef.current.reload();
-                    }
-                  }}
+              // /></Tooltip>) :
+              //   (<Tooltip title={configDefaultText['page.listGroupCow.active']}><SafetyOutlined
+              //     style={{
+              //       paddingLeft: 10
+              //     }}
+              //     onClick={async () => {
+              //       await handleUpdate({
+              //         active: !entity.active
+              //       }, 'group-cows/update', entity.id);
+              //       if (actionRef.current) {
+              //         actionRef.current.reload();
+              //       }
+              //     }}
 
-                /></Tooltip>
-                )}
+              //   /></Tooltip>
+              //   )
+                
+                }
 
           </>
         );

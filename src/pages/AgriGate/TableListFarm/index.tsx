@@ -19,7 +19,6 @@ import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 const handleAdd = async (fields: API.RuleListItem) => {
-  console.log(fields);
   const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'farms');

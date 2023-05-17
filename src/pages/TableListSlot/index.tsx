@@ -398,10 +398,10 @@ const TableList: React.FC = () => {
           //await waitTime(2000);
           console.log(values);
           if (values.template === 'cPass') {
-            await  customAPIGetFile({}, 'slots/dowload-template');
+            await  customAPIGetFile( 'cPass', 'slots/dowload-template');
           }
           else {
-            await  customAPIGetFile({}, 'slots/dowload-template-code');
+            await  customAPIGetFile( 'code', 'slots/dowload-template-code');
           }
         }}
       >

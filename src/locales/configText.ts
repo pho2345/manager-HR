@@ -30,6 +30,7 @@ export default {
     'menu':'Web-cPass',
     'dowloadTemplate': 'Template',
     'uploadTemplate': 'Nhập dữ liệu',
+    'dowloadFile': 'Tải file',
     
     'noChosen': 'Bỏ Chọn',
 
@@ -570,8 +571,8 @@ export default {
     'page.slot.columns.codeCPass': 'cPass',
     'page.slot.columns.timeStart': 'Ngày cân 1',
     'page.slot.columns.timeEnd': 'Ngày cân 2',
-    'page.slot.columns.preWeight': 'Cân nặng trước',
-    'page.slot.columns.currentWeight': 'Cân nặng hiện tại',
+    'page.slot.columns.preWeight': 'Cân nặng trước (kg)',
+    'page.slot.columns.currentWeight': 'Cân nặng hiện tại (kg)',
     'page.slot.upload': 'Upload',
     'page.slot.click': 'Nhấp vào đây',
     'page.slot.limitUpload': 'Chỉ có thể upload 1 file',

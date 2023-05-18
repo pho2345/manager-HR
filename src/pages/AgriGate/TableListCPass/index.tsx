@@ -5,17 +5,16 @@ import {
   ModalForm,
   PageContainer,
   ProFormText,
-
   ProTable,
 } from '@ant-design/pro-components';
 import { BsGraphUpArrow } from 'react-icons/bs';
 import { MdOutlineEdit } from 'react-icons/md';
-
 import { Avatar, Button, Col, Form, Input, message, Modal, Row, Space, Tooltip, Typography } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
 import configText from '@/locales/configText';
+import Chart from '@/pages/components/Chart';
 const configDefaultText = configText;
 
 const { Text } = Typography;
@@ -203,6 +202,7 @@ const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [openChart, setOpenChart] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
@@ -579,6 +579,7 @@ const TableList: React.FC = () => {
         return (<>
           <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
             onClick={() => {
+              setOpenChart(true)
             }}
           /></Tooltip>
         </>)
@@ -976,7 +977,7 @@ const TableList: React.FC = () => {
 
 
         <Row gutter={24} className='m-0'>
-          <Col span={12} className='gutter-row p-0' >
+          {/* <Col span={12} className='gutter-row p-0' >
             <ProFormDigit min={1} className='w-full' name='vZero'
               label={configDefaultText['page.listCPass.modal.vZero']}
               fieldProps={{
@@ -996,9 +997,8 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
-
             />
-          </Col>
+          </Col> */}
 
           <Col span={12} className='gutter-row p-0'>
             <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
@@ -1579,7 +1579,15 @@ const TableList: React.FC = () => {
         />
       </ModalForm>
 
-
+         {
+          openChart &&  <Chart 
+            openModal={openChart}
+            onClose={() => {
+              setOpenChart(false);
+            }}
+          />
+         }
+        
       {currentRow && <DetailCPass
         openModal={showDetail}
         cPassId={currentRow}

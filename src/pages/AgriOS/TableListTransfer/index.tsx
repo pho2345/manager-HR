@@ -398,7 +398,7 @@ const TableListAssignCPass = () => {
         }}
       >
 
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 ProduceAle = {typeConvert === true ? `${rateConvert?.ratePromo + 1} PromoAle` : '1 Ale'}</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 ProduceAle = {typeConvert === true ? `${rateConvert?.ratePromo} PromoAle` : '1 Ale'}</Text>
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormSelect width='md' options={[
@@ -467,7 +467,7 @@ const TableListAssignCPass = () => {
                     name="promoAle"
                     disabled
                     fieldProps={{
-                      value: convertAle + convertAle * rateConvert?.ratePromo,
+                      value:  convertAle * rateConvert?.ratePromo,
                     }}
                   />
                 </Col>

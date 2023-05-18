@@ -52,7 +52,7 @@ const TableListAssignCPass = (props: any) => {
   const [fair, setFair] = useState<any>();
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
-      title: 'Confirm',
+      title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
       content: message,
       okText: 'Có',

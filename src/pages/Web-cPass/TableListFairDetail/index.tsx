@@ -7,7 +7,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, useParams } from '@umijs/max';
-import { Button, Checkbox, Dropdown, Input, List, Menu, message, Modal, Space,  Typography } from 'antd';
+import { Button, Checkbox, Dropdown, Input, List, Menu, message, Modal, Space, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
@@ -86,8 +86,8 @@ const TableListFairDetail: React.FC = () => {
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-       //close
-       }: any) => (
+      //close
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -399,27 +399,29 @@ const TableListFairDetail: React.FC = () => {
 
             {entity.check === 'none' ? (
               <>
-              <Menu.Item key="2"
-                onClick={() => {
-                  setCurrentCPass(entity.id);
-                  setShowModalMega(true)
-                }}
-              >{configDefaultText['page.DetailCPass.menu.assignMega']}</Menu.Item>
-              
-              <Menu.Item key="3"
-                onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)}
-              >{configDefaultText['page.DetailCPass.menu.removeCPass']}</Menu.Item>
+                <Menu.Item key="2"
+                  onClick={() => {
+                    setCurrentCPass(entity.id);
+                    setShowModalMega(true)
+                  }}
+                >{configDefaultText['page.DetailCPass.menu.assignMega']}</Menu.Item>
+
+                <Menu.Item key="3"
+                  onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)}
+                >{configDefaultText['page.DetailCPass.menu.removeCPass']}</Menu.Item>
               </>
 
             ) : (<></>)}
           </Menu>
         );
         return (
-          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-              {configDefaultText['handle']}
-            </a>
-          </Dropdown>
+          entity?.check === 'owner' ? (<></>) : (<>
+            <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+                {configDefaultText['handle']}
+              </a>
+            </Dropdown>
+          </>)
         )
       }
     },

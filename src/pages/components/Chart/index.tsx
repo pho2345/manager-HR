@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Line } from '@ant-design/plots';
 import { ActionType, ModalForm, ProColumns, ProTable } from '@ant-design/pro-components';
-import { customAPIGet, customAPIPost } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIGetFileSlotChart, customAPIPost } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { Button } from 'antd';
 import configText from '@/locales/configText';
-import { PlusOutlined, ReloadOutlined, SettingOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 const configDefaultText = configText;
 
 const DemoLine = (props: any) => {
     const [data, setData] = useState([]);
+    const [slots, setSlots] = useState([]);
+
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
 
@@ -20,7 +22,7 @@ const DemoLine = (props: any) => {
             "types": "c-pass"
         });
         setData(getSlot?.data?.chart);
-        console.log(getSlot);
+        setSlots(getSlot?.data?.slots);
     };
 
     useEffect(() => {
@@ -65,7 +67,7 @@ const DemoLine = (props: any) => {
                 //        </div>`
                 //     );
                 //   });
-                return `<div class="custom-tooltip">Thực tế: ${data[3]?.data?.value} kg @${moment().format('DD/MM/YYYY')}</div>`;
+                return `<div class="custom-tooltip">Thực tế: ${data[3]?.data?.value} kg @${moment(data[3]?.data?.timeEnd).format('DD/MM/YYYY')}</div>`;
             },
         },
     };
@@ -241,14 +243,15 @@ const DemoLine = (props: any) => {
                             type='primary'
                             key='dowloadTemplate'
                             onClick={async () => {
-                                // await  customAPIGetFile({}, 'slots/dowload');
+                                await customAPIGetFileSlotChart('', 'slots/getfile', 17);
                             }}
                         >
                             <PlusOutlined /> {configDefaultText['dowloadFile']}
                         </Button>,
                     ]}
 
-                    request={() => customAPIGet({}, 'c-passes/get/c-pass-slot')}
+                    // request={() => customAPIGet({}, '/c-passes/chart')}
+                    dataSource={slots}
                     columns={columns}
 
                     toolbar={{
@@ -257,9 +260,9 @@ const DemoLine = (props: any) => {
                             tooltip: 'Tải lại',
                             icon: <ReloadOutlined />,
                             onClick: () => {
-                                  if (actionRef.current) {
+                                if (actionRef.current) {
                                     actionRef.current.reload();
-                                  }
+                                }
                             }
                         }]
                     }}

@@ -105,10 +105,10 @@ const TableList: React.FC = () => {
         return (
           <a
           onClick={() => {
-            setCurrentRowFair(entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.id : entity.c_pass?.fair?.id);
+            setCurrentRowFair(entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.id : entity?.fair?.id);
             setShowDetailFair(true);
           }}
-          >{entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.code : entity.c_pass?.fair?.code}</a>
+          >{entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.code : entity?.fair?.code}</a>
         );
       },
     },
@@ -330,6 +330,9 @@ const TableList: React.FC = () => {
                     select: ['code', 'id']
                   }
                 }
+              },
+              fair: {
+                select: ['id', 'code']
               }
             },
             filters: {

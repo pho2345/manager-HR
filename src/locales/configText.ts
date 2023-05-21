@@ -584,7 +584,7 @@ export default {
     'page.slot.required.upload': 'Vui lòng upload file',
    
 
-
+    'page.cPassMega.page.header' : 'cPass (đang sở hữu)'
 
 
 

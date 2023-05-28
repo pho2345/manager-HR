@@ -93,6 +93,7 @@ export default [
       { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' },
       { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },
       { path: '/web-aleger/status-owner', name: 'Tình trạng sở hữu Mega', component: './Web-Aleger/TableListStatusOwner' },
+      { path: '/web-aleger/config-mega', name: 'Cài đặt Mega', component: './Web-Aleger/TableConfigMega' },
     ],
   },
 
@@ -108,6 +109,8 @@ export default [
       { path: '/agrios/sell-ale',hideInMenu: false,  name: 'Bán Ale cho PL', component: './AgriOS/TableListSellAle' },
       { path: '/agrios/confirm',hideInMenu: false,  name: 'Xác nhận giao dịch mua/bán Ale', component: './AgriOS/TableListConfirmAleTransaction' },
       { path: '/agrios/follow',hideInMenu: false,  name: 'Theo dõi giao dịch Ale', component: './AgriOS/TableListFollowTransactionAle' },
+      { path: '/agrios/config',hideInMenu: false,  name: 'Cấu hình chung', component: './AgriOS/TableListConfig' },
+      { path: '/agrios/dashboard',hideInMenu: false,  name: 'Dashboard', component: './AgriOS/TableListDashboard' },
     ],
   },
 

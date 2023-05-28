@@ -1,25 +1,26 @@
 import DetailCPass from '@/pages/components/DetailCPass';
-import {   customAPIAdd} from '@/services/ant-design-pro/api';
-import {     ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
+import { customAPIAdd } from '@/services/ant-design-pro/api';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { 
-  FormattedMessage, 
- // useParams 
+import {
+  FormattedMessage,
+  // useParams 
 } from '@umijs/max';
 import { Button, Space, Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-
+import configText from '@/locales/configText';
+const configDefaultText = configText;
 // import DetailCPass from '../components/DetailCPass';
 // import DetailUser from '../components/DetailUser';
 
 
 const handleCreate = async (fields: any, api: string) => {
   const hide = message.loading('Đang xử lý...');
-  
+
   try {
     const createTransaction = await customAPIAdd(
       {
@@ -27,10 +28,10 @@ const handleCreate = async (fields: any, api: string) => {
       }, api);
     hide();
     if (createTransaction) {
-       message.success(createTransaction.message);
-       return true;
+      message.success(createTransaction.message);
+      return true;
     }
-    
+
   } catch (error: any) {
     hide();
     message.error(error?.response.data.error.message);
@@ -44,27 +45,27 @@ const handleCreate = async (fields: any, api: string) => {
 
 
 export type userSettlement = {
- id: number,
- username: string,
- phone: string,
- fullname: string,
- email: string,
- passport: string,
- avaiLimitCPassSettlement: number,
- avaiCPassSettlement: number
+  id: number,
+  username: string,
+  phone: string,
+  fullname: string,
+  email: string,
+  passport: string,
+  avaiLimitCPassSettlement: number,
+  avaiCPassSettlement: number
 }
 
-const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
-  console.log('props', props);
+const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
-  
+  const [showModalMethod, setShowModalMethod] = useState<boolean>(false);
 
-  
+
+
   //const params = useParams<any>();
   //const [userSettlement, setUserSettlement] = useState<userSettlement>();
-  
+
   //const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -77,7 +78,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-   // setSearchText('');
+    // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -129,22 +130,22 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
         }}
       />
     ),
-    onFilter: (value:any, record: any) =>{
-      if(record[dataIndex]){
+    onFilter: (value: any, record: any) => {
+      if (record[dataIndex]) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
     }
-      ,
+    ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
         //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
-      
+
     // }
-      
+
   });
 
 
@@ -199,31 +200,31 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
           >
             {entity?.fair}
 
-           </a>
-          
+          </a>
+
         );
       },
-     
+
     },
-   
+
     {
       title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Snow</>} />,
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
-      renderText: (_, text: any) =>  {
+      renderText: (_, text: any) => {
         return `S${text?.slotNow}`;
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br/>Pnow<br/>(kg)</>} />,
+      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
-      
+
       renderText: (_, text: any) => `${text?.pZero}/${text?.nowWeight}`,
-     
-    }, 
+
+    },
 
     {
       title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Hoàn trả Vs(VNĐ)</>} />,
@@ -231,7 +232,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
       valueType: 'textarea',
       key: 'refundVs',
       renderText: (_, text: any) => {
-        if(text?.refundVs > text?.slotNow){
+        if (text?.refundVs > text?.slotNow) {
           return text?.vs.toLocaleString();
         }
         else {
@@ -241,7 +242,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br/>ProduceAle</>} />,
+      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -267,7 +268,7 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
 
   return (
     <>
-    <ModalForm 
+      <ModalForm
         open={props.openModal}
         autoFocusFirstInput
         modalProps={{
@@ -276,19 +277,21 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
             props.onCloseModal();
           },
         }}
-        onFinish={ async() => {
-          const cPass = props?.cPass.map((e: any) => e.id);
-         
-          const success = await handleCreate({
-            "cPass": cPass,
-            "userId": props.userId,
-            "method": "vnd"
-          }, 'transactions/settlement/create');
-       
-          if(success){
-            props.onCloseModal();
-          }
-          return true;
+        onFinish={async () => {
+          // const cPass = props?.cPass.map((e: any) => e.id);
+
+          // const success = await handleCreate({
+          //   "cPass": cPass,
+          //   "userId": props.userId,
+          //   "method": "ale"
+          // }, 'transactions/settlement/create');
+
+          // if(success){
+          //   props.onCloseModal();
+          // }
+          // return true;
+
+          setShowModalMethod(true);
         }}
         submitTimeout={2000}
         submitter={{
@@ -297,65 +300,115 @@ const ConfirmRegisteringSettlement : React.FC<any> = (props) => {
             submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
           },
         }}
-    >
-    <ProTable
-        headerTitle={(<>
-         {/* Đăng ký Thanh quyết toán cho Mega {userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}  các cPass sau: */}
-        </>)}
-        pagination={false}
-        actionRef={actionRef}
-        rowKey='id'
-        search={false}
-        rowSelection={false}
-        rowClassName={
-          (entity) => {
-            return entity.classColor
-          }
-        }
-
-        
-        // request={async () => {
-        //   const data = await customAPIGetOne(8, 'c-passes/get/cpass-of-mega', {});
-        //   setUserSettlement(data?.user);
-        //   //console.log('usersss', data);
-         
-        //   return {
-        //     data: data?.cPass,
-        //     success: true,
-        //     total: 0
-        //   }
-        // }}
-        columns={columnCPass}
-        dataSource={props.cPass}
-
-        toolbar={{
-          settings:[{
-            key: 'reload',
-            tooltip: 'Tải lại',
-            icon: <ReloadOutlined />,
-            onClick:() => {
-              if (actionRef.current){
-                actionRef.current.reload();
-              }
+      >
+        <ProTable
+          headerTitle={(<>
+            {/* Đăng ký Thanh quyết toán cho Mega {userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}  các cPass sau: */}
+          </>)}
+          pagination={false}
+          actionRef={actionRef}
+          rowKey='id'
+          search={false}
+          rowSelection={false}
+          rowClassName={
+            (entity) => {
+              return entity.classColor
             }
-          }]
-        }}
+          }
 
-        
-        
-        
-      />
-      {currentRowCPass && (
-        <DetailCPass
-          openModal={showDetailCPass}
-          idCPass={currentRowCPass}
-          closeModal={() => {
-            setCurrentRowCPass(undefined);
-            setShowDetailCPass(false);
+
+          // request={async () => {
+          //   const data = await customAPIGetOne(8, 'c-passes/get/cpass-of-mega', {});
+          //   setUserSettlement(data?.user);
+          //   //console.log('usersss', data);
+
+          //   return {
+          //     data: data?.cPass,
+          //     success: true,
+          //     total: 0
+          //   }
+          // }}
+          columns={columnCPass}
+          dataSource={props.cPass}
+
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
           }}
         />
-      )}
-</ModalForm>
+        {currentRowCPass && (
+          <DetailCPass
+            openModal={showDetailCPass}
+            idCPass={currentRowCPass}
+            closeModal={() => {
+              setCurrentRowCPass(undefined);
+              setShowDetailCPass(false);
+            }}
+          />
+        )}
+      </ModalForm>
+
+      <ModalForm
+        title='Chọn PTTT'
+        open={showModalMethod}
+        autoFocusFirstInput
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            setShowModalMethod(false);
+          },
+        }}
+        width={400}
+        submitTimeout={2000}
+        onFinish={async (values: any) => {
+          const cPass = props?.cPass.map((e: any) => e.id);
+
+          const success = await handleCreate({
+            "cPass": cPass,
+            "userId": props.userId,
+            "method": values.method || 'ale'
+          }, 'transactions/settlement/create');
+
+          if (success) {
+            props.onCloseModal();
+          }
+          return true;
+        }}
+
+        submitter={{
+          searchConfig: {
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['submit'],
+          },
+        }}
+      >
+
+        <ProFormSelect
+          name='method'
+          fieldProps={{
+            defaultValue: 'ale'
+          }}
+          options={[
+            {
+              label: 'Ale',
+              value: 'ale'
+            },
+            {
+              label: 'VNĐ',
+              value: 'vnd'
+            },
+          ]}
+        />
+
+      </ModalForm>
     </>
   );
 };

@@ -76,7 +76,9 @@ const TableListAssignCPass = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters
+      // , close
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -126,7 +128,6 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(record);
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
@@ -202,7 +203,7 @@ const TableListAssignCPass = () => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
+          <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             onCleanSelected()
             // actionRef.current?.reloadAndRest?.();
@@ -485,7 +486,7 @@ const TableListAssignCPass = () => {
 
       <ProTable
         headerTitle={(<>
-          {configDefaultText['fair']}: {fair?.code}
+          {configDefaultText['fair']} {fair?.code}
         </>)}
         actionRef={actionRef}
         rowKey='id'
@@ -562,9 +563,9 @@ const TableListAssignCPass = () => {
           return renderTableAlert(selectedRowKeys);
         }}
 
-        tableAlertOptionRender={({  onCleanSelected }: any) => {
-          return renderTableAlertOption( onCleanSelected)
-         }}
+        tableAlertOptionRender={({ onCleanSelected }: any) => {
+          return renderTableAlertOption(onCleanSelected)
+        }}
 
       />
       {currentRowCPass && (

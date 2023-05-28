@@ -22,7 +22,7 @@ export async function outLogin() {
 }
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(SERVERURL + '/api/auth/local', {
+  return request<API.LoginResult>(SERVERURL + '/api/users/login-admin', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -243,27 +243,6 @@ export async function customAPIGetFile(types?: string, collection?: string) {
     URL.revokeObjectURL(anchor.href);
   } else {
   }
-  // .then((response) => {
-  //   console.log(response);
-  //   return response.blob();
-  // })
-  // .then((blob) => {
-  //   // Create a temporary anchor element
-  //   console.log(blob);
-  //   const anchor = document.createElement('a');
-  //   anchor.href = URL.createObjectURL(blob);
-  //   anchor.download = 'inputWeight.xlsx';
-
-  //   // Programmatically trigger the download
-  //   anchor.click();
-
-  //   // Clean up the temporary anchor
-  //   URL.revokeObjectURL(anchor.href);
-  // })
-  // .catch(err =>  {
-  //   console.log('err', err);
-  // })
-  // ;
 }
 
 export async function customAPIUpdateFile(values?: any, collection?: string) {
@@ -274,12 +253,48 @@ export async function customAPIUpdateFile(values?: any, collection?: string) {
     maxBodyLength: Infinity,
     url: `${SERVERURL}/api/${collection}`,
     headers: {
-      "Content-Type": "multipart/form-data" ,
+      'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
     data: data,
   };
 
- await axios.request(config);
+  await axios.request(config);
+}
+
+
+export async function customAPIGetFileSlotChart(
+  types?: string,
+  collection?: string,
+  value?: number,
+) {
+  const data = await axios(`${SERVERURL}/api/${collection}${value ? `/${value}` : ''}`, {
+    headers: {
+      'Content-Type': 'application/xml',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  });
+
+  if (data.status === 200) {
+    const dataFile = Buffer.from(data?.data?.file);
+    const name = data?.data?.name;
     
+    // Create a blob from the buffer
+    const blob = new Blob([dataFile], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    // Create a download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = name + '.xlsx';
+    
+    // Trigger the download
+    downloadLink.click();
+
+    // const anchor = document.createElement('a');
+    // anchor.href = URL.createObjectURL(blob);
+    // anchor.download = 'pho.xlsx';
+    // anchor.click();
+    // URL.revokeObjectURL(anchor.href);
+  } else {
+  }
 }

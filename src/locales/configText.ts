@@ -30,6 +30,7 @@ export default {
     'menu':'Web-cPass',
     'dowloadTemplate': 'Template',
     'uploadTemplate': 'Nhập dữ liệu',
+    'dowloadFile': 'Tải file',
     
     'noChosen': 'Bỏ Chọn',
 
@@ -570,8 +571,8 @@ export default {
     'page.slot.columns.codeCPass': 'cPass',
     'page.slot.columns.timeStart': 'Ngày cân 1',
     'page.slot.columns.timeEnd': 'Ngày cân 2',
-    'page.slot.columns.preWeight': 'Cân nặng trước',
-    'page.slot.columns.currentWeight': 'Cân nặng hiện tại',
+    'page.slot.columns.preWeight': 'Cân nặng trước (kg)',
+    'page.slot.columns.currentWeight': 'Cân nặng hiện tại (kg)',
     'page.slot.upload': 'Upload',
     'page.slot.click': 'Nhấp vào đây',
     'page.slot.limitUpload': 'Chỉ có thể upload 1 file',
@@ -583,9 +584,50 @@ export default {
     'page.slot.required.upload': 'Vui lòng upload file',
    
 
+    'page.cPassMega.page.header' : 'cPass (đang sở hữu)',
 
 
 
+    'page.configMega.modal.limitTimeBuyCPass' : 'Thời gian tối đa để Mega thanh toán MegaS cho PL từ khi đặt mua cPass (ngày làm việc)',
+    'page.configMega.modal.limitTimeSettlement' : 'Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu (ngày làm việc)',
+    'page.configMega.modal.percentSettlementMega' : 'Số cPass Mega thanh quyết toán tối đa / Tổng số cPass sở hữu mà một  Mega yêu cầu trong 1 tuần (%)',
+    'page.configMega.modal.limitPlaformReceivSettlement' : 'Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần',
+    'page.configMega.modal.cPassPLSellMega' : 'Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần',
+    'page.configMega.modal.autoSettlement' : 'Thanh quyết toán do tăng trọng không đạt yêu cầu',
+
+
+    'page.config.columns.mail': '1. Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
+    'page.config.columns.limitAlegerSellAle': '2. Số Ale tối đa 1 Aleger bán cho PL trong 1 tuần',
+    'page.config.columns.fee': '3. Phí giao dịch Ale với PL',
+    'page.config.columns.infoAccountBank': '3. Thông tin tài khoản của PL',
+    'page.config.columns.eWallet': '4. Thông tin Ví điện tử của PL',
+    'page.config.columns.addressOffice': '5. Thông tin địa chỉ văn phòng của PL',
+    'page.config.columns.rateConvertion': '6. Tỷ lệ qui đổi Ale/VNĐ',
+    'page.config.columns.rateProduce': '7. Các hệ số chuyển đổi ProduceAle/PromoAle',
+    'page.config.columns.rateProduceAle': '8. Các hệ số chuyển đổi ProduceAle/Ale',
+
+    'page.fee.valueFeeText': 'Phí giao dịch',
+    'page.fee.valueFee': 'Giá trị phí',
+    'page.fee.typesFee': 'Loại phí',
+    'page.': 'Loại phí',
+
+
+    'page.bankPlaform.owner': 'Tên chủ sỡ hửu',
+    'page.bankPlaform.stk': 'Số tài khoản',
+    'page.bankPlaform.nameBank': 'Tên ngân hàng',
+
+
+
+    'page.bankPlaform.chosenBank': 'Ngân hàng',
+
+
+    'page.eWallet.name': 'Tên ví điện tử',
+
+    'page.address.address': 'Số nhà, đường',
+    'page.address.ward': 'Xã phường',
+    'page.address.district': 'Quận huyện',
+    'page.address.province': 'Tỉnh thành phố',
+    'page.address.fullname': 'Địa chỉ',
 
 
 

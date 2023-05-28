@@ -462,6 +462,9 @@ const TableList: React.FC = () => {
   return (
     <PageContainer
       onBack={() => window.history.back()}
+      header={{
+        title: configDefaultText['page.cPassMega.page.header']
+      }}
     >
       <ProTable
 

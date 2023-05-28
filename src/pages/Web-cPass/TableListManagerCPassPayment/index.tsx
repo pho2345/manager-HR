@@ -607,6 +607,7 @@ const TableList: React.FC = () => {
               label: 'VNĐ',
               options: [
                 { label: 'Ví điện tử', value: 'vnd' },
+                { label: 'Ngân hàng', value: 'vnd' },
               ],
             },
             {
@@ -614,7 +615,6 @@ const TableList: React.FC = () => {
               value: 'ale'
             },
           ]}
-
         />
 
       </ModalForm>

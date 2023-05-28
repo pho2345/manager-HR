@@ -8,27 +8,27 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, useIntl } from '@umijs/max';
-import { Form, message, Tooltip } from 'antd';
+import { FormattedMessage } from '@umijs/max';
+import { Col, Form, message, Row, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       ...fields
-    }, 'config-default-megas', id.current);
+    }, 'config-default-megas', id);
     hide();
 
     message.success('Cập nhật thành công');
     return true;
   } catch (error) {
+    console.log(error);
     hide();
-    message.error('Cập nhật thất!');
+    message.error('Cập nhật thất bại!');
     return false;
   }
 };
@@ -37,10 +37,9 @@ const handleUpdate = async (fields: any, id: any) => {
 
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [rowCurrent, setRowCurrent] = useState<any>();
   const actionRef = useRef<ActionType>();
-  const refIdCateogry = useRef<any>();
   const [form] = Form.useForm<any>();
-  const intl = useIntl();
 
 
   const columns: ProColumns<API.RuleListItem>[] = [
@@ -54,16 +53,11 @@ const TableList: React.FC = () => {
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
-        ;
         return (
-          <a
-            onClick={() => {
-
-            }}
-          >
+          <>
             {entity?.attributes?.timePaymentMegaS}
 
-          </a>
+          </>
         );
       },
 
@@ -107,8 +101,10 @@ const TableList: React.FC = () => {
       dataIndex: 'autoSettlement',
       valueType: 'textarea',
       key: 'autoSettlement',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.autoSettlement}`
+      render: (_, text: any) => {
+        return (<><ProFormSwitch disabled fieldProps={{
+          checked: text?.attributes?.autoSettlement,
+        }} /></>)
       }
     },
     {
@@ -122,11 +118,10 @@ const TableList: React.FC = () => {
         ><MdOutlineEdit
             onClick={() => {
               handleUpdateModalOpen(true);
-              refIdCateogry.current = entity.id;
+              setRowCurrent(entity?.id);
               form.setFieldsValue({
                 ...entity.attributes
               })
-
             }}
           /></Tooltip>
 
@@ -139,10 +134,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: 'Enquiry form',
-        })}
+        headerTitle=''
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -162,145 +154,133 @@ const TableList: React.FC = () => {
         }}
         pagination={{
           locale: {
-           next_page: configDefaultText['nextPage'],
+            next_page: configDefaultText['nextPage'],
             prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-           
+
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
       />
 
       <ModalForm
-        form={form}
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.update',
-          defaultMessage: '',
-        })}
-        width='99vh'
+
+        title='Cập nhật'
         open={updateModalOpen}
+        form={form}
+        autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
             handleUpdateModalOpen(false);
           },
         }}
-        onFinish={async (value) => {
-          const success = await handleUpdate(value as any, refIdCateogry);
-          if (success) {
+
+        submitTimeout={2000}
+        onFinish={async (values: any) => {
+          const update = await handleUpdate(values, rowCurrent);
+          if(update){
             handleUpdateModalOpen(false);
-            form.resetFields();
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+            actionRef.current?.reloadAndRest?.(); 
           }
+          return true;
+        }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
+            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonUpdate'],
+          },
         }}
       >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.configMega.timePaymentMegaS'
-                  defaultMessage='Thời gian tối đa để Mega thanh toán MegaS cho PL từ khi đặt mua cPass'
-                />
-              ),
-            },
-          ]}
-          label={<FormattedMessage
-            id='pages.configMega.timePaymentMegaS'
-            defaultMessage='Thời gian tối đa để Mega thanh toán MegaS cho PL từ khi đặt mua cPass'
-          />}
-          width='md'
-          name='timePaymentMegaS'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id='pages.configMega.required.timeSettlementMega' defaultMessage='Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu' />
-              ),
-            },
-          ]}
-          label={
-            <FormattedMessage id='pages.configMega.timeSettlementMega' defaultMessage='Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu' />
-          }
-          width='md'
-          name='timeSettlementMega'
-        />
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.configMega.required.timeSettlementMega'
-                  defaultMessage='Nhập CPass Mega thanh quyết toán tối đa trong tuần(%)'
-                />
-              ),
-            },
-          ]}
-          label={<FormattedMessage
-            id='pages.configMega.required.timeSettlementMega'
-            defaultMessage='Nhập CPass Mega thanh quyết toán tối đa trong tuần(%)'
-          />}
-          width='md'
-          name='percentSettlementMega'
-        />
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText
+              className='w-full'
+              name='timePaymentMegaS'
+              label={configDefaultText['page.configMega.modal.limitTimeBuyCPass']}
+              placeholder={configDefaultText['page.listCow.column.name']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.listCow.required.name'] },
+              ]}
+            />
+          </Col>
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id='pages.configMega.required.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />
-              ),
-            },
-          ]}
-          label={
-            <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />
-          }
-          width='md'
-          name='limitPlaformReceivSettlement'
-        />
+          <Col span={12} className="gutter-row p-0">
 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage id='pages.configMega.required.cPassPLSellMega' defaultMessage='Nhập số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần ' />
-              ),
-            },
-          ]}
-          label={
-            <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần ' />
-          }
-          width='md'
-          name='cPassPLSellMega'
-        />
+            <ProFormText
+              className='w-full'
+              name='timeSettlementMega'
+              label={configDefaultText['page.configMega.modal.limitTimeSettlement']}
+              placeholder={configDefaultText['page.listCow.column.name']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.listCow.required.name'] },
+              ]}
+            />
+          </Col>
+        </Row>
 
-        <ProFormSwitch
-        rules={[
-          {
-            required: true,
-            message: (
-              <FormattedMessage id='pages.configMega.required.autoSettlement' defaultMessage='Nhập tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />
-            ),
-          },
-        ]}
-        label={
-          <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />
-        }
-        width='md'
-        name='autoSettlement'
-        />
 
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText
+              className='w-full'
+              name='percentSettlementMega'
+              label={configDefaultText['page.configMega.modal.percentSettlementMega']}
+              placeholder={configDefaultText['page.listCow.column.name']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.listCow.required.name'] },
+              ]}
+            />
+          </Col>
+
+          <Col span={12} className="gutter-row p-0">
+            <ProFormText
+              className='w-full'
+              name='limitPlaformReceivSettlement'
+              label={configDefaultText['page.configMega.modal.limitPlaformReceivSettlement']}
+              placeholder={configDefaultText['page.listCow.column.name']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.listCow.required.name'] },
+              ]}
+            />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText
+              className='w-full'
+              name='cPassPLSellMega'
+              label={configDefaultText['page.configMega.modal.cPassPLSellMega']}
+              placeholder={configDefaultText['page.listCow.column.name']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.listCow.required.name'] },
+              ]}
+            />
+          </Col>
+
+          <Col span={12} className='gutter-row p-0'>
+            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
+          </Col>
+        </Row>
 
       </ModalForm>
 

@@ -813,8 +813,6 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className='m-0'>
           <Col span={12} className='gutter-row p-0' >
-
-
             <ProFormSelect
               className='w-full'
               options={cow}
@@ -834,7 +832,6 @@ const TableList: React.FC = () => {
                 },
               ]}
             />
-
           </Col>
 
           <Col span={12} className='gutter-row p-0'>
@@ -859,10 +856,6 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]} />
-
-
-
-
           </Col>
         </Row>
 

@@ -22,7 +22,7 @@ export async function outLogin() {
 }
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(SERVERURL + '/api/auth/local', {
+  return request<API.LoginResult>(SERVERURL + '/api/users/login-admin', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -262,12 +262,7 @@ export async function customAPIUpdateFile(values?: any, collection?: string) {
   await axios.request(config);
 }
 
-function s2ab(s: any) {
-  let buf = new ArrayBuffer(s.length);
-  let view = new Uint8Array(buf);
-  for (let i=0; i!==s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-  return buf;
-}
+
 export async function customAPIGetFileSlotChart(
   types?: string,
   collection?: string,

@@ -53,7 +53,6 @@ const handleUpdate = async (fields: any, id: any) => {
 
 
 const handleRemove = async (selectedRows: any) => {
-  console.log(selectedRows);
   const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {

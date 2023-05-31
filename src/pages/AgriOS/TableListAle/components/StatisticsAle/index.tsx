@@ -11,7 +11,7 @@ export type UpdateFormProps = {
 
 
 const StatisticsCPass = () => {
-  
+
   const [dataStatisticCPass, setDataStatisticCPass] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [openDateRange, setOpenDateRange] = useState<boolean>(false);
@@ -20,13 +20,41 @@ const StatisticsCPass = () => {
   useEffect(() => {
     const getValues = async () => {
       setLoading(true);
-      let getData = await customAPIGet({}, 'c-passes/statistic/c-pass');
+      let getData = await customAPIGet({}, 'transactions/statistic');
       setDataStatisticCPass(getData.data);
       setLoading(false);
     };
     getValues();
   }, []);
 
+  // const config = {
+  //   xField: 'type',
+  //   yField: 'sales',
+  //   label: {
+  //     // 可手动配置 label 数据标签位置
+  //     position: 'middle',
+  //     // 'top', 'bottom', 'middle',
+  //     // 配置样式
+  //     style: {
+  //       fill: '#FFFFFF',
+  //       opacity: 0.6,
+  //     },
+  //   },
+  //   xAxis: {
+  //     label: {
+  //       autoHide: true,
+  //       autoRotate: false,
+  //     },
+  //   },
+  //   meta: {
+  //     type: {
+  //       alias: '类别',
+  //     },
+  //     sales: {
+  //       alias: '销售额',
+  //     },
+  //   },
+  // };
   return (
     <>
 
@@ -64,7 +92,7 @@ const StatisticsCPass = () => {
               value: 'quarters',
               children: [
                 {
-                  title: 'Tháng trước',
+                  title: 'Quí trước',
                   value: 'preQuarter',
                 },
                 {
@@ -107,26 +135,26 @@ const StatisticsCPass = () => {
             label: 'title',
           },
           onChange: async (value: any) => {
-            
-              const getValues = async () => {
-                setLoading(true);
-                if ( value?.value === 'assign') {
-                  setDataStatisticCPass([]);
-                  setOpenDateRange(true)
-                }
-                else if(value?.value){
-                  setOpenDateRange(false)
-                  let getData = await customAPIGet({ type: value?.value }, 'c-passes/statistic/c-pass');
-                  setDataStatisticCPass(getData.data);
-                }
-                else {
-                  setOpenDateRange(false);
-                  let getData = await customAPIGet({ }, 'c-passes/statistic/c-pass');
-                  setDataStatisticCPass(getData.data);
-                }
-                setLoading(false);
+
+            const getValues = async () => {
+              setLoading(true);
+              if (value?.value === 'assign') {
+                setDataStatisticCPass([]);
+                setOpenDateRange(true)
               }
-              getValues();
+              else if (value?.value) {
+                setOpenDateRange(false)
+                let getData = await customAPIGet({ type: value?.value }, 'transactions/statistic');
+                setDataStatisticCPass(getData.data);
+              }
+              else {
+                setOpenDateRange(false);
+                let getData = await customAPIGet({}, 'transactions/statistic');
+                setDataStatisticCPass(getData.data);
+              }
+              setLoading(false);
+            }
+            getValues();
           }
         }}
       />
@@ -143,7 +171,7 @@ const StatisticsCPass = () => {
                   type: 'assign',
                   start: start,
                   end: end,
-                }, 'c-passes/statistic/c-pass');
+                }, 'transactions/statistic');
                 setDataStatisticCPass(getData.data);
                 // setType('assign');
               }
@@ -158,6 +186,8 @@ const StatisticsCPass = () => {
         data={dataStatisticCPass}
         xField='range'
         yField='value'
+        isGroup
+        seriesField='type'
         label={{
           position: 'bottom'
         }}
@@ -166,6 +196,11 @@ const StatisticsCPass = () => {
             autoHide: true,
             autoRotate: false,
           },
+
+        }}
+        slider={{
+          start: 0.1,
+          end: 0.3,
         }}
         meta={{
           type: {

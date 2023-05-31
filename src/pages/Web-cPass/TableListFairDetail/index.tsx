@@ -336,50 +336,7 @@ const TableListFairDetail: React.FC = () => {
       }
     },
 
-    // {
-    //   title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Thao tác' />,
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'option',
-    //   align: 'center',
-    //   render: (_, entity: any) => {
-
-    //     if () {
-    //       return (<Tooltip title={<FormattedMessage id='pages.searchTable.removeMega' defaultMessage='Loại bỏ Mega khỏi cPass' />} >
-    //         <RollbackOutlined
-    //           style={{
-    //             fontSize: 20,
-    //             paddingLeft: 5,
-    //           }}
-    //           onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassMega'], 'c-passes/update/removemega', null as any)} />
-    //       </Tooltip>);
-    //     }
-
-    //     if (entity.check === 'none') {
-    //       return (<>
-    //         <Tooltip title={<FormattedMessage id='pages.searchTable.assign' defaultMessage='Chỉ định' />} >
-    //           <PlusOutlined
-    //             style={{
-    //               fontSize: 20,
-    //               paddingLeft: 5,
-    //             }}
-    //             onClick={() => {
-    //               setCurrentCPass(entity.id);
-    //               setShowModalMega(true)
-    //             }} /></Tooltip>
-    //         <Tooltip title={<FormattedMessage id='pages.searchTable.remove' defaultMessage='Loại bỏ khỏi phiên' />} >
-    //           <LogoutOutlined
-    //             style={{
-    //               fontSize: 20,
-    //               paddingLeft: 5,
-    //             }}
-    //             onClick={() => confirm(entity, configDefaultText['page.DetailCPass.message.removeCPassFair'], 'fairs/remove-cpasses', params.id)} />
-    //         </Tooltip>
-    //       </>);
-    //     }
-    //     return null;
-    //   }
-    // },
+  
 
     {
       // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,

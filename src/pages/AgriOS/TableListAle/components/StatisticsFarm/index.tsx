@@ -20,13 +20,41 @@ const StatisticsCPass = () => {
   useEffect(() => {
     const getValues = async () => {
       setLoading(true);
-      let getData = await customAPIGet({}, 'c-passes/statistic/c-pass');
+      let getData = await customAPIGet({}, 'farms/statistic');
       setDataStatisticCPass(getData.data);
       setLoading(false);
     };
     getValues();
   }, []);
 
+  // const config = {
+  //   xField: 'type',
+  //   yField: 'sales',
+  //   label: {
+  //     // 可手动配置 label 数据标签位置
+  //     position: 'middle',
+  //     // 'top', 'bottom', 'middle',
+  //     // 配置样式
+  //     style: {
+  //       fill: '#FFFFFF',
+  //       opacity: 0.6,
+  //     },
+  //   },
+  //   xAxis: {
+  //     label: {
+  //       autoHide: true,
+  //       autoRotate: false,
+  //     },
+  //   },
+  //   meta: {
+  //     type: {
+  //       alias: '类别',
+  //     },
+  //     sales: {
+  //       alias: '销售额',
+  //     },
+  //   },
+  // };
   return (
     <>
 
@@ -116,12 +144,12 @@ const StatisticsCPass = () => {
                 }
                 else if(value?.value){
                   setOpenDateRange(false)
-                  let getData = await customAPIGet({ type: value?.value }, 'c-passes/statistic/c-pass');
+                  let getData = await customAPIGet({ type: value?.value }, 'farms/statistic');
                   setDataStatisticCPass(getData.data);
                 }
                 else {
                   setOpenDateRange(false);
-                  let getData = await customAPIGet({ }, 'c-passes/statistic/c-pass');
+                  let getData = await customAPIGet({ }, 'farms/statistic');
                   setDataStatisticCPass(getData.data);
                 }
                 setLoading(false);
@@ -143,7 +171,7 @@ const StatisticsCPass = () => {
                   type: 'assign',
                   start: start,
                   end: end,
-                }, 'c-passes/statistic/c-pass');
+                }, 'farms/statistic');
                 setDataStatisticCPass(getData.data);
                 // setType('assign');
               }

@@ -10,8 +10,8 @@ export type UpdateFormProps = {
 
 
 
-const StatisticsCPass = () => {
-  
+const StatisticsAleger = () => {
+
   const [dataStatisticCPass, setDataStatisticCPass] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [openDateRange, setOpenDateRange] = useState<boolean>(false);
@@ -20,12 +20,13 @@ const StatisticsCPass = () => {
   useEffect(() => {
     const getValues = async () => {
       setLoading(true);
-      let getData = await customAPIGet({}, 'c-passes/statistic/c-pass');
+      let getData = await customAPIGet({}, 'users/alegers/statistic');
       setDataStatisticCPass(getData.data);
       setLoading(false);
     };
     getValues();
   }, []);
+
 
   return (
     <>
@@ -64,7 +65,7 @@ const StatisticsCPass = () => {
               value: 'quarters',
               children: [
                 {
-                  title: 'Tháng trước',
+                  title: 'Quí trước',
                   value: 'preQuarter',
                 },
                 {
@@ -107,26 +108,26 @@ const StatisticsCPass = () => {
             label: 'title',
           },
           onChange: async (value: any) => {
-            
-              const getValues = async () => {
-                setLoading(true);
-                if ( value?.value === 'assign') {
-                  setDataStatisticCPass([]);
-                  setOpenDateRange(true)
-                }
-                else if(value?.value){
-                  setOpenDateRange(false)
-                  let getData = await customAPIGet({ type: value?.value }, 'c-passes/statistic/c-pass');
-                  setDataStatisticCPass(getData.data);
-                }
-                else {
-                  setOpenDateRange(false);
-                  let getData = await customAPIGet({ }, 'c-passes/statistic/c-pass');
-                  setDataStatisticCPass(getData.data);
-                }
-                setLoading(false);
+
+            const getValues = async () => {
+              setLoading(true);
+              if (value?.value === 'assign') {
+                setDataStatisticCPass([]);
+                setOpenDateRange(true)
               }
-              getValues();
+              else if (value?.value) {
+                setOpenDateRange(false)
+                let getData = await customAPIGet({ type: value?.value }, 'users/alegers/statistic');
+                setDataStatisticCPass(getData.data);
+              }
+              else {
+                setOpenDateRange(false);
+                let getData = await customAPIGet({}, 'users/alegers/statistic');
+                setDataStatisticCPass(getData.data);
+              }
+              setLoading(false);
+            }
+            getValues();
           }
         }}
       />
@@ -143,7 +144,7 @@ const StatisticsCPass = () => {
                   type: 'assign',
                   start: start,
                   end: end,
-                }, 'c-passes/statistic/c-pass');
+                }, 'users/alegers/statistic');
                 setDataStatisticCPass(getData.data);
                 // setType('assign');
               }
@@ -153,11 +154,13 @@ const StatisticsCPass = () => {
       )}
 
 
-      {dataStatisticCPass.length !== 0 && (<Column
+{dataStatisticCPass.length !== 0 && (<Column
         loading={loading}
         data={dataStatisticCPass}
         xField='range'
         yField='value'
+        isGroup
+        seriesField='type'
         label={{
           position: 'bottom'
         }}
@@ -166,14 +169,7 @@ const StatisticsCPass = () => {
             autoHide: true,
             autoRotate: false,
           },
-        }}
-        meta={{
-          type: {
-            alias: '类别',
-          },
-          sales: {
-            alias: '销售额',
-          },
+
         }}
       />)}
     </>
@@ -183,4 +179,4 @@ const StatisticsCPass = () => {
 
 };
 
-export default StatisticsCPass;
+export default StatisticsAleger;

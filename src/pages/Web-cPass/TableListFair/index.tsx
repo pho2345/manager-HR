@@ -665,7 +665,6 @@ const TableList: React.FC = () => {
 
 
   function renderTableAlertOption(selectedRows: any) {
-    console.log(selectedRows);
     return (
       <>
         <Fragment>

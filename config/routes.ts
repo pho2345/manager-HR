@@ -111,6 +111,7 @@ export default [
       { path: '/agrios/follow',hideInMenu: false,  name: 'Theo dõi giao dịch Ale', component: './AgriOS/TableListFollowTransactionAle' },
       { path: '/agrios/config',hideInMenu: false,  name: 'Cấu hình chung', component: './AgriOS/TableListConfig' },
       { path: '/agrios/dashboard',hideInMenu: false,  name: 'Dashboard', component: './AgriOS/TableListDashboard' },
+      { path: '/agrios/ale',hideInMenu: false,  name: 'Ale', component: './AgriOS/TableListAle' },
     ],
   },
 

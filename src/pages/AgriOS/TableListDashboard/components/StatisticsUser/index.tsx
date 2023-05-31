@@ -20,7 +20,7 @@ const StatisticsCPass = () => {
   useEffect(() => {
     const getValues = async () => {
       setLoading(true);
-      let getData = await customAPIGet({}, 'c-passes/statistic/c-pass');
+      let getData = await customAPIGet({}, 'users/statistic');
       setDataStatisticCPass(getData.data);
       setLoading(false);
     };
@@ -29,7 +29,6 @@ const StatisticsCPass = () => {
 
   return (
     <>
-
       <ProFormTreeSelect
         name="name"
         placeholder="Chọn thời gian"
@@ -64,7 +63,7 @@ const StatisticsCPass = () => {
               value: 'quarters',
               children: [
                 {
-                  title: 'Tháng trước',
+                  title: 'Quí trước',
                   value: 'preQuarter',
                 },
                 {
@@ -116,12 +115,12 @@ const StatisticsCPass = () => {
                 }
                 else if(value?.value){
                   setOpenDateRange(false)
-                  let getData = await customAPIGet({ type: value?.value }, 'c-passes/statistic/c-pass');
+                  let getData = await customAPIGet({ type: value?.value }, 'users/statistic');
                   setDataStatisticCPass(getData.data);
                 }
                 else {
                   setOpenDateRange(false);
-                  let getData = await customAPIGet({ }, 'c-passes/statistic/c-pass');
+                  let getData = await customAPIGet({ }, 'users/statistic');
                   setDataStatisticCPass(getData.data);
                 }
                 setLoading(false);
@@ -143,7 +142,7 @@ const StatisticsCPass = () => {
                   type: 'assign',
                   start: start,
                   end: end,
-                }, 'c-passes/statistic/c-pass');
+                }, 'users/statistic');
                 setDataStatisticCPass(getData.data);
                 // setType('assign');
               }
@@ -157,7 +156,7 @@ const StatisticsCPass = () => {
         loading={loading}
         data={dataStatisticCPass}
         xField='range'
-        yField='value'
+        yField='Số lượng'
         label={{
           position: 'bottom'
         }}

@@ -630,8 +630,14 @@ export default {
     'page.address.fullname': 'Địa chỉ',
 
 
-
-
+    'page.managerAleCurrent.titleTable': 'Danh sách QRCode',
+    'page.managerAleCurrent.columns.code': 'Mã',
+    'page.managerAleCurrent.columns.ale': 'Ale',
+    'page.managerAleCurrent.columns.dateScan': 'Ngày quét',
+    'page.managerAleCurrent.columns.dateExpire': 'Ngày hết hạn',
+    'page.managerAleCurrent.columns.image': 'Mã QR',
+    'page.managerAleCurrent.columns.scan': 'Quét',
+    'page.managerAleCurrent.columns.user': 'Aleger Quét',
 }
 
 

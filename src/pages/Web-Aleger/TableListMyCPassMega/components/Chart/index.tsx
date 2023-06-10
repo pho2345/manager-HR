@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Line } from '@ant-design/plots';
 import { ActionType, ModalForm, ProColumns, ProTable } from '@ant-design/pro-components';
-import {  customAPIGetFileSlotChart, customAPIPost } from '@/services/ant-design-pro/api';
+import { customAPIGetFileSlotChart, customAPIPost } from '@/services/ant-design-pro/api';
 import moment from 'moment';
 import { Button } from 'antd';
 import configText from '@/locales/configText';
@@ -10,19 +10,18 @@ const configDefaultText = configText;
 
 const DemoLine = (props: any) => {
     const [data, setData] = useState([]);
-    const [slots, setSlots] = useState([]);
 
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
 
-
     const asyncFetch = async () => {
-        const getSlot = await customAPIPost({}, 'c-passes/chart', {
+        const getSlot = await customAPIPost({}, 'c-passes/mega/chart', {
             "cPassId": props.cPassId,
-            "types": "c-pass"
+            "types": props.types
         });
+        // console.log('getSlot', getSlot);
         setData(getSlot?.data?.chart);
-        setSlots(getSlot?.data?.slots);
+        // setSlots(getSlot?.data?.slots);
     };
 
     useEffect(() => {
@@ -51,39 +50,24 @@ const DemoLine = (props: any) => {
             },
         },
         color: ['black', 'green', 'red', 'blue'],
-        // tooltip: {
-        //     showCrosshairs: true,
-        //     shared: true,
-        //     customContent: (x: any, data: any) => {
-        //         // const content = [];
-
-        //         //   content.push(`<div class="tooltip-title">${moment().format('DD/MM/YYYY')}</div>`);
-        //         //   data.forEach((item: any) => {
-        //         //     content.push(
-        //         //       `<div class="tooltip-item">
-        //         //          <span class="tooltip-item-marker" style="background-color: blue;"></span>
-        //         //          <span class="tooltip-item-name">${item.name}: </span>
-        //         //          <span class="tooltip-item-value">${item.value}</span>
-        //         //        </div>`
-        //         //     );
-        //         //   });
-                
-        //         return `<div class="custom-tooltip">Thực tế: ${data[3]?.data?.value} kg @${moment(data[3]?.data?.timeEnd).format('DD/MM/YYYY')}</div>`;
-        //     },
-        // },
-
+        // interactions: [
+        //     {
+        //         type: 'tooltip',
+        //         cfg: { start: [{ trigger: 'hover', action: 'tooltip:show' }] }
+        //     }
+        // ],
         tooltip: {
             showCrosshairs: true,
             shared: true,
             customItems: (originalItems: any) => {
                 // process originalItems, 
-                // const data = originalItems.map((e: any) => {
-                //     return {
-                //         ...e,
-                //         title: e?.data?.owner?.id ? `${e?.data?.owner?.fullname ? e?.data?.owner?.fullname : e?.data?.owner?.username} - ${e?.data?.owner?.id}` : `PLAFORM`
-                //     }
-                // })
-                return originalItems;
+                const data = originalItems.map((e: any) => {
+                    return {
+                        ...e,
+                        title: e?.data?.owner?.id ? `${e?.data?.owner?.fullname ? e?.data?.owner?.fullname : e?.data?.owner?.username} - ${e?.data?.owner?.id}` : `PLAFORM`
+                    }
+                })
+                return data;
             },
             customContent: (x: any, data: any) => {
                 let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}</div>
@@ -176,42 +160,7 @@ const DemoLine = (props: any) => {
             renderText: (_, text: any) => text?.currentWeight
         },
 
-        // {
-        //   title: <FormattedMessage id='pages.searchTable.column.activeSlot' defaultMessage='Trạng thái' />,
-        //   dataIndex: 'activeSlot',
-        //   valueType: 'textarea',
-        //   key: 'activeSlot',
-        //   renderText: (_, text: any) => {
-        //     if (text?.attributes.activeSlot) {
-        //       return 'true'
-        //     }
-        //     return 'false'
-        //   }
-        // },
-
-        // {
-        //     title: configDefaultText['titleOption'],
-        //     dataIndex: 'atrributes',
-        //     valueType: 'textarea',
-        //     align: 'center',
-        //     key: 'option',
-        //     render: (_, entity: any) => {
-        //         //let dateEnd = moment(entity?.attributes.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
-        //         //let currentDate = moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD');
-        //         //if (dateEnd === currentDate) {
-
-        //         return (<SettingOutlined
-        //             onClick={() => {
-
-        //                 // setCodeProvince(entity?.attributes?.code);
-        //                 // setNameProvince(entity?.attributes?.name);
-        //                 // setFullName(entity?.attributes?.fullname);
-        //                 // setFsmCode(entity?.attributes?.fsmCode);
-        //             }}
-        //         />)
-        //         //return null
-        //     }
-        // },
+      
     ];
 
     return (<>
@@ -235,6 +184,7 @@ const DemoLine = (props: any) => {
             submitter={submitter}
         >
             <Line  {...config}
+
             />
         </ModalForm>
 

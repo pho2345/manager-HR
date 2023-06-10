@@ -5,21 +5,27 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { FormattedMessage, Link, useIntl, useParams } from '@umijs/max';
+import { FormattedMessage, Link, useParams } from '@umijs/max';
 import { Avatar, Tooltip, Typography } from 'antd';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineHistory } from 'react-icons/md';
 const { Text } = Typography;
 import configText from '@/locales/configText';
 import { ReloadOutlined } from '@ant-design/icons';
+import { BsGraphUpArrow } from 'react-icons/bs';
+import Chart from './components/Chart';
 const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-  const intl = useIntl();
+  
   const params = useParams<number>();
   const actionRef = useRef<ActionType>();
+  const refIdCpass = useRef<any>();
+  const refIdCheckHistory = useRef<any>();
+  const [openChart, setOpenChart] = useState<boolean>(false);
+
   const columns: ProColumns<any>[] = [
     {
       title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
@@ -233,14 +239,36 @@ const TableList: React.FC = () => {
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
-          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/` + id}><MdOutlineHistory style={{
+          <Tooltip title="Lịch sử"> <Link to={`/web-aleger/c-pass-mega/slot-c-pass/` + id + `?fair=${text?.fair?.id}&owner=${params?.id}`}><MdOutlineHistory style={{
             fontSize: '20px'
           }}>
           </MdOutlineHistory></Link></Tooltip>
         </>)
       }
     },
-
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
+      title: configDefaultText['page.listCPass.column.graph'],
+      dataIndex: 'graph',
+      valueType: 'textarea',
+      key: 'graph',
+      render: (_, text: any) => {
+       if(text?.slotNow?.activeSlot && text?.slotNow?.currentWeight > 0){
+        return (<>
+          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
+            onClick={() => {
+              refIdCpass.current = text?.id;
+              refIdCheckHistory.current = text?.checkHistory;
+              setOpenChart(true);
+            }}
+          /></Tooltip>
+        </>)
+       }
+       else {
+        return (<></>)
+       }
+      }
+    },
     {
       title: <FormattedMessage id='pages.searchTable.column.statusOwner' defaultMessage={(<>Tình trạng sở hữu</>)} />,
       dataIndex: 'statusOwner',
@@ -308,7 +336,16 @@ const TableList: React.FC = () => {
         }}
       />
       
-
+      {
+          openChart &&  <Chart 
+            openModal={openChart}
+            types={refIdCheckHistory.current ? 'history' : 'c-pass'}
+            cPassId={refIdCpass.current}
+            onClose={() => {
+              setOpenChart(false);
+            }}
+          />
+         }
     
     </PageContainer>
 

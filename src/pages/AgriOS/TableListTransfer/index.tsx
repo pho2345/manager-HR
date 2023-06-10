@@ -164,6 +164,7 @@ const TableListAssignCPass = () => {
           setShowModal(false);
           setConvertAle(0);
           setTypeConvert(false);
+          form.resetFields();
         }
       }
     })
@@ -368,24 +369,27 @@ const TableListAssignCPass = () => {
           },
         }}
         onFinish={async (values) => {
-          if (values.method === 2) {
-            /// transfer produceAle to Ale
-
-            confirm({
-              senderId: currentRowUser?.id,
-              produceAle: convertAle
-            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang  ${convertAle + convertAle * rateConvert?.ratePromo}  Ale không?`, 'transactions/transfer-promo-admin');
+          if(convertAle !== 0){
+            if (values.method === 2 ) {
+              /// transfer produceAle to Ale
+  
+              confirm({
+                senderId: currentRowUser?.id,
+                produceAle: convertAle
+              }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang  ${convertAle * rateConvert?.ratePromo}  Ale không?`, 'transactions/transfer-promo-admin');
+            }
+            else {
+              /// transfer produceAle to PromoAle
+              confirm({
+                senderId: currentRowUser?.id,
+                produceAle: convertAle
+              }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
+            }
+            
+  
+            return true
           }
-          else {
-            /// transfer produceAle to PromoAle
-            confirm({
-              senderId: currentRowUser?.id,
-              produceAle: convertAle
-            }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
-          }
-          form.resetFields();
-
-          return true
+         
         }}
 
         submitter={{

@@ -1,6 +1,6 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
@@ -71,6 +71,15 @@ const handleRemove = async (selectedRows: any) => {
   }
 };
 
+const getP0 = async (id: number) => {
+  try {
+    const data = await customAPIGetOne(id, 'categories/awg/range-p-zero', {});
+    return data;
+  } catch (error) {
+
+  }
+}
+
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
@@ -88,6 +97,8 @@ const TableList: React.FC = () => {
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
   const [filter, setFilter] = useState<any>();
+  const [categories, setCategories] = useState<any>([]);
+  const [rangePZero, setRangePZero] = useState<any>([]);
 
   const pickerRef = useRef(null);
   const handleColorChange = (newColor: any) => {
@@ -109,6 +120,11 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
+    const getCategory = async () => {
+      const data = await customAPIGet({}, 'categories/get/select');
+      setCategories(data?.data);
+    }
+    getCategory();
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -239,12 +255,33 @@ const TableList: React.FC = () => {
         ;
         return (
           <>
-            {entity?.attributes?.code}
+            {entity?.code}
           </>
-
         );
       },
       ...getColumnSearchProps('code')
+    },
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      title: configDefaultText['page.wgs.column.category'],
+      dataIndex: 'category',
+      valueType: 'textarea',
+      key: 'category',
+      renderText: (_, text: any) => {
+        return `${text?.category?.name}`
+      }
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      title: configDefaultText['page.wgs.column.rangePZero'],
+      dataIndex: 'rangePZero',
+      valueType: 'textarea',
+      key: 'rangePZero',
+      width: '20vh',
+      renderText: (_, text: any) => {
+        return `${text?.rangeWeightZero?.valueFrom} < P0 <= ${text?.rangeWeightZero?.valueTo}`
+      }
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.rangeFrom' defaultMessage='Giá trị dưới' />,
@@ -254,10 +291,10 @@ const TableList: React.FC = () => {
       key: 'rangeFrom',
       //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
-        if (text?.attributes?.rangeFrom < 0) {
+        if (text?.rangeFrom < 0) {
           return null;
         }
-        return text?.attributes?.rangeFrom;
+        return text?.rangeFrom;
       }
     },
     {
@@ -271,7 +308,18 @@ const TableList: React.FC = () => {
         if (text?.attributes?.rangeTo > 200) {
           return null;
         }
-        return text?.attributes?.rangeTo;
+        return text?.rangeTo;
+      }
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      title: configDefaultText['page.rangeValue'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'profit',
+      renderText: (_, text: any) => {
+        return text?.textRange
       }
     },
     {
@@ -281,33 +329,13 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'name',
       // ...getColumnSearchProps('name'),
-      renderText: (_, text: any) => text?.attributes?.name,
+      renderText: (_, text: any) => text?.name,
       filters: filter,
       onFilter: (value, record: any) => {
         return record?.id === value;
       },
     },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
-      title: configDefaultText['page.rangeValue'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'profit',
-      renderText: (_, text: any) => {
-        let { rangeFrom, rangeTo } = text?.attributes;
-        if (rangeFrom <= 0 && rangeTo <= 0) {
-          return `AWG <= ${rangeTo}%`
-        }
-        if (rangeFrom >= 0 && rangeTo > 0) {
-          return ` ${rangeFrom}% < AWG <=  ${rangeTo}%`;
-        }
-        else {
-          return `AWG > ${rangeFrom}%`
-        }
 
-
-      }
-    },
     {
       // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
@@ -315,7 +343,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'color',
       renderText: (_, text: any) => {
-        return `${text?.attributes?.color}`
+        return `${text?.color}`
       }
     },
     {
@@ -325,7 +353,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'backgroundColor',
       renderText: (_, text: any) => {
-        return `${text?.attributes?.background}`
+        return `${text?.background}`
       }
     },
     {
@@ -335,7 +363,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
+        return moment(text?.createdAt).format('DD/MM/YYYY HH:mm')
       }
     },
     {
@@ -353,25 +381,21 @@ const TableList: React.FC = () => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
               form.setFieldsValue({
-                code: entity?.attributes?.code,
-                name: entity?.attributes?.name,
-                rangeFrom: entity?.attributes?.rangeFrom,
-                rangeTo: entity?.attributes?.rangeTo,
-                color: entity?.attributes?.color,
-                background: entity?.attributes?.background
+                code: entity?.code,
+                name: entity?.name,
+                rangeFrom: entity?.rangeFrom,
+                rangeTo: entity?.rangeTo,
+                color: entity?.color,
+                background: entity?.background,
+                category: {
+                  value: entity?.category?.id,
+                  label: `${entity?.category?.name}`
+                },
+                rangeWeightZero: {
+                  value: entity?.rangeWeightZero?.id,
+                  label: `${entity?.textRange}`
+                }
               });
-
-              const {rangeFrom, rangeTo} = entity?.attributes;
-              if(rangeFrom === 0 && rangeTo === 0){
-                form.setFieldValue('rangeValue', `AWG <= ${rangeFrom}%`);
-              }
-              else if(rangeFrom >= 0 && rangeTo > 0 && rangeFrom < rangeTo){
-                form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${rangeTo}%`);
-              }
-              else if(rangeFrom > 0 && rangeTo === 0){
-                form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
-              }
-
             }}
           /></Tooltip>
 
@@ -379,7 +403,7 @@ const TableList: React.FC = () => {
       }
     },
 
-    
+
 
   ];
 
@@ -429,10 +453,10 @@ const TableList: React.FC = () => {
         request={async () => {
           const data = await customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'average-weight-gains');
 
-          const output = data?.data.map((item: any) => {
-            return { text: item.attributes.name, value: item.id };
-          });
-          setFilter(output);
+          // const output = data?.data.map((item: any) => {
+          //   return { text: item.attributes.name, value: item.id };
+          // });
+          // setFilter(output);
           return data;
         }
         }
@@ -477,37 +501,7 @@ const TableList: React.FC = () => {
         }}
 
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
 
-        //         confirm(
-        //           selectedRowsState, configDefaultText['textConfirmDelete']
-        //         );
-
-        //         // await handleRemove(selectedRowsState);
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['delete']}
-        //     </Button>
-
-        //   </FooterToolbar>
-        // )
-      }
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
@@ -530,15 +524,7 @@ const TableList: React.FC = () => {
           }
         }}
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
           },
@@ -582,7 +568,7 @@ const TableList: React.FC = () => {
                   // ),
                 },
               ]}
-             
+
               className='w-full'
               name='name'
               label={configDefaultText['page.classify']}
@@ -591,7 +577,55 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-        
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.category']
+                },
+              ]}
+              options={categories}
+              className='w-full'
+              name='category'
+              label={configDefaultText['page.wgs.column.category']}
+              placeholder={configDefaultText['page.wgs.column.category']}
+              fieldProps={{
+                onChange: async (value) => {
+                  if (value) {
+                    const data = await getP0(value);
+                    setRangePZero(data);
+                  }
+                  else {
+                    setRangePZero([]);
+                  }
+                }
+              }}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.rangePZero']
+
+                },
+              ]}
+              disabled={rangePZero && rangePZero?.length === 0}
+              className='w-full'
+              name='rangeWeightZero'
+              label={configDefaultText['page.wgs.column.rangePZero']}
+              placeholder={configDefaultText['page.wgs.column.rangePZero']}
+              options={rangePZero}
+            />
+          </Col>
+        </Row>
+
 
 
         <Row gutter={24} className='m-0'>
@@ -623,15 +657,15 @@ const TableList: React.FC = () => {
                 onChange: (value: any) => {
                   // const name = form.getFieldValue('name');
                   const rangeTo = form.getFieldValue('rangeTo');
-                  if(typeof rangeTo === 'undefined' && typeof value === 'undefined'){
+                  if (typeof rangeTo === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if(typeof rangeTo === 'undefined' &&  value === 0 || (typeof value === 'undefined')){
+                  if (typeof rangeTo === 'undefined' && value === 0 || (typeof value === 'undefined')) {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if( rangeTo === 0 &&  value === 0){
+                  if (rangeTo === 0 && value === 0) {
                     form.setFieldValue('rangeValue', 'AWG <= 0%');
                     return;
                   }
@@ -639,7 +673,7 @@ const TableList: React.FC = () => {
                     form.setFieldValue('rangeValue', null);
                     return
                   }
-                  if(rangeTo > 0 && value === 0){
+                  if (rangeTo > 0 && value === 0) {
                     form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
                     return;
                   }
@@ -647,7 +681,7 @@ const TableList: React.FC = () => {
                     if (rangeTo && typeof value !== 'undefined' && value !== 0) {
                       form.setFieldValue('rangeValue', `${value}% < AWG <= ${rangeTo}%`);
                     }
-                    else if ( rangeTo && value === 0) {
+                    else if (rangeTo && value === 0) {
                       form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
                     }
                     else if (!rangeTo && typeof value !== 'undefined' && value !== 0) {
@@ -694,14 +728,14 @@ const TableList: React.FC = () => {
                 onChange: (value: any) => {
                   // const name = form.getFieldValue('name');
                   const rangeFrom = form.getFieldValue('rangeFrom');
-                  if(typeof rangeFrom === 'undefined' && typeof value === 'undefined'){
+                  if (typeof rangeFrom === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if( rangeFrom === 0 &&  value === 0){
+                  if (rangeFrom === 0 && value === 0) {
                     form.setFieldValue('rangeValue', 'AWG <= 0%');
                     return;
-                  } else if((rangeFrom === 0 && typeof value === 'undefined') || ( typeof rangeFrom === 'undefined' &&  value === 0)) {
+                  } else if ((rangeFrom === 0 && typeof value === 'undefined') || (typeof rangeFrom === 'undefined' && value === 0)) {
                     form.setFieldValue('rangeValue', null);
                     return
                   }
@@ -711,19 +745,19 @@ const TableList: React.FC = () => {
                     return;
                   }
 
-                  if(rangeFrom > 0 && value === 0){
+                  if (rangeFrom > 0 && value === 0) {
                     form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
                     return;
                   }
-                  
+
                   else
-                    if ( rangeFrom && typeof value !== 'undefined' && value !== 0) {
+                    if (rangeFrom && typeof value !== 'undefined' && value !== 0) {
                       form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${value}%`);
                     }
                     else if (rangeFrom && value === 0) {
                       form.setFieldValue('rangeValue', `AWG >${rangeFrom}%`);
                     }
-                    else  if(rangeFrom === 0 && value){
+                    else if (rangeFrom === 0 && value) {
                       form.setFieldValue('rangeValue', `AWG <= ${value}%`);
                     }
                 }
@@ -916,28 +950,57 @@ const TableList: React.FC = () => {
           },
         }}
       >
-        {/* <Row gutter={24} className='m-0'>
-          <Col span={24} className='gutter-row p-0' >
-            <ProFormText
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
               rules={[
                 {
                   required: true,
-                  message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
+                  message: configDefaultText['page.wgs.column.category']
                 },
               ]}
+              options={categories}
               className='w-full'
-              name='code'
-              label={configDefaultText['page.code']}
-              placeholder={configDefaultText['page.code']}
+              name='category'
+              label={configDefaultText['page.wgs.column.category']}
+              placeholder={configDefaultText['page.wgs.column.category']}
+              fieldProps={{
+                onChange: async (value) => {
+                  if (value) {
+                    const data = await getP0(value);
+                    setRangePZero(data);
+                  }
+                  else {
+                    setRangePZero([]);
+                  }
+
+                }
+              }}
             />
           </Col>
-        </Row> */}
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.rangePZero']
+
+                },
+              ]}
+
+              className='w-full'
+              name='rangeWeightZero'
+              label={configDefaultText['page.wgs.column.rangePZero']}
+              placeholder={configDefaultText['page.wgs.column.rangePZero']}
+              options={rangePZero}
+            />
+          </Col>
+        </Row>
+
 
         <Row gutter={24} className='m-0'>
           <Col span={24} className='gutter-row p-0' >
@@ -992,15 +1055,15 @@ const TableList: React.FC = () => {
                   // const name = form.getFieldValue('name');
                   const rangeTo = form.getFieldValue('rangeTo');
                   console.log(rangeTo, value);
-                  if(typeof rangeTo === 'undefined' && typeof value === 'undefined'){
+                  if (typeof rangeTo === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if(typeof rangeTo === 'undefined' &&  value === 0 || ( typeof value === 'undefined')){
+                  if (typeof rangeTo === 'undefined' && value === 0 || (typeof value === 'undefined')) {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if( rangeTo === 0 &&  value === 0){
+                  if (rangeTo === 0 && value === 0) {
                     form.setFieldValue('rangeValue', 'AWG <= 0%');
                     return;
                   }
@@ -1008,11 +1071,11 @@ const TableList: React.FC = () => {
                     form.setFieldValue('rangeValue', null);
                     return
                   }
-                  if(rangeTo > 0 && value === 0){
+                  if (rangeTo > 0 && value === 0) {
                     form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
                     return;
                   }
-                  if(rangeTo === 0 && value > 0){
+                  if (rangeTo === 0 && value > 0) {
                     form.setFieldValue('rangeValue', `AWG > ${value}%`);
                     return;
                   }
@@ -1020,7 +1083,7 @@ const TableList: React.FC = () => {
                     if (rangeTo && typeof value !== 'undefined' && value !== 0) {
                       form.setFieldValue('rangeValue', `${value}% < AWG <= ${rangeTo}%`);
                     }
-                    else if ( rangeTo && value === 0) {
+                    else if (rangeTo && value === 0) {
                       form.setFieldValue('rangeValue', `AWG <= ${rangeTo}%`);
                     }
                     else if (!rangeTo && typeof value !== 'undefined' && value !== 0) {
@@ -1067,14 +1130,14 @@ const TableList: React.FC = () => {
                 onChange: (value: any) => {
                   // const name = form.getFieldValue('name');
                   const rangeFrom = form.getFieldValue('rangeFrom');
-                  if(typeof rangeFrom === 'undefined' && typeof value === 'undefined'){
+                  if (typeof rangeFrom === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
                     return;
                   }
-                  if( rangeFrom === 0 &&  value === 0){
+                  if (rangeFrom === 0 && value === 0) {
                     form.setFieldValue('rangeValue', 'AWG <= 0%');
                     return;
-                  } else if((rangeFrom === 0 && typeof value === 'undefined') || ( typeof rangeFrom === 'undefined' &&  value === 0)) {
+                  } else if ((rangeFrom === 0 && typeof value === 'undefined') || (typeof rangeFrom === 'undefined' && value === 0)) {
                     form.setFieldValue('rangeValue', null);
                     return
                   }
@@ -1084,18 +1147,18 @@ const TableList: React.FC = () => {
                     return;
                   }
 
-                  if(rangeFrom > 0 && value === 0){
+                  if (rangeFrom > 0 && value === 0) {
                     form.setFieldValue('rangeValue', `AWG > ${rangeFrom}%`);
                     return;
                   }
                   else
-                    if ( rangeFrom && typeof value !== 'undefined' && value !== 0) {
+                    if (rangeFrom && typeof value !== 'undefined' && value !== 0) {
                       form.setFieldValue('rangeValue', `${rangeFrom}% < AWG <= ${value}%`);
                     }
                     else if (rangeFrom && value === 0) {
                       form.setFieldValue('rangeValue', `AWG >${rangeFrom}%`);
                     }
-                    else  if(rangeFrom === 0 && value){
+                    else if (rangeFrom === 0 && value) {
                       form.setFieldValue('rangeValue', `AWG <= ${value}%`);
                     }
                 }
@@ -1114,7 +1177,7 @@ const TableList: React.FC = () => {
             <ProFormText
               rules={[
                 {
-                  required: true,
+                  required: false,
                   message: configDefaultText['page.required.rangeValue']
                   // (
                   //   <FormattedMessage

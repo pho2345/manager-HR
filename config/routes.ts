@@ -78,6 +78,7 @@ export default [
       { path: '/agrigate/wge',hideInMenu: false,  name: 'Hiệu quả tăng trọng', component: './AgriGate/TableListWGE' },
       { path: '/agrigate/awg',hideInMenu: false,  name: 'Tăng trọng trung bình', component: './AgriGate/TableListAWG' },
       { path: '/agrigate/range-p-zero', name: 'Khoảng cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
+      { path: '/agrigate/wgs', name: 'Tăng trọng tiêu chuẩn', component: './AgriGate/TableListWGS' },
       
     ],
   },
@@ -94,6 +95,7 @@ export default [
       { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },
       { path: '/web-aleger/status-owner', name: 'Tình trạng sở hữu Mega', component: './Web-Aleger/TableListStatusOwner' },
       { path: '/web-aleger/config-mega', name: 'Cài đặt Mega', component: './Web-Aleger/TableConfigMega' },
+      { path: '/web-aleger/config', name: 'Cài đặt chung', component: './Web-Aleger/TableListConfig' },
     ],
   },
 
@@ -114,7 +116,10 @@ export default [
       { path: '/agrios/ale',hideInMenu: false,  name: 'Ale', component: './AgriOS/TableListAle' },
     ],
   },
-
+  {
+    path: '/web-aleger/c-pass-mega/slot-c-pass/:id',
+    component: './Web-Aleger/TableListHistorySlotOfMega',
+  },
 
   {
     path: '/web-aleger/mega/my-ale/:id',
@@ -144,6 +149,11 @@ export default [
   {
     path: '/web-c-pass/fairs/manager/:id',
     component: './Web-cPass/TableListManagerCPassPayment',
+  },
+
+   {
+    path: '/web-aleger/mega/slot-c-pass/:id',
+    component: './Web-Aleger/TableListHistoryOfMega',
   },
 
   {

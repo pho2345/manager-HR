@@ -1,60 +1,104 @@
-import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, } from '@ant-design/pro-components';
+import { customAPIAdd, customAPIDelete, customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns, ProFormDateTimePicker, ProFormDigit } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
 // import { FormattedMessage, } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Row, Col, Checkbox } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, message, Modal, Space, Input, Tooltip, Checkbox, Row, Col, Form } from 'antd';
+import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { MdAttachMoney } from 'react-icons/md';
+import { MdOutlineEdit } from 'react-icons/md';
 const configDefaultText = configText;
-const { Text, } = Typography;
 
 
-const handleAdd = async (fields: any, api: string) => {
-  const hide = message.loading('Đang đặt mua');
+const handleAdd = async (fields: API.RuleListItem) => {
+  const hide = message.loading('Đang thêm...');
   try {
-    const updateTransaction = await customAPIAdd(
-      {
-        ...fields
-      },
-      api,
-    );
+    await customAPIAdd({ ...fields }, 'qr-ales/create');
     hide();
-    if (updateTransaction) {
-      message.success('Đặt mua thành công');
-    }
+    message.success('Thêm thành công');
     return true;
   } catch (error: any) {
     hide();
-    message.error(error?.response.data.error.message);
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
 
 
+const handleUpdate = async (fields: any, id: any) => {
+  const hide = message.loading('Đang cập nhật...');
+  
+  fields.dateExpire = moment(fields?.dateExpire).add(new Date().getTimezoneOffset()/-60,'hours').toISOString();
+  try {
+    await customAPIUpdate({
+      ...fields
+    }, 'qr-ales', id.current);
+    hide();
+
+    message.success('Cập nhật thành công');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.error?.message);
+    return false;
+  }
+};
+
+const handleRemove = async (selectedRows: any) => {
+  const hide = message.loading('Đang xóa...');
+  if (!selectedRows) return true;
+  try {
+    const deleteRowss = selectedRows.map((e: any) => {
+      return customAPIDelete(e.id, 'qr-ales')
+    })
+
+    await Promise.all(deleteRowss);
+    hide();
+    message.success('Xóa thành công');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data.error.message);
+
+    return false;
+  }
+};
 
 
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
+  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
-  const [currentRowUser, setCurrentRowUser] = useState<any>();
   //const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [convertAle, setConvertAle] = useState<number>(0);
   //const [typeConvert, setTypeConvert] = useState<boolean>(false);
-  const [form] = Form.useForm<any>();
-  const [rateConvert, setRateConvert] = useState<any>();
+
+  const refId = useRef<any>();
+
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [form] = Form.useForm<any>();
+
+
+  const [visible, setVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
+  const handleButtonClick = (imageSrc: string) => {
+    setPreviewImage(imageSrc);
+    setVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setVisible(false);
+  };
 
   const searchInput = useRef(null);
 
@@ -71,8 +115,11 @@ const TableListAssignCPass = () => {
     });
     //setSearchText('');
   };
+
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close 
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -84,7 +131,7 @@ const TableListAssignCPass = () => {
           placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm,dataIndex )}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -111,7 +158,7 @@ const TableListAssignCPass = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -153,28 +200,67 @@ const TableListAssignCPass = () => {
   });
 
 
-  const confirm = (entity: any, content: string, api: string) => {
+  const disabledDate = (current: any) => {
+    return current && current < moment();
+  };
+  
+  const formatter = (value: any) => {
+    if (value) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    return '';
+  };
+  
+  const parser = (value: any) => {
+    if (value) {
+      return value.replace(/\$\s?|(,*)/g, '');
+    }
+    return undefined;
+  };
+  
+  
+
+
+  const confirm = (entity: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: content,
+      content: configDefaultText['textConfirmDelete'],
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       const checkSuccess = await handleAdd(entity, api);
-
+        const checkSuccess = await handleRemove(entity);
         if (actionRef.current && checkSuccess) {
-          actionRef.current.reload();
-          setShowModal(false);
-          setConvertAle(0);
+          actionRef.current?.reloadAndRest?.();
           // setTypeConvert(false);
         }
 
       }
     })
-
   }
 
+
+  function renderTableAlert(selectedRowKeys: any) {
+    return (
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
+    );
+  }
+
+
+  function renderTableAlertOption(selectedRows: any) {
+    return (
+      <>
+        <Fragment>
+          <Button onClick={async () => {
+            await confirm(selectedRows as any);
+            // actionRef.current?.reloadAndRest?.();
+          }}>Xóa</Button>
+        </Fragment>
+      </>
+    );
+  }
 
 
   const columns: ProColumns<any>[] = [
@@ -182,6 +268,7 @@ const TableListAssignCPass = () => {
       title: 'STT',
       dataIndex: 'index',
       valueType: 'index',
+      width: '3vh'
     },
     {
       key: 'code',
@@ -197,7 +284,21 @@ const TableListAssignCPass = () => {
         );
       },
     },
-
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần mua' />,
+      title: configDefaultText['page.managerAleCurrent.columns.image'],
+      dataIndex: 'recharge',
+      key: 'recharge',
+      render: (_, text: any) => {
+        return (
+          <>
+            <Button onClick={() => handleButtonClick(`${SERVERURL}${text?.image?.url}`)}>
+              Ảnh
+            </Button>
+          </>
+        )
+      }
+    },
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
@@ -206,7 +307,7 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'ale',
       renderText: (_, text: any) => {
-        return text?.ale;
+        return text?.ale?.toLocaleString();
       }
     },
     {
@@ -215,6 +316,7 @@ const TableListAssignCPass = () => {
       dataIndex: 'dateScan',
       valueType: 'textarea',
       key: 'dateScan',
+      width: '15vh',
       renderText: (_, text: any) => {
         return text.dateScan ? moment(text?.dateScan).format('HH:mm DD/MM/YYYY') : null;
       }
@@ -223,21 +325,13 @@ const TableListAssignCPass = () => {
       title: configDefaultText['page.managerAleCurrent.columns.dateExpire'],
       dataIndex: 'dateExpire',
       valueType: 'textarea',
+      width: '15vh',
       key: 'dateExpire',
       renderText: (_, text: any) => {
-        return text.dateScan ? moment(text?.dateExpire).format('HH:mm DD/MM/YYYY') : null;
+        return text.dateExpire ? moment(text?.dateExpire).subtract(new Date().getTimezoneOffset()/-60,'hours').format('HH:mm DD/MM/YYYY') : null;
       }
     },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần mua' />,
-      title: configDefaultText['page.managerAleCurrent.columns.image'],
-      dataIndex: 'recharge',
-      valueType: 'textarea',
-      key: 'recharge',
-      renderText: (_, text: any) => {
-        return text?.recharge.toLocaleString();
-      }
-    },
+
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã mua | VNĐ qui đổi' />,
@@ -246,22 +340,22 @@ const TableListAssignCPass = () => {
       valueType: 'textarea',
       key: 'promoAle',
       render: (_, text: any) => {
-        if(text?.user){
-            return `${text?.user?.fullname ? text?.user?.fullname : text?.user?.username} - ${text?.user?.id}`
+        if (text?.user) {
+          return `${text?.user?.fullname ? text?.user?.fullname : text?.user?.username} - ${text?.user?.id}`
         }
-        return (<> <Checkbox checked disabled > </Checkbox></>);
       }
     },
     {
-        // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã mua | VNĐ qui đổi' />,
-        title: configDefaultText['page.managerAleCurrent.columns.scan'],
-        dataIndex: 'promoAle',
-        valueType: 'textarea',
-        key: 'promoAle',
-        render: (_, text: any) => {
-          return (<> <Checkbox checked disabled > </Checkbox></>);
-        }
-      },
+      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã mua | VNĐ qui đổi' />,
+      title: configDefaultText['page.managerAleCurrent.columns.scan'],
+      dataIndex: 'promoAle',
+      valueType: 'textarea',
+      key: 'promoAle',
+      render: (_, text: any) => {
+
+        return (<> <Checkbox checked={text.user} disabled > </Checkbox></>);
+      }
+    },
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
@@ -273,16 +367,20 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return [
           <>
-            <Tooltip title={configDefaultText['page.transfer.tooltip.buyAle']}>
-              <MdAttachMoney
+            <Tooltip title={configDefaultText['buttonUpdate']}>
+              <MdOutlineEdit
                 style={{
                   fontSize: 20,
                   paddingLeft: 5
-                  
+
                 }}
                 onClick={() => {
-                  setShowModal(true);
-                  setCurrentRowUser(text);
+                  handleUpdateModalOpen(true);
+                  refId.current = text?.id;
+                  form.setFieldsValue({
+                    ale: text?.ale,
+                    dateExpire: moment(text?.dateExpire).subtract(new Date().getTimezoneOffset()/-60,'hours').toISOString()
+                  })
                 }}
               />
             </Tooltip>
@@ -308,16 +406,38 @@ const TableListAssignCPass = () => {
         }
         request={async () => {
           const data = await customAPIGet({}, 'qr-ales/get-qr');
-         
+          console.log(data);
           return {
             data: data?.data,
             success: true,
-            total: data?.data?.user.length
+            total: data?.data?.length
           };
         }}
-        
-        columns={columns}
 
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+
+              <PlusOutlined /> {configDefaultText['buttonAdd']}
+            </Button>,
+
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+
+          ]
+        }}
+
+        columns={columns}
+        rowSelection={{
+          getCheckboxProps: record => ({
+            disabled: record.user
+          })
+        }}
         toolbar={{
           settings: [{
             key: 'reload',
@@ -331,6 +451,15 @@ const TableListAssignCPass = () => {
           }]
         }}
 
+        tableAlertRender={({ selectedRowKeys }: any) => {
+          return renderTableAlert(selectedRowKeys);
+        }}
+
+
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
+        }}
+
         pagination={{
           locale: {
             next_page: configDefaultText['nextPage'],
@@ -341,30 +470,30 @@ const TableListAssignCPass = () => {
           }
         }}
       />
+      <Modal open={visible} onCancel={handleModalClose} closeIcon={<></>} footer={null} width={`30vh`}>
+        <img src={previewImage} alt="Preview" style={{ width: '100%' }} />
+      </Modal>
 
       <ModalForm
-        title='Mua Ale'
-        open={showModal}
         form={form}
-        width={'30vh'}
+        title={configDefaultText['modalCreate']}
+        width='35vh'
+        open={createModalOpen}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
-            setShowModal(false);
-            //setTypeConvert(false);
-            setConvertAle(0);
+            handleModalOpen(false);
           },
         }}
-        onFinish={async () => {
-          confirm({
-            senderId: currentRowUser?.id,
-            ale: convertAle
-          },
-            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện mua ${convertAle} Ale?`,
-            'transactions/buy-ale-admin');
-         // form.resetFields();
-
-          return true
+        onFinish={async (value) => {
+          const success = await handleAdd(value as any);
+          if (success) {
+            handleModalOpen(false);
+            form.resetFields();
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
         }}
 
         submitter={{
@@ -375,82 +504,155 @@ const TableListAssignCPass = () => {
           //   </div>
           // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
             resetText: configDefaultText['buttonClose'],
-            submitText: configDefaultText['submit'],
+            submitText: configDefaultText['buttonAdd'],
           },
         }}
       >
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 Ale = {rateConvert?.rateAle.toLocaleString()} VNĐ</Text>
 
-        <br />
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit
-              className='w-full'
-              label={configDefaultText['page.buyAle.ale']}
-              name="ale"
-              min={1}
-              
-              placeholder={configDefaultText['page.buyAle.ale']}
+            <ProFormDateTimePicker
+
+              // className='w-full
+              // style={{ width: '100%' }}
               fieldProps={{
-                value: convertAle === 0 ? null : convertAle,
-                onChange: (e: any) => {
-                  if(typeof e !== 'undefined'){
-                    setConvertAle(e);
-                  }
+                style: {
+                  width: '100%'
                 },
-               //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-                precision: 2
+                disabledDate: disabledDate
               }}
+              name='dateExpire'
+              label={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              placeholder={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                { required: true, message: configDefaultText['page.managerAleCurrent.columns.dateExpire'] },
+              ]}
+
+
+            />
+          </Col>
+        </Row>
+
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit min={1}
               rules={[
                 {
                   required: true,
-                  message: configDefaultText['page.buyAle.required.ale']
+                  message: configDefaultText['page.managerAleCurrent.modal.ale']
                   // (
                   //   <FormattedMessage
-                  //     id='pages.buyAle.required.ale'
-                  //     defaultMessage='Yêu cấu nhập số lượng'
+                  //     id='pages.listPlan.profit'
+                  //     defaultMessage='Profit is required'
                   //   />
                   // ),
                 },
               ]}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
+              className='w-full'
+              name='ale'
+              label={configDefaultText['page.managerAleCurrent.modal.ale']}
+              placeholder={configDefaultText['page.managerAleCurrent.modal.ale']}
             />
           </Col>
         </Row>
+      </ModalForm>
+
+      <ModalForm
+        form={form}
+        title={configDefaultText['modalUpdate']}
+        width='35vh'
+        open={updateModalOpen}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            handleUpdateModalOpen(false);
+          },
+        }}
+        onFinish={async (value) => {
+          const success = await handleUpdate(value as any, refId);
+          if (success) {
+            handleUpdateModalOpen(false);
+            form.resetFields();
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+
+        submitter={{
+          // render: (_, dom) => (
+          //   <div style={{ marginBlockStart: '5vh' }}>
+          //     {dom.pop()}
+          //     {dom.shift()}
+          //   </div>
+          // ),
+          searchConfig: {
+            resetText: configDefaultText['buttonClose'],
+            submitText: configDefaultText['buttonAdd'],
+          },
+        }}
+      >
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormMoney
-              className='w-full'
-              label={configDefaultText['page.buyAle.vnd']}
-              name="ale"
-              min={1}
-              customSymbol='VNĐ'
-              placeholder='VNĐ'
+            <ProFormDateTimePicker
+
+              // className='w-full
+              // style={{ width: '100%' }}
               fieldProps={{
-                value: convertAle * rateConvert?.rateAle,
-                onChange: (e: any) => {
-                  if (e > 10000) {
-                    const roundedValue = Math.round(e / 1000) * 1000;
-                    setConvertAle(roundedValue / rateConvert?.rateAle);
-                  }
-                  else {
-                    setConvertAle(e / rateConvert?.rateAle);
-                  }
-                }
+                style: {
+                  width: '100%'
+                },
+                disabledDate: disabledDate
               }}
+              name='dateExpire'
+              label={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              placeholder={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
+                { required: true, message: configDefaultText['page.managerAleCurrent.columns.dateExpire'] },
+              ]}
+
+
             />
           </Col>
         </Row>
 
 
-
-
-
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit min={1}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.managerAleCurrent.modal.ale']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listPlan.profit'
+                  //     defaultMessage='Profit is required'
+                  //   />
+                  // ),
+                },
+              ]}
+              fieldProps={{
+                formatter,
+                parser,
+              }}
+              className='w-full'
+              name='ale'
+              label={configDefaultText['page.managerAleCurrent.modal.ale']}
+              placeholder={configDefaultText['page.managerAleCurrent.modal.ale']}
+            />
+          </Col>
+        </Row>
       </ModalForm>
-
     </>
   );
 };

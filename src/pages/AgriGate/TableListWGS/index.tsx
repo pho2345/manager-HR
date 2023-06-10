@@ -1,43 +1,46 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import { SketchPicker } from 'react-color';
-// import { FormattedMessage, useIntl } from '@umijs/max';
+
+// import { FormattedMessage } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect, Fragment } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
+import { SketchPicker } from 'react-color';
 const configDefaultText = configText;
 
 
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'plans');
+    await customAPIAdd({ ...fields }, 'weight-standars');
     hide();
     message.success('Thêm thành công');
     return true;
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
+    // message.error('Thêm thất bại!');
     return false;
   }
 };
 
 
 const handleUpdate = async (fields: any, id: any) => {
+  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
       ...fields
-    }, 'plans', id.current);
+    }, 'weight-standars', id.current);
     hide();
 
     message.success('Cập nhật thành công');
@@ -45,55 +48,58 @@ const handleUpdate = async (fields: any, id: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
+    // message.error('Cập nhật thất!');
     return false;
   }
 };
 
 const handleRemove = async (selectedRows: any) => {
   const hide = message.loading('Đang xóa...');
-  if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'plans')
+      return customAPIDelete(e.id, 'weight-standars')
     })
-
     await Promise.all(deleteRowss);
     hide();
     message.success('Xóa thành công');
     return true;
   } catch (error: any) {
+    console.log(error);
     hide();
-    message.error(error?.response?.data.error.message);
-
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
+const getP0 = async (id: number) => {
+  try {
+    const data = await customAPIGetOne(id, 'categories/get/range-p-zero', {});
+    return data;
+  } catch (error) {
+
+  }
+}
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+
+
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
   // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
-
-  const [color, setColor] = useState();
-  const [colorBackground, setColorBackground] = useState();
+  const pickerRef = useRef(null);
 
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
 
-  const pickerRef = useRef(null);
-  const handleColorChange = (newColor: any) => {
-    setColor(newColor.hex);
-    form.setFieldValue('color', newColor.hex);
-  };
+  const [categories, setCategories] = useState<any>([]);
+  const [rangePZero, setRangePZero] = useState<any>([]);
 
-  const handleColorBackgroundChange = (newColor: any) => {
-    setColorBackground(newColor.hex);
-    form.setFieldValue('backgroundColor', newColor.hex);
-  };
+  const [filter, setFilter] = useState<any>();
+
+
 
   const handleClickOutside = (event: any) => {
     if (pickerRef.current && !pickerRef?.current?.contains(event.target)) {
@@ -104,6 +110,11 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
+    const getCategory = async () => {
+      const data = await customAPIGet({}, 'categories/get/select');
+      setCategories(data?.data);
+    }
+    getCategory();
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -118,6 +129,7 @@ const TableList: React.FC = () => {
     // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
+
 
   const confirm = (entity: any) => {
     Modal.confirm({
@@ -148,8 +160,6 @@ const TableList: React.FC = () => {
       closeDropdown: false,
     });
   };
-
-
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
       <div
@@ -220,6 +230,110 @@ const TableList: React.FC = () => {
 
   });
 
+  const columns: ProColumns<API.RuleListItem>[] = [
+    {
+
+      title: configDefaultText['page.code'],
+      key: 'code',
+      dataIndex: 'atrributes',
+      render: (_, entity: any) => {
+        return (
+          <>{entity?.code}</>
+
+        );
+      },
+      ...getColumnSearchProps('code')
+    },
+    {
+      title: configDefaultText['page.wgs.column.category'],
+      dataIndex: 'category',
+      valueType: 'textarea',
+      key: 'category',
+      renderText: (_, text: any) => text?.category?.name,
+      filters: filter,
+      onFilter: (value, record: any) => {
+        return record?.id === value;
+      },
+    },
+    {
+      title: configDefaultText['page.wgs.column.rangePZero'],
+      dataIndex: 'rangePZero',
+      valueType: 'textarea',
+      key: 'rangePZero',
+      //...getColumnSearchProps('name'),
+      renderText: (_, text: any) => {
+        return `${text?.rangeWeightZero?.valueFrom} < P0 <= ${text?.rangeWeightZero?.valueTo}`;
+      }
+    },
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
+      title: configDefaultText['page.wgs.column.slot'],
+      dataIndex: 'slot',
+      valueType: 'textarea',
+      key: 'slot',
+      //...getColumnSearchProps('name'),
+      renderText: (_, text: any) => {
+        return `${text?.slotFrom}~${text?.slotTo}`;
+      }
+    },
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
+      title: configDefaultText['page.wgs.column.wgs'],
+      dataIndex: 'rate',
+      valueType: 'textarea',
+      width: '10vh',
+      key: 'rate',
+      renderText: (_, text: any) => {
+        return `${text?.rate}`;
+      }
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
+      title: configDefaultText['page.createdAt'],
+      dataIndex: 'createdAt',
+      valueType: 'textarea',
+      width: '15vh',
+      key: 'createdAt',
+      renderText: (_, text: any) => {
+        return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
+      }
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
+      title: configDefaultText['titleOption'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'option',
+      align: 'center',
+      render: (_, entity: any) => {
+        return (<Tooltip
+          title={configDefaultText['buttonUpdate']}
+        ><MdOutlineEdit
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              refIdCateogry.current = entity.id;
+              form.setFieldsValue({
+                category: entity?.category?.id,
+                rangeWeightZero: {
+                  value: entity?.rangeWeightZero?.id,
+                  label: `${entity?.rangeWeightZero?.valueFrom} < P0 <= ${entity?.rangeWeightZero?.valueTo}`
+                },
+                slotFrom: entity?.slotFrom,
+                slotTo: entity?.slotTo,
+                rate: entity?.rate
+              })
+
+            }}
+          /></Tooltip>
+
+        )
+      }
+    },
+
+  ];
+
   function renderTableAlert(selectedRowKeys: any) {
     return (
       <Fragment>
@@ -236,123 +350,17 @@ const TableList: React.FC = () => {
           <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            // actionRef.current?.reloadAndRest?.();
+            //actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
     );
   }
 
-
-  const columns: ProColumns<API.RuleListItem>[] = [
-    {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
-      title: configDefaultText['page.code'],
-      key: 'code',
-      dataIndex: 'atrributes',
-      render: (_, entity: any) => {
-        ;
-        return (
-         
-            <>{entity?.attributes?.code}</>
-
-        );
-      },
-      ...getColumnSearchProps('code')
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Name' />,
-      title: configDefaultText['page.name'],
-      dataIndex: 'name',
-      valueType: 'textarea',
-      key: 'name',
-      ...getColumnSearchProps('name'),
-      renderText: (_, text: any) => text?.attributes?.name
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.profit' defaultMessage='Profit' />,
-      title: configDefaultText['page.profit'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'profit',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.profit}%`
-      }
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
-      title: configDefaultText['page.color'],
-      dataIndex: 'color',
-      valueType: 'textarea',
-      key: 'color',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.color}`
-      }
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
-      title: configDefaultText['page.backgroundColor'],
-      dataIndex: 'backgroundColor',
-      valueType: 'textarea',
-      key: 'backgroundColor',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.backgroundColor}`
-      }
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
-      title: configDefaultText['page.createdAt'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'create',
-      width: '20vh',
-      renderText: (_, text: any) => {
-        return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
-      }
-    },
-    {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
-      title: configDefaultText['titleOption'],
-      dataIndex: 'atrributes',
-      valueType: 'textarea',
-      key: 'option',
-      align: 'center',
-      render: (_, entity: any) => {
-        return (<Tooltip
-          title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              setColor(entity?.attributes?.color);
-              setColorBackground(entity?.attributes?.backgroundColor);
-              refIdCateogry.current = entity.id;
-              form.setFieldsValue({
-                code: entity?.attributes?.code,
-                name: entity?.attributes?.name,
-                profit: entity?.attributes?.profit,
-                color: entity?.attributes?.color,
-                backgroundColor: entity?.attributes?.backgroundColor
-              })
-
-            }}
-          /></Tooltip>
-
-        )
-      }
-    },
-
-   
-
-  ];
-
   return (
     <PageContainer>
       <ProTable
+
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -360,17 +368,25 @@ const TableList: React.FC = () => {
           <Button
             type='primary'
             key='primary'
-            onClick={() => {
+            onClick={async () => {
               handleModalOpen(true);
             }}
           >
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
         ]}
-        request={() => customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'plans')}
+        request={async () => {
+          const data = await customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'weight-standars');
+          // const output = data?.data.map((item: any) => {
+          //   return { text: item.attributes.name, value: item.id };
+          // });
+          // setFilter(output);
+          return data;
+        }}
         columns={columns}
         rowSelection={{
           // onChange: (_, selectedRows: any) => {
+
           //   setSelectedRows(selectedRows);
           // },
         }}
@@ -378,7 +394,7 @@ const TableList: React.FC = () => {
         toolbar={{
           settings: [{
             key: 'reload',
-            tooltip: configDefaultText['reload'],
+            tooltip: 'Tải lại',
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
@@ -398,7 +414,6 @@ const TableList: React.FC = () => {
           }
         }}
 
-
         tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
@@ -408,37 +423,8 @@ const TableList: React.FC = () => {
           return renderTableAlertOption(selectedRows)
         }}
 
-
       />
-      {
-      // selectedRowsState?.length > 0 && (
-      //   <FooterToolbar
-      //     extra={
-      //       <div>
-      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-      //         {`${configDefaultText['chosen']} `}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-      //         {configDefaultText['selectedItem']}
-      //       </div>
-      //     }
-      //   >
-      //     <Button
-      //       onClick={async () => {
-      //         //await handleRemove(selectedRowsState);
-      //         confirm(
-      //           selectedRowsState, configDefaultText['textConfirmDelete']
-      //         );
-      //         setSelectedRows([]);
-      //         actionRef.current?.reloadAndRest?.();
-      //       }}
-      //     >
-      //       {configDefaultText['delete']}
-      //     </Button>
 
-      //   </FooterToolbar>
-      // )
-      }
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
@@ -448,6 +434,7 @@ const TableList: React.FC = () => {
           destroyOnClose: true,
           onCancel: () => {
             handleModalOpen(false);
+            setRangePZero([]);
           },
         }}
         onFinish={async (value) => {
@@ -462,12 +449,6 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
@@ -482,12 +463,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
@@ -500,122 +475,114 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormText
+            <ProFormSelect
               rules={[
                 {
                   required: true,
-                  message: configDefaultText['page.required.name']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
+                  message: configDefaultText['page.wgs.column.category']
                 },
               ]}
+              options={categories}
               className='w-full'
-              name='name'
-              label={configDefaultText['page.name']}
-              placeholder={configDefaultText['page.name']}
-            />
-          </Col>
-        </Row>
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit min={1} max={1000}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.profit']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listPlan.profit'
-                  //     defaultMessage='Profit is required'
-                  //   />
-                  // ),
-                },
-              ]}
-              className='w-full'
-              name='profit'
-              label={configDefaultText['page.profit']}
-              placeholder={configDefaultText['page.profit']}
-            />
-          </Col>
-        </Row>
-
-
-      
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.color']
-                },
-              ]}
-              className='w-full'
-              name='color'
-              label={configDefaultText['page.color']}
-              placeholder={configDefaultText['page.color']}
+              name='category'
+              label={configDefaultText['page.wgs.column.category']}
+              placeholder={configDefaultText['page.wgs.column.category']}
               fieldProps={{
-
-                onFocus: toggleColorPicker,
-                onChange: (e: any) => {
-                  setColor(e.target.value);
-                }
-              }}
-
-            />
-            {openColor && (
-              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
-                <SketchPicker color={color} onChange={handleColorChange} />
-              </div>
-            )}
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.backgroundColor']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.backgroundColor'
-                  //     defaultMessage='Yêu cấu nhập màu nền'
-                  //   />
-                  // ),
-                },
-              ]}
-
-              className='w-full'
-              name='backgroundColor'
-              label={configDefaultText['page.backgroundColor']}
-              placeholder={configDefaultText['page.backgroundColor']}
-              fieldProps={{
-                onFocus: toggleColorBackgroundPicker,
-                onChange: (e: any) => {
-                  setColorBackground(e.target.value);
+                onChange: async (value) => {
+                  if (value) {
+                    const data = await getP0(value);
+                    setRangePZero(data);
+                  }
+                  else {
+                    setRangePZero([]);
+                  }
                 }
               }}
             />
-            {openColorBackground && (
-              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
-                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
-              </div>
-            )}
           </Col>
         </Row>
 
-       
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.rangePZero']
 
+                },
+              ]}
+              disabled={rangePZero && rangePZero?.length === 0}
+              className='w-full'
+              name='rangeWeightZero'
+              label={configDefaultText['page.wgs.column.rangePZero']}
+              placeholder={configDefaultText['page.wgs.column.rangePZero']}
+              options={rangePZero}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.slotFrom']
+                },
+              ]}
+              className='w-full'
+              name='slotFrom'
+              label={configDefaultText['page.wgs.slotFrom']}
+              placeholder={configDefaultText['page.wgs.slotFrom']}
+              fieldProps={{
+                onClick: toggleColorPicker,
+                // onChange: handleColorSelect,
+              }}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.slotTo']
+                },
+              ]}
+              className='w-full'
+              name='slotTo'
+              label={configDefaultText['page.wgs.slotTo']}
+              placeholder={configDefaultText['page.wgs.slotTo']}
+              fieldProps={{
+                onClick: toggleColorPicker,
+              }}
+            />
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.wgs']
+                },
+              ]}
+              className='w-full'
+              name='rate'
+              label={configDefaultText['page.wgs.column.wgs']}
+              placeholder={configDefaultText['page.wgs.column.wgs']}
+              fieldProps={{
+                onClick: toggleColorBackgroundPicker,
+              }}
+            />
+          </Col>
+        </Row>
 
 
       </ModalForm>
@@ -644,160 +611,125 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
-                },
-              ]}
-              className='w-full'
-              name='code'
-              label={configDefaultText['page.code']}
-              placeholder={configDefaultText['page.code']}
-            />
-          </Col>
-        </Row>
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormText
+            <ProFormSelect
               rules={[
                 {
                   required: true,
-                  message: configDefaultText['page.required.name']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
+                  message: configDefaultText['page.wgs.column.category']
                 },
               ]}
+              options={categories}
               className='w-full'
-              name='name'
-              label={configDefaultText['page.name']}
-              placeholder={configDefaultText['page.name']}
-            />
-          </Col>
-        </Row>
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit min={1} max={1000}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.profit']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listPlan.profit'
-                  //     defaultMessage='Profit is required'
-                  //   />
-                  // ),
-                },
-              ]}
-              className='w-full'
-              name='profit'
-              label={configDefaultText['page.profit']}
-              placeholder={configDefaultText['page.profit']}
-            />
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.color']
-                },
-              ]}
-              className='w-full'
-              name='color'
-              label={configDefaultText['page.color']}
-              placeholder={configDefaultText['page.color']}
+              name='category'
+              label={configDefaultText['page.wgs.column.category']}
+              placeholder={configDefaultText['page.wgs.column.category']}
               fieldProps={{
+                onChange: async (value) => {
+                  if (value) {
+                    const data = await getP0(value);
+                    setRangePZero(data);
+                  }
+                  else {
+                    setRangePZero([]);
+                  }
 
-                onFocus: toggleColorPicker,
-                onChange: (e: any) => {
-                  setColor(e.target.value);
-                }
-              }}
-
-            />
-            {openColor && (
-              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
-                <SketchPicker color={color} onChange={handleColorChange} />
-              </div>
-            )}
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.backgroundColor']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.backgroundColor'
-                  //     defaultMessage='Yêu cấu nhập màu nền'
-                  //   />
-                  // ),
-                },
-              ]}
-
-              className='w-full'
-              name='backgroundColor'
-              label={configDefaultText['page.backgroundColor']}
-              placeholder={configDefaultText['page.backgroundColor']}
-              fieldProps={{
-                onFocus: toggleColorBackgroundPicker,
-                onChange: (e: any) => {
-                  setColorBackground(e.target.value);
                 }
               }}
             />
-            {openColorBackground && (
-              <div style={{ position: 'absolute', zIndex: 999 }} ref={pickerRef}>
-                <SketchPicker color={colorBackground} onChange={handleColorBackgroundChange} />
-              </div>
-            )}
           </Col>
         </Row>
 
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.rangePZero']
+
+                },
+              ]}
+
+              className='w-full'
+              name='rangeWeightZero'
+              label={configDefaultText['page.wgs.column.rangePZero']}
+              placeholder={configDefaultText['page.wgs.column.rangePZero']}
+              options={rangePZero}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.slotFrom']
+                },
+              ]}
+              className='w-full'
+              name='slotFrom'
+              label={configDefaultText['page.wgs.slotFrom']}
+              placeholder={configDefaultText['page.wgs.slotFrom']}
+              fieldProps={{
+                onClick: toggleColorPicker,
+                // onChange: handleColorSelect,
+              }}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.slotTo']
+                },
+              ]}
+              className='w-full'
+              name='slotTo'
+              label={configDefaultText['page.wgs.slotTo']}
+              placeholder={configDefaultText['page.wgs.slotTo']}
+              fieldProps={{
+                onClick: toggleColorPicker,
+              }}
+            />
+
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.wgs.column.wgs']
+                },
+              ]}
+              className='w-full'
+              name='rate'
+              label={configDefaultText['page.wgs.column.wgs']}
+              placeholder={configDefaultText['page.wgs.column.wgs']}
+              fieldProps={{
+                onClick: toggleColorBackgroundPicker,
+              }}
+            />
+          </Col>
+        </Row>
       </ModalForm>
-
-
     </PageContainer>
   );
 };

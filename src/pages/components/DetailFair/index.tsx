@@ -36,7 +36,25 @@ const TableList = (props: any) => {
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
       key: 'cPassPublished',
-      renderText: (_, text: any) => `${text?.cPassPublished}`
+      renderText: (_, text: any) => `${text?.cPassPublished}/${text?.quantitySellCpass}`
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      title: configDefaultText['page.DetailFair.column.totalRemain'],
+      dataIndex: 'cPassPublished',
+      valueType: 'textarea',
+      key: 'cPassPublished',
+      renderText: (_, text: any) => `${text?.totalRemain.toLocaleString()}`
+    },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
+      title: configDefaultText['page.DetailFair.column.totalSell'],
+      dataIndex: 'cPassPublished',
+      valueType: 'textarea',
+      key: 'cPassPublished',
+      renderText: (_, text: any) => `${text?.totalSell.toLocaleString()}`
     },
 
     {
@@ -45,8 +63,10 @@ const TableList = (props: any) => {
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
       key: 'cPassPublished',
-      renderText: (_, text: any) => null
+      renderText: (_, text: any) => `${text?.mega}`
     },
+
+
 
     {
       //  title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
@@ -104,8 +124,6 @@ const TableList = (props: any) => {
           // <Text>{`${entity.code}|${entity.id}`}</Text>
           <>
             {`${entity.code}|${entity.id}`}</>
-
-
         );
       },
 

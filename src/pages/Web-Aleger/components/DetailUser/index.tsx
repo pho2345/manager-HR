@@ -336,7 +336,7 @@ const TableList = (props: any) => {
       dataIndex: 'totalCPassCurrent',
       valueType: 'textarea',
       key: 'totalCPassCurrent',
-      renderText: (_, text) => text?.totalCPassCurrent.toLocaleString()
+      renderText: (_, text) => text?.totalCPassCurrent?.toLocaleString() || 0
     },
 
     {
@@ -345,7 +345,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaDeltaWeightCurrent',
       valueType: 'textarea',
       key: 'megaDeltaWeightCurrent',
-      renderText: (_, text) => text?.megaDeltaWeightCurrent.toLocaleString()
+      renderText: (_, text) => text?.megaDeltaWeightCurrent?.toLocaleString() || 0
     },
 
     {
@@ -354,7 +354,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAleCurrent',
       valueType: 'textarea',
       key: 'megaWeightCurrent',
-      renderText: (_, text) => text?.megaWeightCurrent.toLocaleString()
+      renderText: (_, text) => text?.megaWeightCurrent?.toLocaleString() || 0
     },
 
     {

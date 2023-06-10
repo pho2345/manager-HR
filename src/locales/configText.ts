@@ -157,6 +157,8 @@ export default {
     'page.DetailFair.column.dateStartFeed': 'Ngày bắt đầu nuôi',
     'page.DetailFair.column.timeFeed': 'Thời gian nuôi (tuần)',
     'page.DetailFair.column.unitPriceMeat': 'Đơn giá thịt (VNĐ/kg)',
+    'page.DetailFair.column.totalRemain': 'Số tiền còn lại',
+    'page.DetailFair.column.totalSell': 'Số tiền cPass đã bán',
 
 
 
@@ -638,6 +640,44 @@ export default {
     'page.managerAleCurrent.columns.image': 'Mã QR',
     'page.managerAleCurrent.columns.scan': 'Quét',
     'page.managerAleCurrent.columns.user': 'Aleger Quét',
+
+    'page.managerAleCurrent.modal.ale': 'Số lượng Ale',
+
+    'page.aleger.rateProcudeAle': '1. Hệ số chuyển đổi lợi nhuận sang ProduceAle',
+
+    'page.aleger.rateProcudeAleMega': '* Hệ số điều chỉnh Mega-ProduceAle',
+
+    'page.aleger.customerCare': '2. Thông tin chăm sóc khách hàng (html)',
+    'page.aleger.customerCare.hotline': 'Hotline',
+    'page.aleger.customerCare.email': 'Email',
+    'page.aleger.customerCare.zalo': 'Zalo',
+
+
+
+
+    'page.wgs.column.category': 'Giống',
+    'page.wgs.column.rangePZero': 'Khoảng P0',
+    'page.wgs.column.slot': 'Khoảng Slot',
+    'page.wgs.column.wgs'   : 'Tăng trọng tiêu chuẩn (kg)',
+    'page.wgs.slotFrom'   : 'Slot dưới',
+    'page.wgs.slotTo'   : 'Slot trên',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

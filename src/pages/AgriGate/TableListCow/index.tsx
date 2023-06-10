@@ -363,6 +363,7 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'firstWeight',
+      width: '10vh',
       renderText: (_, text: any) => text?.firstWeight,
     },
     {
@@ -408,6 +409,7 @@ const TableList: React.FC = () => {
       title: configDefaultText['page.listCow.column.sex'],
       dataIndex: 'sex',
       valueType: 'textarea',
+      width: '10vh',
       key: 'sex',
       renderText: (_, text: any) => {
         if (text?.sex === 'male') {

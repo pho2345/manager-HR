@@ -214,6 +214,7 @@ const TableList: React.FC = () => {
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
   const refIdPicture = useRef<any>();
+
   const [groupCow, setGroupCow] = useState<any>([]);
   const [getAllGroup, setGetAllGroup] = useState<any>([]);
   const searchInput = useRef(null);
@@ -576,13 +577,20 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
-        return (<>
-          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
-            onClick={() => {
-              setOpenChart(true)
-            }}
-          /></Tooltip>
-        </>)
+        if(text?.owner){
+          return (<>
+            <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
+              onClick={() => {
+                refIdCpass.current = text?.id;
+                setOpenChart(true);
+              }}
+            /></Tooltip>
+          </>)
+        }
+        else {
+          return (<></>)
+        }
+        
       }
     },
 
@@ -1575,6 +1583,8 @@ const TableList: React.FC = () => {
          {
           openChart &&  <Chart 
             openModal={openChart}
+            cPassId={refIdCpass.current}
+            
             onClose={() => {
               setOpenChart(false);
             }}

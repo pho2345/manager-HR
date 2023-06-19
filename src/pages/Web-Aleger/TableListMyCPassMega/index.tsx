@@ -1,25 +1,25 @@
-import {  customAPIGetOne } from '@/services/ant-design-pro/api';
-import {  ActionType, ProColumns} from '@ant-design/pro-components';
+import { customAPIDowload, customAPIDowloadPDF, customAPIGetOne } from '@/services/ant-design-pro/api';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useParams } from '@umijs/max';
-import { Avatar, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Tooltip, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineHistory } from 'react-icons/md';
 const { Text } = Typography;
 import configText from '@/locales/configText';
-import { ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { BsGraphUpArrow } from 'react-icons/bs';
 import Chart from './components/Chart';
 const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-  
+
   const params = useParams<number>();
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
@@ -55,22 +55,22 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              
+
             }}
           >
             {entity?.code}
 
           </a>
-         
+
         );
       },
-     
-      
-      
+
+
+
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
-        Giống bò<br/>Giới tính</>)} />,
+        Giống bò<br />Giới tính</>)} />,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
@@ -82,7 +82,7 @@ const TableList: React.FC = () => {
         return (<>
           {text?.cow?.farm?.name}<br />
           {`${text?.cow?.category?.name}`}
-          <br/>
+          <br />
           {sex}
         </>)
       }
@@ -130,7 +130,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-        let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
+        let age = Math.floor(moment(moment()).diff(text?.birthdate || text?.cow?.birthdate, 'days') / 7);
         if (age === 0) {
           return `0`;
         }
@@ -155,9 +155,9 @@ const TableList: React.FC = () => {
       key: 'bodyCondition',
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition?.color }}>{text?.colorBodyCondition?.name}</Text>);
-          
-        },
-    
+
+      },
+
       filters: true,
       onFilter: true,
       valueEnum: {
@@ -200,17 +200,17 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br/>MegaE (VNĐ)<br />MegaCPR</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       width: 120,
       key: 'megaP',
-      align:'center',
+      align: 'center',
       render: (_, text: any) => {
         return (<>
-        {text?.megaP || 0} <br/>
-        {text?.megaE.toLocaleString() || 0} <br/>
-        {text?.megaCPR || 0}%
+          {text?.megaP || 0} <br />
+          {text?.megaE.toLocaleString() || 0} <br />
+          {text?.megaCPR || 0}%
         </>)
       }
     },
@@ -225,17 +225,17 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaDelta<br />ProduceAle<br />History</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaΔP<br />ProduceAle<br />History</>)} />,
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
       align: 'center',
       render: (_, text: any) => {
         let id = text?.id;
-        if(text?.checkHistory){
+        if (text?.checkHistory) {
           id = text?.cPassId;
         }
-        
+
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
@@ -253,7 +253,6 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
-       if(text?.slotNow?.activeSlot && text?.slotNow?.currentWeight > 0){
         return (<>
           <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
             onClick={() => {
@@ -263,10 +262,7 @@ const TableList: React.FC = () => {
             }}
           /></Tooltip>
         </>)
-       }
-       else {
-        return (<></>)
-       }
+
       }
     },
     {
@@ -280,42 +276,42 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (<>Trạng thái giao dịch</>) ,
+      title: (<>Trạng thái giao dịch</>),
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
       key: 'statusTransaction',
       render: (_, text: any) => {
-       return (<>
-        <Text style={{ color: text?.colorStatusTransaction?.color }}>{text?.colorStatusTransaction?.name}</Text><br/>
-        <Text style={{ color: text?.colorSettlement?.color }}>{text?.colorSettlement?.name}</Text>
-       </>);
+        return (<>
+          <Text style={{ color: text?.colorStatusTransaction?.color }}>{text?.colorStatusTransaction?.name}</Text><br />
+          <Text style={{ color: text?.colorSettlement?.color }}>{text?.colorSettlement?.name}</Text>
+        </>);
       }
     },
   ];
 
   return (
     <PageContainer
-        onBack={() => window.history.back()}
+      onBack={() => window.history.back()}
     >
       <ProTable
         rowKey='id'
         search={false}
 
-       actionRef={actionRef}
-        request={ async() => {
-            const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
-            return {
-              data:data,
-              success: true,
-              total: data?.length
-            }
+        actionRef={actionRef}
+        request={async () => {
+          const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
+          return {
+            data: data,
+            success: true,
+            total: data?.length
+          }
         }}
         columns={columns}
 
         pagination={{
           locale: {
-           next_page: 'Trang sau',
-           prev_page: 'Trang trước',
+            next_page: 'Trang sau',
+            prev_page: 'Trang trước',
           },
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
@@ -334,19 +330,43 @@ const TableList: React.FC = () => {
             }
           }]
         }}
+
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('c-passes/get/my-c-pass-mega/excel', params?.id);
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('c-passes/get/my-c-pass-mega/pdf', params?.id);
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+          ]
+        }}
       />
-      
+
       {
-          openChart &&  <Chart 
-            openModal={openChart}
-            types={refIdCheckHistory.current ? 'history' : 'c-pass'}
-            cPassId={refIdCpass.current}
-            onClose={() => {
-              setOpenChart(false);
-            }}
-          />
-         }
-    
+        openChart && <Chart
+          openModal={openChart}
+          types={refIdCheckHistory.current ? 'history' : 'c-pass'}
+          cPassId={refIdCpass.current}
+          onClose={() => {
+            setOpenChart(false);
+          }}
+        />
+      }
+
     </PageContainer>
 
   );

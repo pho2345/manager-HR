@@ -1,4 +1,4 @@
-import { customAPIGetOne } from '@/services/ant-design-pro/api';
+import { customAPIDowload, customAPIGetOne } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -6,10 +6,12 @@ import {
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import { FormattedMessage, useParams } from '@umijs/max';
+import { FormattedMessage, useParams, useSearchParams } from '@umijs/max';
 import React, {  useRef, useState } from 'react';
 import DetailCPass from '../components/DetailCPass';
 import DetailUser from '../components/DetailUser';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
 // const getCPass = async (id: number) => {
 //   const fetchCPass = await customAPIGetOne(id, 'c-passes', {});
@@ -29,6 +31,7 @@ const TableList: React.FC = () => {
   const params = useParams<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
@@ -70,18 +73,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'slotAndTime',
       render: (_, record: any) => {
-        let timeEnd;
-        if (moment(record?.timeEnd).isAfter(moment())) {
-          timeEnd = `Hiện tại`;
-        }
-        else {
-          timeEnd = moment(record?.timeEnd).format('DD/MM/YYYY');
-        }
-        return (<>
-          {`${record?.slots}`} <br />
-          {`(${moment(record?.timeStart).format('DD/MM/YYYY')} ~ ${timeEnd})`}
-        </>)
-        return `${record?.slots}`;
+        return (<>{record?.time}</>)
       }
     },
     {
@@ -168,7 +160,10 @@ const TableList: React.FC = () => {
         search={false}
 
         request={async () => {
-          const data = await customAPIGetOne(params?.id, 'accumulation-c-passes/find-admin', {});
+          const data = await customAPIGetOne(params?.id, 'accumulation-c-passes/find-admin', {
+            fair: searchParams.get('fair'),
+            history: searchParams.get('history')
+          });
           return {
             data: data,
             success: true,
@@ -177,6 +172,38 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
 
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
+
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('accumulation-c-passes/find-admin/excel', 26);
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+
+
+
+          
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+          ]
+        }}
       />
 
       {currentRow && (

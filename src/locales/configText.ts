@@ -61,10 +61,12 @@ export default {
     'page.listFair.column.timeEnd': 'Ngày giờ đóng bán',
     'page.listFair.column.dateStartFeed': 'Ngày bắt đầu nuôi',
     'page.listFair.column.timeFeed': 'Thời gian nuôi (tuần)',
+    'page.listFair.column.refundVs': ' Số tuần nuôi cho phép hoàn trả Vs khi thanh quyết toán',
     'page.listFair.column.plans': 'PAHT Mega/PL',
     'page.listFair.column.cPassPublished': 'cPass phát hành/Đã bán',
     'page.listFair.column.status': 'Trạng thái',
     'page.listFair.column.unitPriceMeat': 'Đơn giá thịt (VNĐ/kg)',
+    'page.listFair.column.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh (VNĐ/kg)',
     'page.listFair.column.nameFarm': 'Tên trang trại',
     'page.listFair.payment': 'Thanh toán',
     'page.listFair.titleOption': 'Thao tác',
@@ -87,6 +89,7 @@ export default {
     
 
     'page.listFair.required.timeFeed': 'Vui lòng nhập thời gian nuôi',
+    'page.listFair.required.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh',
     'page.listFair.required.unitPriceMeat': 'Vui lòng nhập đơn giá thịt',
     'page.listFair.required.timeStart': 'Vui lòng chọn thời gian mở',
     'page.listFair.required.dateStartFeed': 'Vui lòng chọn thời gian bắt đầu nuôi',
@@ -413,7 +416,7 @@ export default {
 
     'page.required.code': 'Nhập mã',
     'page.required.classify': 'Nhập phân loại',
-    'page.required.value': 'Nhập phân loại',
+    'page.required.value': 'Chọn phân loại',
     'page.required.color': 'Nhập màu chữ',
     'page.required.backgroundColor': 'Nhập màu nền',
 

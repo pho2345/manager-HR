@@ -1,13 +1,14 @@
-import { customAPIGetOne, customAPIPost } from '@/services/ant-design-pro/api';
+import { customAPIDowload, customAPIPost } from '@/services/ant-design-pro/api';
 import type { ActionType, ProColumns, } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
-import moment from 'moment';
 import { FormattedMessage, useParams, useSearchParams } from '@umijs/max';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
 // const getCPass = async (id: number) => {
 //   const fetchCPass = await customAPIGetOne(id, 'c-passes', {});
@@ -19,12 +20,8 @@ const TableList: React.FC = () => {
   //const [cPass, setCPass] = useState<any>();
   const actionRef = useRef<ActionType>();
   const params = useParams<any>();
-  const [currentRow, setCurrentRow] = useState<any>();
-  const [showDetail, setShowDetail] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
 
-  const [currentRowUser, setCurrentRowUser] = useState<any>();
-  const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
   // useEffect(() => {
   //   const fetchDataCPass = async () => {
@@ -49,7 +46,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'slotAndTime',
       render: (_, record: any) => {
-        
+
         return (<>
           {record?.textSlot}
         </>)
@@ -109,6 +106,39 @@ const TableList: React.FC = () => {
 
 
         </>)}
+
+
+        toolbar={{
+          settings: [{
+            key: 'reload',
+            tooltip: 'Tải lại',
+            icon: <ReloadOutlined />,
+            onClick: () => {
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }]
+        }}
+
+        toolBarRender={() => {
+          return [
+            // eslint-disable-next-line react/jsx-no-undef
+            <Button
+              type='primary'
+              key='excel'
+              onClick={async () => {
+                await customAPIDowload('slots/slot-of-mega/excel', null, {
+                  cPassId: params?.id,
+                  fairId: searchParams.get('fair'),
+                  owner: searchParams.get('owner')
+                });
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+          ]
+        }}
         actionRef={actionRef}
         rowKey='id'
         search={false}

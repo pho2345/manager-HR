@@ -1,5 +1,7 @@
 import { request } from '@umijs/max';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
+import moment from 'moment';
 
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {
@@ -88,6 +90,7 @@ export async function customAPIGet(values?: { [key: string]: any }, collection?:
       ...values,
     },
   });
+
 
   return {
     data: fetchData.data ? fetchData.data : fetchData,
@@ -298,3 +301,69 @@ export async function customAPIGetFileSlotChart(
   } else {
   }
 }
+
+export async function customAPIDowload(
+  collection?: string,
+  id?: any,
+  values?: { [key: string]: any }
+) {
+  const data = await axios(`${SERVERURL}/api/${collection}${id ? `/${id}` : ``}`, {
+    headers: {
+      'Content-Type': 'application/xml',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    params: {
+      ...values,
+    },
+  });
+
+  if (data.status === 200) {
+    const dataFile = Buffer.from(data?.data?.file);
+    const name = data?.data?.name;
+    
+    // Create a blob from the buffer
+    const blob = new Blob([dataFile], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    // Create a download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = name + '.xlsx';
+    
+    // Trigger the download
+    downloadLink.click();
+
+    // const anchor = document.createElement('a');
+    // anchor.href = URL.createObjectURL(blob);
+    // anchor.download = 'pho.xlsx';
+    // anchor.click();
+    // URL.revokeObjectURL(anchor.href);
+  } else {
+  }
+}
+
+export async function customAPIDowloadPDF(collection?: string, id?: number) {
+  const data = await axios(`${SERVERURL}/api/${collection}${id ? `/${id}` : ``}`, {
+    headers: {
+      'Content-Type': 'application/xml',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  });
+
+  if (data.status === 200) {
+    const xmlContent = data?.data?.file;
+    const name = data?.data?.name;
+
+    // Create a hidden div element to hold the XML content
+    const xmlContainer = document.createElement('div');
+    xmlContainer.innerHTML = xmlContent;
+
+    // Convert XML content to HTML string
+    const htmlContent = xmlContainer.innerHTML;
+
+    // Convert HTML to PDF using html2pdf
+    html2pdf().set({ html2canvas: { scale: 2 } }).from(htmlContent).save(`${name}${moment().format('HH:mm DD/MM/YYYY')}` + '.pdf');
+  } else {
+    // Handle error
+  }
+}
+

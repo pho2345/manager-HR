@@ -1,5 +1,5 @@
-import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { customAPIAdd, customAPIDowload, customAPIDowloadPDF, customAPIGet } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -399,6 +399,31 @@ const TableListAssignCPass = () => {
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
+        }}
+
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('users/sell-ale/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('users/sell-ale/pdf');
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+          ]
         }}
       />
 

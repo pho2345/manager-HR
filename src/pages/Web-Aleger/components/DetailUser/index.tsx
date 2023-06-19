@@ -149,7 +149,7 @@ const TableList = (props: any) => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.username' defaultMessage='Tên đăng nhập' />,
-      title: configDefaultText['page.DetailAleger.column.id'],
+      title: configDefaultText['page.DetailAleger.column.username'],
       dataIndex: 'username',
       valueType: 'textarea',
       key: 'username',
@@ -247,6 +247,7 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'edit',
       render: (_, record) => {
+        console.log(record);
         return (<><Button
             onClick={() => {
               handleUpdateModalOpen(true);
@@ -260,6 +261,7 @@ const TableList = (props: any) => {
             style={{
               marginLeft: '10px'
             }}
+            disabled={!record?.disabled}
             onClick={() => confirm({
               userId: record?.id
             }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], 'users/disabled')} danger
@@ -278,7 +280,7 @@ const TableList = (props: any) => {
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
-      renderText: (_, text) => text?.ale.toLocaleString()
+      renderText: (_, text) => text?.ale?.toLocaleString()
     },
 
     {
@@ -442,7 +444,6 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'edit',
       render: (_, record) => {
-        console.log(record);
         return <Button><Link to={`/web-aleger/mega/my-c-pass/` + record?.id}> My cPass
         </Link></Button>
       }

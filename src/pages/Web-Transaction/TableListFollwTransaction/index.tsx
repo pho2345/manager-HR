@@ -2,9 +2,10 @@ import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import DetailUser from '@/pages/Web-Aleger/components/DetailUser';
 import {
+  customAPIDowload,
   customAPIPost,
 } from '@/services/ant-design-pro/api';
-import { ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -18,6 +19,7 @@ import {
 import moment from 'moment';
 import React, {  useRef, useState } from 'react';
 import configText from '@/locales/configText';
+import { Button } from 'antd';
 const configDefaultText = configText;
 
 
@@ -298,7 +300,18 @@ const TableList: React.FC = () => {
         rowKey='id'
         search={false}
         toolBarRender={() => [
-         
+          
+          <Button
+            type='primary'
+            key='primary'
+            onClick={async () => {
+              await customAPIDowload('transactions/follow/excel');
+            }}
+          >
+            <PlusOutlined /> Excel
+          </Button>,
+
+          
         ]}
         request={async () => {
           const data = await customAPIPost(
@@ -426,6 +439,8 @@ const TableList: React.FC = () => {
           }]
         }}
 
+        
+
         pagination={{
           locale: {
             next_page: configDefaultText['nextPage'],
@@ -435,6 +450,8 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        
         
       />
       

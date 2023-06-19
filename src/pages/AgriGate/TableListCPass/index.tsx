@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate, customAPIGetOne, customAPIUpload, customAPIDowload, customAPIDowloadPDF } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormUploadButton } from '@ant-design/pro-components';
 import {
@@ -577,7 +577,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
-        if(text?.owner){
+        if (text?.owner) {
           return (<>
             <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
               onClick={() => {
@@ -590,7 +590,7 @@ const TableList: React.FC = () => {
         else {
           return (<></>)
         }
-        
+
       }
     },
 
@@ -677,6 +677,25 @@ const TableList: React.FC = () => {
             }}
           >
             <PlusOutlined /> {configDefaultText['buttonAdd']}
+          </Button>,
+          <Button
+            type='primary'
+            key='primary'
+            onClick={async () => {
+              await customAPIDowload('c-passes/agrigate/excel');
+            }}
+          >
+            <PlusOutlined /> Excel
+          </Button>,
+
+          <Button
+            type='primary'
+            key='primary'
+            onClick={async () => {
+              await customAPIDowloadPDF('c-passes/agrigate/pdf');
+            }}
+          >
+            <PlusOutlined /> PDF
           </Button>,
         ]}
         request={() => customAPIGet({}, 'c-passes/get/c-pass-agrigate')}
@@ -1580,17 +1599,17 @@ const TableList: React.FC = () => {
         />
       </ModalForm>
 
-         {
-          openChart &&  <Chart 
-            openModal={openChart}
-            cPassId={refIdCpass.current}
-            
-            onClose={() => {
-              setOpenChart(false);
-            }}
-          />
-         }
-        
+      {
+        openChart && <Chart
+          openModal={openChart}
+          cPassId={refIdCpass.current}
+
+          onClose={() => {
+            setOpenChart(false);
+          }}
+        />
+      }
+
       {currentRow && <DetailCPass
         openModal={showDetail}
         cPassId={currentRow}

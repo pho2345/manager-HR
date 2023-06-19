@@ -10,6 +10,7 @@ const configDefaultText = configText;
 
 const DemoLine = (props: any) => {
     const [data, setData] = useState([]);
+    const [slot, setSlot] = useState([]);
 
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -21,6 +22,8 @@ const DemoLine = (props: any) => {
         });
         // console.log('getSlot', getSlot);
         setData(getSlot?.data?.chart);
+        setSlot(getSlot?.data?.slots);
+
         // setSlots(getSlot?.data?.slots);
     };
 
@@ -70,7 +73,7 @@ const DemoLine = (props: any) => {
                 return data;
             },
             customContent: (x: any, data: any) => {
-                let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}</div>
+                let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}@S${x}- ${moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')} </div>
                 <ul class="g2-tooltip-list" style="margin: 0px; list-style-type: none; padding: 0px;">`;
                 for (let i = 0; i < data.length; i++) {
                     let e = data[i];

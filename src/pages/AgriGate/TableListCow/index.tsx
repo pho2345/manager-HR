@@ -348,7 +348,6 @@ const TableList: React.FC = () => {
       },
       filters: farm,
       onFilter: (value, record) => {
-        console.log('');
         return record?.farm?.id === value;
       },
     },
@@ -561,13 +560,9 @@ const TableList: React.FC = () => {
                   handleModalOpen(true);
                 }}
               >
-
                 <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>,
-
               // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-
-
             ]
           }}
 
@@ -618,35 +613,6 @@ const TableList: React.FC = () => {
           }}
 
         />
-        {
-          // selectedRowsState?.length > 0 && (
-          //   <FooterToolbar
-          //     extra={
-          //       <div>
-          //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-          //         {`${configDefaultText['chosen']} `}
-          //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-          //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-          //         {configDefaultText['selectedItem']}
-
-          //       </div>
-          //     }
-          //   >
-          //     <Button
-          //       onClick={async () => {
-
-          //         confirm(selectedRowsState, 'Bạn có muốn xóa?')
-          //         // await handleRemove(selectedRowsState);
-          //         setSelectedRows([]);
-          //         actionRef.current?.reloadAndRest?.();
-          //       }}
-          //     >
-          //       {configDefaultText['delete']}
-          //     </Button>
-
-          //   </FooterToolbar>
-          // )
-        }
 
         <ModalForm
           title={configDefaultText['modalCreate']}

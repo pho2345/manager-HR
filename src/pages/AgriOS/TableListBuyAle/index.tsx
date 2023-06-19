@@ -1,5 +1,5 @@
-import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { customAPIAdd, customAPIDowload, customAPIDowloadPDF, customAPIGet, customAPIGetFileSlotChart } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney, } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -85,7 +85,7 @@ const TableListAssignCPass = () => {
           placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm,dataIndex )}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -112,7 +112,7 @@ const TableListAssignCPass = () => {
           >
             Làm mới
           </Button>
-         
+
         </Space>
       </div>
     ),
@@ -162,7 +162,7 @@ const TableListAssignCPass = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-       const checkSuccess = await handleAdd(entity, api);
+        const checkSuccess = await handleAdd(entity, api);
 
         if (actionRef.current && checkSuccess) {
           actionRef.current.reload();
@@ -199,7 +199,7 @@ const TableListAssignCPass = () => {
                 //setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
@@ -273,7 +273,7 @@ const TableListAssignCPass = () => {
                 style={{
                   fontSize: 20,
                   paddingLeft: 5
-                  
+
                 }}
                 onClick={() => {
                   setShowModal(true);
@@ -310,7 +310,7 @@ const TableListAssignCPass = () => {
             total: data?.data?.user.length
           };
         }}
-        
+
         columns={columns}
 
         toolbar={{
@@ -335,6 +335,31 @@ const TableListAssignCPass = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
+
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('users/buy-ale/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('users/buy-ale/pdf');
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+          ]
+        }}
       />
 
       <ModalForm
@@ -357,7 +382,7 @@ const TableListAssignCPass = () => {
           },
             `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện mua ${convertAle} Ale?`,
             'transactions/buy-ale-admin');
-         // form.resetFields();
+          // form.resetFields();
 
           return true
         }}
@@ -387,16 +412,16 @@ const TableListAssignCPass = () => {
               label={configDefaultText['page.buyAle.ale']}
               name="ale"
               min={1}
-              
+
               placeholder={configDefaultText['page.buyAle.ale']}
               fieldProps={{
                 value: convertAle === 0 ? null : convertAle,
                 onChange: (e: any) => {
-                  if(typeof e !== 'undefined'){
+                  if (typeof e !== 'undefined') {
                     setConvertAle(e);
                   }
                 },
-               //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 precision: 2
               }}
               rules={[

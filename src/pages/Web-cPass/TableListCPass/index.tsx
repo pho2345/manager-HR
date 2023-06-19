@@ -1,5 +1,5 @@
-import { customAPIGet } from '@/services/ant-design-pro/api';
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { customAPIDowload, customAPIDowloadPDF, customAPIGet } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -167,7 +167,7 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         return (<>
           {text?.fair?.code}
-          <br /> {moment(text?.fair?.dateEndFeed).format('DD/MM/YYYY')}
+          <br /> {moment(text?.fair?.dateEndFeed || text?.dateEndCoop).format('DD/MM/YYYY')}
 
 
         </>)
@@ -353,7 +353,7 @@ const TableList: React.FC = () => {
       key: 'users_permissions_user',
       ...getColumnSearchProps('owner'),
       render: (_, text: any) => {
-        if (text?.owner?.id) {
+        if (text?.owner?.id && !text.checkHistory) {
           return (<>
             <a
               onClick={() => {
@@ -397,7 +397,7 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaDelta<br />ProduceAle<br />History</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaΔP<br />ProduceAle<br />History</>)} />,
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
@@ -411,7 +411,7 @@ const TableList: React.FC = () => {
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
-          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/` + id}><MdOutlineHistory style={{
+          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/${id}?fair=${text?.fair?.id}&history=${text?.checkHistory || false}` }><MdOutlineHistory style={{
             fontSize: '20px'
           }}>
           </MdOutlineHistory></Link></Tooltip>
@@ -426,8 +426,6 @@ const TableList: React.FC = () => {
       key: 'statusOwner',
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorStatusOwner?.color || 'black' }}>{text?.colorStatusOwner?.name}</Text>);
-
-
       }
 
     },
@@ -500,6 +498,34 @@ const TableList: React.FC = () => {
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
+        }}
+
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('c-passes/get/c-pass-mega/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+
+
+
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('c-passes/get/c-pass-mega/pdf');
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+          ]
         }}
       />
 

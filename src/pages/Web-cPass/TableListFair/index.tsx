@@ -58,6 +58,8 @@ const handleUpdate = async (fields: any, id: any) => {
     fields.c_passes = configCPass;
   }
 
+  console.log(moment(fields.dateStartFeed).format('HH:mm:ss DD/MM/YYYY'));
+
   fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
@@ -122,6 +124,21 @@ const getPlans = async () => {
   return data;
 };
 
+const formatter = (value: any) => {
+  if (value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  return '';
+};
+
+const parser = (value: any) => {
+  if (value) {
+    return value.replace(/\$\s?|(,*)/g, '');
+  }
+  return undefined;
+};
+
+
 
 
 const TableList: React.FC = () => {
@@ -162,6 +179,7 @@ const TableList: React.FC = () => {
       closeDropdown: false,
     });
   };
+
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
       // close
@@ -399,7 +417,6 @@ const TableList: React.FC = () => {
             value: 'closed'
           },
         }
-
       }
     },
     {
@@ -573,10 +590,10 @@ const TableList: React.FC = () => {
               onClick={async () => {
                 handleCopyModalOpen(true);
                 const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
-                fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
-                fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.timeEnd = moment(fair?.timeEnd).format('YYYY-MM-DD HH:mm:ss');
+                fair.timeStart = moment(fair?.timeStart).format('YYYY-MM-DD HH:mm:ss');
+                fair.dateStartFeed = moment(fair?.dateStartFeed).format('YYYY-MM-DD HH:mm:ss');
+                fair.dateEndFeed = moment(fair?.dateEndFeed).format('YYYY-MM-DD HH:mm:ss');
                 delete fair.c_passes;
                 const plans = fair.plans.map((e: any) => {
                   return e?.id
@@ -820,8 +837,6 @@ const TableList: React.FC = () => {
           }}
         >
 
-
-
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDigit className='w-full' name='timeFeed' placeholder='Thời gian nuôi' min={1} max={100}
@@ -846,9 +861,48 @@ const TableList: React.FC = () => {
                   // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
                   { required: true, message: configDefaultText['page.listFair.required.unitPriceMeat'] },
                 ]}
+                fieldProps={{
+                  formatter,
+                  parser,
+                }}
               />
             </Col>
           </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDigit className='w-full' name='refundVs' placeholder={configDefaultText['page.listFair.column.refundVs']} min={1} max={100}
+                // label={<FormattedMessage id='page.listFair.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />}
+                label={configDefaultText['page.listFair.column.refundVs']}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
+                  { required: true, message: configDefaultText['page.listFair.column.refundVs'] },
+
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDigit className='w-full'
+                name='unitSicknessInsurance'
+                placeholder={configDefaultText['page.listFair.column.unitSicknessInsurance']}
+                min={1000}
+                //label={<FormattedMessage id='page.listFair.unitPriceMeat' defaultMessage='Đơn giá thịt(VND/Kg)' />}
+                label={configDefaultText['page.listFair.column.unitSicknessInsurance']}
+                rules={[
+                  // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
+                  { required: true, message: configDefaultText['page.listFair.required.unitSicknessInsurance'] },
+                ]}
+                fieldProps={{
+                  formatter,
+                  parser,
+                }}
+              />
+            </Col>
+          </Row>
+
+
+          
 
 
           <Row gutter={24} className="m-0">

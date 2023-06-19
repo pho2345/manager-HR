@@ -25,9 +25,9 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Sửa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Sửa thất bại!');
+    message.error(error?.response.data.error.message || 'Lỗi');
     return false;
   }
 };

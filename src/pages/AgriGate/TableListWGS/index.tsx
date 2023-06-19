@@ -217,8 +217,7 @@ const TableList: React.FC = () => {
         return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
-    }
-    ,
+    },
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
         //setTimeout(() => searchInput.current?.select(), 100);
@@ -311,9 +310,11 @@ const TableList: React.FC = () => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
         ><MdOutlineEdit
-            onClick={() => {
+            onClick={ async () => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
+              const p0 = await getP0(entity?.category?.id);
+              setRangePZero(p0);
               form.setFieldsValue({
                 category: entity?.category?.id,
                 rangeWeightZero: {
@@ -360,7 +361,6 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-
         actionRef={actionRef}
         rowKey='id'
         search={false}

@@ -1,5 +1,5 @@
-import { customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons';
+import { customAPIDowload, customAPIDowloadPDF, customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, SearchOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
 
@@ -336,7 +336,7 @@ const TableListFairDetail: React.FC = () => {
       }
     },
 
-  
+
 
     {
       // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
@@ -441,17 +441,32 @@ const TableListFairDetail: React.FC = () => {
             return entity.classColor
           }
         }
-        toolBarRender={() => [
-          // <Button
-          //   type='primary'
-          //   key='primary'
-          //   onClick={() => {
-          //     //handleModalOpen(true);
-          //   }}
-          // >
-          //   <PlusOutlined /> <FormattedMessage id='pages.searchTable.new' defaultMessage='New' />
-          // </Button>,
-        ]}
+        toolBarRender={() => {
+          return [
+            // eslint-disable-next-line react/jsx-no-undef
+            <Button
+              type='primary'
+              key='excel'
+              onClick={async () => {
+                await customAPIDowload('fairs/cpass-of-fair/excel', params?.id, {
+
+                });
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('fairs/cpass-of-fair/pdf', params?.id);
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+          ]
+        }}
 
         toolbar={{
           settings: [{

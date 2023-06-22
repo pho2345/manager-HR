@@ -1,21 +1,104 @@
-import { customAPIDowload, customAPIDowloadPDF, customAPIGetOne } from '@/services/ant-design-pro/api';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { customAPIDowload, customAPIDowloadPDF, customAPIGet, customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ActionType, ModalForm, ProColumns, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useParams } from '@umijs/max';
-import { Avatar, Button, Tooltip, Typography } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Avatar, Button, Col, Dropdown, Form, Input, Menu, Row, Space, Tooltip, Typography, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineHistory } from 'react-icons/md';
 const { Text } = Typography;
 import configText from '@/locales/configText';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { BsGraphUpArrow } from 'react-icons/bs';
 import Chart from './components/Chart';
 const configDefaultText = configText;
+
+const handleUpdate = async (fields: any, id: any, api: string) => {
+  const hide = message.loading('Đang cập nhật...');
+  try {
+    await customAPIUpdateMany({
+      ...fields
+    }, api, id);
+    hide();
+
+    message.success('Cập nhật thành công');
+    return true;
+  } catch (error) {
+    console.log(error);
+    hide();
+    message.error('Cập nhật thất bại!');
+    return false;
+  }
+};
+
+const getPlan = async(id: any) => {
+  try {
+    const getPlan = await customAPIGetOne(id, 'fairs/plan', {});
+    return getPlan;
+  } catch (error) {
+    
+  }
+}
+
+
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
+const getWGE = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'weight-gain-effects/get/option',
+  );
+  return data.data
+}
+
+const getAWG = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'average-weight-gains/get/option',
+  );
+  return data.data
+}
+
+const getStatusOwner = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'status-owners/get/option',
+  );
+  return data.data
+}
+
+const getStatusTransaction = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'status-transactions/get/option',
+  );
+  return data.data
+}
+
+const getReasonSettlment = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'reason-settlements/get/option',
+  );
+  return data.data
+}
+
 
 
 const TableList: React.FC = () => {
@@ -25,45 +108,168 @@ const TableList: React.FC = () => {
   const refIdCpass = useRef<any>();
   const refIdCheckHistory = useRef<any>();
   const [openChart, setOpenChart] = useState<boolean>(false);
+  const [plan, setPlan] = useState<any>([]);
+  const [openChangeHintName, setOpenChangeHintName] = useState<boolean>(false);
+  const [form] = Form.useForm<any>();
+  const [optionBodyCondition, setOptionBodyCondition] = useState<any>([]);
+  const [optionFair, setOptionFair] = useState<any>([]);
+  const [optionWGE, setOptionWGE] = useState<any>([]);
+  const [optionAWG, setOptionAWG] = useState<any>([]);
+  const [optionStatusOwner, setOptionStatusOwner] = useState<any>([]);
+  const [optionStatusTransaction, setOptionStatusTransaction] = useState<any>([]);
+  const [optionReasonSettlement, setOptionReasonSettlement] = useState<any>([]);
+
+  const [openChangePlan, setOpenChangePlan] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      const getOptionBodyCondition =  getBodyCondition();
+      const getOptionWGE =  getWGE();
+      const getOptionAWG =  getAWG();
+      const getOptionStatus =  getStatusOwner();
+      const getOptionStatusTrasaction =  getStatusTransaction();
+      const getReasonSettlement =  getReasonSettlment();
+      const getAllData = await Promise.all([ getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement]);
+      setOptionBodyCondition(getAllData[0]);
+      setOptionWGE(getAllData[1]);
+      setOptionAWG(getAllData[2]);
+      setOptionStatusOwner(getAllData[3]);
+      setOptionStatusTransaction(getAllData[4]);
+      setOptionReasonSettlement(getAllData[5]);
+    }
+    getData();
+  }, [])
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+    //setSearchText(selectedKeys[0]);
+    //setSearchedColumn(dataIndex);
+    //console.log('selectedKeys',selectedKeys[0] );
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    // setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          // ref={configDefaultText[]}
+          placeholder={`Tìm kiếm`}
+          value={selectedKeys[0]}
+          onChange={(e: any) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+        onClick={() => {
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (dataIndex === 'cPass') {
+        if(record.hintName &&  record.hintName.toString().toLowerCase().includes(value.toLowerCase())){
+          return record
+        } 
+        if(record.code && record.code.toString().toLowerCase().includes(value.toLowerCase())){
+          return record
+        } 
+        // return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+
+      console.log(value);
+      return null;
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+        //setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // render: (text: any) =>{
+    // }
+  });
 
   const columns: ProColumns<any>[] = [
     {
       title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
-      dataIndex: 'atrributes',
+      dataIndex: 'fair.id',
       valueType: 'textarea',
-      key: 'fair',
+      key: 'fair.id',
       render: (_, text: any) => {
         return (<>
           {text?.fair?.code}
           <br /> {moment(text?.fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')}
-
-
         </>)
+      },
+      filters: optionFair,
+      filterSearch: true,
+      onFilter: (value, record) => {
+        if(record?.fair?.id === value){
+          return record
+        }
+        return null;
       }
     },
     {
-      title: (
-        <FormattedMessage
-          id='pages.searchTable.column.code'
-          defaultMessage='Mã'
-        />
-      ),
+      title: <>cPass<br />Tên gợi nhớ</>,
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
-        ;
+
         return (
-          <a
-            onClick={() => {
+          <>
+            <a
+              onClick={() => {
 
-            }}
-          >
-            {entity?.code}
-
-          </a>
+              }}
+            ></a>
+            {entity?.code}<br />
+            {entity?.hintName}
+          </>
 
         );
       },
+      ...getColumnSearchProps('cPass')
 
 
 
@@ -141,6 +347,7 @@ const TableList: React.FC = () => {
     {
       title: 'P0(kg)/Pnow@Snow (kg)',
       dataIndex: 'P0andPnow',
+      width:`15vh`,
       valueType: 'textarea',
       key: 'P0andPnow',
       render: (_, text: any) => {
@@ -158,45 +365,66 @@ const TableList: React.FC = () => {
 
       },
 
-      filters: true,
-      onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
+      filters: optionBodyCondition,
+      // valueEnum: {
+      //   good: {
+      //     text: 'Tốt',
+      //     value: 'good'
+      //   },
+      //   malnourished: {
+      //     text: 'Suy dinh dưỡng',
+      //     value: 'malnourished'
+      //   },
+      //   weak: {
+      //     text: 'Yếu',
+      //     value: 'weak'
+      //   },
+      //   sick: {
+      //     text: 'Bệnh',
+      //     value: 'sick'
+      //   },
+      //   dead: {
+      //     text: 'Chết',
+      //     value: 'dead'
+      //   },
+      // },
+
+      onFilter: (value, record) => {
+        if(record.bodyCondition === value) return record;
+        return null
       },
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
+      align: 'center',
       key: 'wgePercent',
-      renderText: (_, text: any) => `${text?.wgePercent}%`
+      renderText: (_, text: any) => `${text?.wgePercent}%`,
+      filters: optionWGE,
+      onFilter : (value, record)  => {
+        if(record.colorWge?.id === value){
+          return record;
+        }
+        return null;
+      },
     },
 
     {
       title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB(kg/tuần)' />,
       dataIndex: 'atrributes',
+      width: `8vh`,
+      align: 'center',
       valueType: 'textarea',
       key: 'awgAvg',
-      renderText: (_, text: any) => text?.awgAvg
+      renderText: (_, text: any) => text?.awgAvg,
+      filters: optionAWG,
+      onFilter : (value, record)  => {
+        if(record.awg === value){
+          return record;
+        }
+        return null;
+      },
     },
 
     {
@@ -220,7 +448,7 @@ const TableList: React.FC = () => {
       dataIndex: 'plan',
       valueType: 'textarea',
       key: 'plan',
-      renderText: (_, text: any) => text?.plan ? `${text?.plan?.profit}` : null
+      renderText: (_, text: any) => text?.plan ? `${text?.plan?.name} - ${text?.plan?.profit}` : null
     },
 
 
@@ -272,7 +500,15 @@ const TableList: React.FC = () => {
       key: 'statusOwner',
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorStatusOwner?.color }}>{text?.colorStatusOwner?.name}</Text>);
-      }
+      },
+      filters: optionStatusOwner,
+      defaultFilteredValue: ['open'],
+      onFilter : (value, record)  => {
+        if(record.colorStatusOwner.value === value){
+          return record;
+        }
+        return null;
+      },
     },
 
     {
@@ -283,8 +519,77 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         return (<>
           <Text style={{ color: text?.colorStatusTransaction?.color }}>{text?.colorStatusTransaction?.name}</Text><br />
+        </>);
+      },
+      filters: optionStatusTransaction,
+      onFilter : (value, record)  => {
+        if(record?.colorStatusTransaction?.value === value){
+          return record;
+        }
+        return null;
+      },
+    },
+
+    {
+      title: (<>Lý do quyết toán</>),
+      dataIndex: 'reasonSettlement',
+      valueType: 'textarea',
+      key: 'reasonSettlement',
+      render: (_, text: any) => {
+        return (<>
           <Text style={{ color: text?.colorSettlement?.color }}>{text?.colorSettlement?.name}</Text>
         </>);
+      },
+      filters: optionReasonSettlement,
+      onFilter : (value, record)  => {
+        if(record?.colorSettlement?.value === value){
+          return record;
+        }
+        return null;
+      },
+    },
+    {
+      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
+      title: configDefaultText['page.listFair.titleOption'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'option',
+      align: 'center',
+      render: (_, entity: any) => {
+        const menu = (
+          <Menu>
+          
+                <Menu.Item key="1"
+                  onClick={() => {
+                    refIdCpass.current = entity.id;
+                    setOpenChangeHintName(true);
+                    form.setFieldValue('hintName', entity?.hintName);
+                  }}
+                >Đặt tên gợi nhớ</Menu.Item>
+                <Menu.Item key="2"
+                  onClick={ async () => {
+                    refIdCpass.current = entity.id;
+                    const getPlanOfFair = await getPlan(entity?.fair?.id);
+                    setPlan(getPlanOfFair);
+                    form.setFieldValue('planId', {
+                      value: entity?.plan.id,
+                      label: entity?.plan.name,
+                    })
+                    setOpenChangePlan(true);
+                  }}
+                >Đổi PAHT</Menu.Item>
+
+          </Menu>
+        );
+        return (
+          entity?.statusTransaction !== 'open' ? (<></>) : (<>
+            <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+                {configDefaultText['handle']}
+              </a>
+            </Dropdown>
+          </>)
+        )
       }
     },
   ];
@@ -300,8 +605,9 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         request={async () => {
           const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
+          setOptionFair(data?.fair)
           return {
-            data: data,
+            data: data?.data,
             success: true,
             total: data?.length
           }
@@ -355,6 +661,137 @@ const TableList: React.FC = () => {
           ]
         }}
       />
+
+      {
+        openChangePlan && (<>
+          <ModalForm
+            form={form}
+            title={`Đổi PAHT`}
+            width='35vh'
+            open={openChangePlan}
+            modalProps={{
+              destroyOnClose: true,
+              onCancel: () => {
+                setOpenChangePlan(false);
+              },
+            }}
+            onFinish={async (value) => {
+              const success = await handleUpdate({
+                data: {
+                  cPassId: refIdCpass.current,
+                  planId: value.planId
+                }
+              }, null, 'c-passes/admin/change-plan');
+              if (success) {
+                form.resetFields();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                  setOpenChangePlan(false);
+                }
+              }
+            }}
+
+            submitter={{
+              searchConfig: {
+                resetText: configDefaultText['buttonClose'],
+                submitText: configDefaultText['buttonAdd'],
+              },
+            }}
+          >
+
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormSelect
+                  rules={[
+                    {
+
+                      required: true,
+                      message: configDefaultText['page.listFair.required.plans']
+                      // (
+                      //   <FormattedMessage
+                      //     id='pages.listBodyCondition.code'
+                      //     defaultMessage='Nhập mã'
+                      //   />
+                      // ),
+                    },
+                  ]}
+                  options={plan}
+                  className='w-full'
+                  name='planId'
+                  label={`Phương án hợp tác`}
+                  placeholder={`Phương án hợp tác`}
+                />
+              </Col>
+            </Row>
+
+          </ModalForm>
+        </>)
+      }
+
+      {
+        openChangeHintName && (<>
+          <ModalForm
+            form={form}
+            title={configDefaultText['modalCreate']}
+            width='35vh'
+            open={openChangeHintName}
+            modalProps={{
+              destroyOnClose: true,
+              onCancel: () => {
+                setOpenChangeHintName(false);
+              },
+            }}
+            onFinish={async (value) => {
+              const success = await handleUpdate({
+                data: {
+                  cPassId: refIdCpass.current,
+                  hintName: value.hintName
+                }
+              }, null, 'c-passes/admin/hint-name');
+              if (success) {
+                form.resetFields();
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                  setOpenChangeHintName(false);
+                }
+              }
+            }}
+
+            submitter={{
+              searchConfig: {
+                resetText: configDefaultText['buttonClose'],
+                submitText: configDefaultText['submit'],
+              },
+            }}
+          >
+
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormText
+                  rules={[
+                    {
+                      required: true,
+                      message: configDefaultText['page.changeHintName.hintName']
+                      // (
+                      //   <FormattedMessage
+                      //     id='pages.listBodyCondition.code'
+                      //     defaultMessage='Nhập mã'
+                      //   />
+                      // ),
+                    },
+                  ]}
+                  className='w-full'
+                  name='hintName'
+                  label={configDefaultText['page.changeHintName.hintName']}
+                  placeholder={configDefaultText['page.changeHintName.hintName']}
+                />
+              </Col>
+            </Row>
+
+          </ModalForm>
+        </>)
+      }
+
 
       {
         openChart && <Chart

@@ -1,4 +1,4 @@
-import { customAPIDowload, customAPIDowloadPDF, customAPIGet } from '@/services/ant-design-pro/api';
+import { customAPIDowload, customAPIDowloadPDF, customAPIGet, customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
@@ -31,6 +31,60 @@ const getFarm = async () => {
   return data;
 };
 
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
+const getWGE = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'weight-gain-effects/get/option',
+  );
+  return data.data
+}
+
+const getAWG = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'average-weight-gains/get/option',
+  );
+  return data.data
+}
+
+const getStatusOwner = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'status-owners/get/option',
+  );
+  return data.data
+}
+
+const getStatusTransaction = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'status-transactions/get/option',
+  );
+  return data.data
+}
+
+const getReasonSettlment = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'reason-settlements/get/option',
+  );
+  return data.data
+}
+
 
 const TableList: React.FC = () => {
 
@@ -45,12 +99,42 @@ const TableList: React.FC = () => {
   const [farm, setFarm] = useState<any>();
 
 
+  const [optionBodyCondition, setOptionBodyCondition] = useState<any>([]);
+  const [optionFair, setOptionFair] = useState<any>([]);
+  const [optionWGE, setOptionWGE] = useState<any>([]);
+  const [optionAWG, setOptionAWG] = useState<any>([]);
+  const [optionStatusOwner, setOptionStatusOwner] = useState<any>([]);
+  const [optionStatusTransaction, setOptionStatusTransaction] = useState<any>([]);
+  const [optionReasonSettlement, setOptionReasonSettlement] = useState<any>([]);
+
+
+  // useEffect(() => {
+  //   const getValues = async () => {
+  //   }
+  //   getValues();
+  // }, [])
+
   useEffect(() => {
-    const getValues = async () => {
-      let getFarms = await getFarm();
-      setFarm(getFarms);
+    const getData = async () => {
+
+      const getOptionBodyCondition =  getBodyCondition();
+      const getOptionWGE =  getWGE();
+      const getOptionAWG =  getAWG();
+      const getOptionStatus =  getStatusOwner();
+      const getOptionStatusTrasaction =  getStatusTransaction();
+      const getReasonSettlement =  getReasonSettlment();
+      const getFarms =  getFarm();
+
+      const getAllData = await Promise.all([ getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement, getFarms]);
+      setOptionBodyCondition(getAllData[0]);
+      setOptionWGE(getAllData[1]);
+      setOptionAWG(getAllData[2]);
+      setOptionStatusOwner(getAllData[3]);
+      setOptionStatusTransaction(getAllData[4]);
+      setOptionReasonSettlement(getAllData[5]);
+      setFarm(getAllData[6]);
     }
-    getValues();
+    getData();
   }, [])
 
 
@@ -168,9 +252,14 @@ const TableList: React.FC = () => {
         return (<>
           {text?.fair?.code}
           <br /> {moment(text?.fair?.dateEndFeed || text?.dateEndCoop).format('DD/MM/YYYY')}
-
-
         </>)
+      },
+      filters: optionFair,
+      onFilter: (value, record) => {
+        if(value === record?.fair?.id){
+          return record;
+        }
+        return null;
       }
     },
     {
@@ -186,10 +275,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         ;
         return (
-          <
-          >
+          <>
             {entity?.code}
-
           </>
 
         );
@@ -288,7 +375,6 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-        console.log(text?.colorBodyCondition);
         // switch (text?.bodyCondition) {
         //   case 'good':
         //     return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
@@ -305,37 +391,42 @@ const TableList: React.FC = () => {
         // }
         return (<Text style={{ color: text?.colorBodyCondition?.color || 'black' }}>{text?.colorBodyCondition?.name}</Text>);
       },
-      filters: true,
+      filters: optionBodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
+      // valueEnum: {
+      //   good: {
+      //     text: 'Tốt',
+      //     value: 'good'
+      //   },
+      //   malnourished: {
+      //     text: 'Suy dinh dưỡng',
+      //     value: 'malnourished'
+      //   },
+      //   weak: {
+      //     text: 'Yếu',
+      //     value: 'weak'
+      //   },
+      //   sick: {
+      //     text: 'Bệnh',
+      //     value: 'sick'
+      //   },
+      //   dead: {
+      //     text: 'Chết',
+      //     value: 'dead'
+      //   },
+      // },
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgePercent',
-      renderText: (_, text: any) => `${text?.wgePercent}%`
+      renderText: (_, text: any) => `${text?.wgePercent}%`,
+      filters: optionWGE,
+      onFilter: (value, record) => {
+        if(value === record?.colorWge?.id) return record;
+        return null;
+      }
     },
 
     {
@@ -343,7 +434,14 @@ const TableList: React.FC = () => {
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awgAvg',
-      renderText: (_, text: any) => text?.awgAvg
+      renderText: (_, text: any) => text?.awgAvg,
+      filters: optionAWG,
+      onFilter : (value, record)  => {
+        if(record.awg === value){
+          return record;
+        }
+        return null;
+      },
     },
 
     {
@@ -426,7 +524,15 @@ const TableList: React.FC = () => {
       key: 'statusOwner',
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorStatusOwner?.color || 'black' }}>{text?.colorStatusOwner?.name}</Text>);
-      }
+      },
+      filters: optionStatusOwner,
+      defaultFilteredValue: ['open'],
+      onFilter : (value, record)  => {
+        if(record.colorStatusOwner.value === value){
+          return record;
+        }
+        return null;
+      },
 
     },
 
@@ -439,7 +545,14 @@ const TableList: React.FC = () => {
         return (<>
           <Text style={{ color: text?.colorStatusTransaction?.color || 'black' }}>{text?.colorStatusTransaction?.name}</Text>
         </>);
-      }
+      },
+      filters: optionStatusTransaction,
+      onFilter : (value, record)  => {
+        if(record?.colorStatusTransaction?.value === value){
+          return record;
+        }
+        return null;
+      },
     },
 
     {
@@ -451,7 +564,14 @@ const TableList: React.FC = () => {
         return (<>
           <Text style={{ color: text?.colorSettlement?.color || 'black' }}>{text?.colorSettlement?.name}</Text>
         </>);
-      }
+      },
+      filters: optionReasonSettlement,
+      onFilter : (value, record)  => {
+        if(record?.colorSettlement?.value === value){
+          return record;
+        }
+        return null;
+      },
     },
 
 
@@ -469,7 +589,15 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        request={() => customAPIGet({}, 'c-passes/get/c-pass-mega')}
+        request={ async () => {
+          const data = await customAPIGet( {} , 'c-passes/get/c-pass-mega');
+          setOptionFair(data?.data?.fair);
+          return {
+            data: data?.data?.cPass,
+            success: true,
+            total: data?.data?.cPass.length || 0
+          };
+        }}
         columns={columns}
         // rowSelection={{
         //   onChange: (_, selectedRows: any) => {

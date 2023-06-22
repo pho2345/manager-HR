@@ -276,8 +276,6 @@ const TableList: React.FC = () => {
       filters: true,
       onFilter: true,
       valueEnum: (row) => {
-        let data = row?.status;
-        console.log('data', data);
         return {
           'noOpen': {
             text: 'Chưa mở',
@@ -300,7 +298,7 @@ const TableList: React.FC = () => {
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',
-      renderText: (_, text: any) => `${text?.unitPriceMeat}`
+      renderText: (_, text: any) => `${text?.unitPriceMeat.toLocaleString()}`
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
@@ -426,160 +424,6 @@ const TableList: React.FC = () => {
   ];
 
 
-  // const columnsDetail: ProColumns<any>[] = [
-  //   {
-  //     key: 'code',
-  //     dataIndex: 'code',
-  //     title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
-  //     render: (_, entity: any) => {
-  //       return (
-  //         <a
-  //           onClick={() => {
-  //             setCurrentRow(entity);
-  //             console.log('currentRow', currentRow);
-  //             setShowDetail(true);
-  //           }}
-  //         >
-  //           {entity?.code}
-
-  //         </a>
-
-
-  //       );
-  //     },
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
-  //     dataIndex: 'atrributes',
-  //     valueType: 'textarea',
-  //     key: 'timeStart',
-  //     renderText: (_, text) => {
-  //       const weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
-  //       return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-  //     }
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
-  //     dataIndex: 'atrributes',
-  //     valueType: 'textarea',
-  //     key: 'timeEnd',
-  //     renderText: (_, text: any) => {
-  //       const weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
-  //       return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-  //     }
-
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
-  //     dataIndex: 'dateStartFeed',
-  //     valueType: 'textarea',
-  //     key: 'dateStartFeed',
-  //     renderText: (_, text: any) => {
-  //       {
-  //         const weekday = 'T' + `${moment(text?.dateStartFeed).weekday() + 1}`;
-  //         return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-  //       }
-  //     }
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
-  //     dataIndex: 'timeFeed',
-  //     valueType: 'textarea',
-  //     key: 'timeFeed',
-  //     renderText: (_, text: any) => text?.timeFeed
-  //   },
-
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT Mega/PL' />,
-  //     dataIndex: 'plans',
-  //     valueType: 'dateRange',
-  //     key: 'plans',
-  //     render: (_, entity: any) => {
-  //       return (
-  //         <>
-  //           {entity.plans.map((e: any, index: number) => (
-  //             <React.Fragment key={index}>
-  //               <div> {e.name}-{e.profit}</div>
-  //             </React.Fragment>
-  //           ))}
-
-  //         </>
-  //       )
-  //     }
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
-  //     dataIndex: 'cPassPublished',
-  //     valueType: 'textarea',
-  //     key: 'cPassPublished',
-  //     renderText: (_, text: any) => `${text?.cPassPublished} / ${text?.quantitySellCpass}`
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />,
-  //     dataIndex: 'atrributes',
-  //     valueType: 'textarea',
-  //     key: 'status',
-  //     renderText: (_, text: any) => text?.status
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt' />,
-  //     dataIndex: 'unitPriceMeat',
-  //     valueType: 'textarea',
-  //     key: 'unitPriceMeat',
-  //     renderText: (_, text: any) => `${text?.unitPriceMeat}VNĐ`
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.nameFarm' defaultMessage='Tên trang trại' />,
-  //     dataIndex: 'nameFarm',
-  //     valueType: 'textarea',
-  //     key: 'nameFarm',
-  //     renderText: (_, text: any) => text?.nameFarm
-  //   },
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
-  //     dataIndex: 'cPass',
-  //     valueType: 'textarea',
-  //     key: 'cPass',
-  //     renderText: (_, text: any) => {
-  //       if (text?.c_passes.length !== 0) {
-  //         return (<>
-  //           <List
-  //             size="small"
-  //             bordered
-  //             dataSource={text.c_passes}
-  //             renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.code}`}</List.Item>}
-  //           />
-  //         </>)
-  //       }
-  //       return null;
-  //     }
-  //   },
-
-  //   {
-  //     title: <FormattedMessage id='pages.searchTable.column.plans' defaultMessage='PAHT' />,
-  //     dataIndex: 'nameFarm',
-  //     valueType: 'textarea',
-  //     key: 'nameFarm',
-  //     renderText: (_, text: any) => {
-  //       if (text?.plans.length !== 0) {
-  //         return (<>
-  //           <List
-  //             size="small"
-  //             bordered
-  //             dataSource={text.plans}
-  //             renderItem={(item: any, index: number) => <List.Item>{`${index + 1}. ${item?.name}- ${item.profit}%`}</List.Item>}
-  //           />
-  //         </>)
-  //       }
-  //       return null;
-  //     }
-  //   },
-
-
-
-
-  // ];
-
   return (
     <>
     <PageContainer>
@@ -588,7 +432,7 @@ const TableList: React.FC = () => {
         search={false}
         actionRef={actionRef}
         rowClassName={record => {
-          if (record.status !== 'Opening') {
+          if (record.status !== 'opening') {
             return 'disable'
           }
           return '';

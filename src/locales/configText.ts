@@ -599,9 +599,13 @@ export default {
     'page.configMega.modal.limitPlaformReceivSettlement' : 'Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần',
     'page.configMega.modal.cPassPLSellMega' : 'Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần',
     'page.configMega.modal.autoSettlement' : 'Thanh quyết toán do tăng trọng không đạt yêu cầu',
+    'page.configMega.modal.limitAlegerSellAle' : 'Số Ale tối đa 1 Aleger bán cho PL trong 1 tuần',
+    'page.configMega.modal.autoSettlementFeed' : 'Số tuần thanh quyết toán do không đạt hiệu quả',
+
 
 
     'page.config.columns.mail': '1. Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
+    'page.config.required.mail': 'Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
     'page.config.columns.limitAlegerSellAle': '2. Số Ale tối đa 1 Aleger bán cho PL trong 1 tuần',
     'page.config.columns.fee': '3. Phí giao dịch Ale với PL',
     'page.config.columns.infoAccountBank': '3. Thông tin tài khoản của PL',
@@ -635,6 +639,10 @@ export default {
     'page.address.fullname': 'Địa chỉ',
 
 
+    'page.rateAle.colums.rateAle' : 'Giá trị Ale (VNĐ)',
+    'page.rateAle.colums.rateProduceAleToAle' : 'Tỉ lệ ProduceAle/Ale',
+    'page.rateAle.colums.ratePromo' : 'Tỉ lệ ProduceAle/PromoAle',
+
     'page.managerAleCurrent.titleTable': 'Danh sách QRCode',
     'page.managerAleCurrent.columns.code': 'Mã',
     'page.managerAleCurrent.columns.ale': 'Ale',
@@ -666,15 +674,49 @@ export default {
     'page.wgs.slotTo'   : 'Slot trên',
 
 
+    'page.configDefault.column.timeSettlementMega': 'Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu',
+    'page.configDefault.column.percentSettlementMega': 'CPass Mega thanh quyết toán tối đa trong tuần(%)',
+    'page.configDefault.column.limitPlaformReceivSettlement': 'Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần',
+    'page.configDefault.column.cPassPLSellMega': 'Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần ',
+    'page.configDefault.column.autoSettlement': 'Tự động thanh quyết toán do tăng trọng không đạt yêu cầu',
+    'page.configDefault.column.autoSettlementFeed': 'Số tuần thanh quyết toán do không đạt hiệu quả',
+
+    'page.configWarning.column.quantityWeekAlarm': 'Số tuần báo động do nuôi không đạt hiệu quả',
+    'page.configDefault.column.quantityWeekWarning': 'Số tuần cảnh báo do nuôi không đạt hiệu quả',
+
+
+    'page.produceKindCode.column.code': 'Mã',
+    'page.produceKindCode.column.option': 'Loại',
+    'page.produceKindCode.column.valueAuto': 'Giá trị loại (Tự động)',
+    'page.produceKindCode.column.valueBasic': 'Giá trị loại (Cơ bản)',
+
+
+    'page.notifyEmail.columns.code': 'Mã',
+    'page.notifyEmail.columns.types': 'Loại',
+    'page.notifyEmail.columns.title': 'Tiêu đề',
+    'page.notifyEmail.columns.content': 'Nội dung',
+
+    'page.historyNotifyEmail.columns.code': 'Mã',
+    'page.historyNotifyEmail.columns.title': 'Tiêu đề',
+    'page.historyNotifyEmail.columns.aleger': 'Aleger',
+    'page.historyNotifyEmail.columns.createdAt': 'Thời gian',
+
+
+    'page.historyNotifyEmail.modal.aleger': 'Aleger',
+    'page.historyNotifyEmail.modal.createdAt': 'Thời gian',
+
+    'page.changeHintName.hintName': 'Tên gợi nhớ',
 
 
 
 
-
-
-
-
-
+    'page.feedback.title': 'Tiêu đề',
+    'page.feedback.content': 'Nội dung',
+    'page.feedback.aleger': 'Aleger',
+    'page.feedback.status': 'Trạng thái',
+    'page.feedback.image': 'Hình ảnh',
+    'page.feedback.createdAt': 'Ngày tạo',
+    'page.feedback.columns.status': 'Trạng thái',
 
 
 

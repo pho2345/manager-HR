@@ -1,5 +1,5 @@
-import { customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { ActionType, ProColumns, ProDescriptions, ProFormDigit, ProFormSelect, ProFormSwitch, ProTable } from '@ant-design/pro-components';
+import { customAPIGet, customAPIUpdate, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ActionType, ProColumns, ProDescriptions, ProFormDigit, ProFormSelect, ProTable } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
@@ -16,10 +16,10 @@ const configDefaultText = configText;
 import AccountBank from './components/TableListAccountBank';
 import EWallet from './components/TableListEWallet';
 import Address from './components/TableListAddress';
+import Ale from './components/TableListRateAle';
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
-  // console.log(fields);
   try {
     await customAPIUpdate({
       ...fields
@@ -34,6 +34,35 @@ const handleUpdate = async (fields: any, id: any) => {
     message.error('Cập nhật thất bại!');
     return false;
   }
+};
+
+
+const handleUpdateTabOne = async (fields: any, id: any, api: any) => {
+  try {
+    await customAPIUpdateMany({
+      ...fields
+    }, api, id);
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    message.error('Cập nhật thất bại!');
+    return false;
+  }
+};
+
+const formatter = (value: any) => {
+  if (value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  return '';
+};
+
+const parser = (value: any) => {
+  if (value) {
+    return value.replace(/\$\s?|(,*)/g, '');
+  }
+  return undefined;
 };
 
 
@@ -74,9 +103,7 @@ const TableList: React.FC = () => {
     //     ;
     //     return (
     //       <>
-
     //       </>
-
     //     );
     //   },
     // },
@@ -217,61 +244,7 @@ const TableList: React.FC = () => {
       dataIndex: 'limitAlegerSellAle',
       valueType: 'textarea',
       key: 'limitAlegerSellAle',
-      renderText: (_, text: any) => text?.limitAlegerSellAle
-    },
-    {
-      title: configDefaultText['page.config.columns.infoAccountBank'],
-      dataIndex: 'infoAccountBank',
-      valueType: 'textarea',
-      key: 'infoAccountBank',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.limitPlaformReceivSettlement}`
-      }
-    },
-    {
-      title: configDefaultText['page.config.columns.eWallet'],
-      dataIndex: 'eWallet',
-      valueType: 'textarea',
-      key: 'eWallet',
-      renderText: (_, text: any) => {
-        return `${text?.attributes?.cPassPLSellMega}`
-      }
-    },
-    {
-      title: configDefaultText['page.config.columns.addressOffice'],
-      dataIndex: 'addressOffice',
-      valueType: 'textarea',
-      key: 'addressOffice',
-      render: (_, text: any) => {
-        return (<span>{text?.addressOffice}</span>)
-      }
-    },
-    {
-      title: configDefaultText['page.config.columns.rateConvertion'],
-      dataIndex: 'rateConvertion',
-      valueType: 'textarea',
-      key: 'rateConvertion',
-      render: (_, text: any) => {
-        return (<span>{text?.rateAle}</span>)
-      }
-    },
-    {
-      title: configDefaultText['page.config.columns.rateProduceAle'],
-      dataIndex: 'rateConvertion',
-      valueType: 'textarea',
-      key: 'rateConvertion',
-      render: (_, text: any) => {
-        return (<span>{text?.rateProduceAleToAle}</span>)
-      }
-    },
-    {
-      title: configDefaultText['page.config.columns.rateProduce'],
-      dataIndex: 'rateProduce',
-      valueType: 'textarea',
-      key: 'rateProduce',
-      render: (_, text: any) => {
-        return (<span>{text?.ratePromo}</span>)
-      }
+      renderText: (_, text: any) => text?.limitAlegerSellAle.toLocaleString()
     },
 
     {
@@ -287,7 +260,7 @@ const TableList: React.FC = () => {
               handleUpdateModalOpen(true);
               setRowCurrent(entity?.id);
               form.setFieldsValue({
-                ...entity.attributes
+                ...entity
               })
             }}
           /></Tooltip>
@@ -306,6 +279,7 @@ const TableList: React.FC = () => {
           key: '1',
           children: (<>
             <ProDescriptions
+              actionRef={actionRef}
               column={2}
               columns={columns}
               request={async () => {
@@ -317,6 +291,13 @@ const TableList: React.FC = () => {
 
             </ProDescriptions></>)
 
+        },
+        {
+          tab: 'Tỉ lệ Ale',
+          key: '6',
+          children: (<>
+            <Ale />
+          </>)
         },
         {
           tab: 'Phí giao dịch',
@@ -363,16 +344,6 @@ const TableList: React.FC = () => {
               }
               columns={columnFee}
 
-
-            // tableAlertRender={({ selectedRowKeys }: any) => {
-            //   return renderTableAlert(selectedRowKeys);
-            // }}
-
-
-            // tableAlertOptionRender={({ selectedRows }: any) => {
-            //   return renderTableAlertOption(selectedRows)
-            // }}
-
             />
           </>)
 
@@ -399,14 +370,15 @@ const TableList: React.FC = () => {
             <Address />
           </>)
         },
+
       ]}
     >
 
       <ModalForm
-
         title='Cập nhật'
         open={updateModalOpen}
         form={form}
+
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -417,10 +389,26 @@ const TableList: React.FC = () => {
 
         submitTimeout={2000}
         onFinish={async (values: any) => {
-          const update = await handleUpdate(values, rowCurrent);
-          if (update) {
+          // const update = await handleUpdate(values, rowCurrent);
+          const hide = message.loading('Đang cập nhật...');
+          const updateEmail = handleUpdateTabOne({
+            data: {
+              emailPlaform: values?.emailPlaform
+            }
+          }, null, 'config-plaform');
+
+          const updateMega = handleUpdateTabOne({
+            data: {
+              limitAlegerSellAle: values?.limitAlegerSellAle
+            }
+          }, 1, 'config-default-megas');
+
+          const update = await Promise.all([updateEmail, updateMega]);
+          if (update.length === 2) {
+            message.success('Cập nhật thành công');
+            hide();
             handleUpdateModalOpen(false);
-            actionRef.current?.reloadAndRest?.();
+            actionRef.current?.reload();
           }
           return true;
         }}
@@ -442,82 +430,44 @@ const TableList: React.FC = () => {
       >
 
 
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormText
-              className='w-full'
-              name='timePaymentMegaS'
-              label={configDefaultText['page.configMega.modal.limitTimeBuyCPass']}
-              placeholder={configDefaultText['page.listCow.column.name']}
-              rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
-              ]}
-            />
-          </Col>
 
-          <Col span={12} className="gutter-row p-0">
 
-            <ProFormText
-              className='w-full'
-              name='timeSettlementMega'
-              label={configDefaultText['page.configMega.modal.limitTimeSettlement']}
-              placeholder={configDefaultText['page.listCow.column.name']}
-              rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
-              ]}
-            />
-          </Col>
-        </Row>
+
 
 
         <Row gutter={24} className="m-0">
           <Col span={12} className="gutter-row p-0" >
             <ProFormText
               className='w-full'
-              name='percentSettlementMega'
-              label={configDefaultText['page.configMega.modal.percentSettlementMega']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              name='emailPlaform'
+              label={configDefaultText['page.config.required.mail']}
+              placeholder={configDefaultText['page.config.required.mail']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.config.required.mail'] },
               ]}
             />
           </Col>
 
-          <Col span={12} className="gutter-row p-0">
-            <ProFormText
-              className='w-full'
-              name='limitPlaformReceivSettlement'
-              label={configDefaultText['page.configMega.modal.limitPlaformReceivSettlement']}
-              placeholder={configDefaultText['page.listCow.column.name']}
-              rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
-              ]}
-            />
-          </Col>
-        </Row>
-
-
-        <Row gutter={24} className="m-0">
           <Col span={12} className="gutter-row p-0" >
-            <ProFormText
+            <ProFormDigit
+              min={1}
               className='w-full'
-              name='cPassPLSellMega'
-              label={configDefaultText['page.configMega.modal.cPassPLSellMega']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              name='limitAlegerSellAle'
+              label={configDefaultText['page.configMega.modal.limitAlegerSellAle']}
+              placeholder={configDefaultText['page.configMega.modal.limitAlegerSellAle']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.limitAlegerSellAle'] },
               ]}
+              
+              fieldProps={{
+                formatter,
+                parser,
+              }}
             />
           </Col>
 
-          <Col span={12} className='gutter-row p-0'>
-            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
-          </Col>
         </Row>
 
       </ModalForm>
@@ -623,7 +573,7 @@ const TableList: React.FC = () => {
                   ]}
                   fieldProps={{
                     // onChange: (value) => {
-                    
+
                     // }
                   }}
                 />

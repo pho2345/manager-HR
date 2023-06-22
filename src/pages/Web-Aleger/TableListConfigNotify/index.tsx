@@ -5,11 +5,15 @@ import {
   PageContainer,
   ProFormText,
 } from '@ant-design/pro-components';
+import NotifyEmail from './components/TemplateNotifyEmail';
+import Notify from './components/TemplateNotify';
+import HistoryNotifyEmail from './components/HistoryNotifyEmail';
+import HistoryNotify from './components/HistoryNotify';
+import HistoryFeedback from './components/HistoryFeedback';
 
 import { Col, Form, message, Row } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import configText from '@/locales/configText';
-import { MdStarRate } from 'react-icons/md';
 const configDefaultText = configText;
 
 const handleUpdate = async (fields: any, id: any) => {
@@ -76,27 +80,48 @@ const TableList: React.FC = () => {
     <PageContainer
       tabList={[
         {
-          tab: 'Chi tiết',
+          tab: 'Template Thông báo email',
           key: '1',
           children: (<>
-            <span>{configDefaultText['page.aleger.rateProcudeAle']}</span><br /> &emsp;
-            <span>{configDefaultText['page.aleger.rateProcudeAleMega']}: {data?.rateMegaProduceAle}</span>
-            <br />
-            <br />
-            <span>{configDefaultText['page.aleger.customerCare']}</span> <br /> &emsp;
-            <MdStarRate /><span>{configDefaultText['page.aleger.customerCare.hotline']}:  {data?.hotline}</span> <br /> &emsp;
-            <MdStarRate /><span>{configDefaultText['page.aleger.customerCare.zalo']}:  {data?.zalo}</span> <br /> &emsp;
-            <MdStarRate /><span>{configDefaultText['page.aleger.customerCare.email']}:  {data?.email}</span> <br /> &emsp;
+                <NotifyEmail />
           </>)
-
         },
 
+        {
+          tab: 'Template Thông báo',
+          key: '2',
+          children: (<>
+                <Notify />
+          </>)
+        },
+
+        {
+          tab: 'Lịch sử thông báo mail',
+          key: '3',
+          children: (<>
+                <HistoryNotifyEmail />
+          </>)
+        },
+
+        {
+          tab: 'Lịch sử thông báo',
+          key: '4',
+          children: (<>
+                <HistoryNotify />
+          </>)
+        },
+
+        {
+          tab: 'Lịch sử phản hồi',
+          key: '5',
+          children: (<>
+                <HistoryFeedback />
+          </>)
+        },
 
       ]}
     >
-
       <ModalForm
-
         title='Cập nhật'
         open={updateModalOpen}
         form={form}

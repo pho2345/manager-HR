@@ -96,6 +96,8 @@ export default [
       { path: '/web-aleger/status-owner', name: 'Tình trạng sở hữu Mega', component: './Web-Aleger/TableListStatusOwner' },
       { path: '/web-aleger/config-mega', name: 'Cài đặt Mega', component: './Web-Aleger/TableConfigMega' },
       { path: '/web-aleger/config', name: 'Cài đặt chung', component: './Web-Aleger/TableListConfig' },
+      { path: '/web-aleger/config-warning', name: 'Cài đặt đo lường lường cảnh báo', component: './Web-Aleger/TableConfigWarning' },
+      { path: '/web-aleger/notify', name: 'Thông báo', component: './Web-Aleger/TableListConfigNotify' },
     ],
   },
 
@@ -114,6 +116,7 @@ export default [
       { path: '/agrios/config',hideInMenu: false,  name: 'Cấu hình chung', component: './AgriOS/TableListConfig' },
       { path: '/agrios/dashboard',hideInMenu: false,  name: 'Dashboard', component: './AgriOS/TableListDashboard' },
       { path: '/agrios/ale',hideInMenu: false,  name: 'Ale', component: './AgriOS/TableListAle' },
+      { path: '/agrios/product-kind-code',hideInMenu: false,  name: 'Chủng loại sản phẩm', component: './AgriOS/TableListProductKindCode' },
     ],
   },
   {

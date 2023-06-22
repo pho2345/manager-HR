@@ -40,7 +40,7 @@ const TableList: React.FC = () => {
   const [rowCurrent, setRowCurrent] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm<any>();
-
+  
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
@@ -63,14 +63,16 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.configMega.timeSettlementMega' defaultMessage='Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu' />,
+      // title: <FormattedMessage id='pages.configMega.timeSettlementMega' defaultMessage='Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu' />,
+      title: configDefaultText['page.configDefault.column.timeSettlementMega'],
       dataIndex: 'timeSettlementMega',
       valueType: 'textarea',
       key: 'timeSettlementMega',
       renderText: (_, text: any) => text?.attributes?.timeSettlementMega
     },
     {
-      title: <FormattedMessage id='pages.configMega.percentSettlementMega' defaultMessage='CPass Mega thanh quyết toán tối đa trong tuần(%)' />,
+      // title: <FormattedMessage id='pages.configMega.percentSettlementMega' defaultMessage='CPass Mega thanh quyết toán tối đa trong tuần(%)' />,
+      title: configDefaultText['page.configDefault.column.percentSettlementMega'],
       dataIndex: 'percentSettlementMega',
       valueType: 'textarea',
       key: 'percentSettlementMega',
@@ -79,7 +81,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
+      // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
+      title: configDefaultText['page.configDefault.column.limitPlaformReceivSettlement'],
       dataIndex: 'limitPlaformReceivSettlement',
       valueType: 'textarea',
       key: 'limitPlaformReceivSettlement',
@@ -88,7 +91,9 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần ' />,
+      // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
+      title: configDefaultText['page.configDefault.column.cPassPLSellMega'],
+
       dataIndex: 'cPassPLSellMega',
       valueType: 'textarea',
       key: 'cPassPLSellMega',
@@ -97,7 +102,8 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />,
+      // title: <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />,
+      title: configDefaultText['page.configDefault.column.autoSettlement'],
       dataIndex: 'autoSettlement',
       valueType: 'textarea',
       key: 'autoSettlement',
@@ -105,6 +111,17 @@ const TableList: React.FC = () => {
         return (<><ProFormSwitch disabled fieldProps={{
           checked: text?.attributes?.autoSettlement,
         }} /></>)
+      }
+    },
+
+    {
+      // title: <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />,
+      title: configDefaultText['page.configDefault.column.autoSettlementFeed'],
+      dataIndex: 'autoSettlement',
+      valueType: 'textarea',
+      key: 'autoSettlement',
+      render: (_, text: any) => {
+        return (<>{text?.attributes?.autoSettlementFeed}</>)
       }
     },
     {
@@ -210,10 +227,10 @@ const TableList: React.FC = () => {
               className='w-full'
               name='timePaymentMegaS'
               label={configDefaultText['page.configMega.modal.limitTimeBuyCPass']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              placeholder={configDefaultText['page.configMega.modal.limitTimeBuyCPass']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.limitTimeBuyCPass'] },
               ]}
             />
           </Col>
@@ -224,10 +241,10 @@ const TableList: React.FC = () => {
               className='w-full'
               name='timeSettlementMega'
               label={configDefaultText['page.configMega.modal.limitTimeSettlement']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              placeholder={configDefaultText['page.configMega.modal.limitTimeSettlement']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.limitTimeSettlement'] },
               ]}
             />
           </Col>
@@ -240,10 +257,10 @@ const TableList: React.FC = () => {
               className='w-full'
               name='percentSettlementMega'
               label={configDefaultText['page.configMega.modal.percentSettlementMega']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              placeholder={configDefaultText['page.configMega.modal.percentSettlementMega']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.percentSettlementMega'] },
               ]}
             />
           </Col>
@@ -253,10 +270,10 @@ const TableList: React.FC = () => {
               className='w-full'
               name='limitPlaformReceivSettlement'
               label={configDefaultText['page.configMega.modal.limitPlaformReceivSettlement']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              placeholder={configDefaultText['page.configMega.modal.limitPlaformReceivSettlement']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.limitPlaformReceivSettlement'] },
               ]}
             />
           </Col>
@@ -269,17 +286,36 @@ const TableList: React.FC = () => {
               className='w-full'
               name='cPassPLSellMega'
               label={configDefaultText['page.configMega.modal.cPassPLSellMega']}
-              placeholder={configDefaultText['page.listCow.column.name']}
+              placeholder={configDefaultText['page.configMega.modal.cPassPLSellMega']}
               rules={[
                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.listCow.required.name'] },
+                { required: true, message: configDefaultText['page.configMega.modal.cPassPLSellMega'] },
               ]}
             />
           </Col>
 
           <Col span={12} className='gutter-row p-0'>
-            <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
+            <ProFormSwitch name='autoSettlement' label='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />
           </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={12} className="gutter-row p-0" >
+            <ProFormText
+              className='w-full'
+              name='autoSettlementFeed'
+              label={configDefaultText['page.configMega.modal.autoSettlementFeed']}
+              placeholder={configDefaultText['page.configMega.modal.autoSettlementFeed']}
+              rules={[
+                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
+                { required: true, message: configDefaultText['page.configMega.modal.autoSettlementFeed'] },
+              ]}
+            />
+          </Col>
+
+          {/* <Col span={12} className='gutter-row p-0'>
+            <ProFormSwitch name='autoSettlement' label='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />
+          </Col> */}
         </Row>
 
       </ModalForm>

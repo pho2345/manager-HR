@@ -127,7 +127,8 @@ const TableList: React.FC = () => {
         // }, api, id);
         await handleRemove(entity);
         if (actionRef.current) {
-          actionRef.current.reload();
+          actionRef.current?.reloadAndRest?.();
+
         }
       }
     });
@@ -345,42 +346,7 @@ const TableList: React.FC = () => {
               }
               }
             /></Tooltip>
-
-
-
-            {
-              // entity.active ? (<Tooltip title={configDefaultText['page.listGroupCow.inActive']}>< CloseCircleOutlined
-              //   style={{
-              //     paddingLeft: 10
-              //   }}
-              //   onClick={async () => {
-              //     await handleUpdate({
-              //       active: !entity.active
-              //     }, 'group-cows/update', entity.id);
-              //     if (actionRef.current) {
-              //       actionRef.current.reload();
-              //     }
-              //   }}
-
-              // /></Tooltip>) :
-              //   (<Tooltip title={configDefaultText['page.listGroupCow.active']}><SafetyOutlined
-              //     style={{
-              //       paddingLeft: 10
-              //     }}
-              //     onClick={async () => {
-              //       await handleUpdate({
-              //         active: !entity.active
-              //       }, 'group-cows/update', entity.id);
-              //       if (actionRef.current) {
-              //         actionRef.current.reload();
-              //       }
-              //     }}
-
-              //   /></Tooltip>
-              //   )
-
-            }
-
+          
           </>
         );
       },
@@ -430,7 +396,6 @@ const TableList: React.FC = () => {
 
         rowClassName={
           (entity) => {
-            console.log(entity)
             if (entity.active) {
               return ''
             }
@@ -466,44 +431,8 @@ const TableList: React.FC = () => {
         tableAlertOptionRender={({ selectedRows }: any) => {
           return renderTableAlertOption(selectedRows)
         }}
-
-
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
-
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
-        //         await confirm(selectedRowsState as any, 'xóa', actionRef);
-        //         setSelectedRows([]);
-
-        //         await actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {/* <FormattedMessage
-        //         id='pages.searchTable.batchDeletion'
-        //         defaultMessage='Batch deletion'
-        //       /> */}
-        //       {configDefaultText['delete']}
-        //     </Button>
-        //   </FooterToolbar>
-        // )
-      }
-
+  
       <ModalForm
         title={configDefaultText['page.listGroupCow.newGroup']}
         open={createModalOpen}
@@ -531,15 +460,7 @@ const TableList: React.FC = () => {
           return true;
         }}
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
           },
@@ -554,12 +475,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listGroupCow.required.farm']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.groupCow.required.farm'
-                  //     defaultMessage='Trang trại'
-                  //   />
-                  // ),
                 },
               ]} />
           </Col>
@@ -574,12 +489,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listGroupCow.required.name']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.groupCow.required.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]} />
           </Col>
@@ -637,24 +546,11 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           const success = await handleUpdate(values as any, 'group-cows/update', refIdCow?.current as any);
 
-          console.log('aaa', a);
-
           if (success) {
-            if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
-              console.log('refIdPicture', refIdPicture.current);
-              if (refIdPicture.current !== null) {
-                const deletePicture = refIdPicture?.current.map((e: any) => {
-                  return customAPIDelete(e as any, 'upload/files');
-                })
-                await Promise.all(deletePicture);
-              }
-
-            }
-
             handleUpdateModalOpen(false);
             form.resetFields();
             if (actionRef.current) {
-              actionRef.current.reload();
+              actionRef.current?.reloadAndRest?.();
               refIdPicture.current = null;
             }
           }

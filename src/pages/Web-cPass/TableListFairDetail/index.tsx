@@ -1,6 +1,6 @@
 import { customAPIDowload, customAPIDowloadPDF, customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, SearchOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
 
   ProTable,
@@ -11,7 +11,7 @@ import { Button, Checkbox, Dropdown, Input, List, Menu, message, Modal, Space, T
 import React, { useRef, useState } from 'react';
 const { Text, } = Typography;
 import moment from 'moment';
-import "./styles.css";
+import './styles.css';
 import DetailUser from '@/pages/components/DetailUser';
 import DetailCPass from '@/pages/components/DetailCPass';
 import TableListAssignCPass from '../TableListAssignCPass';
@@ -50,6 +50,17 @@ const TableListFairDetail: React.FC = () => {
   const [fair, setFair] = useState<any>();
   const searchInput = useRef(null);
   const params = useParams();
+
+  // const searchInputRange = useRef<any>(null);
+  const optionRange = useRef<any>(null);
+
+
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+
+  const [ searchRange, setSearchRange] = useState<any>();
+  const [ searchRangeTo, setSearchRangeTo] = useState<any>();
+  const [ optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
 
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
@@ -150,6 +161,177 @@ const TableListFairDetail: React.FC = () => {
         // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
+    // render: (text: any) =>{
+    // }
+  });
+
+
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+
+    //setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
+   
+  };
+  const handleResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    //setSearchText('');
+    confirm({
+      closeDropdown: false,
+    });
+  };
+
+
+  const getColumnSearchRange = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <ProFormDigit
+          // allowClear={true}
+          placeholder={`Cân nặng ${showRangeTo ? `từ` : ``}`}
+          fieldProps={{
+            onChange: (e: any) => {
+              console.log(e);
+              setSearchRange(e);
+              // setSelectedKeys([e.target.value])
+            }
+          }}
+          // onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        {
+          showRangeTo && (<ProFormDigit
+            // allowClear={true}
+            placeholder={`Cân nặng đến`}
+            fieldProps={{
+              onChange: (e: any) => {
+                console.log(e);
+                setSearchRangeTo(e);
+                // setSelectedKeys([e.target.value])
+              }
+            }}
+            // onPressEnter={() => handleSearch(selectedKeys, confirm)}
+            style={{
+              marginBottom: 8,
+              display: 'block',
+            }}
+          />)
+        }
+        <ProFormSelect
+          options={[
+            {
+              value: 'lesser',
+              label: 'Nhỏ hơn'
+            },
+            {
+              value: 'greater',
+              label: 'Lớn hơn'
+            },
+            {
+              value: 'range',
+              label: 'Khoảng'
+            }
+          ]}
+          fieldProps={{
+            onChange: (value) => {
+              console.log('onchangeValue', value);
+              if(value === 'range'){
+                setOptionRangeSearch(value);
+                setShowRangeTo(true);
+              }
+              else {
+                setShowRangeTo(false);
+                setOptionRangeSearch(value);
+              }
+            },
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              console.log(optionRangeSearch);
+              if(optionRangeSearch !== 'range'){
+                console.log('vao tren')
+
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange])])
+              }
+              else {
+                console.log('vao dưới')
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange, searchRangeTo])])
+              }
+
+
+              handleSearchRange(selectedKeys, confirm);
+              // confirm()\
+             
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      // console.log(value);
+      if(typeof value === 'string'){
+        const convertValue = JSON.parse(value);
+        if(convertValue[0] === 'lesser'){
+          if(record.pZero < convertValue[1]){
+            return record;
+          }
+        }
+        else if(convertValue[0] === 'greater') {
+          if(record.pZero > convertValue[1]){
+            return record;
+          }
+        }
+        else {
+          if(record.pZero >=  convertValue[1] && record.pZero <= convertValue[2]){
+            return record
+          }
+        }
+      }
+      return null;
+    }
+    ,
+    // onFilterDropdownOpenChange: (visible: any) => {
+    //   if (visible) {
+    //     // setTimeout(() => searchInput.current?.select(), 100);
+    //   }
+    // },
+   
     // render: (text: any) =>{
     // }
   });
@@ -256,7 +438,8 @@ const TableListFairDetail: React.FC = () => {
       key: 'pZero',
       renderText: (_, text: any) => {
         return text?.pZero;
-      }
+      },
+      ...getColumnSearchRange('pZero')
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs (VNĐ)' />,

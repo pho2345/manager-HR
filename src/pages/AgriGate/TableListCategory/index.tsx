@@ -331,6 +331,7 @@ const TableList: React.FC = () => {
           // },
 
         }}
+        
 
         tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
@@ -378,6 +379,7 @@ const TableList: React.FC = () => {
         title={configDefaultText['page.listCategory.createModal']}
         width={'30vh'}
 
+      
         open={createModalOpen}
         modalProps={{
           destroyOnClose: true,
@@ -410,6 +412,7 @@ const TableList: React.FC = () => {
             submitText: configDefaultText['buttonAdd'],
           },
         }}
+        
       >
 
 

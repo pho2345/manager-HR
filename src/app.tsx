@@ -10,6 +10,7 @@ import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import React from 'react';
 import { ConfigProvider } from 'antd';
+import Page403 from '@/pages/403';
 import viVNIntl from 'antd/lib/locale/vi_VN';
 
 //const isDev = process.env.NODE_ENV === 'development';
@@ -53,7 +54,7 @@ export async function getInitialState(): Promise<{
 }
 
 
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }: any) => {
   return {
     rightContentRender: () => <RightContent />,
     waterMarkProps: {
@@ -67,6 +68,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         history.push(loginPath);
       }
     },
+    unAccessible:  <Page403 />,
     layoutBgImgList: [
       {
         src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
@@ -111,7 +113,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ...initialState?.settings,
   };
 };
-
+console.log('errorConfig', errorConfig);
 
 export const request = {
   ...errorConfig,

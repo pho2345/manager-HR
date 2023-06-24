@@ -6,7 +6,7 @@ import {
   customAPIGetOne,
 
 } from '@/services/ant-design-pro/api';
-import {  ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -21,7 +21,8 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
-import React, {  Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import './styles.css';
 
 import { MdOutlineEdit } from 'react-icons/md';
 // import viVNIntl from 'antd/lib/locale/vi_VN';  
@@ -113,6 +114,25 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [farm, setFarm] = useState<any>();
 
+  const confirm = (entity: any) => {
+    Modal.confirm({
+      title: configDefaultText['titleConfirm'],
+      icon: <ExclamationCircleOutlined />,
+      content: configDefaultText['textConfirmDelete'],
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+        // await handleUpdateMany({
+        //   cPass: [entity.id]
+        // }, api, id);
+        await handleRemove(entity);
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+      }
+    });
+  };
+
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     //setSearchText(selectedKeys[0]);
@@ -120,25 +140,8 @@ const TableList: React.FC = () => {
     //console.log('selectedKeys',selectedKeys[0] );
   };
 
-  
-const confirm = (entity: any) => {
-  Modal.confirm({
-    title: configDefaultText['titleConfirm'],
-    icon: <ExclamationCircleOutlined />,
-    content: configDefaultText['textConfirmDelete'],
-    okText: 'Có',
-    cancelText: 'Không',
-    onOk: async () => {
-      // await handleUpdateMany({
-      //   cPass: [entity.id]
-      // }, api, id);
-      await handleRemove(entity);
-      if (actionRef.current) {
-        actionRef.current.reload();
-      }
-    }
-  });
-};
+
+
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     // setSearchText('');
@@ -230,10 +233,10 @@ const confirm = (entity: any) => {
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-     
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
+
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
@@ -242,7 +245,7 @@ const confirm = (entity: any) => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
+          <Button onClick={async () => {
             //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
             //actionRef.current?.reloadAndRest?.();
@@ -334,6 +337,7 @@ const confirm = (entity: any) => {
                 handleUpdateModalOpen(true);
                 refIdCow.current = entity.id;
                 const cow = await customAPIGetOne(entity.id, 'group-cows/find-admin', {});
+
                 form.setFieldsValue({
                   ...cow
                 });
@@ -374,8 +378,8 @@ const confirm = (entity: any) => {
 
               //   /></Tooltip>
               //   )
-                
-                }
+
+            }
 
           </>
         );
@@ -424,6 +428,18 @@ const confirm = (entity: any) => {
           }]
         }}
 
+        rowClassName={
+          (entity) => {
+            console.log(entity)
+            if (entity.active) {
+              return ''
+            }
+            else {
+              return `disable`
+            }
+          }
+        }
+
         columns={columns}
 
         rowSelection={{
@@ -442,50 +458,50 @@ const confirm = (entity: any) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-        tableAlertRender={({selectedRowKeys}: any) => {
+        tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
 
 
-        tableAlertOptionRender={({  selectedRows}: any) => {
-         return renderTableAlertOption(selectedRows)
+        tableAlertOptionRender={({ selectedRows }: any) => {
+          return renderTableAlertOption(selectedRows)
         }}
 
-        
+
       />
       {
-      // selectedRowsState?.length > 0 && (
-      //   <FooterToolbar
-      //     extra={
-      //       <div>
-      //         {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         <FormattedMessage id='pages.searchTable.item' defaultMessage='Item' /> */}
 
-      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-      //         {`${configDefaultText['chosen']} `}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-      //         {configDefaultText['selectedItem']}
-      //       </div>
-      //     }
-      //   >
-      //     <Button
-      //       onClick={async () => {
-      //         await confirm(selectedRowsState as any, 'xóa', actionRef);
-      //         setSelectedRows([]);
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
+        //         await confirm(selectedRowsState as any, 'xóa', actionRef);
+        //         setSelectedRows([]);
 
-      //         await actionRef.current?.reloadAndRest?.();
-      //       }}
-      //     >
-      //       {/* <FormattedMessage
-      //         id='pages.searchTable.batchDeletion'
-      //         defaultMessage='Batch deletion'
-      //       /> */}
-      //       {configDefaultText['delete']}
-      //     </Button>
-      //   </FooterToolbar>
-      // )
+        //         await actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {/* <FormattedMessage
+        //         id='pages.searchTable.batchDeletion'
+        //         defaultMessage='Batch deletion'
+        //       /> */}
+        //       {configDefaultText['delete']}
+        //     </Button>
+        //   </FooterToolbar>
+        // )
       }
 
       <ModalForm
@@ -621,6 +637,7 @@ const confirm = (entity: any) => {
         onFinish={async (values) => {
           const success = await handleUpdate(values as any, 'group-cows/update', refIdCow?.current as any);
 
+          console.log('aaa', a);
 
           if (success) {
             if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {

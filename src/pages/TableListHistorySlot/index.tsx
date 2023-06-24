@@ -35,6 +35,8 @@ const TableList: React.FC = () => {
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
+  const [cPass, setCPass] = useState<any>();
+
 
   // useEffect(() => {
   //   const fetchDataCPass = async () => {
@@ -142,15 +144,15 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={(<>cPass:
+        headerTitle={(<>cPass: 
           <a
             onClick={() => {
 
-              // setCurrentRow(cPass?.id);
-              // setShowDetail(true);
+              setCurrentRow(params?.id);
+              setShowDetail(true);
             }}
           >
-            {/* {cPass?.attributes?.code} */}
+            {cPass}
           </a>
 
 
@@ -164,8 +166,10 @@ const TableList: React.FC = () => {
             fair: searchParams.get('fair'),
             history: searchParams.get('history')
           });
+
+          setCPass(data.cPass)
           return {
-            data: data,
+            data: data.slot,
             success: true,
             total: data?.length
           }

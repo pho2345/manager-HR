@@ -1,8 +1,10 @@
 import DetailUser from '@/pages/components/DetailUser';
 import {
+  customAPIDowload,
+  customAPIDowloadPDF,
   customAPIGet, customAPIUpdateMany,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ModalForm,
@@ -462,9 +464,30 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        toolBarRender={() => [
+        toolBarRender={() => {
+          return [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('transactions/wait-confirm-ale/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
 
-        ]}
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('transactions/wait-confirm-ale/pdf');
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
+          ]
+        }}
         request={async () => {
           const data = await customAPIGet(
             {
@@ -534,38 +557,12 @@ const TableList: React.FC = () => {
         tableAlertOptionRender={({ selectedRows }: any) => {
           return renderTableAlertOption(selectedRows)
         }}
-
+        
+        
       />
 
 
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
-        //         //await handleRemove(selectedRowsState);
-        //         setShowModal(true);
-        //         //setSelectedRows([]);
-        //         //actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['page.confirm.column.implement']}
-        //     </Button>
-
-        //   </FooterToolbar>
-        // )
-      }
+     
 
 
       <ModalForm

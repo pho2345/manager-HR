@@ -5,12 +5,12 @@ import { customAPIGetFileSlotChart, customAPIPost } from '@/services/ant-design-
 import moment from 'moment';
 import { Button } from 'antd';
 import configText from '@/locales/configText';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ConsoleSqlOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 const configDefaultText = configText;
 
 const DemoLine = (props: any) => {
-    const [data, setData] = useState([]);
-    const [slot, setSlot] = useState([]);
+    const [data, setData] = useState<any>([]);
+    // const [slot, setSlot] = useState<any>([]);
 
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -22,7 +22,7 @@ const DemoLine = (props: any) => {
         });
         // console.log('getSlot', getSlot);
         setData(getSlot?.data?.chart);
-        setSlot(getSlot?.data?.slots);
+        // setSlot(getSlot?.data?.slots);
 
         // setSlots(getSlot?.data?.slots);
     };
@@ -64,16 +64,21 @@ const DemoLine = (props: any) => {
             shared: true,
             customItems: (originalItems: any) => {
                 // process originalItems, 
+                console.log(originalItems);
                 const data = originalItems.map((e: any) => {
                     return {
                         ...e,
-                        title: e?.data?.owner?.id ? `${e?.data?.owner?.fullname ? e?.data?.owner?.fullname : e?.data?.owner?.username} - ${e?.data?.owner?.id}` : `PLAFORM`
+                        title: e?.data?.owner?.id ? `${e?.data?.owner?.fullname ? e?.data?.owner?.fullname : e?.data?.owner?.username} - ${e?.data?.owner?.id}` : `PLAFORM`,
                     }
                 })
                 return data;
             },
             customContent: (x: any, data: any) => {
-                let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}@S${x}- ${moment().add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')} </div>
+                // console.log(slot);
+               
+                console.log(data);
+               
+                let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}@S${x}- ${moment(data[0]?.data?.dateWeight).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')} </div>
                 <ul class="g2-tooltip-list" style="margin: 0px; list-style-type: none; padding: 0px;">`;
                 for (let i = 0; i < data.length; i++) {
                     let e = data[i];

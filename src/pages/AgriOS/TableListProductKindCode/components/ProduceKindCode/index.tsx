@@ -17,7 +17,7 @@ const configDefaultText = configText;
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('Đang thêm...');
   try {
-    await customAPIAdd({ ...fields }, 'qr-ales/create');
+    await customAPIAdd({ ...fields }, 'product-kind-codes');
     hide();
     message.success('Thêm thành công');
     return true;
@@ -37,7 +37,7 @@ const handleUpdate = async (fields: any, id: any) => {
   try {
     await customAPIUpdate({
       ...fields
-    }, 'qr-ales', id.current);
+    }, 'product-kind-codes', id.current);
     hide();
 
     message.success('Cập nhật thành công');

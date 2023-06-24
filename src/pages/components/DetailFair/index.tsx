@@ -2,10 +2,13 @@
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PageContainer, ProColumns, ProDescriptions } from '@ant-design/pro-components';
 import {  Link,  } from '@umijs/max';
-import { Button, Drawer, Switch,  } from 'antd';
+import { Button, Drawer, 
+ // Switch  
+} from 'antd';
 import moment from 'moment';
 import React, {  } from 'react';
 import configText from '@/locales/configText';
+import Mega from './components/Mega';
 const configDefaultText = configText;
 
 
@@ -68,18 +71,17 @@ const TableList = (props: any) => {
 
 
 
-    {
-      //  title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
-      title: configDefaultText['page.DetailFair.column.switchNotify'],
-      dataIndex: 'switchNotify',
-      valueType: 'textarea',
-      key: 'switchNotify',
-      render: (_, text: any) => <Switch />
-    },
+    // {
+    //   //  title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
+    //   title: configDefaultText['page.DetailFair.column.switchNotify'],
+    //   dataIndex: 'switchNotify',
+    //   valueType: 'textarea',
+    //   key: 'switchNotify',
+    //   render: (_, text: any) => <Switch />
+    // },
 
     {
-      //  title: <FormattedMessage id='pages.searchTable.column.listCPass' defaultMessage='Switch nhắc thanh toán:' />,
-      // title: configDefaultText['page.DetailFair.column.listCPass'],
+      
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',
@@ -230,13 +232,16 @@ const TableList = (props: any) => {
                 columns: columnsDetailCPass, 
                 fairId: props?.fairId
               })
-              
             },
-            
+            {
+              tab: 'Mega',
+              key: '3',
+              children: <Mega
+                fairId = {props?.fairId}
+              />
+            },
           ]}
         >
-          
-
         </PageContainer>
       </Drawer>
     </>

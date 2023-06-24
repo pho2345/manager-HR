@@ -718,6 +718,19 @@ export default {
     'page.feedback.createdAt': 'Ngày tạo',
     'page.feedback.columns.status': 'Trạng thái',
 
+    'page.detailFair.mega.plan.name': 'Tên', 
+    'page.detailFair.mega.plan.profit': 'Lợi nhuận (%)', 
+
+    'page.detailFair.mega.agw.category': 'Giống', 
+    'page.detailFair.mega.agw.agw': 'Phân loại', 
+    'page.detailFair.mega.agw.rangAwg': 'Khoảng TTTB', 
+    'page.detailFair.mega.agw.rangePZero': 'P0', 
+
+    'page.detailFair.mega.wgs.category': 'Giống', 
+    'page.detailFair.mega.wgs.rangePZero': 'P0', 
+    'page.detailFair.mega.wgs.slot': 'Khoảng Slot', 
+
+    
 
 
 

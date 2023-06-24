@@ -127,7 +127,6 @@ const TableListAssignCPass = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      console.log(record);
       if (record[dataIndex] && record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
@@ -198,13 +197,8 @@ const TableListAssignCPass = () => {
       render: (_, entity: any) => {
         return (
           <>
-            <a
-              onClick={() => {
-                setCurrentRowUser(entity?.id);
-                //setShowDetailUser(true);
-              }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            <br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
@@ -303,50 +297,94 @@ const TableListAssignCPass = () => {
   ];
 
 
-  const handleFeeTransaction = (value: number) => {
-    let rateFee;
-    for (let i = 0; i < rateConvert.feeTransaction.length; i++) {
-      let e = rateConvert.feeTransaction[i];
+  const handleFeeTransaction = (value: number, type: string) => {
+    if (type === 'ale') {
+      let rateFee;
+      for (let i = 0; i < rateConvert.feeTransaction.length; i++) {
+        let e = rateConvert.feeTransaction[i];
 
-      if (value > e?.rangeFrom && value < e?.rangeTo && e?.rangeFrom === 0 && e?.typeValue === 'lesser') {
-        rateFee = e;
-        break;
+        if (value > e?.rangeFrom && value < e?.rangeTo && e?.rangeFrom === 0 && e?.typeValue === 'lesser') {
+          rateFee = e;
+          break;
+        }
+
+        if (value >= e?.rangeFrom && value <= e?.rangeTo && e?.typeValue === 'range') {
+          rateFee = e;
+          break;
+        }
+
+        if (value > e?.rangeFrom && e?.rangeTo === 0 && e?.typeValue === 'greater') {
+          rateFee = e;
+          break;
+        }
       }
 
-      if (value >= e?.rangeFrom && value <= e?.rangeTo && e?.typeValue === 'range') {
-        rateFee = e;
-        break;
-      }
+      let priceVnd = 0, fee;
 
-      if (value > e?.rangeFrom && e?.rangeTo === 0 && e?.typeValue === 'greater') {
-        rateFee = e;
-        break;
+      switch (rateFee.types) {
+        case 'free':
+          fee = 0;
+          priceVnd = rateConvert?.rateAle * value;
+          break;
+        case 'cash':
+          priceVnd = rateConvert?.rateAle * value - rateFee.valueFee;
+          fee = rateFee.valueFee;
+          break;
+        case 'percent':
+          priceVnd = rateConvert?.rateAle * value;
+          fee = (priceVnd * rateFee.valueFee / 100);
+          // fee = (priceVnd * rateFee.valueFee / 100);
+          priceVnd = priceVnd - fee;
+          break;
+        default:
+          break;
       }
+      // console.log(rateFee);
+      form.setFieldValue('fee', fee);
+      return priceVnd;
     }
+    else {
+      let rateFee, ale, fee = 0;
+      for (let i = 0; i < rateConvert.feeTransaction.length; i++) {
+        let e = rateConvert.feeTransaction[i];
 
-    let priceVnd = 0, fee;
-    console.log('rateFee', rateFee);
+        if (value > e?.rangeFrom * rateConvert.rateAle && value < e?.rangeTo * rateConvert.rateAle && e?.rangeFrom === 0 && e?.typeValue === 'lesser') {
+          rateFee = e;
+          break;
+        }
 
-    switch (rateFee.types) {
-      case 'free':
-        fee = 0;
-        priceVnd = rateConvert?.rateAle * value;
-        break;
-      case 'cash':
-        priceVnd = rateConvert?.rateAle * value - rateFee.valueFee;
+        if (value >= e?.rangeFrom * rateConvert.rateAle && value <= e?.rangeTo * rateConvert.rateAle && e?.typeValue === 'range') {
+          rateFee = e;
+          break;
+        }
+
+        if (value > e?.rangeFrom * rateConvert.rateAle && e?.rangeTo === 0 && e?.typeValue === 'greater') {
+          rateFee = e;
+          break;
+        }
+      }
+
+
+      if (rateFee?.typeValue === 'lesser') {
+        ale = parseFloat((value / rateConvert.rateAle).toFixed(2));
+
+      }
+      else if (rateFee?.typeValue === 'range') {
         fee = rateFee.valueFee;
-        break;
-      case 'percent':
-        priceVnd = rateConvert?.rateAle * value;
-        fee = Math.round((priceVnd * rateFee.valueFee / 100) / 1000) * 1000;
-        // fee = (priceVnd * rateFee.valueFee / 100);
-        priceVnd = priceVnd - fee;
-        break;
-      default:
-        break;
+        ale = parseFloat(((value + fee) / rateConvert?.rateAle).toFixed(2));
+      }
+      else {
+        fee = Math.floor((rateFee.valueFee * value) / 100);
+        ale = parseFloat(((value + fee) / rateConvert?.rateAle).toFixed(2));
+
+      }
+
+      console.log('ale', ale);
+      form.setFieldValue('fee', fee);
+
+      return ale;
     }
 
-    setConvertVnd(priceVnd);
   }
 
 
@@ -455,7 +493,7 @@ const TableListAssignCPass = () => {
             senderId: currentRowUser?.id,
             ale: convertAle
           },
-            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle} Ale?`,
+            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle.toLocaleString()} Ale?`,
             'transactions/sell-ale-admin');
           return true
         }}
@@ -482,10 +520,11 @@ const TableListAssignCPass = () => {
               placeholder='Ale'
               fieldProps={{
                 onChange: (e: any) => {
-                  console.log(e);
                   if (typeof e !== 'undefined') {
                     setConvertAle(e);
-                    handleFeeTransaction(e)
+                    const priceVnd = handleFeeTransaction(e, 'ale');
+                    setConvertVnd(priceVnd as number)
+                    form.setFieldValue('priceVnd', priceVnd);
                   }
                   else {
                     setConvertVnd(0)
@@ -524,6 +563,8 @@ const TableListAssignCPass = () => {
                 label: 'Ví điện tử'
               }
             ]}
+
+              disabled
               placeholder={configDefaultText['methodPayment']}
               width='md' name='method' label={configDefaultText['methodPayment']}
               rules={[
@@ -544,15 +585,45 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormMoney
-              label="Số tiền nhận được:"
-              name="ale"
+            <ProFormDigit
+              label="Phí giao dịch (VNĐ):"
+              name="fee"
               min={1}
               disabled
-              customSymbol='VNĐ'
-              placeholder='ProduceAle'
+              placeholder='Phí'
               fieldProps={{
-                value: convertVnd
+                // value: convertVnd,
+                formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                precision: 2,
+                // onChange: (value: any) => {
+                //   // form.setFieldValue('')
+                // }
+              }}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDigit
+              disabled
+              label="Số tiền nhận được (VNĐ):"
+              name="priceVnd"
+              min={30000}
+              placeholder='VNĐ'
+              fieldProps={{
+                // value: convertVnd,
+                formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                precision: 3,
+                onChange: (value: any) => {
+                  if (typeof value !== 'undefined') {
+                    // let priceAle =parseFloat((value / rateConvert.rateAle).toFixed(2));
+                    const ale = handleFeeTransaction(value, 'vnd');
+                    form.setFieldValue('ale', ale)
+
+                  }
+
+                }
               }}
             />
           </Col>

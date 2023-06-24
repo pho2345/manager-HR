@@ -193,13 +193,8 @@ const TableListAssignCPass = () => {
       render: (_, entity: any) => {
         return (
           <>
-            <a
-              onClick={() => {
-                setCurrentRowUser(entity?.id);
-                //setShowDetailUser(true);
-              }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            <br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );

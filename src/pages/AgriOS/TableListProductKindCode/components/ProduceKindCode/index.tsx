@@ -1,13 +1,13 @@
 import { customAPIAdd, customAPIDelete, customAPIGet, customAPIUpdate } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDateTimePicker, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
 // import { FormattedMessage, } from '@umijs/max';
-import { Button, message, Modal, Space, Input, Tooltip, Checkbox, Row, Col, Form } from 'antd';
+import { Button, message, Modal, Space, Input, Tooltip, Row, Col, Form } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -32,8 +32,8 @@ const handleAdd = async (fields: API.RuleListItem) => {
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
-  
-  fields.dateExpire = moment(fields?.dateExpire).add(new Date().getTimezoneOffset()/-60,'hours').toISOString();
+
+  fields.dateExpire = moment(fields?.dateExpire).add(new Date().getTimezoneOffset() / -60, 'hours').toISOString();
   try {
     await customAPIUpdate({
       ...fields
@@ -83,29 +83,24 @@ const TableListAssignCPass = () => {
   const refId = useRef<any>();
 
 
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  // const [searchText, setSearchText] = useState('');
+  // const [searchedColumn, setSearchedColumn] = useState('');
   const [form] = Form.useForm<any>();
 
 
-  const [visible, setVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
+  // const [visible, setVisible] = useState(false);
+  // const [previewImage, setPreviewImage] = useState('');
 
-  const handleButtonClick = (imageSrc: string) => {
-    setPreviewImage(imageSrc);
-    setVisible(true);
-  };
 
-  const handleModalClose = () => {
-    setVisible(false);
-  };
+
+
 
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
+    // setSearchText(selectedKeys[0]);
+    // setSearchedColumn(dataIndex);
     //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
@@ -131,7 +126,7 @@ const TableListAssignCPass = () => {
           placeholder={configDefaultText['search']}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -140,7 +135,7 @@ const TableListAssignCPass = () => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{
@@ -200,25 +195,25 @@ const TableListAssignCPass = () => {
   });
 
 
-  const disabledDate = (current: any) => {
-    return current && current < moment();
-  };
-  
-  const formatter = (value: any) => {
-    if (value) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
-    return '';
-  };
-  
-  const parser = (value: any) => {
-    if (value) {
-      return value.replace(/\$\s?|(,*)/g, '');
-    }
-    return undefined;
-  };
-  
-  
+  // const disabledDate = (current: any) => {
+  //   return current && current < moment();
+  // };
+
+  // const formatter = (value: any) => {
+  //   if (value) {
+  //     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  //   }
+  //   return '';
+  // };
+
+  // const parser = (value: any) => {
+  //   if (value) {
+  //     return value.replace(/\$\s?|(,*)/g, '');
+  //   }
+  //   return undefined;
+  // };
+
+
 
 
   const confirm = (entity: any) => {
@@ -338,8 +333,7 @@ const TableListAssignCPass = () => {
                   handleUpdateModalOpen(true);
                   refId.current = text?.id;
                   form.setFieldsValue({
-                    ale: text?.ale,
-                    dateExpire: moment(text?.dateExpire).subtract(new Date().getTimezoneOffset()/-60,'hours').toISOString()
+                    ...text?.attributes
                   })
                 }}
               />
@@ -349,8 +343,6 @@ const TableListAssignCPass = () => {
       }
     },
   ];
-
-
 
   return (
     <>
@@ -392,11 +384,11 @@ const TableListAssignCPass = () => {
         }}
 
         columns={columns}
-        rowSelection={{
-          getCheckboxProps: record => ({
-            disabled: record.user
-          })
-        }}
+        // rowSelection={{
+        //   getCheckboxProps: record => ({
+        //     disabled: record.user
+        //   })
+        // }}
         toolbar={{
           settings: [{
             key: 'reload',
@@ -429,9 +421,6 @@ const TableListAssignCPass = () => {
           }
         }}
       />
-      <Modal open={visible} onCancel={handleModalClose} closeIcon={<></>} footer={null} width={`30vh`}>
-        <img src={previewImage} alt="Preview" style={{ width: '100%' }} />
-      </Modal>
 
       <ModalForm
         form={form}
@@ -456,12 +445,6 @@ const TableListAssignCPass = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
@@ -471,25 +454,18 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDateTimePicker
-
-              // className='w-full
-              // style={{ width: '100%' }}
+            <ProFormText
               fieldProps={{
                 style: {
                   width: '100%'
                 },
-                disabledDate: disabledDate
               }}
-              name='dateExpire'
-              label={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
-              placeholder={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              name='code'
+              label={`Mã`}
+              placeholder={`Mã`}
               rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
-                { required: true, message: configDefaultText['page.managerAleCurrent.columns.dateExpire'] },
+                { required: true, message: 'Mã' },
               ]}
-
-
             />
           </Col>
         </Row>
@@ -497,30 +473,68 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit min={1}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.managerAleCurrent.modal.ale']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listPlan.profit'
-                  //     defaultMessage='Profit is required'
-                  //   />
-                  // ),
-                },
-              ]}
+            <ProFormSelect
               fieldProps={{
-                formatter,
-                parser,
+                style: {
+                  width: '100%'
+                },
               }}
-              className='w-full'
-              name='ale'
-              label={configDefaultText['page.managerAleCurrent.modal.ale']}
-              placeholder={configDefaultText['page.managerAleCurrent.modal.ale']}
+              options={[
+                {
+                  label: 'Cơ bản',
+                  value: 'basic'
+                },
+                {
+                  label: 'Tự động',
+                  value: 'auto'
+                }
+              ]}
+              name='option'
+              label={configDefaultText['page.produceKindCode.column.option']}
+              placeholder={configDefaultText['page.produceKindCode.column.option']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.option'] },
+              ]}
             />
           </Col>
         </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDatePicker
+              fieldProps={{
+                style: {
+                  width: '100%'
+                },
+              }}
+              name='valueAuto'
+              label={configDefaultText['page.produceKindCode.column.valueAuto']}
+              placeholder={configDefaultText['page.produceKindCode.column.valueAuto']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.valueAuto'] },
+              ]}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              fieldProps={{
+                style: {
+                  width: '100%'
+                },
+              }}
+              name='valueBasic'
+              label={configDefaultText['page.produceKindCode.column.valueBasic']}
+              placeholder={configDefaultText['page.produceKindCode.column.valueBasic']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.valueBasic'] },
+              ]}
+            />
+          </Col>
+        </Row>
+
       </ModalForm>
 
       <ModalForm
@@ -546,12 +560,6 @@ const TableListAssignCPass = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
@@ -561,25 +569,19 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDateTimePicker
-
-              // className='w-full
-              // style={{ width: '100%' }}
+            <ProFormText
               fieldProps={{
                 style: {
                   width: '100%'
                 },
-                disabledDate: disabledDate
               }}
-              name='dateExpire'
-              label={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
-              placeholder={configDefaultText['page.managerAleCurrent.columns.dateExpire']}
+              disabled
+              name='code'
+              label={`Mã`}
+              placeholder={`Mã`}
               rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
-                { required: true, message: configDefaultText['page.managerAleCurrent.columns.dateExpire'] },
+                { required: true, message: 'Mã' },
               ]}
-
-
             />
           </Col>
         </Row>
@@ -587,30 +589,69 @@ const TableListAssignCPass = () => {
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
-            <ProFormDigit min={1}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.managerAleCurrent.modal.ale']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listPlan.profit'
-                  //     defaultMessage='Profit is required'
-                  //   />
-                  // ),
-                },
-              ]}
+            <ProFormSelect
               fieldProps={{
-                formatter,
-                parser,
+                style: {
+                  width: '100%'
+                },
               }}
-              className='w-full'
-              name='ale'
-              label={configDefaultText['page.managerAleCurrent.modal.ale']}
-              placeholder={configDefaultText['page.managerAleCurrent.modal.ale']}
+              options={[
+                {
+                  label: 'Cơ bản',
+                  value: 'basic'
+                },
+                {
+                  label: 'Tự động',
+                  value: 'auto'
+                }
+              ]}
+              name='option'
+              label={configDefaultText['page.produceKindCode.column.option']}
+              placeholder={configDefaultText['page.produceKindCode.column.option']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.option'] },
+              ]}
             />
           </Col>
         </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormDatePicker
+              fieldProps={{
+                style: {
+                  width: '100%'
+                },
+              }}
+              name='valueAuto'
+              label={configDefaultText['page.produceKindCode.column.valueAuto']}
+              placeholder={configDefaultText['page.produceKindCode.column.valueAuto']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.valueAuto'] },
+              ]}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormText
+              fieldProps={{
+                style: {
+                  width: '100%'
+                },
+              }}
+              name='valueBasic'
+              label={configDefaultText['page.produceKindCode.column.valueBasic']}
+              placeholder={configDefaultText['page.produceKindCode.column.valueBasic']}
+              rules={[
+                { required: true, message: configDefaultText['page.produceKindCode.column.valueBasic'] },
+              ]}
+            />
+          </Col>
+        </Row>
+
+
       </ModalForm>
     </>
   );

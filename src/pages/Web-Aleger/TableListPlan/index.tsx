@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
@@ -284,6 +284,17 @@ const TableList: React.FC = () => {
         return `${text?.attributes?.profit}%`
       }
     },
+
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.profit' defaultMessage='Profit' />,
+      title: configDefaultText['page.plan.value'],
+      dataIndex: 'value',
+      valueType: 'textarea',
+      key: 'value',
+      renderText: (_, text: any) => {
+        return `${text?.attributes?.value}`
+      }
+    },
     {
       // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
@@ -336,7 +347,8 @@ const TableList: React.FC = () => {
                 name: entity?.attributes?.name,
                 profit: entity?.attributes?.profit,
                 color: entity?.attributes?.color,
-                backgroundColor: entity?.attributes?.backgroundColor
+                backgroundColor: entity?.attributes?.backgroundColor,
+                value:  entity?.attributes?.value
               })
 
             }}
@@ -544,6 +556,40 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+
+              options={[
+                {
+                  value: 'danger',
+                  label: 'danger'
+                },
+                {
+                  value: 'safe',
+                  label: 'safe'
+                }
+              ]}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.plan.value']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listPlan.profit'
+                  //     defaultMessage='Profit is required'
+                  //   />
+                  // ),
+                },
+              ]}
+              className='w-full'
+              name='value'
+              label={configDefaultText['page.plan.value']}
+              placeholder={configDefaultText['page.plan.value']}
+            />
+          </Col>
+        </Row>
+
 
       
 
@@ -723,6 +769,40 @@ const TableList: React.FC = () => {
               name='profit'
               label={configDefaultText['page.profit']}
               placeholder={configDefaultText['page.profit']}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+
+              options={[
+                {
+                  value: 'danger',
+                  label: 'danger'
+                },
+                {
+                  value: 'safe',
+                  label: 'safe'
+                }
+              ]}
+              rules={[
+                {
+                  required: true,
+                  message: configDefaultText['page.plan.value']
+                  // (
+                  //   <FormattedMessage
+                  //     id='pages.listPlan.profit'
+                  //     defaultMessage='Profit is required'
+                  //   />
+                  // ),
+                },
+              ]}
+              className='w-full'
+              name='value'
+              label={configDefaultText['page.plan.value']}
+              placeholder={configDefaultText['page.plan.value']}
             />
           </Col>
         </Row>

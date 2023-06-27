@@ -7,7 +7,7 @@ import {
 
 import moment from 'moment';
 import { FormattedMessage, useParams, useSearchParams } from '@umijs/max';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import DetailCPass from '../components/DetailCPass';
 import DetailUser from '../components/DetailUser';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
@@ -144,7 +144,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle={(<>cPass: 
+        headerTitle={(<>cPass:
           <a
             onClick={() => {
 
@@ -195,7 +195,11 @@ const TableList: React.FC = () => {
               type='primary'
               key='primary'
               onClick={async () => {
-                await customAPIDowload('accumulation-c-passes/find-admin/excel', 26);
+                await customAPIDowload('accumulation-c-passes/find-admin/excel', params?.id,
+                  {
+                    fair: searchParams.get('fair'),
+                    history: searchParams.get('history')
+                  });
               }}
             >
               <PlusOutlined /> Excel
@@ -204,7 +208,7 @@ const TableList: React.FC = () => {
 
 
 
-          
+
             // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
           ]
         }}

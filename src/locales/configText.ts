@@ -410,6 +410,7 @@ export default {
     'page.valueTo': 'Giá trị trên',
     'page.name': 'Tên',
     'page.profit': 'Lợi nhuận (%)',
+    'page.plan.value': 'Giá trị',
 
 /// AWG
     'page.range': 'Khoảng',

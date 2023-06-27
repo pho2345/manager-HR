@@ -591,6 +591,7 @@ const TableList: React.FC = () => {
         search={false}
         request={ async () => {
           const data = await customAPIGet( {} , 'c-passes/get/c-pass-mega');
+          console.log(data?.data?.cPass);
           setOptionFair(data?.data?.fair);
           return {
             data: data?.data?.cPass,

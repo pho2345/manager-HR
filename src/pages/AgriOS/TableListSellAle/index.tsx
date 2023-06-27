@@ -172,7 +172,6 @@ const TableListAssignCPass = () => {
           setShowModal(false);
           setConvertAle(0);
           setConvertVnd(0);
-
         }
 
       }
@@ -567,18 +566,18 @@ const TableListAssignCPass = () => {
               disabled
               placeholder={configDefaultText['methodPayment']}
               width='md' name='method' label={configDefaultText['methodPayment']}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['methodPayment.required']
-                  //  (
-                  //   <FormattedMessage
-                  //     id='pages.sellAle.required.methodPayment'
-                  //     defaultMessage='Chọn PTTT'
-                  //   />
-                  // ),
-                }
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: configDefaultText['methodPayment.required']
+              //     //  (
+              //     //   <FormattedMessage
+              //     //     id='pages.sellAle.required.methodPayment'
+              //     //     defaultMessage='Chọn PTTT'
+              //     //   />
+              //     // ),
+              //   }
+              // ]}
             />
           </Col>
         </Row>

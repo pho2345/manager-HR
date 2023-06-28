@@ -68,8 +68,8 @@ export default {
     'page.listFair.column.cPassPublished': 'cPass phát hành/Đã bán',
     'page.listFair.column.status': 'Trạng thái',
     'page.listFair.column.unitPriceMeat': 'Đơn giá thịt (VNĐ/kg) (mặc định: 80,000)',
-    'page.listFair.placeHolder.unitPriceMeat': 'Đơn giá thịt',
-    'page.listFair.placeHolder.timeFeed': 'Thời gian nuôi',
+    'page.listFair.placeHolder.unitPriceMeat': 'Đơn giá thịt (VNĐ/kg)',
+    'page.listFair.placeHolder.timeFeed': 'Thời gian nuôi (tuần)',
 
     'page.listFair.column.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh (VNĐ/kg) (mặc định: 70,000)',
     'page.listFair.placeHolder.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh',

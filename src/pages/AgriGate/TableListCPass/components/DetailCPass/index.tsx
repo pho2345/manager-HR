@@ -91,7 +91,7 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss (kg)' />,
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',
@@ -138,7 +138,7 @@ const TableList = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại(Kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.nowWeight' defaultMessage='Cân nặng hiện tại (kg)' />,
       dataIndex: 'nowWeight',
       valueType: 'textarea',
       key: 'nowWeight',

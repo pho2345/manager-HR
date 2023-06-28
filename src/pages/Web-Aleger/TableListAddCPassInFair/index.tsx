@@ -130,7 +130,7 @@ const TableListAddCPassInFair = (props: any) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
+      title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss (kg)' />,
       dataIndex: 'firstWeight',
       valueType: 'textarea',
       key: 'firstWeight',

@@ -60,7 +60,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [openModalTemplate, setOpenModalTemplate] = useState<boolean>(false);
   const [openModalDowTemplate, setOpenModalDowTemplate] = useState<boolean>(false);
-  const [farm, setFarm] = useState<boolean>([]);
+  const [farm, setFarm] = useState<any>([]);
 
 
   const [showDetail, setShowDetail] = useState<boolean>(false);

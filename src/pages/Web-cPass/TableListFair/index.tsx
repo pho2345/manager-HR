@@ -75,9 +75,9 @@ const handleUpdate = async (fields: any, id: any) => {
 
     message.success('Cập nhật thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response.data.error.message || 'Lỗi');
     return false;
   }
 };
@@ -150,6 +150,8 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdFair = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
+  
+  const [disableField, setDisableField] = useState<any>(false);
 
   const [readModalOpen, handleReadModalOpen] = useState<boolean>(false);
 
@@ -160,6 +162,12 @@ const TableList: React.FC = () => {
 
   const [currentFair, setCurrentFair] = useState<any>();
   const [showModalCPass, setShowModalCPass] = useState<boolean>(false);
+
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+  const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
+  const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
 
   useEffect(() => {
     const getData = async () => {
@@ -252,6 +260,183 @@ const TableList: React.FC = () => {
   });
 
 
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+  };
+
+  const clearResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    setSearchRangeFrom(null);
+    setSearchRangeTo(null);
+    confirm({
+      closeDropdown: false,
+    });
+  };
+
+
+  const getColumnSearchRange = () => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        {
+          showRangeTo && (<>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  allowClear={false}
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeFrom(moment(e['$d']).toISOString());
+                      }
+                    },
+                    value: searchRangeFrom
+                  }}
+                  placeholder={'Thời gian từ'}
+
+
+                />
+              </Col>
+            </Row>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  allowClear={false}
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    value: searchRangeTo,
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeTo(moment(e['$d']).toISOString());
+                      }
+                    },
+                  }}
+                  rules={[
+                    { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
+                  ]}
+                  placeholder={'Thời gian đến'}
+
+                />
+              </Col>
+            </Row>
+          </>
+          )
+        }
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+
+              options={[
+               
+                {
+                  value: 'months',
+                  label: 'Trong tháng'
+                },
+                {
+                  value: 'quarters',
+                  label: 'Trong quí'
+                },
+                {
+                  value: 'years',
+                  label: 'Trong năm'
+                },
+                {
+                  value: 'range',
+                  label: 'Khoảng'
+                }
+              ]}
+              fieldProps={{
+                onChange: (value: any) => {
+                  if (value === 'range') {
+                    setShowRangeTo(true);
+                  }
+                  else {
+                    setShowRangeTo(false);
+                  }
+                  setOptionRangeSearch(value);
+                },
+              }}
+            />
+          </Col>
+        </Row>
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (optionRangeSearch !== 'range') {
+                setSelectedKeys([JSON.stringify([optionRangeSearch])])
+              }
+              else {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
+              }
+              handleSearchRange(selectedKeys, confirm);
+              // confirm()\
+
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (typeof value === 'string') {
+        const convertValue = JSON.parse(value);
+        const optionValue = convertValue[0];
+        if (optionValue === 'range') {
+          if (convertValue[1] && convertValue[2]) {
+            if (moment(record.timeStart).isAfter(convertValue[1]) && moment(record.timeStart).isBefore(convertValue[2])) {
+              return record
+            }
+          }
+        }
+        else {
+          const timeStart = moment().startOf(optionValue).toISOString();
+          const timeEnd = moment().endOf(optionValue).toISOString();
+          if (moment(record.timeStart).isAfter(timeStart) && moment(record.timeStart).isBefore(timeEnd)) {
+            return record;
+          }
+        }
+      }
+      return null;
+    }
+    ,
+  });
+
+
 
 
 
@@ -314,7 +499,8 @@ const TableList: React.FC = () => {
           weekday = 'CN';
         }
         return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
-      }
+      },
+      ...getColumnSearchRange()
     },
     {
       // title: <FormattedMessage id='page.listFair.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
@@ -467,10 +653,10 @@ const TableList: React.FC = () => {
               onClick={async () => {
                 handleCopyModalOpen(true);
                 const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
-                fair.timeEnd = moment(fair?.timeEnd).format('YYYY-MM-DD HH:mm:ss');
-                fair.timeStart = moment(fair?.timeStart).format('YYYY-MM-DD HH:mm:ss');
-                fair.dateStartFeed = moment(fair?.dateStartFeed).format('YYYY-MM-DD HH:mm:ss');
-                fair.dateEndFeed = moment(fair?.dateEndFeed).format('YYYY-MM-DD HH:mm:ss');
+                fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
+                fair.dateEndFeed = moment(fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
                 delete fair.c_passes;
                 const plans = fair.plans.map((e: any) => {
                   return e?.id
@@ -506,8 +692,11 @@ const TableList: React.FC = () => {
               </Link>
             </Menu.Item>
 
-            {entity?.status === 'noOpen' && moment(entity.timeEnd).isAfter(moment().toISOString()) ? (<Menu.Item key="5"
+            {entity?.status === 'noOpen' && moment(entity.timeEnd).isAfter(moment().toISOString()) ||  entity?.status === 'opening'? (<Menu.Item key="5"
               onClick={async () => {
+                if(entity?.status === 'opening'){
+                  setDisableField(true);
+                }
                 handleUpdateModalOpen(true);
                 refIdFair.current = entity.id;
                 const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
@@ -919,6 +1108,7 @@ const TableList: React.FC = () => {
             destroyOnClose: true,
             onCancel: () => {
               handleUpdateModalOpen(false);
+              setDisableField(false);
             },
           }}
           submitTimeout={2000}
@@ -1036,6 +1226,7 @@ const TableList: React.FC = () => {
 
             <Col span={12} className="gutter-row p-0" >
               <ProFormDigit
+                disabled={disableField}
                 fieldProps={{
                   style: {
                     width: '100%'
@@ -1096,6 +1287,7 @@ const TableList: React.FC = () => {
                 rules={[
                   { required: true, message: configDefaultText['page.listFair.required.plans'] },
                 ]}
+                disabled={disableField}
               />
             </Col>
           </Row>
@@ -1109,6 +1301,8 @@ const TableList: React.FC = () => {
                   // { required: true, message: <FormattedMessage id='page.listFair.required.unitPriceMeat' defaultMessage='Vui lòng nhập đơn giá thịt' /> },
                   { required: true, message: configDefaultText['page.listFair.required.unitPriceMeat'] },
                 ]}
+                disabled={disableField}
+
               />
             </Col>
 
@@ -1123,6 +1317,8 @@ const TableList: React.FC = () => {
           <Row gutter={24} className="m-0">
             <Col span={24} className="gutter-row p-0" >
               <ProFormSelect
+                disabled={disableField}
+
                 name="c_passes"
                 label={configDefaultText['page.listFair.column.c_passes']}
                 // valueEnum={}

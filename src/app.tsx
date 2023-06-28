@@ -113,7 +113,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }: a
     ...initialState?.settings,
   };
 };
-console.log('errorConfig', errorConfig);
 
 export const request = {
   ...errorConfig,

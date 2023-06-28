@@ -167,15 +167,13 @@ const TableListFairDetail: React.FC = () => {
 
 
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    console.log(selectedKeys);
     confirm();
-
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
    
   };
   const handleResetRange = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
+    
     confirm({
       closeDropdown: false,
     });
@@ -197,7 +195,6 @@ const TableListFairDetail: React.FC = () => {
           placeholder={`Cân nặng ${showRangeTo ? `từ` : ``}`}
           fieldProps={{
             onChange: (e: any) => {
-              console.log(e);
               setSearchRange(e);
               // setSelectedKeys([e.target.value])
             }
@@ -214,7 +211,6 @@ const TableListFairDetail: React.FC = () => {
             placeholder={`Cân nặng đến`}
             fieldProps={{
               onChange: (e: any) => {
-                console.log(e);
                 setSearchRangeTo(e);
                 // setSelectedKeys([e.target.value])
               }
@@ -243,7 +239,6 @@ const TableListFairDetail: React.FC = () => {
           ]}
           fieldProps={{
             onChange: (value) => {
-              console.log('onchangeValue', value);
               if(value === 'range'){
                 setOptionRangeSearch(value);
                 setShowRangeTo(true);
@@ -259,18 +254,12 @@ const TableListFairDetail: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              console.log(optionRangeSearch);
               if(optionRangeSearch !== 'range'){
-                console.log('vao tren')
-
                 setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange])])
               }
               else {
-                console.log('vao dưới')
                 setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange, searchRangeTo])])
               }
-
-
               handleSearchRange(selectedKeys, confirm);
               // confirm()\
              
@@ -304,9 +293,9 @@ const TableListFairDetail: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      // console.log(value);
       if(typeof value === 'string'){
         const convertValue = JSON.parse(value);
+        console.log(convertValue);
         if(convertValue[0] === 'lesser'){
           if(record.pZero < convertValue[1]){
             return record;

@@ -1,6 +1,6 @@
 import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDigit } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
@@ -91,6 +91,14 @@ const TableList: React.FC = () => {
 
   const [filter, setFilter] = useState<any>();
 
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+  const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
+  const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+
+
+
   const handleColorChange = (newColor: any) => {
     setColor(newColor.hex);
     form.setFieldValue('color', newColor.hex);
@@ -144,13 +152,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -224,6 +228,195 @@ const TableList: React.FC = () => {
     // }
 
   });
+
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+  };
+
+  const clearResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    setSearchRangeFrom(null);
+    setSearchRangeTo(null);
+    confirm({
+      closeDropdown: false,
+    });
+  };
+
+
+  const getColumnSearchRange = () => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        {
+          showRangeTo && (<>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  allowClear={false}
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeFrom(moment(e['$d']).toISOString());
+                      }
+                    },
+                    value: searchRangeFrom
+                  }}
+                  placeholder={'Thời gian từ'}
+
+
+                />
+              </Col>
+            </Row>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  allowClear={false}
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    value: searchRangeTo,
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeTo(moment(e['$d']).toISOString());
+                      }
+                    },
+                  }}
+                  rules={[
+                    { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
+                  ]}
+                  placeholder={'Thời gian đến'}
+
+                />
+              </Col>
+            </Row>
+          </>
+          )
+        }
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+
+              options={[
+                {
+                  value: 'days',
+                  label: 'Trong ngày'
+                },
+                {
+                  value: 'weeks',
+                  label: 'Trong tuần'
+                },
+                {
+                  value: 'months',
+                  label: 'Trong tháng'
+                },
+                {
+                  value: 'years',
+                  label: 'Trong năm'
+                },
+                {
+                  value: 'range',
+                  label: 'Khoảng'
+                }
+              ]}
+              fieldProps={{
+                onChange: (value: any) => {
+                  if (value === 'range') {
+                    setShowRangeTo(true);
+                  }
+                  else {
+                    setShowRangeTo(false);
+                  }
+                  setOptionRangeSearch(value);
+                },
+              }}
+            />
+          </Col>
+        </Row>
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (optionRangeSearch !== 'range') {
+                setSelectedKeys([JSON.stringify([optionRangeSearch])])
+              }
+              else {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
+              }
+              handleSearchRange(selectedKeys, confirm);
+              // confirm()\
+
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (typeof value === 'string') {
+        const convertValue = JSON.parse(value);
+        const optionValue = convertValue[0];
+        if (optionValue === 'range') {
+          if (convertValue[1] && convertValue[2]) {
+            if (moment(record.attributes.createdAt).isAfter(convertValue[1]) && moment(record.attributes.createdAt).isBefore(convertValue[2])) {
+              return record
+            }
+          }
+        }
+        else {
+          const timeStart = moment().startOf(optionValue).toISOString();
+          const timeEnd = moment().endOf(optionValue).toISOString();
+          if (moment(record.attributes.createdAt).isAfter(timeStart) && moment(record.attributes.createdAt).isBefore(timeEnd)) {
+            return record;
+          }
+        }
+      }
+      return null;
+    }
+    ,
+    // onFilterDropdownOpenChange: (visible: any) => {
+    //   if (visible) {
+    //     // setTimeout(() => searchInput.current?.select(), 100);
+    //   }
+    // },
+
+    // render: (text: any) =>{
+    // }
+  });
+
+
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
@@ -343,9 +536,9 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'create',
       renderText: (_, text: any) => {
-
         return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
-      }
+      },
+      ...getColumnSearchRange()
     },
 
     {

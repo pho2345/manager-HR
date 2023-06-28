@@ -80,6 +80,7 @@ export default [
       { path: '/agrigate/awg',hideInMenu: false,  name: 'Tăng trọng trung bình', component: './AgriGate/TableListAWG' },
       { path: '/agrigate/range-p-zero', name: 'Khoảng cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
       { path: '/agrigate/wgs', name: 'Tăng trọng tiêu chuẩn', component: './AgriGate/TableListWGS' },
+      { path: '/agrigate/input-weight', name: 'Nhập dữ liệu tăng trọng', component: './AgriGate/TableListSlot' },
       
     ],
   },
@@ -99,6 +100,7 @@ export default [
       { path: '/web-aleger/config', name: 'Cài đặt chung', component: './Web-Aleger/TableListConfig'},
       { path: '/web-aleger/config-warning', name: 'Cài đặt đo lường lường cảnh báo', component: './Web-Aleger/TableConfigWarning' },
       { path: '/web-aleger/notify', name: 'Thông báo', component: './Web-Aleger/TableListConfigNotify' },
+    
     ],
   },
 
@@ -169,12 +171,12 @@ export default [
     path: '/web-c-pass/fairs/add-cpass/:id',
     component: './Web-cPass/TableListAddCPassInFair',
   },
-  {
-    name: 'Slot',
-    icon: 'table',
-    path: '/slot',
-    component: './TableListSlot',
-  },
+  // {
+  //   name: 'Slot',
+  //   icon: 'table',
+  //   path: '/slot',
+  //   component: './TableListSlot',
+  // },
 
   {
     name: 'Giao dịch',

@@ -9,6 +9,7 @@ import {
   ActionType,
   ModalForm,
   ProColumns,
+  ProFormDatePicker,
   ProFormSelect,
 } from '@ant-design/pro-components';
 import {
@@ -18,7 +19,7 @@ import {
 } from '@ant-design/pro-components';
 
 //import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Input, message, Modal, Space } from 'antd';
+import { Button, Col, Input, message, Modal, Row, Space } from 'antd';
 import moment from 'moment';
 import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
@@ -58,6 +59,11 @@ const TableList: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   // const [selectedRows, setSelectedRows] = useState<any>([]);
 
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+  const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
+  const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
   const [selectedRowsState, setSelectedRowsState] = useState<any>([]);
   //const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
@@ -77,7 +83,9 @@ const TableList: React.FC = () => {
     //setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      // close
+    }: any) => (
       <div
         style={{
           padding: 8,
@@ -154,7 +162,194 @@ const TableList: React.FC = () => {
     // render: (text: any) =>{
 
     // }
+  });
 
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+  };
+
+  const clearResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    setSearchRangeFrom(null);
+    setSearchRangeTo(null);
+    confirm({
+      closeDropdown: false,
+    });
+  };
+
+
+  const getColumnSearchRange = () => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        {
+          showRangeTo && (<>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeFrom(moment(e['$d']).toISOString());
+                      }
+                    },
+                    value: searchRangeFrom
+                  }}
+                  placeholder={'Thời gian từ'}
+
+
+                />
+              </Col>
+            </Row>
+            <Row gutter={24} className="m-0">
+              <Col span={24} className="gutter-row p-0" >
+                <ProFormDatePicker
+                  fieldProps={{
+                    style: {
+                      width: '100%'
+                    },
+                    value: searchRangeTo,
+                    onChange: (e: any) => {
+                      if (e) {
+                        setSearchRangeTo(moment(e['$d']).toISOString());
+                      }
+                    },
+                  }}
+                  rules={[
+                    { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
+                  ]}
+                  placeholder={'Thời gian đến'}
+
+                />
+              </Col>
+            </Row>
+          </>
+          )
+        }
+        <Row gutter={24} className="m-0">
+          <Col span={24} className="gutter-row p-0" >
+            <ProFormSelect
+
+              options={[
+                {
+                  value: 'days',
+                  label: 'Trong ngày'
+                },
+                {
+                  value: 'weeks',
+                  label: 'Trong tuần'
+                },
+                {
+                  value: 'months',
+                  label: 'Trong tháng'
+                },
+                {
+                  value: 'years',
+                  label: 'Trong năm'
+                },
+                {
+                  value: 'range',
+                  label: 'Khoảng'
+                }
+              ]}
+              fieldProps={{
+                onChange: (value) => {
+                  if (value === 'range') {
+                    setShowRangeTo(true);
+                  }
+                  else {
+                    setShowRangeTo(false);
+                  }
+                  setOptionRangeSearch(value);
+                },
+              }}
+            />
+          </Col>
+        </Row>
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (optionRangeSearch !== 'range') {
+                setSelectedKeys([JSON.stringify([optionRangeSearch])])
+              }
+              else {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
+              }
+              handleSearchRange(selectedKeys, confirm);
+              // confirm()\
+
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (value) {
+        if (typeof value === 'string') {
+          const convertValue = JSON.parse(value);
+          const optionValue = convertValue[0];
+          if (optionValue === 'range') {
+            if (convertValue[1] && convertValue[2]) {
+              if (moment(record.createdAt).isAfter(convertValue[1]) && moment(record.createdAt).isBefore(convertValue[2])) {
+                return record
+              }
+            }
+          }
+          else {
+            const timeStart = moment().startOf(optionValue).toISOString();
+            const timeEnd = moment().endOf(optionValue).toISOString();
+            if (moment(record.createdAt).isAfter(timeStart) && moment(record.createdAt).isBefore(timeEnd)) {
+              return record;
+            }
+          }
+        }
+      }
+
+      return null;
+    }
+    ,
+    // onFilterDropdownOpenChange: (visible: any) => {
+    //   if (visible) {
+    //     // setTimeout(() => searchInput.current?.select(), 100);
+    //   }
+    // },
+
+    // render: (text: any) =>{
+    // }
   });
 
 
@@ -217,7 +412,7 @@ const TableList: React.FC = () => {
           }}> Mua Ale</span>);
         }
         else {
-          return   (<span style={{
+          return (<span style={{
             color: 'red'
           }}> Bán Ale</span>);;
         }
@@ -304,54 +499,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => {
         return moment(text?.createdAt).format('DD/MM/YYYY HH:MM');
       },
-      // filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-      //   <div style={{ padding: 8 }}>
-      //     <ProFormDateRangePicker
-      //       fieldProps={{
-      //         value: selectedKeys,
-      //         onChange: (values) => {
-      //           // console.log('values', values);
-      //           // console.log('selectedKeys', selectedKeys);
-      //           setSelectedKeys(values);
-      //         }
-      //       }}
-      //     />
-      //     <Space>
-      //       <Button
-      //         type="primary"
-      //         onClick={() => {
-      //           confirm();
-      //         }}
-      //         icon={<SearchOutlined />}
-      //         size="small"
-      //         style={{
-      //           width: 90,
-      //         }}
-      //       >
-      //         Tìm kiếm
-      //       </Button>
-      //       <Button
-      //         type="primary"
-      //         onClick={() => {
-      //           clearFilters();
-      //         }}
-      //         icon={<SearchOutlined />}
-      //         size="small"
-      //         style={{
-      //           width: 90,
-      //         }}
-      //       >
-      //         Reset
-      //       </Button>
-
-      //     </Space>
-      //   </div>
-      // ),
-      onFilter: (value: any, record: any) => {
-        // console.log(value);
-        console.log(moment(value.$d).format('HH:MM:ss DD/MM/YYYY'));
-        return record
-      },
+      ...getColumnSearchRange()
     },
     {
       // title: (
@@ -416,7 +564,7 @@ const TableList: React.FC = () => {
                       types: record?.types
                     }
                   ]);
-                  
+
 
                 }}
               />
@@ -557,12 +705,12 @@ const TableList: React.FC = () => {
         tableAlertOptionRender={({ selectedRows }: any) => {
           return renderTableAlertOption(selectedRows)
         }}
-        
-        
+
+
       />
 
 
-     
+
 
 
       <ModalForm

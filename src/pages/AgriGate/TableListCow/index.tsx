@@ -937,8 +937,6 @@ const TableList: React.FC = () => {
                   //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
                   { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
                 ]}
-
-
               />
             </Col>
           </Row>

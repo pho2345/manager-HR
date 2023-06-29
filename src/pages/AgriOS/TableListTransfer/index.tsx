@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDigit,  ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -67,7 +67,7 @@ const TableListAssignCPass = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, 
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
       //close 
     }: any) => (
       <div
@@ -186,13 +186,8 @@ const TableListAssignCPass = () => {
       render: (_, entity: any) => {
         return (
           <>
-            <a
-              onClick={() => {
-                setCurrentRowUser(entity?.id);
-                //setShowDetailUser(true);
-              }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{ entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            <br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
@@ -369,10 +364,10 @@ const TableListAssignCPass = () => {
           },
         }}
         onFinish={async (values) => {
-          if(convertAle !== 0){
-            if (values.method === 2 ) {
+          if (convertAle !== 0) {
+            if (values.method === 2) {
               /// transfer produceAle to Ale
-  
+
               confirm({
                 senderId: currentRowUser?.id,
                 produceAle: convertAle
@@ -385,11 +380,11 @@ const TableListAssignCPass = () => {
                 produceAle: convertAle
               }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
             }
-            
-  
+
+
             return true
           }
-         
+
         }}
 
         submitter={{
@@ -448,11 +443,11 @@ const TableListAssignCPass = () => {
               fieldProps={{
                 value: convertAle === 0 ? null : convertAle,
                 onChange: (e: any) => {
-                  if(typeof e !== 'undefined'){
+                  if (typeof e !== 'undefined') {
                     setConvertAle(e);
                   }
                 },
-               //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 precision: 2
               }}
               required
@@ -471,7 +466,7 @@ const TableListAssignCPass = () => {
                     name="promoAle"
                     disabled
                     fieldProps={{
-                      value:  convertAle * rateConvert?.ratePromo,
+                      value: convertAle * rateConvert?.ratePromo,
                     }}
                   />
                 </Col>

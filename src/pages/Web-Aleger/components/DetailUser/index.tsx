@@ -1,5 +1,5 @@
 
-import { customAPIAdd, customAPIGetOne, customAPIUpdate, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { customAPIAdd, customAPIGetOne, customAPIPost, customAPIUpdate, customAPIUpdateMany } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, PageContainer, ProColumns, ProDescriptions, ProFormDatePicker, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { FormattedMessage, Link, } from '@umijs/max';
@@ -67,9 +67,29 @@ const handleUpdate = async (fields: any, api: string) => {
 
     message.success('Sửa thành công');
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Sửa thất bại!');
+    message.error(error?.response.data.error.message || 'Lỗi');
+    return false;
+  }
+};
+
+
+const handleAdd = async (fields: any, api: string) => {
+  const hide = message.loading('Đang thêm...');
+  try {
+    await customAPIPost({
+
+    }, api, {
+      ...fields
+    });
+    hide();
+
+    message.success('Thêm thành công');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response.data.error.message || 'Lỗi');
     return false;
   }
 };
@@ -249,13 +269,13 @@ const TableList = (props: any) => {
       render: (_, record) => {
         console.log(record);
         return (<><Button
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              form.setFieldsValue({
-                ...detailUser?.user
-              })
-            }}
-          >Sửa Thông tin</Button>
+          onClick={() => {
+            handleUpdateModalOpen(true);
+            form.setFieldsValue({
+              ...detailUser?.user
+            })
+          }}
+        >Sửa Thông tin</Button>
           <Button
             type="primary"
             style={{
@@ -266,7 +286,7 @@ const TableList = (props: any) => {
               userId: record?.id
             }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], 'users/disabled')} danger
           >{record?.disabled ? configDefaultText['page.DetailAleger.column.openDisabled'] : configDefaultText['page.DetailAleger.column.disabled']}</Button></>)
-        
+
       }
     },
 
@@ -280,7 +300,7 @@ const TableList = (props: any) => {
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
-      renderText: (_, text) => text?.ale?.toLocaleString()
+      renderText: (_, text) => text?.ale?.toLocaleString() || 0
     },
 
     {
@@ -289,7 +309,7 @@ const TableList = (props: any) => {
       dataIndex: 'quantityAleRecharge',
       valueType: 'textarea',
       key: 'quantityAleRecharge',
-      renderText: (_, text) => text?.quantityAleRecharge.toLocaleString()
+      renderText: (_, text) => text?.quantityAleRecharge?.toLocaleString() || 0
     },
 
     {
@@ -298,7 +318,7 @@ const TableList = (props: any) => {
       dataIndex: 'aleUsed',
       valueType: 'textarea',
       key: 'aleUsed',
-      renderText: (_, text) => text?.aleUsed.toLocaleString()
+      renderText: (_, text) => text?.aleUsed?.toLocaleString() || 0
     },
 
     {
@@ -307,7 +327,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
-      renderText: (_, text) => text?.produceAle.toLocaleString()
+      renderText: (_, text) => text?.produceAle?.toLocaleString() || 0
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
@@ -315,7 +335,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'promoAle',
-      renderText: (_, text) => text?.promoAle.toLocaleString()
+      renderText: (_, text) => text?.promoAle?.toLocaleString() || 0
     },
     {
       title: '',
@@ -420,7 +440,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaWeightHistory',
       valueType: 'textarea',
       key: 'megaWeightHistory',
-      renderText: (_, text) => text?.megaWeightHistory
+      renderText: (_, text) => text?.megaWeightHistory || 0
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaEHistory' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
@@ -428,7 +448,7 @@ const TableList = (props: any) => {
       dataIndex: 'megaEHistory',
       valueType: 'textarea',
       key: 'megaEHistory',
-      renderText: (_, text) => text?.megaEHistory.toLocaleString()
+      renderText: (_, text) => text?.megaEHistory?.toLocaleString() || 0
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaCPRHistory' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
@@ -529,15 +549,6 @@ const TableList = (props: any) => {
     getData();
   }, [props?.currentRowUser]);
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     await updateConfig({
-  //       notification, notifyEmail, notifyWG
-  //     },  props?.currentRowUser);
-  //   }
-  //   getData();
-  // }, [notification, notifyEmail, notifyWG]);
-
   return (
     <>
       <Drawer
@@ -611,6 +622,10 @@ const TableList = (props: any) => {
           submitTimeout={2000}
           onFinish={async (values) => {
 
+            const data = await handleAdd({
+              ...values
+            }, 'users/create-admin');
+
             if (actionRef.current) {
               actionRef.current.reload();
 
@@ -619,15 +634,7 @@ const TableList = (props: any) => {
           }
 
           submitter={{
-            // render: (_, dom) => (
-            //   <div style={{ marginBlockStart: '5vh' }}>
-            //     {dom.pop()}
-            //     {dom.shift()}
-            //   </div>
-            // ),
             searchConfig: {
-              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
               resetText: configDefaultText['buttonClose'],
               submitText: configDefaultText['buttonAdd'],
             },
@@ -772,9 +779,9 @@ const TableList = (props: any) => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormDatePicker
-                 fieldProps={{
-                  style:{
-                    width: '100%' 
+                fieldProps={{
+                  style: {
+                    width: '100%'
                   }
                 }}
                 name='birthdate'
@@ -901,7 +908,7 @@ const TableList = (props: any) => {
             </Col>
 
             <Col span={8} className="gutter-row p-0" >
-            <ProFormText
+              <ProFormText
                 className='w-full'
                 name='passport'
                 // label={<FormattedMessage id='pages.detailMega.passport' defaultMessage='CCCD/HC' />}
@@ -932,10 +939,10 @@ const TableList = (props: any) => {
 
           <Row gutter={24} className="m-0">
             <Col span={8} className="gutter-row p-0" >
-            <ProFormDatePicker
-                 fieldProps={{
-                  style:{
-                    width: '100%' 
+              <ProFormDatePicker
+                fieldProps={{
+                  style: {
+                    width: '100%'
                   }
                 }}
                 name='birthdate'
@@ -952,9 +959,9 @@ const TableList = (props: any) => {
 
             <Col span={8} className="gutter-row p-0" >
               <ProFormDatePicker
-                 fieldProps={{
-                  style:{
-                    width: '100%' 
+                fieldProps={{
+                  style: {
+                    width: '100%'
                   }
                 }}
                 name='createdAt'

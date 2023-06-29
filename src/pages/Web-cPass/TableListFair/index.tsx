@@ -63,7 +63,7 @@ const handleUpdate = async (fields: any, id: any) => {
 
   fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-  fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  // fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.dateEndFeed = moment(fields.dateEndFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
 
   const hide = message.loading('Đang cập nhật...');
@@ -462,7 +462,20 @@ const TableList: React.FC = () => {
 
 
 
-
+  const disabledDate = (current: any) => {
+    // Kiểm tra ngày hiện tại
+    if (current && current.day() !== 1) { // Kiểm tra ngày không phải thứ Hai (Monday)
+      return true; // Vô hiệu hóa ngày không phải thứ Hai
+    }
+  
+    // Kiểm tra ngày trong tương lai
+    if (current && current.day() === 1 && current.isBefore(moment())) {
+      return true; // Vô hiệu hóa thứ Hai trong tương lai
+    }
+  
+    return false; // Cho phép chọn thứ Hai hiện tại và trong quá khứ
+  };
+  
 
   const columns: ProColumns<any>[] = [
     {
@@ -529,7 +542,7 @@ const TableList: React.FC = () => {
         if (indexWeek === 0) {
           weekday = 'CN';
         }
-        return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+        return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY');
       }
     },
     {
@@ -1187,7 +1200,8 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
-                  }
+                  },
+                  disabledDate: disabledDate
                 }}
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}

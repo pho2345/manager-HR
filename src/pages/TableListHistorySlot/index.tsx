@@ -204,11 +204,6 @@ const TableList: React.FC = () => {
             >
               <PlusOutlined /> Excel
             </Button>,
-
-
-
-
-
             // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
           ]
         }}

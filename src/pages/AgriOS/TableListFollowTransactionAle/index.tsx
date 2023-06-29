@@ -384,43 +384,68 @@ const TableList: React.FC = () => {
       key: 'types',
       render: (_, text: any) => {
         let types;
-
-        (<span style={{
-          color: 'green'
-        }}> </span>)
         switch (text?.types) {
           case 'buyAle':
+
             return (<span style={{
               color: 'green'
             }}>Mua Ale</span>);
+
             break;
 
           case 'sellAle':
+
             types = (<span style={{
               color: 'red'
             }}>Bán Ale </span>);
+
             break;
 
           case 'megaDeltaWeightproduceAle':
-            types = `Nhận ProduceAle`;
+            types = (<span style={{
+              color: '#34d399'
+            }}>Nhận ProduceAle</span>);
+
             break;
           case 'qrCode':
-            types = `Nạp Ale qua QRCode`;
+
+            types = (<span style={{
+              color: '#22d3ee'
+            }}>Nạp Ale qua QRCode</span>);
+
             break;
           case 'aleTransfer':
-            types = `Chuyển Ale`;
+
+            types = (<span style={{
+              color: '#818cf8'
+            }}>Chuyển Ale</span>);
+
             break;
           case 'produceAleExchangeAle':
-            types = `Chuyển đổi ProduceAle`;
+
+            types = (<span style={{
+              color: '#a78bfa'
+            }}>Chuyển đổi ProduceAle</span>);
             break;
+
           case 'produceAleExchangePromo':
-            types = `Chuyển đổi ProduceAle sang PromoAle`;
+
+            types = (<span style={{
+              color: 'red'
+            }}>Chuyển đổi ProduceAle sang PromoAle</span>);
+
             break;
           case 'cpassPayment':
-            types = `Thanh toán cPass`;
+
+            types = (<span style={{
+              color: '#f472b6'
+            }}>Thanh toán cPass</span>);
             break;
           case 'cpassSettlement':
-            types = `Thanh quyết toán cPass`;
+
+            types = (<span style={{
+              color: '#fb7185'
+            }}>Thanh toán cPass</span>);
             break;
           default:
             break;
@@ -573,8 +598,6 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    console.log('render'),
-
     <PageContainer>
       <ProTable
         // headerTitle={intl.formatMessage({

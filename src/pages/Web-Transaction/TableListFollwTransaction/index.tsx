@@ -88,14 +88,27 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'sender',
       render: (_, text: any) => {
-       return (
-        <a
-        onClick={() => {
-          setCurrentRowUser(text?.sender?.id);
-          setShowDetailUser(true);
-        }}
-        >{text?.sender?.fullname || text?.sender?.username} - {text?.sender?.id}</a>
-       )
+        if(text?.sender){
+          return (
+            <a
+            onClick={() => {
+              setCurrentRowUser(text?.sender?.id);
+              setShowDetailUser(true);
+            }}
+            >{text?.sender?.fullname || text?.sender?.username} - {text?.sender?.id}</a>
+           )
+        }
+        else {
+          return (
+            <a
+            onClick={() => {
+              setCurrentRowUser(text?.sender?.id);
+              setShowDetailUser(true);
+            }}
+            >{text?.receiver?.fullname || text?.receiver?.username} - {text?.receiver?.id}</a>
+           )
+        }
+       
       },
     },
     {

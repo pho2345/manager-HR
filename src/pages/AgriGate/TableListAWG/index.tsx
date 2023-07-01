@@ -663,7 +663,7 @@ const TableList: React.FC = () => {
           setFilterRangeP0(data?.data?.rangePZero)
           return {
             data:  data.data.avg,
-            total:  data.data.avg.length ?? 0,
+            // total:  data.data.avg.length ?? 0,
             success: true
           }
         }
@@ -682,7 +682,7 @@ const TableList: React.FC = () => {
             prev_page: configDefaultText['prePage'],
           },
           showTotal: (total, range) => {
-            return `${range[range.length - 1]} / Tổng số: ${total}`
+            return `${range[0]} - ${range[1]} / Tổng số: ${total}`;
           },
           // onChange:(page, pageSize) => {
              

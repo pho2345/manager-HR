@@ -122,7 +122,7 @@ const TableList = (props: any) => {
       dataIndex: 'ale',
       valueType: 'textarea',
       key: 'ale',
-      renderText: (_, text) => text?.ale
+      renderText: (_, text) => text?.ale && text?.ale.toLocaleString()
     },
 
     {
@@ -131,7 +131,7 @@ const TableList = (props: any) => {
       dataIndex: 'quantityAleRecharge',
       valueType: 'textarea',
       key: 'quantityAleRecharge',
-      renderText: (_, text) => text?.quantityAleRecharge
+      renderText: (_, text) => text?.quantityAleRecharge && text?.quantityAleRecharge.toLocaleString()
     },
 
     {
@@ -140,7 +140,7 @@ const TableList = (props: any) => {
       dataIndex: 'aleUsed',
       valueType: 'textarea',
       key: 'aleUsed',
-      renderText: (_, text) => text?.aleUsed
+      renderText: (_, text) => text?.aleUsed && text?.aleUsed.toLocaleString()
     },
 
     {
@@ -149,7 +149,7 @@ const TableList = (props: any) => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
-      renderText: (_, text) => text?.produceAle
+      renderText: (_, text) => text?.produceAle && text?.produceAle.toLocaleString()
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
@@ -157,7 +157,7 @@ const TableList = (props: any) => {
       dataIndex: 'promoAle',
       valueType: 'textarea',
       key: 'promoAle',
-      renderText: (_, text) => text?.promoAle
+      renderText: (_, text) => text?.promoAle && text?.promoAle.toLocaleString()
     },
 
 

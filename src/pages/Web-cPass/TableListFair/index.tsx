@@ -35,7 +35,7 @@ const handleAdd = async (fields: any) => {
 
   fields.timeEnd = moment(fields.timeEnd).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.timeStart = moment(fields.timeStart).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
-  fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
+  // fields.dateStartFeed = moment(fields.dateStartFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
   fields.dateEndFeed = moment(fields.dateEndFeed).subtract(new Date().getTimezoneOffset() / -60, 'hour').toISOString();
 
   const hide = message.loading('Đang thêm...');
@@ -150,7 +150,7 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdFair = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  
+
   const [disableField, setDisableField] = useState<any>(false);
 
   const [readModalOpen, handleReadModalOpen] = useState<boolean>(false);
@@ -167,6 +167,9 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+  const [dateEnd, setDateEnd] = useState<any>();
+
 
 
   useEffect(() => {
@@ -338,7 +341,7 @@ const TableList: React.FC = () => {
             <ProFormSelect
 
               options={[
-               
+
                 {
                   value: 'months',
                   label: 'Trong tháng'
@@ -467,15 +470,29 @@ const TableList: React.FC = () => {
     if (current && current.day() !== 1) { // Kiểm tra ngày không phải thứ Hai (Monday)
       return true; // Vô hiệu hóa ngày không phải thứ Hai
     }
-  
+
     // Kiểm tra ngày trong tương lai
     if (current && current.day() === 1 && current.isBefore(moment())) {
       return true; // Vô hiệu hóa thứ Hai trong tương lai
     }
-  
+
     return false; // Cho phép chọn thứ Hai hiện tại và trong quá khứ
   };
-  
+
+  const disabledDateStartFeed = (current: any, dateEnd: any) => {
+    // Kiểm tra ngày hiện tại
+    if (current && current.day() !== 1) { // Kiểm tra ngày không phải thứ Hai (Monday)
+      return true; // Vô hiệu hóa ngày không phải thứ Hai
+    }
+
+    // Kiểm tra ngày trong tương lai
+    if (current && current.day() === 1 && current.isBefore(moment(dateEnd))) {
+      return true; // Vô hiệu hóa thứ Hai trong tương lai
+    }
+
+    return false; // Cho phép chọn thứ Hai hiện tại và trong quá khứ
+  };
+
 
   const columns: ProColumns<any>[] = [
     {
@@ -705,9 +722,9 @@ const TableList: React.FC = () => {
               </Link>
             </Menu.Item>
 
-            {entity?.status === 'noOpen' && moment(entity.timeEnd).isAfter(moment().toISOString()) ||  entity?.status === 'opening'? (<Menu.Item key="5"
+            {entity?.status === 'noOpen' && moment(entity.timeEnd).isAfter(moment().toISOString()) || entity?.status === 'opening' ? (<Menu.Item key="5"
               onClick={async () => {
-                if(entity?.status === 'opening'){
+                if (entity?.status === 'opening') {
                   setDisableField(true);
                 }
                 handleUpdateModalOpen(true);
@@ -997,7 +1014,11 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
-                  }
+                  },
+                  onChange: (value: any) => {
+                    const handleDateEnd = moment(value).add(30, 'days').toISOString();
+                    setDateEnd(handleDateEnd);
+                  },
                 }}
                 placeholder={configDefaultText['page.listFair.column.timeStart']}
                 //label={<FormattedMessage id='page.listFair.timeStart' defaultMessage='Thời gian mở' />}
@@ -1015,6 +1036,9 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
+                  },
+                  onChange: (value: any) => {
+                    setDateEnd(moment(value).toISOString());
                   }
                 }}
                 placeholder={configDefaultText['page.listFair.placeHolder.timeEnd']}
@@ -1037,9 +1061,9 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
-                  }
+                  },
+                disabledDate: (current) => disabledDateStartFeed(current, dateEnd)
                 }}
-
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}
                 //label={<FormattedMessage id='page.listFair.dateStartFeed' defaultMessage='Thời gian bắt đầu nuôi' />}

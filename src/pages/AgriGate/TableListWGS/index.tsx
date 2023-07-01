@@ -14,7 +14,6 @@ import React, { useRef, useState, useEffect, Fragment } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
-import { SketchPicker } from 'react-color';
 const configDefaultText = configText;
 
 
@@ -79,6 +78,21 @@ const getP0 = async (id: number) => {
 
   }
 }
+
+const getCategory = async () => {
+  const categories = await customAPIGet({}, 'categories/get/option');
+  return categories.data;
+};
+
+
+
+const getRangePZero = async () => {
+  const data = await customAPIGet({}, 'range-weight-zeros/option',
+  );
+  return data.data
+}
+
+
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
@@ -97,7 +111,10 @@ const TableList: React.FC = () => {
   const [categories, setCategories] = useState<any>([]);
   const [rangePZero, setRangePZero] = useState<any>([]);
 
-  const [filter, setFilter] = useState<any>();
+  
+  const [filterRangePZero, setFilterRangePZero] = useState<any>([]);
+  const [filterCategory, setFilterCategory] = useState<any>([]);
+
 
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
@@ -115,11 +132,16 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    const getCategory = async () => {
+    const getData = async () => {
       const data = await customAPIGet({}, 'categories/get/select');
+      const filterCategory = await getCategory();
+      const filterRangeP0 = await getRangePZero();
+
+      setFilterCategory(filterCategory);
+      setFilterRangePZero(filterRangeP0);
       setCategories(data?.data);
     }
-    getCategory();
+    getData();
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -432,9 +454,9 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'category',
       renderText: (_, text: any) => text?.category?.name,
-      filters: filter,
+      filters: filterCategory,
       onFilter: (value, record: any) => {
-        return record?.id === value;
+        return record?.category?.id === value;
       },
     },
     {
@@ -445,7 +467,14 @@ const TableList: React.FC = () => {
       //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         return `${text?.rangeWeightZero?.valueFrom} < P0 <= ${text?.rangeWeightZero?.valueTo}`;
-      }
+      },
+      filters: filterRangePZero,
+      onFilter: (value, record: any) => {
+          if(value === record?.rangeWeightZero?.id){
+            return record
+          }
+          return null
+      },
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,

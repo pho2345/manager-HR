@@ -27,7 +27,7 @@ const handleUpdate = async (fields: any, id: any) => {
     return true;
   } catch (error: any) {
     hide();
-    message.error(error?.response.data.error.message || 'Lỗi');
+    message.error(error?.response?.data?.error?.message || 'Lỗi');
     return false;
   }
 };

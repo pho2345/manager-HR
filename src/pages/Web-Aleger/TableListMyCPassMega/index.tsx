@@ -351,7 +351,7 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'P0andPnow',
       render: (_, text: any) => {
-        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot}`
+        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot || 0}`
       }
     },
 
@@ -504,7 +504,7 @@ const TableList: React.FC = () => {
       filters: optionStatusOwner,
       defaultFilteredValue: ['open'],
       onFilter : (value, record)  => {
-        if(record.colorStatusOwner.value === value){
+        if(record?.colorStatusOwner?.value === value && record.colorStatusOwner){
           return record;
         }
         return null;
@@ -552,7 +552,7 @@ const TableList: React.FC = () => {
       // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
-      valueType: 'textarea',
+      valueType: 'textarea',                                      
       key: 'option',
       align: 'center',
       render: (_, entity: any) => {

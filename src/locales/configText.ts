@@ -206,7 +206,7 @@ export default {
     'page.DetailUser.column.bank': 'Tài khoản ngân hàng',
     'page.DetailUser.column.ale': 'Số dư ale',
     'page.DetailUser.column.quantityAleRecharge': 'Số ale đã nạp',
-    'page.DetailUser.column.aleUsed': 'Số ale đã nạp',
+    'page.DetailUser.column.aleUsed': 'Số ale đã dùng',
     'page.DetailUser.column.produceAle': 'ProduceAle',
     'page.DetailUser.column.promoAle': 'PromoAle',
     'page.DetailUser.column.infomationAleger': 'Thông tin Aleger',
@@ -636,6 +636,7 @@ export default {
 
 
     'page.bankPlaform.chosenBank': 'Ngân hàng',
+    'page.bankPlaform.branch': 'Chi nhánh',
 
 
     'page.eWallet.name': 'Tên ví điện tử',

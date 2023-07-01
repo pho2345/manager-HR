@@ -37,7 +37,9 @@ const DialogTransfer = (props: any) => {
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, 
+      // close
+     }: any) => (
       <div
         style={{
           padding: 8,
@@ -75,28 +77,6 @@ const DialogTransfer = (props: any) => {
             }}
           >
             Làm mới
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
-            }}
-          >
-            Lọc
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            đóng
           </Button>
         </Space>
       </div>

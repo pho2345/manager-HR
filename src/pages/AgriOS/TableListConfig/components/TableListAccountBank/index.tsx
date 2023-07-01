@@ -234,8 +234,17 @@ const TableList: React.FC = () => {
             key: 'stk',
             renderText: (_, text: any) => text?.accountNumber,
             ...getColumnSearchProps('name')
-
         },
+
+        {
+            title: configDefaultText['page.bankPlaform.branch'],
+            dataIndex: 'branch',
+            valueType: 'textarea',
+            key: 'branch',
+            renderText: (_, text: any) => text?.branch,
+            ...getColumnSearchProps('branch')
+        },
+
 
         {
             title: configDefaultText['page.bankPlaform.nameBank'],
@@ -439,6 +448,24 @@ const TableList: React.FC = () => {
                     </Col>
                 </Row>
 
+                <Row gutter={24} className="m-0">
+                    <Col span={24} className="gutter-row p-0">
+                        <ProFormText
+                            label={configDefaultText['page.bankPlaform.branch']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: configDefaultText['page.bankPlaform.branch']
+                                },
+                            ]}
+                            width='md'
+                            name='branch'
+                            placeholder={configDefaultText['page.bankPlaform.branch']}
+                        />
+
+                    </Col>
+                </Row>
+
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0">
@@ -519,6 +546,25 @@ const TableList: React.FC = () => {
                         />
                     </Col>
                 </Row>
+
+                <Row gutter={24} className="m-0">
+                    <Col span={24} className="gutter-row p-0">
+                        <ProFormText
+                            label={configDefaultText['page.bankPlaform.branch']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: configDefaultText['page.bankPlaform.branch']
+                                },
+                            ]}
+                            width='md'
+                            name='branch'
+                            placeholder={configDefaultText['page.bankPlaform.branch']}
+                        />
+
+                    </Col>
+                </Row>
+
 
 
                 <Row gutter={24} className="m-0">

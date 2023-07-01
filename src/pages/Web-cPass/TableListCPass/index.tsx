@@ -1,4 +1,4 @@
-import { customAPIDowload, customAPIDowloadPDF, customAPIGet, customAPIGetOne } from '@/services/ant-design-pro/api';
+import { customAPIDowload, customAPIDowloadPDF, customAPIGet } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
@@ -6,8 +6,9 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
+import Chart from './components/Chart';
 import { FormattedMessage, Link } from '@umijs/max';
-import { Avatar, Button,  Input, Space, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Input, Space, Tooltip, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailUser from '@/pages/components/DetailUser';
@@ -15,6 +16,7 @@ import DetailCPass from '@/pages/AgriGate/TableListCPass/components/DetailCPass'
 import { MdOutlineHistory } from 'react-icons/md';
 const { Text } = Typography;
 import configText from '@/locales/configText';
+import { BsGraphUpArrow } from 'react-icons/bs';
 const configDefaultText = configText;
 
 
@@ -92,6 +94,8 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
+  const refIdCheckHistory = useRef<any>();
+  const refIdCpass = useRef<any>();
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
@@ -106,6 +110,7 @@ const TableList: React.FC = () => {
   const [optionStatusOwner, setOptionStatusOwner] = useState<any>([]);
   const [optionStatusTransaction, setOptionStatusTransaction] = useState<any>([]);
   const [optionReasonSettlement, setOptionReasonSettlement] = useState<any>([]);
+  const [openChart, setOpenChart] = useState<boolean>(false);
 
 
   // useEffect(() => {
@@ -117,15 +122,15 @@ const TableList: React.FC = () => {
   useEffect(() => {
     const getData = async () => {
 
-      const getOptionBodyCondition =  getBodyCondition();
-      const getOptionWGE =  getWGE();
-      const getOptionAWG =  getAWG();
-      const getOptionStatus =  getStatusOwner();
-      const getOptionStatusTrasaction =  getStatusTransaction();
-      const getReasonSettlement =  getReasonSettlment();
-      const getFarms =  getFarm();
+      const getOptionBodyCondition = getBodyCondition();
+      const getOptionWGE = getWGE();
+      const getOptionAWG = getAWG();
+      const getOptionStatus = getStatusOwner();
+      const getOptionStatusTrasaction = getStatusTransaction();
+      const getReasonSettlement = getReasonSettlment();
+      const getFarms = getFarm();
 
-      const getAllData = await Promise.all([ getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement, getFarms]);
+      const getAllData = await Promise.all([getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement, getFarms]);
       setOptionBodyCondition(getAllData[0]);
       setOptionWGE(getAllData[1]);
       setOptionAWG(getAllData[2]);
@@ -256,7 +261,7 @@ const TableList: React.FC = () => {
       },
       filters: optionFair,
       onFilter: (value, record) => {
-        if(value === record?.fair?.id){
+        if (value === record?.fair?.id) {
           return record;
         }
         return null;
@@ -284,7 +289,7 @@ const TableList: React.FC = () => {
     },
     {
       title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
-      {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
+        {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
       width: 130,
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
@@ -424,7 +429,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => `${text?.wgePercent}%`,
       filters: optionWGE,
       onFilter: (value, record) => {
-        if(value === record?.colorWge?.id) return record;
+        if (value === record?.colorWge?.id) return record;
         return null;
       }
     },
@@ -436,8 +441,8 @@ const TableList: React.FC = () => {
       key: 'awgAvg',
       renderText: (_, text: any) => text?.awgAvg,
       filters: optionAWG,
-      onFilter : (value, record)  => {
-        if(record.awg === value){
+      onFilter: (value, record) => {
+        if (record.awg === value) {
           return record;
         }
         return null;
@@ -470,7 +475,7 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br/>MegaE (VNĐ)<br />MegaCPR</>)} />,
+      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>)} />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'plan',
@@ -478,9 +483,9 @@ const TableList: React.FC = () => {
       align: 'center',
       render: (_, text: any) => {
         return (<>
-        { text?.megaP || 0 }<br/>
-        {text?.megaE.toLocaleString() || 0} <br/>
-        {text?.megaCPR}%
+          {text?.megaP || 0}<br />
+          {text?.megaE.toLocaleString() || 0} <br />
+          {text?.megaCPR}%
         </>)
       }
     },
@@ -509,11 +514,30 @@ const TableList: React.FC = () => {
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
-          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/${id}?fair=${text?.fair?.id}&history=${text?.checkHistory || false}` }><MdOutlineHistory style={{
+          <Tooltip title="Lịch sử"> <Link to={`/cpasses/history-slot/${id}?fair=${text?.fair?.id}&history=${text?.checkHistory || false}`}><MdOutlineHistory style={{
             fontSize: '20px'
           }}>
           </MdOutlineHistory></Link></Tooltip>
         </>)
+      }
+    },
+    {
+      // title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
+      title: configDefaultText['page.listCPass.column.graph'],
+      dataIndex: 'graph',
+      valueType: 'textarea',
+      key: 'graph',
+      render: (_, text: any) => {
+        return (<>
+          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
+            onClick={() => {
+              refIdCpass.current = text?.id;
+              refIdCheckHistory.current = text?.checkHistory;
+              setOpenChart(true);
+            }}
+          /></Tooltip>
+        </>)
+
       }
     },
 
@@ -527,8 +551,8 @@ const TableList: React.FC = () => {
       },
       filters: optionStatusOwner,
       defaultFilteredValue: ['open'],
-      onFilter : (value, record)  => {
-        if(record.colorStatusOwner.value === value){
+      onFilter: (value, record) => {
+        if (record?.colorStatusOwner?.value === value && record?.colorStatusOwner) {
           return record;
         }
         return null;
@@ -547,8 +571,8 @@ const TableList: React.FC = () => {
         </>);
       },
       filters: optionStatusTransaction,
-      onFilter : (value, record)  => {
-        if(record?.colorStatusTransaction?.value === value){
+      onFilter: (value, record) => {
+        if (record?.colorStatusTransaction?.value === value) {
           return record;
         }
         return null;
@@ -566,15 +590,13 @@ const TableList: React.FC = () => {
         </>);
       },
       filters: optionReasonSettlement,
-      onFilter : (value, record)  => {
-        if(record?.colorSettlement?.value === value){
+      onFilter: (value, record) => {
+        if (record?.colorSettlement?.value === value) {
           return record;
         }
         return null;
       },
     },
-
-
   ];
 
   return (
@@ -589,8 +611,8 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        request={ async () => {
-          const data = await customAPIGet( {} , 'c-passes/get/c-pass-mega');
+        request={async () => {
+          const data = await customAPIGet({}, 'c-passes/get/c-pass-mega');
           console.log(data?.data?.cPass);
           setOptionFair(data?.data?.fair);
           return {
@@ -675,6 +697,17 @@ const TableList: React.FC = () => {
           setShowDetailUser(false);
         }}
       />
+
+      {
+        openChart && <Chart
+          openModal={openChart}
+          types={refIdCheckHistory.current ? 'history' : 'c-pass'}
+          cPassId={refIdCpass.current}
+          onClose={() => {
+            setOpenChart(false);
+          }}
+        />
+      }
     </PageContainer>
 
   );

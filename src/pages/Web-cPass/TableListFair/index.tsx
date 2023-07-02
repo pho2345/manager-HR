@@ -523,12 +523,13 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'timeStart',
       renderText: (_, text) => {
-        let indexWeek = moment(text?.timeStart).weekday();
-        let weekday = 'T' + `${moment(text?.timeStart).weekday() + 1}`;
+        const time = moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour');
+        let indexWeek = moment(time).weekday();
+        let weekday = 'T' + `${moment(time).weekday() + 1}`;
         if (indexWeek === 0) {
           weekday = 'CN';
         }
-        return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+        return weekday + ' ' + time.format('DD/MM/YYYY HH:mm:ss');
       },
       ...getColumnSearchRange()
     },
@@ -539,8 +540,9 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'timeEnd',
       renderText: (_, text: any) => {
-        let indexWeek = moment(text?.timeEnd).weekday();
-        let weekday = 'T' + `${moment(text?.timeEnd).weekday() + 1}`;
+        let indexWeek = moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').weekday();
+        console.log('indexWeek', indexWeek, text?.timeEnd);
+        let weekday = 'T' + `${moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').weekday() + 1}`;
         if (indexWeek === 0) {
           weekday = 'CN';
         }
@@ -730,6 +732,7 @@ const TableList: React.FC = () => {
                 handleUpdateModalOpen(true);
                 refIdFair.current = entity.id;
                 const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
+                setDateEnd(fair.timeEnd);
                 fair.timeEnd = moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
                 fair.timeStart = moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
                 fair.dateStartFeed = moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('YYYY-MM-DD HH:mm:ss');
@@ -1206,6 +1209,9 @@ const TableList: React.FC = () => {
                 fieldProps={{
                   style: {
                     width: '100%'
+                  },
+                  onChange: (value: any) => {
+                    setDateEnd(moment(value).toISOString());
                   }
                 }}
                 placeholder={configDefaultText['page.listFair.placeHolder.timeEnd']}
@@ -1225,7 +1231,7 @@ const TableList: React.FC = () => {
                   style: {
                     width: '100%'
                   },
-                  disabledDate: disabledDate
+                  disabledDate: (current) => disabledDateStartFeed(current, dateEnd)
                 }}
                 name="dateStartFeed"
                 placeholder={configDefaultText['page.listFair.column.dateStartFeed']}

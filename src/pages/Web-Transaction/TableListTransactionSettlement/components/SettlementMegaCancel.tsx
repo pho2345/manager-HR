@@ -347,7 +347,6 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
   return (
     <PageContainer
-      title='pho'
     >
     
       <ModalForm
@@ -367,7 +366,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
 
         <ProTable
-          headerTitle={<>
+          headerTitle={<>{configDefaultText['page.listSettlement.title']}
           </>}
           
           actionRef={actionRef}

@@ -530,6 +530,7 @@ export default {
     'page.listSettlement.registeringSettlementSickOrDeath': 'Đăng kí thanh quyết toán bệnh chết',
     'page.listSettlement.modal.registeringSettlementCancel': 'Chọn Aleger muốn thanh quyết toán trước hạn',
     'page.listSettlement.column.status': 'Trạng thái giao dịch',
+    'page.listSettlement.title': 'Chọn cPass',
 
 
     'page.settlementMegaCancel.column.cPass': 'Thẻ tai|cPass',

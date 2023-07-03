@@ -1,7 +1,4 @@
-﻿import { truncate } from "lodash";
-
-
-export default [
+﻿export default [
   {
     path: '/user',
     layout: false,
@@ -13,12 +10,6 @@ export default [
       },
     ],
   },
-  // {
-  //   path: '/welcome',
-  //   name: 'welcome',
-  //   icon: 'smile',
-  //   component: './Welcome',
-  // },
   {
     path: '/admin',
     name: 'admin',
@@ -36,25 +27,11 @@ export default [
       },
     ],
   },
-  // {
-  //   name: 'Bò',
-  //   icon: 'table',
-  //   path: '/cows',
-  //   //component: './TableListCow',
-  //   //menuHeaderRender: false,
-  //   routes: [
-  //     { path: '/cows/list', icon: 'table', hideInMenu: false, name: 'Danh sách bò', component: './TableListCow' }
-  //   ],
-  // },
-  
-
- 
 
   {
     name: 'Web-cPass',
     icon: 'table',
     path: '/web-c-pass',
-    //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
       { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh sách đợt mở bán', component: './Web-cPass/TableListFair' },
@@ -67,7 +44,6 @@ export default [
     name: 'AgriGate',
     icon: 'table',
     path: '/agrigate',
-    //component: './TableListFair',
     menuHeaderRender: false,
     routes: [
       { path: '/agrigate/farm', name: 'Danh sách trang trại', component: './AgriGate/TableListFarm' },
@@ -89,7 +65,6 @@ export default [
     name: 'Web-Aleger',
     icon: 'table',
     path: '/web-aleger',
-    // menuHeaderRender: false,
     routes: [
       { path: '/web-aleger/mega',name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
       { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
@@ -157,11 +132,6 @@ export default [
     component: './Web-cPass/TableListManagerCPassPayment',
   },
 
-   {
-    path: '/web-aleger/mega/slot-c-pass/:id',
-    component: './Web-Aleger/TableListHistoryOfMega',
-  },
-
   {
     path: 'cpasses/history-slot/:id',
     component: './TableListHistorySlot',
@@ -171,65 +141,18 @@ export default [
     path: '/web-c-pass/fairs/add-cpass/:id',
     component: './Web-cPass/TableListAddCPassInFair',
   },
-  // {
-  //   name: 'Slot',
-  //   icon: 'table',
-  //   path: '/slot',
-  //   component: './TableListSlot',
-  // },
+
 
   {
     name: 'Giao dịch',
     icon: 'table',
     path: '/transactions',
-    //component: './TableListTransaction',
     routes: [
       { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
       { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
       { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
     ],
   },
- 
-  // {
-  //   name: 'Giống bò',
-  //   icon: 'table',
-  //   path: '/categories',
-  //   component: './TableListCategory',
-  // },
-
-  // {
-  //   name: 'Nhóm bò',
-  //   icon: 'table',
-  //   path: '/group',
-  //   component: './TableListGroupCow',
-  // },
-  // {
-  //   name: 'E-Wallet', 
-  //   icon: 'table',
-  //   path: '/ewallets',
-  //   component: './TableListEWallet',
-  // },
-  // {
-  //   name: 'Nông trại',
-  //   icon: 'table',
-  //   path: '/farms',
-  //   component: './TableListFarm',
-  // },
-  // {
-  //   name: 'Phương án hợp tác',
-  //   icon: 'table',
-  //   path: '/plans',
-  //   component: './TableListPlan',
-  // },
- 
- 
-  // {
-  //   name: 'Địa chỉ',
-  //   icon: 'table',
-  //   path: '/address',
-  //   component: './TableListAddress',
-  // },
- 
   {
     path: '/',
     redirect: '/web-c-pass/fairs',

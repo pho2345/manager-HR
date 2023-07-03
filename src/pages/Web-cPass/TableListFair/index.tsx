@@ -793,9 +793,6 @@ const TableList: React.FC = () => {
   ];
 
 
-
-
-
   function renderTableAlert(selectedRowKeys: any) {
     return (
 

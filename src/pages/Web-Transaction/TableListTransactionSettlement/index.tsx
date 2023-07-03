@@ -6,7 +6,7 @@ import {
   customAPIUpdateMany,
   // customAPIDelete,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -440,7 +440,7 @@ const TableList: React.FC = () => {
           return [
             <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
               <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-                {configDefaultText['handle']}
+                Thanh quyết toán
               </a>
             </Dropdown>
           ]

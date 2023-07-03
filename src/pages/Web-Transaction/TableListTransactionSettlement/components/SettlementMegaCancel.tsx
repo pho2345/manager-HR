@@ -1,6 +1,6 @@
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ModalForm, PageContainer, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -165,25 +165,6 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
   });
 
 
-  // const confirm = (entity: any, message: string, api: string, id: any) => {
-  //   Modal.confirm({
-  //     title: 'Confirm',
-  //     icon: <ExclamationCircleOutlined />,
-  //     content: message,
-  //     okText: 'Có',
-  //     cancelText: 'Không',
-  //     onOk: async () => {
-
-  //       await handleUpdateMany({
-  //         ...entity
-  //       }, api, id);
-  //       if (actionRef.current) {
-  //         actionRef.current.reload();
-  //       }
-  //     }
-  //   });
-  // };
-
 
   useEffect(() => {
     const fetchDataFair = async () => {
@@ -202,7 +183,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
       key: 'code',
       dataIndex: 'code',
       // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
-      title: configDefaultText['page.settlementMegaCancel.column.cPass'],
+      title: (<>Thẻ tai <br /> cPass</>),
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
@@ -213,7 +194,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
               setShowDetailCPass(true);
             }}
           >
-            {`${entity.code}|${entity.id}`}
+            {`${entity.code}`} <br /> {entity?.id}
           </a>
 
         );
@@ -243,13 +224,13 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
 
     {
       // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
-      title: configDefaultText['page.settlementMegaCancel.column.ageAndSlot'],
+      title: (<>Tuổi <br /> Snow</>),
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
-      renderText: (_, text: any) => {
-        let age = `${text.age / 4 >= 1 ? `${(text.age / 4).toFixed(0)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}/S${text?.slotNow}`;
-        return age;
+      render: (_, text: any) => {
+        let age = `${text.age / 4 >= 1 ? `${(text.age / 4).toFixed(0)}Th` : ''} ${text.age % 4 !== 0 ? (text.age % 4) + 'T' : ''}`;
+        return (<>{age} <br /> S{text?.slotNow}</>)
       },
     },
 
@@ -289,7 +270,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br/>tăng trọng</>} />,
-      title: (<>{configDefaultText['page.listSettlement.column.wgePercentOne']}<br />{configDefaultText['page.listSettlement.column.wgePercentTwo']} </>),
+      // title: (<>{configDefaultText['page.listSettlement.column.wgePercentOne']}<br />{configDefaultText['page.listSettlement.column.wgePercentTwo']} </>),
+      title: (<>HQTT (%)</>),
       dataIndex: 'wgePercent',
       valueType: 'textarea',
       key: 'wgePercent',
@@ -297,7 +279,8 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br/>trung bình<br/>(kg/Tuần)</>} />,
-      title: (<>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br />{configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>),
+      // title: (<>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br />{configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>),
+      title: 'TTTB (kg/Tuần)',
       dataIndex: 'awgAvg',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -363,7 +346,10 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
   }
 
   return (
-    <>
+    <PageContainer
+      title='pho'
+    >
+    
       <ModalForm
         open={props.openModal}
         autoFocusFirstInput
@@ -375,7 +361,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         }}
         submitTimeout={2000}
         submitter={false}
-        width='100vh'
+        width={window.innerWidth}
       >
       
 
@@ -383,6 +369,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         <ProTable
           headerTitle={<>
           </>}
+          
           actionRef={actionRef}
           rowKey='id'
           search={false}
@@ -497,7 +484,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         }
 
       </ModalForm>
-    </>
+    </PageContainer>
   );
 };
 

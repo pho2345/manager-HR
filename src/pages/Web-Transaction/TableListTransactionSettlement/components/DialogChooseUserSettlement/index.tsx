@@ -194,7 +194,6 @@ const DialogTransfer = (props: any) => {
 
   return (
     <>
-
       <ModalForm
         open={props.openModal}
         autoFocusFirstInput

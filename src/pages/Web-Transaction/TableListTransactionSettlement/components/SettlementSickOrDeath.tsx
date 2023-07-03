@@ -33,30 +33,23 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
-  // const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
 
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
 
   const [showConfirmSettlement, setShowConfirmSettlement] = useState<boolean>(false);
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
-  //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
-  // const params = useParams<any>();
-  //const [userSettlement, setUserSettlement] = useState<userSettlement>();
+ 
 
-  // const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
+   
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
@@ -339,7 +332,7 @@ const TableListRegisteringSettlement: React.FC<SettlementCPassModal> = (props) =
         }}
         submitTimeout={2000}
         submitter={false}
-        width='100vh'
+        width={window.innerWidth}
       >
 
         <ProTable

@@ -17,14 +17,17 @@ import {
   ProFormSelect,
   ProFormTextArea,
   ProFormUploadButton,
-} from '@ant-design/pro-components';
-import {
+
   ModalForm,
   PageContainer,
   ProDescriptions,
   ProFormText,
   ProTable,
+
 } from '@ant-design/pro-components';
+import {
+  Image
+} from 'antd';
 
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -276,7 +279,7 @@ const TableList: React.FC = () => {
   });
 
 
-  
+
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     confirm();
   };
@@ -441,14 +444,14 @@ const TableList: React.FC = () => {
             }
           }
         }
-        if(optionValue === 'days'){
+        if (optionValue === 'days') {
           const timeStart = moment().startOf(optionValue).toISOString();
           const timeEnd = moment().endOf(optionValue).toISOString();
           const convert = moment(record[dataIndex]).add(1, 'minutes').toISOString();
           const checkStart = moment(convert).isAfter(timeStart);
           const checkEnd = moment(convert).isBefore(timeEnd);
 
-          if(checkEnd && checkStart){
+          if (checkEnd && checkStart) {
             return record
           }
 
@@ -1302,8 +1305,6 @@ const TableList: React.FC = () => {
           />
 
         </ModalForm>
-
-
         <Drawer
           width={600}
           open={showDetail}
@@ -1411,22 +1412,18 @@ const TableList: React.FC = () => {
               render: (_, entity) => {
                 const photo = entity.photo.map((e: any) => {
                   return (
-                    <><Field
-                      text={SERVERURL + e}
-                      valueType="image"
-
-                    />
+                    <>
+                      <>
+                        <Image src={SERVERURL + e} />
+                      </>
                     </>
                   )
                 })
                 return photo;
               }
             }
-
           ]}
         >
-
-
         </ProDescriptions>
       )
   );

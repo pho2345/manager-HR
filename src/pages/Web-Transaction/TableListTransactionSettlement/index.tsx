@@ -50,53 +50,17 @@ const handleUpdateMany = async (fields: any, api: any) => {
 };
 
 
-// const handleRemove = async (selectedRows: any) => {
-
-//   const hide = message.loading('Đang xóa...');
-//   if (!selectedRows) return true;
-//   try {
-//     const deleteRowss = selectedRows.map((e: any) => {
-//       return customAPIDelete(e.id, 'transactions');
-//     });
-
-//     await Promise.all(deleteRowss);
-//     hide();
-//     message.success('Xóa thành công');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Xóa thất bại');
-//     return false;
-//   }
-// };
-
-
-
-
-
 const TableList: React.FC = () => {
-  //const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
-
   const [showUsers, setShowUsers] = useState<boolean>(false);
-
-  // const [currentUserSettlementCancel, setCurrentUserSettlementCancel] = useState<any>();
-  // const [showRegisteringSettlementCancel, setShowRegisteringSettlementCancel] = useState<boolean>(false);
-
-
   const [showRegisteringSettlementSickOrDeath, setShowRegisteringSettlementSickOrDeath] = useState<boolean>(false);
-
   const [filterFair, setFilterFair] = useState<any>();
-  //const [filterReason, setFilterReason] = useState<any>();
 
 
 
@@ -104,9 +68,6 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -348,7 +309,8 @@ const TableList: React.FC = () => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br />trung bình<br />(kg/Tuần)</>} />,
-      title: <>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br /> {configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>,
+      // title: <>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br /> {configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>,
+      title: 'TTTB (kg/Tuần)',
       dataIndex: 'awgAvg',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -368,7 +330,10 @@ const TableList: React.FC = () => {
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
-      renderText: (_, text: any) => `${text?.megaDeltaWeight}/${text?.produceAle}`
+      align: 'center',
+      render: (_, text: any) => (<>{text?.megaDeltaWeight}
+        <br />
+        {text?.produceAle}</>)
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
@@ -413,28 +378,8 @@ const TableList: React.FC = () => {
 
       },
     },
-    // {
-    //   title: <>{configDefaultText['titleOption']}</>,
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'option',
-    //   render: (_, entity: any) => {
-    //     let button = [];
-    //     if (entity?.status === 'inProgress') {
-    //       button.push((
-    //         <><Space><Button onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)} style={{
-    //           width: 90
-    //         }} >Xác nhận</Button>
-    //           <Button onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)} style={{
-    //             width: 90
-    //           }}>Xóa</Button></Space></>
-    //       ))
-    //     }
-    //     return button
-    //   },
-    // },
+
     {
-      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -443,26 +388,24 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         const menu = (
           <Menu>
-            
-              <Menu.Item key="1"
-                onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)}
-              >{configDefaultText['submit']}</Menu.Item>
-              <Menu.Item key="2"
-                onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}
-              >{configDefaultText['delete']}</Menu.Item>
-          
+
+            <Menu.Item key="1"
+              onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)}
+            >{configDefaultText['submit']}</Menu.Item>
+            <Menu.Item key="2"
+              onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}
+            >{configDefaultText['delete']}</Menu.Item>
+
           </Menu>
         );
         return (
           entity?.status === 'inProgress' ? (<>
-          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-              {configDefaultText['handle']}
-            </a>
-          </Dropdown>
+            <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+                Thanh quyết toán
+              </a>
+            </Dropdown>
           </>) : (<></>)
-        
-          
         )
       }
     },
@@ -470,66 +413,40 @@ const TableList: React.FC = () => {
 
 
 
-  // function renderTableAlert(selectedRowKeys: any) {
-  //   return (
-  //     <Fragment>
-  //       Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-  //     </Fragment>
-  //   );
-  // }
-
-
-  // function renderTableAlertOption(selectedRows: any) {
-  //   return (
-  //     <>
-  //       <Fragment>
-  //         <Button onClick={async () => {
-  //           // await confirm(selectedRows as any, 'xóa', actionRef);
-  //           actionRef.current?.reloadAndRest?.();
-  //         }}>Xóa</Button>
-  //       </Fragment>
-  //     </>
-  //   );
-  // }
-
-
   return (
     <PageContainer>
       <ProTable
-        // headerTitle={intl.formatMessage({
-        //   id: 'pages.searchTable.title',
-        //   defaultMessage: 'Enquiry form',
-        // })}
-
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              // handleModalOpen(true);
-              setShowUsers(true);
-              // setShowRegisteringSettlementCancel(true);
-              // setCurrentUserSettlementCancel(8);
-            }}
-          >
-            <PlusOutlined /> {configDefaultText['page.listSettlement.registeringSettlementCancel']}
-          </Button>,
+        // style={{
+        //   width: window.innerWidth
+        // }}
+        toolBarRender={() => {
+          const menu = (
+            <Menu>
+              <Menu.Item key="1"
+                onClick={() => {
+                  setShowRegisteringSettlementSickOrDeath(true);
+                }}
+              >Thanh quyết toán bệnh chết</Menu.Item>
+              <Menu.Item key="2"
+                onClick={() => {
+                  setShowUsers(true);
+                }}
+              >Thanh quyết toán trước hạn</Menu.Item>
+            </Menu>
+          );
+          return [
+            <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+                {configDefaultText['handle']}
+              </a>
+            </Dropdown>
+          ]
+        }
 
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              // handleModalOpen(true);
-              setShowRegisteringSettlementSickOrDeath(true);
-            }}
-          >
-            <PlusOutlined />   {configDefaultText['page.listSettlement.registeringSettlementSickOrDeath']}
-          </Button>
-
-        ]}
+        }
         request={async () => {
           const data = await customAPIGet(
             {},
@@ -546,18 +463,8 @@ const TableList: React.FC = () => {
           setFilterFair(filterdata);
           return data;
         }
-
         }
         columns={columns}
-        // rowSelection={{
-        //   // onChange: (_, selectedRows: any) => {
-        //   //   setSelectedRows(selectedRows);
-        //   // },
-        //   // getCheckboxProps: record => ({
-        //   //   disabled: record.status === 'done'
-        //   // })
-        // }}
-
         toolbar={{
           settings: [{
             key: 'reload',
@@ -580,43 +487,9 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-
         tableAlertRender={false}
-
-
         tableAlertOptionRender={false}
-
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-
-        //       </div>
-        //     }
-        //   >
-        //     {/* <Button
-        //       onClick={async () => {
-        //         await handleRemove(selectedRowsState);
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       <FormattedMessage
-        //         id='pages.searchTable.batchDeletion'
-        //         defaultMessage='Batch deletion'
-        //       />
-        //     </Button>
-        //      */}
-        //   </FooterToolbar>
-        // )
-      }
 
       {currentRowCPass && (
         <DetailCPass
@@ -668,20 +541,6 @@ const TableList: React.FC = () => {
       }
 
 
-      {/* {
-        currentUserSettlementCancel && (
-          <SettlementCPassModal
-            openModal={showRegisteringSettlementCancel}
-            userId={currentUserSettlementCancel}
-            onCloseModal={() => {
-              setCurrentUserSettlementCancel(undefined);
-              setShowRegisteringSettlementCancel(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }}
-          />)
-      } */}
 
       {
         showRegisteringSettlementSickOrDeath && (

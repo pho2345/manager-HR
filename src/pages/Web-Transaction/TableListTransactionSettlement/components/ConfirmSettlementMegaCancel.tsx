@@ -14,10 +14,6 @@ import { Button, Space, Input, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
-// import DetailCPass from '../components/DetailCPass';
-// import DetailUser from '../components/DetailUser';
-
-
 const handleCreate = async (fields: any, api: string) => {
   const hide = message.loading('Đang xử lý...');
 
@@ -60,21 +56,10 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
   const [showModalMethod, setShowModalMethod] = useState<boolean>(false);
-
-
-
-  //const params = useParams<any>();
-  //const [userSettlement, setUserSettlement] = useState<userSettlement>();
-
-  //const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
@@ -208,7 +193,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Snow</>} />,
+      title: 'Snow',
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
       key: 'ageAndSlot',
@@ -217,7 +202,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
+      title: (<>P0<br />Pnow<br />(kg)</>),
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -227,7 +212,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Hoàn trả Vs(VNĐ)</>} />,
+      title: (<>Hoàn trả Vs(VNĐ)</>),
       dataIndex: 'refundVs',
       valueType: 'textarea',
       key: 'refundVs',
@@ -242,7 +227,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
+      title: (<>MegaΔP(kg)<br />ProduceAle</>),
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -250,7 +235,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
+      title: 'MegaP (kg)',
       dataIndex: 'megaP',
       valueType: 'textarea',
       key: 'megaP',
@@ -258,7 +243,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
+      title: (<>MegaE (VNĐ)</>),
       dataIndex: 'megaE',
       valueType: 'textarea',
       key: 'megaE',
@@ -270,6 +255,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     <>
       <ModalForm
         open={props.openModal}
+        title='Thanh quyết toán trước hạn'
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -278,21 +264,9 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
           },
         }}
         onFinish={async () => {
-          // const cPass = props?.cPass.map((e: any) => e.id);
-
-          // const success = await handleCreate({
-          //   "cPass": cPass,
-          //   "userId": props.userId,
-          //   "method": "ale"
-          // }, 'transactions/settlement/create');
-
-          // if(success){
-          //   props.onCloseModal();
-          // }
-          // return true;
-
           setShowModalMethod(true);
         }}
+        width={window.innerWidth * 0.9}
         submitTimeout={2000}
         submitter={{
           searchConfig: {
@@ -303,7 +277,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       >
         <ProTable
           headerTitle={(<>
-            {/* Đăng ký Thanh quyết toán cho Mega {userSettlement?.fullname ? userSettlement?.fullname : userSettlement?.username} - {userSettlement?.id}  các cPass sau: */}
           </>)}
           pagination={false}
           actionRef={actionRef}
@@ -316,18 +289,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
             }
           }
 
-
-          // request={async () => {
-          //   const data = await customAPIGetOne(8, 'c-passes/get/cpass-of-mega', {});
-          //   setUserSettlement(data?.user);
-          //   //console.log('usersss', data);
-
-          //   return {
-          //     data: data?.cPass,
-          //     success: true,
-          //     total: 0
-          //   }
-          // }}
           columns={columnCPass}
           dataSource={props.cPass}
 

@@ -365,12 +365,21 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: 'P0/Pnow@Snow',
+      title: (<>
+        P0<br />
+        Pnow <br />
+        Snow
+      </>),
       dataIndex: 'P0andPnow',
       valueType: 'textarea',
       key: 'P0andPnow',
       render: (_, text: any) => {
-        return `${text?.pZero}/${text?.nowWeight}@${text?.slotNow?.indexSlot || 0}`
+        return (<>
+          {text?.pZero} <br />
+          {text?.nowWeight} <br />
+          {text?.slotNow?.indexSlot}
+
+        </>)
       }
     },
 
@@ -422,7 +431,7 @@ const TableList: React.FC = () => {
       // },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
+      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='HQTT' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'wgePercent',
@@ -435,7 +444,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB(kg/tuần)' />,
+      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='TTTB(kg/tuần)' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'awgAvg',
@@ -599,6 +608,7 @@ const TableList: React.FC = () => {
     },
   ];
 
+
   return (
     <PageContainer
       onBack={() => window.history.back()}
@@ -622,11 +632,6 @@ const TableList: React.FC = () => {
           };
         }}
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
-        //     setSelectedRows(selectedRows);
-        //   },
-        // }}
 
         toolbar={{
           settings: [{
@@ -637,8 +642,14 @@ const TableList: React.FC = () => {
               if (actionRef.current) {
                 actionRef.current.reload();
               }
-            }
-          }]
+            },
+          },
+
+          
+          
+        ],
+       
+      
         }}
 
         pagination={{

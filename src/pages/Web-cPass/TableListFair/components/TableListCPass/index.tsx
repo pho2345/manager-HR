@@ -1,18 +1,17 @@
 import { customAPIGet, customAPIAdd, customAPIDelete, customAPIUpdate } from '@/services/ant-design-pro/api';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProDescriptionsItemProps, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { PlusOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
   PageContainer,
-  ProDescriptions,
   ProFormText,
 
   ProTable,
 } from '@ant-design/pro-components';
 
 import { FormattedMessage, Link, useIntl } from '@umijs/max';
-import { Avatar, Button,  Drawer, Form,  message, Typography } from 'antd';
+import { Avatar, Button,  Form, message, Typography } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 // import DetailUser from '../components/DetailUser';
@@ -94,16 +93,16 @@ const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
+  // const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
-  const [currentRow, setCurrentRow] = useState<any>();
+  // const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
 
-  const [currentRowUser, setCurrentRowUser] = useState<any>();
-  const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
+  // const [currentRowUser, setCurrentRowUser] = useState<any>();
+  // const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   useEffect(() => {
     const getValues = async () => {
       let getCow = await getCownotInCpass();
@@ -144,8 +143,8 @@ const TableList: React.FC = () => {
         return (
           <a
             onClick={() => {
-              setCurrentRow(entity?.code);
-              setShowDetail(true);
+              // setCurrentRow(entity?.code);
+              // setShowDetail(true);
             }}
           >
             {entity?.code}
@@ -174,8 +173,8 @@ const TableList: React.FC = () => {
       //   console.log(input);
       //   return true
       // }, 
-      
-      
+
+
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
@@ -318,8 +317,8 @@ const TableList: React.FC = () => {
           return (<>
             <a
               onClick={() => {
-                setCurrentRowUser(text.owner.id);
-                setShowDetailUser(true);
+                // setCurrentRowUser(text.owner.id);
+                // setShowDetailUser(true);
               }}
             >
               {`${text?.owner?.fullname ? text?.owner?.fullname : text?.owner?.username} - ${text?.owner?.id}`}</a>
@@ -360,10 +359,10 @@ const TableList: React.FC = () => {
       key: 'megaDeltaProduce',
       render: (_, text: any) => {
         let id = text?.id;
-        if(text?.checkHistory){
+        if (text?.checkHistory) {
           id = text?.cPassId;
         }
-        
+
         return (<>
           {text?.megaDeltaWeight} <br />
           {text?.produceAle} <br />
@@ -387,7 +386,7 @@ const TableList: React.FC = () => {
             Đang sở hữu
           </>)
         }
-        if(text?.statusTransaction === 'doneSettlement'){
+        if (text?.statusTransaction === 'doneSettlement') {
           return (<>
             Đã thanh quyết toán
           </>)
@@ -399,7 +398,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: (<>Trạng thái giao dịch</>) ,
+      title: (<>Trạng thái giao dịch</>),
       dataIndex: 'statusTransaction',
       valueType: 'textarea',
       key: 'statusTransaction',
@@ -410,13 +409,11 @@ const TableList: React.FC = () => {
               Đăng kí quyết toán<br /> Hết hạn hợp tác
             </>)
           }
-
           if (text?.reasonSettlement === 'megaCanceled') {
             return (<>
               Đăng kí quyết toán<br /> Mega chấm dứt trước hạn
             </>)
           }
-
         }
         else {
           return null;
@@ -424,7 +421,7 @@ const TableList: React.FC = () => {
       }
     },
 
-   
+
 
 
     // {
@@ -736,7 +733,7 @@ const TableList: React.FC = () => {
       </ModalForm>
 
 
-{/* 
+      {/* 
       <Drawer
         width={600}
         open={showDetail}

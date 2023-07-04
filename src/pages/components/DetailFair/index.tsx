@@ -2,9 +2,7 @@
 import { customAPIGetOne } from '@/services/ant-design-pro/api';
 import { PageContainer, ProColumns, ProDescriptions } from '@ant-design/pro-components';
 import {  Link,  } from '@umijs/max';
-import { Button, Drawer, 
- // Switch  
-} from 'antd';
+import { Button, Drawer, } from 'antd';
 import moment from 'moment';
 import React, {  } from 'react';
 import configText from '@/locales/configText';
@@ -15,6 +13,7 @@ const configDefaultText = configText;
  const DescriptionCustom = (props: any) => {
 
   return (<><ProDescriptions
+    
     column={1}
     request={async () => {
       const getFair =  await customAPIGetOne(props.fairId, 'fairs/fairadmin', {});
@@ -34,7 +33,6 @@ const configDefaultText = configText;
 const TableList = (props: any) => {
   const columnsDetailCPass: ProColumns<any>[] = [
     {
-      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
       title: configDefaultText['page.DetailFair.column.cPassPublished'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
@@ -43,7 +41,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
       title: configDefaultText['page.DetailFair.column.totalRemain'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
@@ -52,7 +49,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
       title: configDefaultText['page.DetailFair.column.totalSell'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
@@ -61,7 +57,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.quantityMegeBuy' defaultMessage='Số lượng Mega đã góp vốn' />,
       title: configDefaultText['page.DetailFair.column.quantityMegeBuy'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
@@ -69,19 +64,7 @@ const TableList = (props: any) => {
       renderText: (_, text: any) => `${text?.mega}`
     },
 
-
-
-    // {
-    //   //  title: <FormattedMessage id='pages.searchTable.column.switchNotify' defaultMessage='Switch nhắc thanh toán:' />,
-    //   title: configDefaultText['page.DetailFair.column.switchNotify'],
-    //   dataIndex: 'switchNotify',
-    //   valueType: 'textarea',
-    //   key: 'switchNotify',
-    //   render: (_, text: any) => <Switch />
-    // },
-
     {
-      
       dataIndex: 'switchNotify',
       valueType: 'textarea',
       key: 'switchNotify',
@@ -95,7 +78,6 @@ const TableList = (props: any) => {
 
   const columnsDetaiFair: ProColumns<any>[] = [
     {
-      // title: <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Tình Trạng' />,
       title: configDefaultText['page.DetailFair.column.status'],
       dataIndex: 'status',
       valueType: 'textarea',
@@ -119,11 +101,9 @@ const TableList = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Phiên mở bán' />,
       title: configDefaultText['page.DetailFair.column.fair'],
       render: (_, entity: any) => {
         return (
-          // <Text>{`${entity.code}|${entity.id}`}</Text>
           <>
             {`${entity.code}|${entity.id}`}</>
         );
@@ -132,7 +112,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
       title: configDefaultText['page.DetailFair.column.timeStart'],
       dataIndex: 'timeStart',
       valueType: 'textarea',
@@ -143,12 +122,11 @@ const TableList = (props: any) => {
         if(indexWeek === 0) {
           weekday = 'CN';
         }
-        return weekday + ' ' + moment(text?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+        return weekday + ' ' + moment(text?.timeStart).format('DD/MM/YYYY HH:mm:ss');
     }
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
       title: configDefaultText['page.DetailFair.column.timeEnd'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -159,12 +137,11 @@ const TableList = (props: any) => {
         if(indexWeek === 0) {
           weekday = 'CN';
         }
-        return weekday + ' ' + moment(text?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+        return weekday + ' ' + moment(text?.timeEnd).format('DD/MM/YYYY HH:mm:ss');
     }
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
       title: configDefaultText['page.DetailFair.column.dateStartFeed'],
       dataIndex: 'dateStartFeed',
       valueType: 'textarea',
@@ -176,13 +153,12 @@ const TableList = (props: any) => {
           if(indexWeek === 0) {
             weekday = 'CN';
           }
-          return weekday + ' ' + moment(text?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm:ss');
+          return weekday + ' ' + moment(text?.dateStartFeed).format('DD/MM/YYYY HH:mm:ss');
       }
       }
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
       title: configDefaultText['page.DetailFair.column.timeFeed'],
       dataIndex: 'timeFeed',
       valueType: 'textarea',
@@ -191,22 +167,18 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
       title: configDefaultText['page.DetailFair.column.unitPriceMeat'],
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
       key: 'unitPriceMeat',
-      renderText: (_, text: any) => `${text?.unitPriceMeat.toLocaleString()}`
+      renderText: (_, text: any) => `${text?.unitPriceMeat?.toLocaleString()}`
     },
-
-
-    
-
   ];
   return (
     <>
       <Drawer
-        width='50vh'
+        // width='50vh'
+        width={window.innerWidth * 0.5}
         open={props.openModal}
         onClose={() => {
           props.closeModal();

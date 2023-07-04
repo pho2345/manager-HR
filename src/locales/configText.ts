@@ -73,6 +73,7 @@ export default {
 
     'page.listFair.column.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh (VNĐ/kg) (mặc định: 70,000)',
     'page.listFair.placeHolder.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh',
+    'page.listFair.label.unitSicknessInsurance': 'Đơn giá bảo hiểm chết bệnh (VNĐ/kg)',
     'page.listFair.column.nameFarm': 'Tên trang trại',
     'page.listFair.payment': 'Thanh toán',
     'page.listFair.titleOption': 'Thao tác',
@@ -514,8 +515,8 @@ export default {
     'page.listSettlement.column.code': 'cPass',
     'page.listSettlement.column.owner': 'Mega sở hữu',
     'page.listSettlement.column.ageAndSlot': 'Tuổi/Snow',
-    'page.listSettlement.column.wgePercentOne': 'Hiệu quả',
-    'page.listSettlement.column.wgePercentTwo': 'tăng trọng (%)',
+    'page.listSettlement.column.wgePercentOne': 'HQTT (%)',
+    // 'page.listSettlement.column.wgePercentTwo': 'tăng trọng (%)',
     // 'page.listSettlement.column.awgAvg': 'cPass',
     'page.listSettlement.column.awgAvgOne': 'Tăng trọng',
     'page.listSettlement.column.awgAvgTwo': 'trung bình',
@@ -541,7 +542,7 @@ export default {
 
     'page.confirmSettlementDeadOrSick.column.owner': 'Mega sở hữu',
     'page.confirmSettlementDeadOrSick.column.slot': 'Snow',
-    'page.confirmSettlementDeadOrSick.column.refundVs': 'Hoàn trả Vs(VNĐ)',
+    'page.confirmSettlementDeadOrSick.column.refundVs': 'Hoàn trả Vs (VNĐ)',
     'page.confirmSettlementDeadOrSick.column.titleConfirm': 'Đăng ký Thanh quyết toán cho các cPass bệnh chết sau:',
     
 

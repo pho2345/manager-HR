@@ -35,12 +35,12 @@ const handleUpdate = async (fields: any, id: any, api: string) => {
   }
 };
 
-const getPlan = async(id: any) => {
+const getPlan = async (id: any) => {
   try {
     const getPlan = await customAPIGetOne(id, 'fairs/plan', {});
     return getPlan;
   } catch (error) {
-    
+
   }
 }
 
@@ -103,7 +103,7 @@ const getReasonSettlment = async () => {
 
 const TableList: React.FC = () => {
 
-  const params = useParams<number>();
+  const params = useParams<any>();
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
   const refIdCheckHistory = useRef<any>();
@@ -123,13 +123,13 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const getOptionBodyCondition =  getBodyCondition();
-      const getOptionWGE =  getWGE();
-      const getOptionAWG =  getAWG();
-      const getOptionStatus =  getStatusOwner();
-      const getOptionStatusTrasaction =  getStatusTransaction();
-      const getReasonSettlement =  getReasonSettlment();
-      const getAllData = await Promise.all([ getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement]);
+      const getOptionBodyCondition = getBodyCondition();
+      const getOptionWGE = getWGE();
+      const getOptionAWG = getAWG();
+      const getOptionStatus = getStatusOwner();
+      const getOptionStatusTrasaction = getStatusTransaction();
+      const getReasonSettlement = getReasonSettlment();
+      const getAllData = await Promise.all([getOptionBodyCondition, getOptionWGE, getOptionAWG, getOptionStatus, getOptionStatusTrasaction, getReasonSettlement]);
       setOptionBodyCondition(getAllData[0]);
       setOptionWGE(getAllData[1]);
       setOptionAWG(getAllData[2]);
@@ -142,13 +142,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -162,7 +158,6 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          // ref={configDefaultText[]}
           placeholder={`Tìm kiếm`}
           value={selectedKeys[0]}
           onChange={(e: any) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -207,13 +202,12 @@ const TableList: React.FC = () => {
     ),
     onFilter: (value: any, record: any) => {
       if (dataIndex === 'cPass') {
-        if(record.hintName &&  record.hintName.toString().toLowerCase().includes(value.toLowerCase())){
+        if (record.hintName && record.hintName.toString().toLowerCase().includes(value.toLowerCase())) {
           return record
-        } 
-        if(record.code && record.code.toString().toLowerCase().includes(value.toLowerCase())){
+        }
+        if (record.code && record.code.toString().toLowerCase().includes(value.toLowerCase())) {
           return record
-        } 
-        // return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+        }
       }
 
       console.log(value);
@@ -222,16 +216,15 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
+
       }
     },
-    // render: (text: any) =>{
-    // }
+
   });
 
   const columns: ProColumns<any>[] = [
     {
-      title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
+      title: (<> Đợt mở bán<br />Ngày hết hạn hợp tác</>),
       dataIndex: 'fair.id',
       valueType: 'textarea',
       key: 'fair.id',
@@ -244,7 +237,7 @@ const TableList: React.FC = () => {
       filters: optionFair,
       filterSearch: true,
       onFilter: (value, record) => {
-        if(record?.fair?.id === value){
+        if (record?.fair?.id === value) {
           return record
         }
         return null;
@@ -275,8 +268,8 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.farmAndCategory' defaultMessage={(<>Trang trại <br />
-        Giống bò<br />Giới tính</>)} />,
+      title: (<>Trang trại <br />
+        Giống bò<br />Giới tính</>),
       dataIndex: 'farmAndCategory',
       valueType: 'textarea',
       key: 'farmAndCategory',
@@ -347,7 +340,7 @@ const TableList: React.FC = () => {
     {
       title: 'P0(kg)/Pnow@Snow (kg)',
       dataIndex: 'P0andPnow',
-      width:`15vh`,
+      width: `15vh`,
       valueType: 'textarea',
       key: 'P0andPnow',
       render: (_, text: any) => {
@@ -366,31 +359,9 @@ const TableList: React.FC = () => {
       },
 
       filters: optionBodyCondition,
-      // valueEnum: {
-      //   good: {
-      //     text: 'Tốt',
-      //     value: 'good'
-      //   },
-      //   malnourished: {
-      //     text: 'Suy dinh dưỡng',
-      //     value: 'malnourished'
-      //   },
-      //   weak: {
-      //     text: 'Yếu',
-      //     value: 'weak'
-      //   },
-      //   sick: {
-      //     text: 'Bệnh',
-      //     value: 'sick'
-      //   },
-      //   dead: {
-      //     text: 'Chết',
-      //     value: 'dead'
-      //   },
-      // },
 
       onFilter: (value, record) => {
-        if(record.bodyCondition === value) return record;
+        if (record.bodyCondition === value) return record;
         return null
       },
     },
@@ -402,8 +373,8 @@ const TableList: React.FC = () => {
       key: 'wgePercent',
       renderText: (_, text: any) => `${text?.wgePercent}%`,
       filters: optionWGE,
-      onFilter : (value, record)  => {
-        if(record.colorWge?.id === value){
+      onFilter: (value, record) => {
+        if (record.colorWge?.id === value) {
           return record;
         }
         return null;
@@ -419,8 +390,8 @@ const TableList: React.FC = () => {
       key: 'awgAvg',
       renderText: (_, text: any) => text?.awgAvg,
       filters: optionAWG,
-      onFilter : (value, record)  => {
-        if(record.awg === value){
+      onFilter: (value, record) => {
+        if (record.awg === value) {
           return record;
         }
         return null;
@@ -428,7 +399,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>)} />,
+      title: (<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>),
       dataIndex: 'atrributes',
       valueType: 'textarea',
       width: 120,
@@ -453,7 +424,7 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaΔP<br />ProduceAle<br />History</>)} />,
+      title: (<>MegaΔP<br />ProduceAle<br />History</>),
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
@@ -494,7 +465,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.statusOwner' defaultMessage={(<>Tình trạng sở hữu</>)} />,
+      title: (<>Tình trạng sở hữu</>),
       dataIndex: 'statusOwner',
       valueType: 'textarea',
       key: 'statusOwner',
@@ -503,8 +474,8 @@ const TableList: React.FC = () => {
       },
       filters: optionStatusOwner,
       defaultFilteredValue: ['open'],
-      onFilter : (value, record)  => {
-        if(record?.colorStatusOwner?.value === value && record.colorStatusOwner){
+      onFilter: (value, record) => {
+        if (record?.colorStatusOwner?.value === value && record.colorStatusOwner) {
           return record;
         }
         return null;
@@ -522,8 +493,8 @@ const TableList: React.FC = () => {
         </>);
       },
       filters: optionStatusTransaction,
-      onFilter : (value, record)  => {
-        if(record?.colorStatusTransaction?.value === value){
+      onFilter: (value, record) => {
+        if (record?.colorStatusTransaction?.value === value) {
           return record;
         }
         return null;
@@ -541,8 +512,8 @@ const TableList: React.FC = () => {
         </>);
       },
       filters: optionReasonSettlement,
-      onFilter : (value, record)  => {
-        if(record?.colorSettlement?.value === value){
+      onFilter: (value, record) => {
+        if (record?.colorSettlement?.value === value) {
           return record;
         }
         return null;
@@ -552,32 +523,32 @@ const TableList: React.FC = () => {
       // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
-      valueType: 'textarea',                                      
+      valueType: 'textarea',
       key: 'option',
       align: 'center',
       render: (_, entity: any) => {
         const menu = (
           <Menu>
-          
-                <Menu.Item key="1"
-                  onClick={() => {
-                    refIdCpass.current = entity.id;
-                    setOpenChangeHintName(true);
-                    form.setFieldValue('hintName', entity?.hintName);
-                  }}
-                >Đặt tên gợi nhớ</Menu.Item>
-                <Menu.Item key="2"
-                  onClick={ async () => {
-                    refIdCpass.current = entity.id;
-                    const getPlanOfFair = await getPlan(entity?.fair?.id);
-                    setPlan(getPlanOfFair);
-                    form.setFieldValue('planId', {
-                      value: entity?.plan.id,
-                      label: entity?.plan.name,
-                    })
-                    setOpenChangePlan(true);
-                  }}
-                >Đổi PAHT</Menu.Item>
+
+            <Menu.Item key="1"
+              onClick={() => {
+                refIdCpass.current = entity.id;
+                setOpenChangeHintName(true);
+                form.setFieldValue('hintName', entity?.hintName);
+              }}
+            >Đặt tên gợi nhớ</Menu.Item>
+            <Menu.Item key="2"
+              onClick={async () => {
+                refIdCpass.current = entity.id;
+                const getPlanOfFair = await getPlan(entity?.fair?.id);
+                setPlan(getPlanOfFair);
+                form.setFieldValue('planId', {
+                  value: entity?.plan.id,
+                  label: entity?.plan.name,
+                })
+                setOpenChangePlan(true);
+              }}
+            >Đổi PAHT</Menu.Item>
 
           </Menu>
         );
@@ -601,7 +572,9 @@ const TableList: React.FC = () => {
       <ProTable
         rowKey='id'
         search={false}
-
+        scroll={{
+          x: window.innerWidth * 0.7
+        }}
         actionRef={actionRef}
         request={async () => {
           const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
@@ -653,7 +626,7 @@ const TableList: React.FC = () => {
               type='primary'
               key='primary'
               onClick={async () => {
-                await customAPIDowloadPDF('c-passes/get/my-c-pass-mega/pdf', params?.id);
+                await customAPIDowloadPDF('c-passes/get/my-c-pass-mega/pdf', params?.id as any);
               }}
             >
               <PlusOutlined /> PDF

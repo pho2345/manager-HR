@@ -301,7 +301,7 @@ const TableList: React.FC = () => {
     },
     {
       // title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br />tăng trọng</>} />,
-      title: <>{configDefaultText['page.listSettlement.column.wgePercentOne']}<br />{configDefaultText['page.listSettlement.column.wgePercentTwo']}</>,
+      title: <>{configDefaultText['page.listSettlement.column.wgePercentOne']}</>,
       dataIndex: 'wgePercent',
       valueType: 'textarea',
       key: 'wgePercent',
@@ -352,13 +352,11 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.megaE.toLocaleString()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.reasonSettlement' defaultMessage={<>Lý do</>} />,
       title: <>{configDefaultText['page.listSettlement.column.reasonSettlement']}</>,
       dataIndex: 'reasonSettlement',
       valueType: 'textarea',
       key: 'reasonSettlement',
       render: (_, text: any) => {
-
         return (<Text style={{ color: `${text?.colorTextReason}` }}>{text.textReason}</Text>);
 
       }
@@ -419,9 +417,6 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        // style={{
-        //   width: window.innerWidth
-        // }}
         toolBarRender={() => {
           const menu = (
             <Menu>
@@ -444,9 +439,10 @@ const TableList: React.FC = () => {
               </a>
             </Dropdown>
           ]
-        }
-
-        }
+        }}
+        scroll={{
+          x: window.innerWidth * 0.7
+        }}
         request={async () => {
           const data = await customAPIGet(
             {},

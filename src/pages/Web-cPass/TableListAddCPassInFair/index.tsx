@@ -27,9 +27,9 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
       message.success('Cập nhật thành công');
     }
     return true;
-  } catch (error) {
+  } catch (error: any) {
     hide();
-    message.error('Cập nhật thất bại!');
+    message.error(error?.response?.data?.error?.message);
     return false;
   }
 };

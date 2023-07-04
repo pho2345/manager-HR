@@ -16,6 +16,7 @@ import DetailUser from '@/pages/components/DetailUser';
 import DetailCPass from '@/pages/components/DetailCPass';
 import TableListAssignCPass from '../TableListAssignCPass';
 import configText from '@/locales/configText';
+import { getByPlaceholderText } from '@testing-library/react';
 const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
@@ -57,9 +58,9 @@ const TableListFairDetail: React.FC = () => {
 
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
 
-  const [ searchRange, setSearchRange] = useState<any>();
-  const [ searchRangeTo, setSearchRangeTo] = useState<any>();
-  const [ optionRangeSearch, setOptionRangeSearch] = useState<any>();
+  const [searchRange, setSearchRange] = useState<any>();
+  const [searchRangeTo, setSearchRangeTo] = useState<any>();
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
 
   const confirm = (entity: any, message: string, api: string, id: any) => {
@@ -148,9 +149,30 @@ const TableListFairDetail: React.FC = () => {
         }}
       />
     ),
-    onFilter: (value: any, record: any) => {
-      console.log('value', dataIndex)
-      if (typeof value !== 'number') {
+    onFilter: (value?: any, record?: any) => {
+      if (dataIndex === 'aleger') {
+        if (record.megaOrder) {
+          if (record.megaOrder['id'] && record.megaOrder['id'].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record.megaOrder['id'].toString().toLowerCase().includes(value.toLowerCase());
+          }
+          if (record.megaOrder['username'] && record.megaOrder['username'].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record.megaOrder['username'].toString().toLowerCase().includes(value.toLowerCase());
+          }
+
+          if (record.megaOrder['email'] && record.megaOrder['email'].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record.megaOrder['email'].toString().toLowerCase().includes(value.toLowerCase());
+          }
+
+          if (record.megaOrder['phone'] && record.megaOrder['phone'].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record.megaOrder['phone'].toString().toLowerCase().includes(value.toLowerCase());
+          }
+
+          if (record.megaOrder['passport'] && record.megaOrder['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
+            return record.megaOrder['passport'].toString().toLowerCase().includes(value.toLowerCase());
+          }
+        }
+      }
+      else {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -158,22 +180,19 @@ const TableListFairDetail: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
 
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     console.log(selectedKeys);
     confirm();
-   
+
   };
   const handleResetRange = (clearFilters: any, confirm: any) => {
     clearFilters();
-    
+
     confirm({
       closeDropdown: false,
     });
@@ -239,7 +258,7 @@ const TableListFairDetail: React.FC = () => {
           ]}
           fieldProps={{
             onChange: (value) => {
-              if(value === 'range'){
+              if (value === 'range') {
                 setOptionRangeSearch(value);
                 setShowRangeTo(true);
               }
@@ -254,7 +273,7 @@ const TableListFairDetail: React.FC = () => {
           <Button
             type="primary"
             onClick={() => {
-              if(optionRangeSearch !== 'range'){
+              if (optionRangeSearch !== 'range') {
                 setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange])])
               }
               else {
@@ -262,7 +281,7 @@ const TableListFairDetail: React.FC = () => {
               }
               handleSearchRange(selectedKeys, confirm);
               // confirm()\
-             
+
             }}
             icon={<SearchOutlined />}
             size="small"
@@ -293,21 +312,21 @@ const TableListFairDetail: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-      if(typeof value === 'string'){
+      if (typeof value === 'string') {
         const convertValue = JSON.parse(value);
         console.log(convertValue);
-        if(convertValue[0] === 'lesser'){
-          if(record.pZero < convertValue[1]){
+        if (convertValue[0] === 'lesser') {
+          if (record.pZero < convertValue[1]) {
             return record;
           }
         }
-        else if(convertValue[0] === 'greater') {
-          if(record.pZero > convertValue[1]){
+        else if (convertValue[0] === 'greater') {
+          if (record.pZero > convertValue[1]) {
             return record;
           }
         }
         else {
-          if(record.pZero >=  convertValue[1] && record.pZero <= convertValue[2]){
+          if (record.pZero >= convertValue[1] && record.pZero <= convertValue[2]) {
             return record
           }
         }
@@ -320,7 +339,7 @@ const TableListFairDetail: React.FC = () => {
     //     // setTimeout(() => searchInput.current?.select(), 100);
     //   }
     // },
-   
+
     // render: (text: any) =>{
     // }
   });
@@ -471,8 +490,29 @@ const TableListFairDetail: React.FC = () => {
         return (<>
           <Checkbox disabled > </Checkbox>
         </>)
-
-      }
+      },
+      filters: [
+        {
+          text: 'Đã thanh toán',
+          value: 'payment'
+        },
+        {
+          text: 'Đã quá hạn',
+          value: 'expired'
+        }
+      ],
+      onFilter: (value, record) => {
+        if (value === 'payment') {
+          if (record.owner) {
+            return record
+          }
+        }
+        else {
+          if (record.classColor === 'background-red') {
+            return record;
+          }
+        }
+      },
     },
 
     {
@@ -505,7 +545,8 @@ const TableListFairDetail: React.FC = () => {
             </a>
           )
         }
-      }
+      },
+      ...getColumnSearchProps('aleger')
     },
 
 
@@ -563,15 +604,15 @@ const TableListFairDetail: React.FC = () => {
     },
     {
       title: 'Ngày mở bán',
-      value: fair?.timeStart ? `${moment(fair?.timeStart).format('DD/MM/YYYY HH:mm')}` : ''
+      value: fair?.timeStart ? `${moment(fair?.timeStart).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm')}` : ''
     },
     {
       title: 'Ngày đóng bán',
-      value: fair?.timeEnd ? `${moment(fair?.timeEnd).format('DD/MM/YYYY HH:mm')}` : ''
+      value: fair?.timeEnd ? `${moment(fair?.timeEnd).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm')}` : ''
     },
     {
       title: 'Ngày bắt đầu nuôi',
-      value: fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).format('DD/MM/YYYY HH:mm')}` : ''
+      value: fair?.dateStartFeed ? `${moment(fair?.dateStartFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY HH:mm')}` : ''
     },
   ];
 
@@ -632,7 +673,7 @@ const TableListFairDetail: React.FC = () => {
               type='primary'
               key='primary'
               onClick={async () => {
-                await customAPIDowloadPDF('fairs/cpass-of-fair/pdf', params?.id);
+                await customAPIDowloadPDF('fairs/cpass-of-fair/pdf', params?.id as any);
               }}
             >
               <PlusOutlined /> PDF
@@ -680,44 +721,17 @@ const TableListFairDetail: React.FC = () => {
         //dataSource={} 
         columns={columns}
         dataSource={fair?.c_passes}
-      // rowSelection={{
-      //   onChange: (_, selectedRows: any) => {
+        // rowSelection={{
+        //   onChange: (_, selectedRows: any) => {
 
-      //     setSelectedRows(selectedRows);
-      //   },
-      // }}
+        //     setSelectedRows(selectedRows);
+        //   },
+        // }}
+        scroll={{
+          x: window.innerWidth * 0.7
+        }}
       />
-      {/* {selectedRowsState?.length > 0 && (
-        // <FooterToolbar
-        //   extra={
-        //     <div>
-        //       <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-        //       <a style={{ fontWeight: 600 }}>{selectedRowsState.length} hàng</a>{' '}
 
-
-        //     </div>
-        //   }
-        // >
-        //   <Button
-        //     onClick={async () => {
-        //       //await handleRemove(selectedRowsState);
-        //       setSelectedRows([]);
-        //       actionRef.current?.reloadAndRest?.();
-        //     }}
-        //   >
-        //     <FormattedMessage
-        //       id='pages.searchTable.batchDeletion'
-        //       defaultMessage='Batch deletion'
-        //     />
-        //   </Button>
-        //   <Button type='primary'>
-        //     <FormattedMessage
-        //       id='pages.searchTable.batchApproval'
-        //       defaultMessage='Batch approval'
-        //     />
-        //   </Button>
-        // </FooterToolbar>
-      )} */}
 
       {currentRow && (
         <DetailCPass

@@ -38,11 +38,7 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
-
-
-
     let { category, farm, group_cow, cow, birthdate, sex, ...other } = fields;
-
     let fieldCow = {
       category: category?.value || category,
       farm: farm?.value || farm,
@@ -65,8 +61,6 @@ const handleUpdate = async (fields: any, id: any) => {
       'c-passes',
       id.current
     );
-
-    console.log('updateCPass', updateCPass);
 
     if (updateCow && updateCPass) {
       let uploadImages: Array<any> = [];
@@ -205,7 +199,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
 
@@ -216,6 +209,9 @@ const TableList: React.FC = () => {
   const [groupCow, setGroupCow] = useState<any>([]);
   const [getAllGroup, setGetAllGroup] = useState<any>([]);
   const searchInput = useRef(null);
+
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
+
 
 
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -590,19 +586,40 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.nameCow,
     },
     {
-      title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
-        {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
-      dataIndex: 'farmAndCategory',
+      title: (<>
+        {configDefaultText['page.listCPass.column.category']}</>),
+      dataIndex: 'category',
       valueType: 'textarea',
-      key: 'farmAndCategory',
+      key: 'category',
+      render: (_, text: any) => {
+        return (<>
+          {text?.category}
+        </>)
+      },
+    },
+    {
+      title: (<>{configDefaultText['page.listCPass.column.sex']}</>),
+      dataIndex: 'sex',
+      valueType: 'textarea',
+      key: 'sex',
       render: (_, text: any) => {
         let sex = 'Đực';
         if (text?.sex === 'female') {
           sex = 'Cái';
         }
         return (<>
+          {sex}
+        </>)
+      },
+    },
+    {
+      title: (<>{configDefaultText['page.listCPass.column.farm']}</>),
+      dataIndex: 'farm',
+      valueType: 'textarea',
+      key: 'farm',
+      render: (_, text: any) => {
+        return (<>
           {text?.farm}<br />
-          {text?.category}<br />{sex}
         </>)
       },
       filterSearch: true,
@@ -826,7 +843,6 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-
         scroll={{
           x: window.innerHeight * 0.75
         }}
@@ -834,37 +850,63 @@ const TableList: React.FC = () => {
         rowKey='id'
         search={false}
 
-        toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> {configDefaultText['buttonAdd']}
-          </Button>,
-          <Button
-            type='primary'
-            key='primary'
-            onClick={async () => {
-              await customAPIDowload('c-passes/agrigate/excel');
-            }}
-          >
-            <PlusOutlined /> Excel
-          </Button>,
-
-          <Button
-            type='primary'
-            key='primary'
-            onClick={async () => {
-              await customAPIDowloadPDF('c-passes/agrigate/pdf');
-            }}
-          >
-            <PlusOutlined /> PDF
-          </Button>,
-        ]}
-        request={() => customAPIGet({}, 'c-passes/get/c-pass-agrigate')}
+        toolBarRender={() => {
+      
+          return showDowloadFile ? [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> {configDefaultText['buttonAdd']}
+            </Button>,
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('c-passes/agrigate/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+  
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowloadPDF('c-passes/agrigate/pdf');
+              }}
+            >
+              <PlusOutlined /> PDF
+            </Button>,
+          ] : [
+            <Button
+              type='primary'
+              key='primary'
+              onClick={() => {
+                handleModalOpen(true);
+              }}
+            >
+              <PlusOutlined /> {configDefaultText['buttonAdd']}
+            </Button>,
+          ]
+        }}
+        request={ async () => {
+          const data = await customAPIGet({}, 'c-passes/get/c-pass-agrigate');
+          if(data.data && data.data.length > 0) {
+            setShowDowloadFile(true);
+          }
+          else {
+            setShowDowloadFile(false);
+          }
+          return {
+            data: data.data,
+            success: true,
+            total: data.data.length
+          }
+        }}
         columns={columns}
         rowSelection={{
 

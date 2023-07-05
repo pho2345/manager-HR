@@ -112,6 +112,8 @@ const TableList: React.FC = () => {
   const [optionReasonSettlement, setOptionReasonSettlement] = useState<any>([]);
   const [openChart, setOpenChart] = useState<boolean>(false);
 
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
+
 
   // useEffect(() => {
   //   const getValues = async () => {
@@ -145,13 +147,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -249,14 +247,13 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.fairand' defaultMessage={(<> Đợt mở bán<br />Ngày hết hạn hợp tác</>)} />,
-      dataIndex: 'atrributes',
+      title: (<>{configDefaultText['page.listCPass.column.fair']}</>),
+      dataIndex: 'fair',
       valueType: 'textarea',
       key: 'fair',
       render: (_, text: any) => {
         return (<>
           {text?.fair?.code}
-          <br /> {moment(text?.fair?.dateEndFeed || text?.dateEndCoop).format('DD/MM/YYYY')}
         </>)
       },
       filters: optionFair,
@@ -266,6 +263,18 @@ const TableList: React.FC = () => {
         }
         return null;
       }
+    },
+
+    {
+      title: (<>{configDefaultText['page.listCPass.column.fairDateEndFeed']}</>),
+      dataIndex: 'fairDateEndFeed',
+      valueType: 'textarea',
+      key: 'fairDateEndFeed',
+      render: (_, text: any) => {
+        return (<>
+          {moment(text?.fair?.dateEndFeed || text?.dateEndCoop).format('DD/MM/YYYY')}
+        </>)
+      },
     },
     {
       title: (
@@ -287,26 +296,51 @@ const TableList: React.FC = () => {
         );
       },
     },
+
+
     {
-      title: (<>{configDefaultText['page.listCPass.column.farm']}<br />
-        {configDefaultText['page.listCPass.column.category']}<br />{configDefaultText['page.listCPass.column.sex']}</>),
+      title: (<>{configDefaultText['page.listCPass.column.category']}</>),
       width: 130,
-      dataIndex: 'farmAndCategory',
+      dataIndex: 'category',
       valueType: 'textarea',
-      key: 'farmAndCategory',
-      filterSearch: true,
-      filters: farm,
-      onFilter: (value: any, record: any) => {
-        return record?.cow?.farm?.id === value;
-      },
+      key: 'category',
+      render: (_, text: any) => {
+        return (<>
+          {text?.cow?.category?.name}
+        </>)
+      }
+    },
+    {
+      title: (<>{configDefaultText['page.listCPass.column.sex']}</>),
+      width: 130,
+      dataIndex: 'sex',
+      valueType: 'textarea',
+      key: 'sex',
       render: (_, text: any) => {
         let sex = 'Đực';
         if (text?.cow?.sex === 'female') {
           sex = 'Cái';
         }
         return (<>
+          {sex}
+        </>)
+      }
+    },
+
+    {
+      title: (<>{configDefaultText['page.listCPass.column.farm']}</>),
+      width: 130,
+      dataIndex: 'farm',
+      valueType: 'textarea',
+      key: 'farm',
+      filterSearch: true,
+      filters: farm,
+      onFilter: (value: any, record: any) => {
+        return record?.cow?.farm?.id === value;
+      },
+      render: (_, text: any) => {
+        return (<>
           {text?.cow?.farm?.name}<br />
-          {text?.cow?.category?.name}<br />{sex}
         </>)
       }
     },
@@ -484,7 +518,7 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={(<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>)} />,
+      title: (<>MegaP (kg)<br />MegaE (VNĐ)<br />MegaCPR</>),
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'plan',
@@ -509,7 +543,7 @@ const TableList: React.FC = () => {
 
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.megaDeltaPAndProduce' defaultMessage={(<>MegaΔP<br />ProduceAle<br />History</>)} />,
+      title: (<span>MegaΔP<br />ProduceAle<br />History</span>),
       dataIndex: 'megaDeltaProduce',
       valueType: 'textarea',
       key: 'megaDeltaProduce',
@@ -551,7 +585,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.statusOwner' defaultMessage={(<>Tình trạng sở hữu</>)} />,
+      title: (<>Tình trạng sở hữu</>),
       dataIndex: 'statusOwner',
       valueType: 'textarea',
       key: 'statusOwner',
@@ -619,7 +653,9 @@ const TableList: React.FC = () => {
       <ProTable
         actionRef={actionRef}
         rowKey='id'
-        
+        style={{
+          fontSize: 9
+        }}
         scroll={{
           x: window.innerWidth * 0.7
         }}
@@ -627,6 +663,12 @@ const TableList: React.FC = () => {
         request={async () => {
           const data = await customAPIGet({}, 'c-passes/get/c-pass-mega');
           console.log(data?.data?.cPass);
+          if (data?.data?.cPass && data?.data?.cPass.length > 0) {
+            setShowDowloadFile(true);
+          }
+          else {
+            setShowDowloadFile(false)
+          }
           setOptionFair(data?.data?.fair);
           return {
             data: data?.data?.cPass,
@@ -647,9 +689,7 @@ const TableList: React.FC = () => {
               }
             },
           },
-        ],
-       
-      
+          ],
         }}
 
         pagination={{
@@ -663,7 +703,7 @@ const TableList: React.FC = () => {
         }}
 
         toolBarRender={() => {
-          return [
+          return showDowloadFile ? [
             <Button
               type='primary'
               key='primary'
@@ -686,8 +726,7 @@ const TableList: React.FC = () => {
             >
               <PlusOutlined /> PDF
             </Button>,
-            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-          ]
+          ] : []
         }}
       />
 

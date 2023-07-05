@@ -200,7 +200,6 @@ export async function customAPIPostOne(
 }
 
 export async function customAPIUpload(values?: { [key: string]: any }) {
-  console.log(values);
 
   return request<any>(SERVERURL + '/api/upload', {
     method: 'POST',

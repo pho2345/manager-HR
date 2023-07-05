@@ -68,6 +68,8 @@ const TableList: React.FC = () => {
   //const [searchText, setSearchText] = useState('');
   //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
+
 
 
   const actionRef = useRef<ActionType>();
@@ -613,7 +615,7 @@ const TableList: React.FC = () => {
         rowKey='id'
         search={false}
         toolBarRender={() => {
-          return [
+          return showDowloadFile ? [
             <Button
               type='primary'
               key='primary'
@@ -633,8 +635,7 @@ const TableList: React.FC = () => {
             >
               <PlusOutlined /> PDF
             </Button>,
-            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-          ]
+          ] : []
         }}
         request={async () => {
           const data = await customAPIGet(
@@ -643,7 +644,12 @@ const TableList: React.FC = () => {
             },
             'transactions/wait-confirm-ale');
 
-
+            if(data.data && data?.data?.length > 0) {
+              setShowDowloadFile(true);
+            }
+            else {
+              setShowDowloadFile(false);
+            }
           return {
             data: data?.data,
             success: true,
@@ -653,22 +659,6 @@ const TableList: React.FC = () => {
         }
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-          //   setSelectedRowsState(selectedRows);
-          //   const confitSelectedRows = selectedRows.map((e: any) => {
-          //     return {
-          //       id: e?.id,
-          //       types: e?.types
-          //     }
-          //   });
-          //   setSelectedRows(confitSelectedRows);
-          //   // setSelectedRows([
-          //   //   {
-          //   //     id:record?.id,
-          //   //     types: record?.types
-          //   //   }
-          //   // ])
-          // },
           getCheckboxProps: (record: any) => ({
             disabled: record?.status === 'inProgress' ? false : true, // Column configuration not to be checked
           }),

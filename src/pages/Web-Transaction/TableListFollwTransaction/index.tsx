@@ -17,7 +17,7 @@ import {
 
 // import { FormattedMessage, useIntl } from '@umijs/max';
 import moment from 'moment';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
 import { Button } from 'antd';
 const configDefaultText = configText;
@@ -40,6 +40,8 @@ const TableList: React.FC = () => {
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
 
   const [filterStatus, setFilterStatus] = useState<any>();
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
+
 
   const actionRef = useRef<ActionType>();
 
@@ -88,27 +90,27 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'sender',
       render: (_, text: any) => {
-        if(text?.sender){
+        if (text?.sender) {
           return (
             <a
-            onClick={() => {
-              setCurrentRowUser(text?.sender?.id);
-              setShowDetailUser(true);
-            }}
+              onClick={() => {
+                setCurrentRowUser(text?.sender?.id);
+                setShowDetailUser(true);
+              }}
             >{text?.sender?.fullname || text?.sender?.username} - {text?.sender?.id}</a>
-           )
+          )
         }
         else {
           return (
             <a
-            onClick={() => {
-              setCurrentRowUser(text?.sender?.id);
-              setShowDetailUser(true);
-            }}
+              onClick={() => {
+                setCurrentRowUser(text?.sender?.id);
+                setShowDetailUser(true);
+              }}
             >{text?.receiver?.fullname || text?.receiver?.username} - {text?.receiver?.id}</a>
-           )
+          )
         }
-       
+
       },
     },
     {
@@ -119,10 +121,10 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (
           <a
-          onClick={() => {
-            setCurrentRowFair(entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.id : entity?.fair?.id);
-            setShowDetailFair(true);
-          }}
+            onClick={() => {
+              setCurrentRowFair(entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.id : entity?.fair?.id);
+              setShowDetailFair(true);
+            }}
           >{entity.history_c_pass?.fair?.id ? entity.history_c_pass?.fair?.code : entity?.fair?.code}</a>
         );
       },
@@ -137,12 +139,12 @@ const TableList: React.FC = () => {
       key: 'category',
       render: (_, text: any) => <>
         <a
-         onClick={() => {
-          setCurrentRowCPass(text?.c_pass?.id);
-          setShowDetailCPass(true);
-        }}
+          onClick={() => {
+            setCurrentRowCPass(text?.c_pass?.id);
+            setShowDetailCPass(true);
+          }}
         >
-        {text?.c_pass?.code}
+          {text?.c_pass?.code}
         </a>
       </>,
     },
@@ -165,7 +167,7 @@ const TableList: React.FC = () => {
 
           case 'megaDeltaWeightproduceAle':
             return (<div style={{ color: 'cyan' }}>MegaΔP sang ProduceAle</div>);
-      
+
           case 'aleExchange':
             return (<div style={{ color: 'blue' }}>Chuyển đổi ale</div>);
 
@@ -187,7 +189,7 @@ const TableList: React.FC = () => {
         if (value === 'payment') {
           if (record?.types === 'cpassPayment') return record;
         }
-        if(value === 'megaDeltaWeightProduceAle'){
+        if (value === 'megaDeltaWeightProduceAle') {
           if (record?.types === 'megaDeltaWeightproduceAle') return record;
         }
       },
@@ -252,7 +254,7 @@ const TableList: React.FC = () => {
       filters: filterStatus,
       onFilter: true,
       filterSearch: true,
-     
+
       render: (_, text: any) => {
         switch (text?.status) {
           case 'waitConfirm':
@@ -274,9 +276,9 @@ const TableList: React.FC = () => {
             break;
         }
       },
-      
-      
-      
+
+
+
     },
 
     {
@@ -295,8 +297,8 @@ const TableList: React.FC = () => {
       key: 'ale',
       renderText: (_, text: any) => text?.ale.toLocaleString()
     },
-  
-   
+
+
 
 
 
@@ -312,24 +314,24 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        toolBarRender={() => [
-          
-          <Button
-            type='primary'
-            key='primary'
-            onClick={async () => {
-              await customAPIDowload('transactions/follow/excel');
-            }}
-          >
-            <PlusOutlined /> Excel
-          </Button>,
+        toolBarRender={() => {
+          return showDowloadFile ? [
 
-          
-        ]}
+            <Button
+              type='primary'
+              key='primary'
+              onClick={async () => {
+                await customAPIDowload('transactions/follow/excel');
+              }}
+            >
+              <PlusOutlined /> Excel
+            </Button>,
+          ] : []
+        }}
         request={async () => {
           const data = await customAPIPost(
             {
-             
+
             },
             'transactions/findadmin', {
             fields: ['id', 'code', 'types', 'method', 'status', 'priceVnd', 'c_pass', 'sender', 'createdAt', 'ale'],
@@ -380,56 +382,64 @@ const TableList: React.FC = () => {
             }
           });
 
-         const filter = data?.data.reduce((pre: any, cur: any) =>{
-          let element;
-          switch (cur?.status) {
-            case 'waitConfirm':
-              element = {
-                text: `Chờ Mega xác nhận`,
-                value: 'waitConfirm'
-              }
-              break;
-            case 'inProgress':
-              element = {
-                text: `Chờ xác nhận`,
-                value: 'inProgress'
-              }
-              break;
-  
-            case 'done':
-              element = {
-                text: `Hoàn thành`,
-                value: 'done'
-              }
-              break;
-  
-            case 'cancel':
-              element = {
-                text: `Đã hủy`,
-                value: 'cancel'
-              }
-              break;
-  
-            case 'waitRefund':
-              element = {
-                text: `Chờ xác nhận hoàn trả`,
-                value: 'waitRefund'
-              }
-              break;
+          const filter = data?.data.reduce((pre: any, cur: any) => {
+            let element;
+            switch (cur?.status) {
+              case 'waitConfirm':
+                element = {
+                  text: `Chờ Mega xác nhận`,
+                  value: 'waitConfirm'
+                }
+                break;
+              case 'inProgress':
+                element = {
+                  text: `Chờ xác nhận`,
+                  value: 'inProgress'
+                }
+                break;
 
-            default:
-              break;
+              case 'done':
+                element = {
+                  text: `Hoàn thành`,
+                  value: 'done'
+                }
+                break;
+
+              case 'cancel':
+                element = {
+                  text: `Đã hủy`,
+                  value: 'cancel'
+                }
+                break;
+
+              case 'waitRefund':
+                element = {
+                  text: `Chờ xác nhận hoàn trả`,
+                  value: 'waitRefund'
+                }
+                break;
+
+              default:
+                break;
+            }
+            pre.push(element);
+            return pre;
+          }, []);
+
+
+          const uniqueArr = filter.filter((item: any, index: any, self: any) => {
+            return index === self.findIndex((t: any) => t.value === item.value);
+          });
+
+          setFilterStatus(uniqueArr);
+
+          if (data?.data && data?.data.length > 0) {
+            setShowDowloadFile(true);
           }
-          pre.push(element);
-          return pre;
-         }, []);
+          else {
+            setShowDowloadFile(false);
+          }
 
-
-         const uniqueArr = filter.filter((item: any, index: any, self: any) => {
-          return index === self.findIndex((t: any) => t.value === item.value);
-        });
-        
-        setFilterStatus(uniqueArr);
           return {
             data: data?.data,
             success: true,
@@ -452,7 +462,7 @@ const TableList: React.FC = () => {
           }]
         }}
 
-        
+
 
         pagination={{
           locale: {
@@ -464,13 +474,13 @@ const TableList: React.FC = () => {
           }
         }}
 
-        
-        
+
+
       />
-      
 
 
-{currentRowCPass && (
+
+      {currentRowCPass && (
         <DetailCPass
           openModal={showDetailCPass}
           idCPass={currentRowCPass}
@@ -506,7 +516,7 @@ const TableList: React.FC = () => {
       )
       }
 
-      
+
     </PageContainer>
   );
 };

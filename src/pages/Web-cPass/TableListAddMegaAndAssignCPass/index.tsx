@@ -184,7 +184,7 @@ const TableListAssignCPass = () => {
 
   useEffect(() => {
     const fetchDataFair = async () => {
-      const getFairData = await getFair(params.id);
+      const getFairData = await getFair(params.id as any);
       setFair(getFairData);
     }
     fetchDataFair();
@@ -428,11 +428,14 @@ const TableListAssignCPass = () => {
         rowKey='id'
         search={false}
         rowClassName={
-
           (entity) => {
             return entity.classColor
           }
         }
+
+        scroll={{
+          x: window.innerWidth * 0.75
+        }}
 
         pagination={{
           locale: {
@@ -477,7 +480,6 @@ const TableListAssignCPass = () => {
         }}
 
         tableAlertRender={false}
-
         tableAlertOptionRender={false}
 
 
@@ -496,6 +498,9 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
+        scroll={{
+          x: window.innerWidth * 0.75
+        }}
 
         request={async () => {
           const data = await customAPIPostOne(params.id, 'fairs/cpass-not-owner', {});

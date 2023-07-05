@@ -5,7 +5,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage, } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input, Form, Tooltip, Col, Row } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
@@ -13,13 +12,6 @@ import configText from '@/locales/configText';
 const configDefaultText = configText;
 import { AiOutlineLine } from "react-icons/ai";
 const { Text, } = Typography;
-// function delay(time: number) {
-//   return new Promise((resolve: any) => {
-//     setTimeout(resolve, time);
-//   });
-// }
-
-
 
 const handleAdd = async (fields: any, api: string) => {
   const hide = message.loading('Đang đặt bán');
@@ -56,17 +48,13 @@ const TableListAssignCPass = () => {
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
   const [convertVnd, setConvertVnd] = useState<number>(0);
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
-  //const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -404,8 +392,14 @@ const TableListAssignCPass = () => {
           const data = await customAPIGet({}, 'users/aleger/get/sell-ale');
           setRateConvert(
             data?.data.rate,
-
           );
+          if( data?.data?.user && data?.data?.user.length > 0) {
+            setShowDowloadFile(true)
+          }
+          else {
+            setShowDowloadFile(false)
+          
+          }
           return {
             data: data?.data?.user,
             success: true,
@@ -439,7 +433,7 @@ const TableListAssignCPass = () => {
         }}
 
         toolBarRender={() => {
-          return [
+          return showDowloadFile ? [
             <Button
               type='primary'
               key='primary'
@@ -459,8 +453,7 @@ const TableListAssignCPass = () => {
             >
               <PlusOutlined /> PDF
             </Button>,
-            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-          ]
+          ] : []
         }}
       />
 

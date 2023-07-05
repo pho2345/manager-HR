@@ -44,33 +44,24 @@ const handleAdd = async (fields: any, api: string) => {
 
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
-  //const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [convertAle, setConvertAle] = useState<number>(0);
-  //const [typeConvert, setTypeConvert] = useState<boolean>(false);
   const [form] = Form.useForm<any>();
   const [rateConvert, setRateConvert] = useState<any>();
-
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     confirm({
       closeDropdown: false,
     });
-    //setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -144,13 +135,8 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
@@ -299,6 +285,13 @@ const TableListAssignCPass = () => {
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger/get/buy-ale');
           setRateConvert(data?.data.rate);
+          if(data?.data?.user && data?.data?.user.length > 0) {
+            setShowDowloadFile(true);
+          }
+          else {
+            setShowDowloadFile(false);
+          }
+
           return {
             data: data?.data?.user,
             success: true,
@@ -332,7 +325,7 @@ const TableListAssignCPass = () => {
         }}
 
         toolBarRender={() => {
-          return [
+            return showDowloadFile ? [
             <Button
               type='primary'
               key='primary'
@@ -352,8 +345,7 @@ const TableListAssignCPass = () => {
             >
               <PlusOutlined /> PDF
             </Button>,
-            // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
-          ]
+          ] : []
         }}
       />
 

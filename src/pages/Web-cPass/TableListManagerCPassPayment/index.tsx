@@ -16,7 +16,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { useParams } from '@umijs/max';
-import { Button, Checkbox, Form, Input, message, Modal, Space, Tooltip } from 'antd';
+import { Button, Checkbox, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -216,19 +216,14 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
+
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
   const columns: ProColumns<any>[] = [
     {
-      // title: <FormattedMessage id='pages.searchTable.column.mega' defaultMessage='Mega' />,
       title: configDefaultText['page.ManagerCPass.column.mega'],
       key: 'code',
       width: '30vh',
@@ -238,8 +233,6 @@ const TableList: React.FC = () => {
         return (
           <><a
             onClick={() => {
-              // setCurrentRow(entity?.id);
-              // setShowDetail(true);
             }}>
             {entity?.sender?.fullname ? entity?.sender?.fullname : entity?.sender?.username}-{entity?.sender?.id}
           </a><br />{entity?.sender.phone}{entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
@@ -251,7 +244,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.ManagerCPass.column.ale'],
       width: 60,
       dataIndex: 'ale',
@@ -263,7 +255,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.ManagerCPass.column.availableAle'],
       width: 60,
       dataIndex: 'availableAle',
@@ -276,7 +267,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.cPassBuy' defaultMessage='Số cPass đã mua' />,
       title: configDefaultText['page.ManagerCPass.column.cPassBuy'],
       dataIndex: 'cPassBuy',
       valueType: 'textarea',
@@ -303,9 +293,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />
-      // ),
       title: configDefaultText['page.ManagerCPass.column.pZero'],
       dataIndex: 'pZero',
       valueType: 'textarea',
@@ -317,9 +304,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />
-      // ),
       title: configDefaultText['page.ManagerCPass.column.vs'],
       dataIndex: 'vs',
       valueType: 'textarea',
@@ -332,9 +316,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />
-      // ),
       title: configDefaultText['page.ManagerCPass.column.vZero'],
       dataIndex: 'vZero',
       valueType: 'textarea',
@@ -348,9 +329,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS (VNĐ|Ale)' />
-      // ),
       title: configDefaultText['page.ManagerCPass.column.megaS'],
       dataIndex: 'megaS',
       valueType: 'textarea',
@@ -397,7 +375,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       title: configDefaultText['page.ManagerCPass.column.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -407,13 +384,6 @@ const TableList: React.FC = () => {
         let button = [];
         if (entity?.status === 'done' && entity?.c_pass.statusTransaction === 'open') {
           button.push(
-            // button.push(<><Button
-            //   onClick={() => {
-            //     handleModalOpen(true);
-            //     refTransaction.current = entity.id
-            //   }}
-            // >{configDefaultText['refund']}</Button>
-
 
             <Tooltip title={configDefaultText['refund']}>
               <MdOutlineCurrencyExchange
@@ -424,9 +394,7 @@ const TableList: React.FC = () => {
 
                   handleModalOpen(true);
                   refTransaction.current = entity.id
-                  // confirm({
-                  //   transaction: [entity.id]
-                  // }, `${configDefaultText['page.ManagerCPass.column.textConfirmRefund']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/refund', '');
+
                 }}
               />
             </Tooltip>);
@@ -565,7 +533,7 @@ const TableList: React.FC = () => {
             handleModalOpen(false);
           },
         }}
-        width={`25vh`}
+        width={window.innerWidth * 0.2}
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
@@ -592,29 +560,29 @@ const TableList: React.FC = () => {
         }}
       >
 
-        <ProFormSelect
-          //value={method}
-          style={{ width: 200 }}
-          //onChange={handleChange}
-          label={configDefaultText['page.ManagerCPass.methodRefund']}
-          width='md'
-          placeholder={configDefaultText['page.ManagerCPass.methodRefund']}
-          name='method'
-          options={[
-            {
-              label: 'VNĐ',
-              options: [
-                { label: 'Ví điện tử', value: 'vnd' },
-                { label: 'Ngân hàng', value: 'vnd' },
-              ],
-            },
-            {
-              label: 'Ale',
-              value: 'ale'
-            },
-          ]}
-        />
-
+        <Row gutter={24} className='m-0'>
+          <Col span={24} className='gutter-row p-0' >
+            <ProFormSelect
+              label={configDefaultText['page.ManagerCPass.methodRefund']}
+              className='w-full'
+              placeholder={configDefaultText['page.ManagerCPass.methodRefund']}
+              name='method'
+              options={[
+                {
+                  label: 'VNĐ',
+                  options: [
+                    { label: 'Ví điện tử', value: 'vnd' },
+                    { label: 'Ngân hàng', value: 'vnd' },
+                  ],
+                },
+                {
+                  label: 'Ale',
+                  value: 'ale'
+                },
+              ]}
+            />
+          </Col>
+        </Row>
       </ModalForm>
 
 

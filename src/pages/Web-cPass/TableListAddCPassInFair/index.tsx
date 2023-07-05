@@ -80,7 +80,6 @@ const TableListAddCPassInFair = (props: any) => {
     const fetchDataFair = async () => {
       const getFairData = await getFair(props.currentFair);
       setFair(getFairData);
-
     }
     fetchDataFair();
   }, [props.currentFair]);

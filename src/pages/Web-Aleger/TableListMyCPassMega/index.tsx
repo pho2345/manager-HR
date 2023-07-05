@@ -110,6 +110,7 @@ const TableList: React.FC = () => {
   const [openChart, setOpenChart] = useState<boolean>(false);
   const [plan, setPlan] = useState<any>([]);
   const [openChangeHintName, setOpenChangeHintName] = useState<boolean>(false);
+  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
   const [form] = Form.useForm<any>();
   const [optionBodyCondition, setOptionBodyCondition] = useState<any>([]);
   const [optionFair, setOptionFair] = useState<any>([]);
@@ -224,16 +225,16 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
-      title: (<> Đợt mở bán<br />Ngày hết hạn hợp tác</>),
+      title: (<> Đợt mở bán</>),
       dataIndex: 'fair.id',
       valueType: 'textarea',
       key: 'fair.id',
       render: (_, text: any) => {
         return (<>
           {text?.fair?.code}
-          <br /> {moment(text?.fair?.dateEndFeed).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')}
         </>)
       },
+      hideInTable: true,
       filters: optionFair,
       filterSearch: true,
       onFilter: (value, record) => {
@@ -242,6 +243,19 @@ const TableList: React.FC = () => {
         }
         return null;
       }
+    },
+
+    {
+      title: (<> Ngày hết hạn hợp tác</>),
+      dataIndex: 'dateEndFeed',
+      valueType: 'textarea',
+      key: 'dateEndFeed',
+      render: (_, text: any) => {
+        return (<>
+          <br /> {moment(text?.fair?.dateEndFeed).format('DD/MM/YYYY')}
+        </>)
+      },
+      
     },
     {
       title: <>cPass<br />Tên gợi nhớ</>,
@@ -268,27 +282,53 @@ const TableList: React.FC = () => {
 
     },
     {
-      title: (<>Trang trại <br />
-        Giống bò<br />Giới tính</>),
-      dataIndex: 'farmAndCategory',
+      title: (<>
+        Giống bò</>),
+      dataIndex: 'category',
       valueType: 'textarea',
-      key: 'farmAndCategory',
+      key: 'category',
       render: (_, text: any) => {
         let sex = 'Đực';
         if (text?.cow?.sex === 'female') {
           sex = 'Cái';
         }
         return (<>
-          {text?.cow?.farm?.name}<br />
           {`${text?.cow?.category?.name}`}
-          <br />
+        
+        </>)
+      }
+    },
+    {
+      title: (<>Giới tính</>),
+      dataIndex: 'sex',
+      valueType: 'textarea',
+      key: 'sex',
+      render: (_, text: any) => {
+        let sex = 'Đực';
+        if (text?.cow?.sex === 'female') {
+          sex = 'Cái';
+        }
+        return (<>
           {sex}
         </>)
       }
     },
+    {
+      title: (<>Trang trại</>),
+      dataIndex: 'farm',
+      valueType: 'textarea',
+      key: 'farm',
+      render: (_, text: any) => {
+       
+        return (<>
+          {text?.cow?.farm?.name}<br />
+        </>)
+      }
+    },
+    
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.image' defaultMessage='Hình' />,
+      title: 'Hình',
       dataIndex: 'image',
       valueType: 'textarea',
       key: 'image',
@@ -324,7 +364,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
+      title: 'Tuổi',
       dataIndex: 'age',
       valueType: 'textarea',
       key: 'age',
@@ -338,7 +378,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: 'P0(kg)/Pnow@Snow (kg)',
+      title: (<>P0 (kg) <br /> Pnow <br /> Snow</>),
       dataIndex: 'P0andPnow',
       width: `15vh`,
       valueType: 'textarea',
@@ -349,7 +389,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
+      title:'Thể trạng',
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -366,7 +406,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='Hiệu quả tăng trọng' />,
+      title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='HQTT' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       align: 'center',
@@ -382,7 +422,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='Tăng trọng TB(kg/tuần)' />,
+      title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage='TTTB(kg/tuần)' />,
       dataIndex: 'atrributes',
       width: `8vh`,
       align: 'center',
@@ -578,12 +618,29 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         request={async () => {
           const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
-          setOptionFair(data?.fair)
-          return {
-            data: data?.data,
-            success: true,
-            total: data?.length
+          if(data && data.data){
+            setOptionFair(data?.fair);
+            if(data.data.length > 0) {
+              setShowDowloadFile(true);
+            }
+            else {
+              setShowDowloadFile(false);
+            }
+            return {
+              data: data?.data,
+              success: true,
+              total: data?.length
+            }
           }
+          else {
+            setShowDowloadFile(false);
+            return {
+              data: data?.data,
+              success: true,
+              total: data?.length
+            }
+          }
+          
         }}
         columns={columns}
 
@@ -611,27 +668,31 @@ const TableList: React.FC = () => {
         }}
 
         toolBarRender={() => {
-          return [
-            <Button
-              type='primary'
-              key='primary'
-              onClick={async () => {
-                await customAPIDowload('c-passes/get/my-c-pass-mega/excel', params?.id);
-              }}
-            >
-              <PlusOutlined /> Excel
-            </Button>,
-
-            <Button
-              type='primary'
-              key='primary'
-              onClick={async () => {
-                await customAPIDowloadPDF('c-passes/get/my-c-pass-mega/pdf', params?.id as any);
-              }}
-            >
-              <PlusOutlined /> PDF
-            </Button>,
-          ]
+          if(showDowloadFile){
+            return [
+              <Button
+                type='primary'
+                key='primary'
+                onClick={async () => {
+                  await customAPIDowload('c-passes/get/my-c-pass-mega/excel', params?.id);
+                }}
+              >
+                <PlusOutlined /> Excel
+              </Button>,
+  
+              <Button
+                type='primary'
+                key='primary'
+                onClick={async () => {
+                  await customAPIDowloadPDF('c-passes/get/my-c-pass-mega/pdf', params?.id as any);
+                }}
+              >
+                <PlusOutlined /> PDF
+              </Button>,
+            ]
+          }
+          return []
+          
         }}
       />
 

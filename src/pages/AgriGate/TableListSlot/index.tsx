@@ -285,18 +285,6 @@ const TableList: React.FC = () => {
           }
          }
           
-          // const success = await handleUpdateFile(values as any, refIdSlot);
-          // if (success) {
-          //   handleUpdateModalOpen(false);
-          //   form.resetFields();
-
-          //   if (actionRef.current) {
-          //     actionRef.current.reload();
-
-          //   }
-          // }
-          // //message.success('Success');
-          // return true;
         }}
       >
 

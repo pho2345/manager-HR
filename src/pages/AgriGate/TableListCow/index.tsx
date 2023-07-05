@@ -11,13 +11,11 @@ import {
   ActionType,
   ProColumns,
   ProDescriptionsItemProps,
-
   ProFormDatePicker,
   ProFormDigit,
   ProFormSelect,
   ProFormTextArea,
   ProFormUploadButton,
-
   ModalForm,
   PageContainer,
   ProDescriptions,
@@ -26,7 +24,7 @@ import {
 
 } from '@ant-design/pro-components';
 import {
-  Image
+  Image, UploadFile, UploadProps
 } from 'antd';
 
 import configText from '@/locales/configText';
@@ -48,7 +46,11 @@ const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
     hide();
+    console.log(fields)
+
+
     const cow = await customAPIAdd({ ...fields }, 'cows');
+
     if (fields?.upload && cow) {
       const uploadImages = fields?.upload.map((e: any) => {
         let formdata = new FormData();
@@ -176,7 +178,6 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
@@ -187,6 +188,8 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
 
   const params = useParams();
@@ -203,13 +206,10 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
+
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -726,30 +726,55 @@ const TableList: React.FC = () => {
       },
     },
 
-    // {
-    //   // title: <FormattedMessage id='page.searchTable.column.createAt' defaultMessage='Ngày tạo' />,
-    //   title: configDefaultText['buttonUpdate'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'create',
-    //   renderText: (_, text: any) => {
-    //     return moment(text?.createdAt).format('YYYY-MM-DD HH:mm:ss');
-    //   },
-    // },
   ];
 
   const disabledDate = (current: any) => {
     return current && current > moment();
   };
 
+
+  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    // const needValue = 5 - fileList.length;
+    // console.log('newFileList', newFileList);
+
+    if(fileList.length > 5){
+      const maxImages = newFileList.slice(0, 5);
+      setFileList(maxImages);
+    }
+    else {
+      setFileList(newFileList);
+
+    }
+
+    // if(fileList.length > newFileList.length){
+    //   console.log('vao');
+    //   return
+    // }
+    // else {
+
+    // }
+  }
+
+  const handleRemoveImage = (file: any) => {
+    const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
+    setFileList(updatedFileList);
+  };
+
+
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
   return (
     !params.id ? (
       <PageContainer>
         <ProTable
-          // headerTitle={intl.formatMessage({
-          //   id: 'page.searchTable.title',
-          //   defaultMessage: 'Enquiry form',
-          // })}
+          scroll={{
+            x: window.innerHeight * 0.75
+          }}
           actionRef={actionRef}
           rowKey='id'
           search={false}
@@ -836,6 +861,7 @@ const TableList: React.FC = () => {
               handleModalOpen(false);
               form.resetFields();
               setGroupCow(null);
+              setFileList([])
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -910,17 +936,6 @@ const TableList: React.FC = () => {
               />
             </Col>
 
-            {/* <Col span={12} className="gutter-row p-0">
-              <ProFormDigit className='w-full' name='age'
-                label={configDefaultText['page.listCow.column.age']}
-                placeholder={configDefaultText['page.listCow.column.age']}
-                rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.age' defaultMessage='Vui lòng nhập tuổi' /> },
-                  { required: true, message: configDefaultText['page.listCow.required.age'] },
-                ]}
-              />
-
-            </Col> */}
 
             <Col span={12} className="gutter-row p-0" >
               <ProFormDatePicker
@@ -951,7 +966,6 @@ const TableList: React.FC = () => {
                 label={configDefaultText['page.listCow.column.farm']}
                 placeholder={configDefaultText['page.listCow.column.farm']}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
                   {
                     required: true, message: configDefaultText['page.listCow.required.farm'
                     ]
@@ -970,12 +984,10 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect className='w-full'
                 options={groupCow?.length ? groupCow : null}
-                // disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
                 label={configDefaultText['page.listCow.column.group_cow']}
                 placeholder={configDefaultText['page.listCow.column.group_cow']}
                 name={`group_cow`}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
                   { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
                 ]}
               />
@@ -985,28 +997,7 @@ const TableList: React.FC = () => {
 
 
           <Row gutter={24} className="m-0">
-            {/* <Col span={12} className="gutter-row p-0" >
-              <ProFormDatePicker
 
-                // className='w-full
-                // style={{ width: '100%' }}
-                fieldProps={{
-                  style: {
-                    width: '100%'
-                  },
-                  disabledDate: disabledDate
-                }}
-                name='birthdate'
-                label={configDefaultText['page.listCow.column.birthdate']}
-                placeholder={configDefaultText['page.listCow.column.birthdate']}
-                rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
-                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
-                ]}
-
-
-              />
-            </Col> */}
 
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect
@@ -1034,28 +1025,36 @@ const TableList: React.FC = () => {
           </Row>
 
           <ProFormUploadButton
-            name='upload'
-
+            name="upload"
             title={configDefaultText['page.listCow.column.upload']}
             label={configDefaultText['page.listCow.column.upload']}
+            fileList={fileList}
+            onChange={handleChange}
             max={5}
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
+              onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
               accept: 'image/*',
               multiple: true,
-              maxCount: 5,
-              beforeUpload: (fileList, abc) => {
-                console.log(abc)
-                if (abc.length > 5) {
+              beforeUpload: (file: any, fileSize) => {
+
+                if (fileList.length > 5) {
+                  console.log('vao day');
                   message.error('Chỉ có thể upload 5 hình ảnh');
                   return false;
                 }
-                return true;
-              }
-            }}
+                else {
+                  console.log('vao');
 
-          />
+                  // handleChange(file); // Update the fileList state when uploading files
+                  return true;
+                }
+                
+              },
+            }}
+          ></ProFormUploadButton>
+
 
           <ProFormTextArea
             label={configDefaultText['page.listCow.column.description']}
@@ -1262,36 +1261,28 @@ const TableList: React.FC = () => {
           </Row>
 
           <ProFormUploadButton
-            name='upload'
-
+            name="upload"
             title={configDefaultText['page.listCow.column.upload']}
             label={configDefaultText['page.listCow.column.upload']}
-            max={5}
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
-              onRemove(file) {
-                if (!file.lastModified) {
-                  if (refIdPicture.current) {
-                    refIdPicture.current = [...refIdPicture.current, file.uid];
-                  }
-                  else {
-                    refIdPicture.current = [file.uid];
-                  }
-                }
-              },
+              onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
               accept: 'image/*',
               multiple: true,
-              maxCount: 5,
-              beforeUpload: (fileList, fileSize) => {
+              fileList: fileList, // Pass the fileList state variable to update the UI
+              beforeUpload: (file, fileSize) => {
                 if (fileSize.length > 5) {
                   message.error('Chỉ có thể upload 5 hình ảnh');
                   return false;
                 }
+                let totalFile = [
+                  ...fileList, file
+                ]
+                setFileList(totalFile); // Update the fileList state when uploading files
                 return true;
-              }
+              },
             }}
-
           />
 
           <ProFormTextArea

@@ -266,6 +266,8 @@ export default {
     'page.listCPass.column.groupCow': 'Nhóm bò',
     'page.listCPass.column.farm': 'Trang trại',
     'page.listCPass.column.category': 'Giống bò',
+    'page.listCPass.column.fair': 'Đợt mở bán',
+    'page.listCPass.column.fairDateEndFeed': 'Ngày hết hạn hợp tác',
     'page.listCPass.column.sex': 'Giới tính',
     'page.listCPass.column.image': 'Hình ảnh',
     'page.listCPass.column.birthdate': 'Ngày sinh',

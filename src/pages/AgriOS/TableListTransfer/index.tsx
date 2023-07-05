@@ -4,8 +4,6 @@ import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormSelect, ProForm
 import {
   ProTable,
 } from '@ant-design/pro-components';
-
-// import { FormattedMessage, } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Form, Tooltip, Col, Row, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
@@ -40,9 +38,6 @@ const handleAdd = async (fields: any, api: string) => {
 
 
 
-
-
-
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
   const [currentRowUser, setCurrentRowUser] = useState<any>();
@@ -61,7 +56,6 @@ const TableListAssignCPass = () => {
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -289,6 +283,9 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
 
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger');
@@ -309,21 +306,7 @@ const TableListAssignCPass = () => {
         }}
 
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
-        //     console.log(selectedRows);
-        //     if (selectedRows.length > 1) {
-        //       // message.er('Chỉ được chọn 1 Mega!');
-        //     }
-
-        //     //setSelectedRowsMega(selectedRows);
-
-        //   },
-        //   // getCheckboxProps: (record: any) => ({
-        //   //   disabled: false, // Column configuration not to be checked
-        //   //  //name: record.name,
-        //   // }),
-        // }}
+      
 
         pagination={{
 

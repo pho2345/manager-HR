@@ -35,11 +35,6 @@ const handleCreate = async (fields: any, api: string) => {
   }
 };
 
-
-
-
-
-
 export type userSettlement = {
   id: number,
   username: string,
@@ -124,16 +119,10 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
+   
   });
-
-
 
 
   useEffect(() => {
@@ -202,7 +191,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      title: (<>P0<br />Pnow<br />(kg)</>),
+      title: (<>P0/Pnow (kg)</>),
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -212,7 +201,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: (<>Hoàn trả Vs(VNĐ)</>),
+      title: (<>Hoàn trả Vs (VNĐ)</>),
       dataIndex: 'refundVs',
       valueType: 'textarea',
       key: 'refundVs',
@@ -227,7 +216,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      title: (<>MegaΔP(kg)<br />ProduceAle</>),
+      title: (<>MegaΔP (kg)/ProduceAle</>),
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',

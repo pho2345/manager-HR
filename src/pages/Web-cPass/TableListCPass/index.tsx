@@ -617,9 +617,12 @@ const TableList: React.FC = () => {
       }}
     >
       <ProTable
-
         actionRef={actionRef}
         rowKey='id'
+        
+        scroll={{
+          x: window.innerWidth * 0.7
+        }}
         search={false}
         request={async () => {
           const data = await customAPIGet({}, 'c-passes/get/c-pass-mega');
@@ -644,9 +647,6 @@ const TableList: React.FC = () => {
               }
             },
           },
-
-          
-          
         ],
        
       

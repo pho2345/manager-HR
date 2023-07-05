@@ -89,7 +89,7 @@ const TableList: React.FC = () => {
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const refTransaction = useRef<any>();
-  const params = useParams<number>();
+  const params = useParams<any>();
 
   const confirm = (entity: any, message: any, api: string, types: any) => {
     Modal.confirm({
@@ -114,8 +114,6 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     const getValues = async () => {
-
-
     };
     getValues();
   }, []);
@@ -125,8 +123,6 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-
-    console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -136,7 +132,7 @@ const TableList: React.FC = () => {
     });
   };
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, 
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
       //close 
     }: any) => (
       <div
@@ -188,30 +184,30 @@ const TableList: React.FC = () => {
       />
     ),
     onFilter: (value: any, record: any) => {
-    if(dataIndex === 'user'){
-      if (record.sender['id'] && record.sender['id'].toString().toLowerCase().includes(value.toLowerCase())) {
-        return record.sender['id'].toString().toLowerCase().includes(value.toLowerCase());
-      }
-      if (record.sender['username'] && record.sender['username'].toString().toLowerCase().includes(value.toLowerCase())) {
-        return record.sender['username'].toString().toLowerCase().includes(value.toLowerCase());
+      if (dataIndex === 'user') {
+        if (record.sender['id'] && record.sender['id'].toString().toLowerCase().includes(value.toLowerCase())) {
+          return record.sender['id'].toString().toLowerCase().includes(value.toLowerCase());
+        }
+        if (record.sender['username'] && record.sender['username'].toString().toLowerCase().includes(value.toLowerCase())) {
+          return record.sender['username'].toString().toLowerCase().includes(value.toLowerCase());
+        }
+
+        if (record.sender['email'] && record.sender['email'].toString().toLowerCase().includes(value.toLowerCase())) {
+          return record.sender['email'].toString().toLowerCase().includes(value.toLowerCase());
+        }
+
+        if (record.sender['phone'] && record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase())) {
+          return record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase());
+        }
+
+        if (record.sender['passport'] && record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
+          return record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase());
+        }
       }
 
-      if (record.sender['email'] && record.sender['email'].toString().toLowerCase().includes(value.toLowerCase())) {
-        return record.sender['email'].toString().toLowerCase().includes(value.toLowerCase());
-      }
+      if (dataIndex === 'cPass') {
 
-      if (record.sender['phone'] && record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase())) {
-        return record.sender['phone'].toString().toLowerCase().includes(value.toLowerCase());
-      }
-
-      if (record.sender['passport'] && record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase())) {
-        return record.sender['passport'].toString().toLowerCase().includes(value.toLowerCase());
-      }
-    }
-
-    if(dataIndex === 'cPass'){
-
-    }if (record.c_pass['code'] && record.c_pass['code'].toString().toLowerCase().includes(value.toLowerCase())) {
+      } if (record.c_pass['code'] && record.c_pass['code'].toString().toLowerCase().includes(value.toLowerCase())) {
         return record.c_pass['code'].toString().toLowerCase().includes(value.toLowerCase());
       }
 
@@ -467,7 +463,9 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-
+        scroll={{
+          x: window.innerWidth * 0.7
+        }}
         actionRef={actionRef}
         rowKey='id'
         rowClassName={(record) => {
@@ -572,7 +570,7 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           //await waitTime(2000);
           const refund = await handleCreate({
-             types: values.method, transaction: [refTransaction.current] 
+            types: values.method, transaction: [refTransaction.current]
           }, 'transactions/refund/create');
           if (refund) {
             handleModalOpen(false);
@@ -629,7 +627,7 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
         }}
       />}
-      
+
     </PageContainer>
   );
 };

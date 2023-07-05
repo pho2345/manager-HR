@@ -17,7 +17,7 @@ const configDefaultText = configText;
 
 const handleCreate = async (fields: any, api: string) => {
   const hide = message.loading('Đang xử lý...');
-  
+
   try {
     const createTransaction = await customAPIAdd(
       {
@@ -25,10 +25,10 @@ const handleCreate = async (fields: any, api: string) => {
       }, api);
     hide();
     if (createTransaction) {
-       message.success(createTransaction.message);
-       return true;
+      message.success(createTransaction.message);
+      return true;
     }
-    
+
   } catch (error: any) {
     hide();
     message.error(error?.response?.data.error.message || null);
@@ -36,57 +36,25 @@ const handleCreate = async (fields: any, api: string) => {
   }
 };
 
-// const handleUpdateMany = async (fields: any, api: string, id: any) => {
-//   const hide = message.loading('Đang cập nhật...');
-//   try {
-//     const updateTransaction = await customAPIUpdateMany(
-//       fields,
-//       api,
-//       id);
-//     hide();
-//     if (updateTransaction) {
-//       message.success('Cập nhật thành công');
-//     }
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Cập nhật thất bại!');
-//     return false;
-//   }
-// };
-
-
-
-
-
 
 
 const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
-
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-
   const [showModalMethod, setShowModalMethod] = useState<boolean>(false);
-
-  // const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-   // setSearchText('');
+    // setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
@@ -138,27 +106,18 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
         }}
       />
     ),
-    onFilter: (value:any, record: any) =>{
-      if(record[dataIndex]){
+    onFilter: (value: any, record: any) => {
+      if (record[dataIndex]) {
         return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
       }
       return null;
     }
-      ,
+    ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-      
-    // }
-      
   });
-
-
-
-
 
 
   const columnCPass: ProColumns<any>[] = [
@@ -170,12 +129,10 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='cPass' />,
       title: configDefaultText['page.listFair.column.c_passes'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
-          // <Text>{`${entity.code}|${entity.id}`}</Text>
           <a
             onClick={() => {
               setCurrentRowCPass(entity?.id);
@@ -229,8 +186,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
-      title: <>{configDefaultText['page.listSettlement.column.pZero']}<br/> {configDefaultText['page.listSettlement.column.pNow']} </>,
+      title: <>{configDefaultText['page.listSettlement.column.pZero']}<br /> {configDefaultText['page.listSettlement.column.pNow']} </>,
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
@@ -240,7 +196,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.refundVs' defaultMessage={<>Hoàn trả Vs(VNĐ)</>} />,
       title: configDefaultText['page.confirmSettlementDeadOrSick.column.refundVs'],
       dataIndex: 'refundVs',
       valueType: 'textarea',
@@ -256,8 +211,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
-      title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br/> {configDefaultText['page.DetailAleger.column.produceAle']} </>,
+      title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}/{configDefaultText['page.DetailAleger.column.produceAle']} </>,
       dataIndex: 'produceAle',
       valueType: 'textarea',
       key: 'produceAle',
@@ -265,7 +219,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
       title: <>{configDefaultText['page.listSettlement.column.megaP']}</>,
       dataIndex: 'megaP',
       valueType: 'textarea',
@@ -291,6 +244,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       <ModalForm
         open={props.openModal}
         autoFocusFirstInput
+        width={window.innerWidth * 0.9}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
@@ -303,15 +257,11 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
         }}
         submitter={{
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },
         }}
         submitTimeout={2000}
-        width='90vh'
-        
       >
         <ProTable
           headerTitle={configDefaultText['page.confirmSettlementDeadOrSick.column.titleConfirm']}
@@ -326,31 +276,20 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
             }
           }
 
+          
           toolbar={{
-            settings:[{
+            settings: [{
               key: 'reload',
               tooltip: configDefaultText['reload'],
               icon: <ReloadOutlined />,
-              onClick:() => {
-                if (actionRef.current){
+              onClick: () => {
+                if (actionRef.current) {
                   actionRef.current.reload();
                 }
               }
             }]
           }}
 
-
-          // request={async () => {
-          //   const data = await customAPIGetOne(8, 'c-passes/get/cpass-of-mega', {});
-          //   setUserSettlement(data?.user);
-          //   //console.log('usersss', data);
-
-          //   return {
-          //     data: data?.cPass,
-          //     success: true,
-          //     total: 0
-          //   }
-          // }}
           columns={columnCPass}
           dataSource={props.cPass}
 
@@ -404,33 +343,25 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
         width={400}
         submitTimeout={2000}
         onFinish={async (values: any) => {
-          
+
           const cPass = props?.cPass.map((e: any) => e.id);
           const success = await handleCreate(
-          {
-            "cPass" : cPass,
-            'method': values.method || 'ale'
-        }, 'transactions/settlement/sick-or-dead');
-      
-        if (success) {
-          props.onCloseModal();
-        }
-         
+            {
+              "cPass": cPass,
+              'method': values.method || 'ale'
+            }, 'transactions/settlement/sick-or-dead');
+
+          if (success) {
+            props.onCloseModal();
+          }
+
           actionRef.current?.reloadAndRest?.();
 
           return true;
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },

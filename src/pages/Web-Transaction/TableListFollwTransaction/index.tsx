@@ -303,9 +303,7 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer
-      contentWidth='100vh'
-    >
+    <PageContainer>
       <ProTable
         // headerTitle={intl.formatMessage({
         //   id: 'pages.searchTable.title',

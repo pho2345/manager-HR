@@ -2,11 +2,9 @@ import DetailCPass from '@/pages/components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
 import DetailUser from '@/pages/Web-Aleger/components/DetailUser';
 import {
-  customAPIDowload,
   customAPIGet,
-  customAPIPost,
 } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -18,15 +16,19 @@ import {
 
 // import { FormattedMessage, useIntl } from '@umijs/max';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { Button } from 'antd';
 const configDefaultText = configText;
 
-
-
-
-
+const getLog = async (page: number, sizePage: number) => {
+  const data = await customAPIGet(
+    { page, 'size-page': sizePage },
+    'log-transactions');
+  return {
+    data: data.data.log,
+    total: data.data.total
+  }
+}
 
 
 
@@ -40,17 +42,56 @@ const TableList: React.FC = () => {
   const [currentRowFair, setCurrentRowFair] = useState<any>();
   const [showDetailFair, setShowDetailFair] = useState<boolean>(false);
 
-  const [filterStatus, setFilterStatus] = useState<any>();
-  const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [page, setPage] = useState<any>(1);
+  const [totalLog, setTotalLog] = useState<any>();
+  const [log, setLog] = useState<any>();
 
   const actionRef = useRef<ActionType>();
 
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     setLoading(true);
+  //     const data = await getLog(1, 100);
+  //     if (data) {
+  //       setLog(data.data);
+  //       setTotalLog(data.total);
+  //       setLoading(false);
 
+  //     }
 
+  //   }
+  //   getData();
 
+  // }, []);
 
-  // const intl = useIntl();
+  useEffect(() => {
+    const getData = async () => {
+    setLoading(true);
+      const data = await getLog(page, 1);
+      if (data) {
+        setLog(data.data);
+        setTotalLog(data.total);
+      }
+      setLoading(false);
+    }
+    getData();
+  }, [page]);
+
+  const reloadTable = () => {
+    const getData = async () => {
+      setLoading(true);
+      const data = await getLog(page, 1);
+      if (data) {
+        setLog(data.data);
+        setTotalLog(data.total);
+      }
+      setLoading(false);
+    }
+    getData();
+  }
 
   const columns: ProColumns<any>[] = [
     {
@@ -89,21 +130,21 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'methodPayment',
       render: (_, text: any) => {
-          return (
-            <>{text?.methodPayment}</>
-          )
+        return (
+          <>{text?.methodPayment}</>
+        )
       },
     },
-   
+
     {
       title: configDefaultText['page.logTransaction.colums.adminUser'],
       dataIndex: 'adminUser',
       valueType: 'textarea',
       key: 'adminUser',
-      render: (_, text: any) => 
+      render: (_, text: any) =>
         <>
           {text?.adminUser}
-      </>,
+        </>,
     },
 
     {
@@ -137,6 +178,13 @@ const TableList: React.FC = () => {
       key: 'user',
       renderText: (_, text: any) => text?.users
     },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      valueType: 'textarea',
+      key: 'createdAt',
+      renderText: (_, text: any) => moment(text?.createdAt).format('HH:mm DD/MM/YYYY')
+    },
   ];
 
   return (
@@ -144,35 +192,21 @@ const TableList: React.FC = () => {
       <ProTable
         actionRef={actionRef}
         rowKey='id'
+        loading={loading}
         search={false}
-        toolBarRender={() => {
-          return showDowloadFile ? [
-            <Button
-              type='primary'
-              key='primary'
-              onClick={async () => {
-                await customAPIDowload('transactions/follow/excel');
-              }}
-            >
-              <PlusOutlined /> Excel
-            </Button>,
-          ] : []
-        }}
-        request={async () => {
-          const data = await customAPIGet(
-            {
-
-            },
-            'log-transactions');
-
-
-          return {
-            data: data.data,
-            success: true,
-            total: data?.data?.length
-          }
-        }
-        }
+        // request={async () => {
+        //   const data = await customAPIGet(
+        //     {
+        //     },
+        //     'log-transactions');
+        //   return {
+        //     data: data.data,
+        //     success: true,
+        //     total: data?.data?.length
+        //   }
+        // }
+        // }
+        dataSource={log}
         columns={columns}
         rowSelection={false}
         toolbar={{
@@ -182,12 +216,12 @@ const TableList: React.FC = () => {
             icon: <ReloadOutlined />,
             onClick: () => {
               if (actionRef.current) {
-                actionRef.current.reload();
+                // actionRef.current.reload();
+                reloadTable()
               }
             }
           }]
         }}
-
 
 
         pagination={{
@@ -195,9 +229,14 @@ const TableList: React.FC = () => {
             next_page: configDefaultText['nextPage'],
             prev_page: configDefaultText['prePage'],
           },
+          total: totalLog,
+          pageSize: 1,
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
-          }
+          },
+          onChange(page, pageSize) {
+            setPage(page);
+          },
         }}
 
 

@@ -58,19 +58,13 @@ const TableListAssignCPass = () => {
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const params = useParams<any>();
   const [fair, setFair] = useState<any>();
-  // const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -148,13 +142,8 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
@@ -204,9 +193,7 @@ const TableListAssignCPass = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             onCleanSelected()
-            // actionRef.current?.reloadAndRest?.();
           }}>Bỏ chọn</Button>
         </Fragment>
       </>
@@ -219,7 +206,6 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.addMegaAndAssign.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
@@ -240,7 +226,6 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.buyCPass' defaultMessage='cPass đã mua trong đợt mở bán' />,
       title: configDefaultText['page.addMegaAndAssign.column.buyCPass'],
       dataIndex: 'buyCPass',
       valueType: 'textarea',
@@ -265,13 +250,10 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-
-      //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.addMegaAndAssign.column.cPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
-          // <Text>{`${entity.code}|${entity.id}`}</Text>
           <a
             onClick={() => {
               setCurrentRowCPass(entity?.id);
@@ -286,7 +268,6 @@ const TableListAssignCPass = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
       title: configDefaultText['page.addMegaAndAssign.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
@@ -297,7 +278,6 @@ const TableListAssignCPass = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
       title: configDefaultText['page.addMegaAndAssign.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
@@ -309,7 +289,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
       title: configDefaultText['page.addMegaAndAssign.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
@@ -317,7 +296,6 @@ const TableListAssignCPass = () => {
       renderText: (_, text: any) => text?.firstWeight
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
       title: configDefaultText['page.addMegaAndAssign.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
@@ -332,7 +310,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
       title: configDefaultText['page.addMegaAndAssign.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
@@ -366,7 +343,6 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
       title: configDefaultText['page.addMegaAndAssign.column.pZero'],
       dataIndex: 'pZero',
       valueType: 'textarea',
@@ -376,7 +352,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
       title: configDefaultText['page.addMegaAndAssign.column.vs'],
       dataIndex: 'vs',
       valueType: 'textarea',
@@ -386,7 +361,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
       title: configDefaultText['page.addMegaAndAssign.column.vZero'],
       dataIndex: 'vZero',
       valueType: 'textarea',
@@ -396,7 +370,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
       title: configDefaultText['page.addMegaAndAssign.column.megaS'],
       dataIndex: 'megaS',
       valueType: 'textarea',
@@ -449,8 +422,6 @@ const TableListAssignCPass = () => {
 
         request={async () => {
           const data = await customAPIGetOne(params.id, 'users/list-and-cpass', {});
-          //console.log('usersss', data);
-
           return {
             data: data,
             success: true,
@@ -473,10 +444,7 @@ const TableListAssignCPass = () => {
             setSelectedRowsMega(selectedRows);
           },
           type: 'radio'
-          // getCheckboxProps: (record: any) => ({
-          //   disabled: false, // Column configuration not to be checked
-          //  //name: record.name,
-          // }),
+          
         }}
 
         tableAlertRender={false}
@@ -504,7 +472,6 @@ const TableListAssignCPass = () => {
 
         request={async () => {
           const data = await customAPIPostOne(params.id, 'fairs/cpass-not-owner', {});
-          //console.log('usersss', data);
           const { c_passes } = data;
           return {
             data: c_passes,
@@ -529,7 +496,7 @@ const TableListAssignCPass = () => {
                   }, configDefaultText['page.addMegaAndAssign.textConfirmAssign'], 'c-passes/update/assign', null);
               }}
             >
-              <PlusOutlined /> {configDefaultText['buttonAdd']}
+              <PlusOutlined /> Chỉ định
             </Button>)}
           </>
         ]}

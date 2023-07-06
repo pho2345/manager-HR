@@ -387,6 +387,9 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
 
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger/get/sell-ale');

@@ -276,6 +276,9 @@ const TableListAssignCPass = () => {
         headerTitle='Danh sách Mega'
         actionRef={actionRef}
         rowKey='id'
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
         search={false}
         rowClassName={
           (entity) => {
@@ -353,7 +356,7 @@ const TableListAssignCPass = () => {
         title='Mua Ale'
         open={showModal}
         form={form}
-        width={'30vh'}
+        width={window.innerWidth * 0.3}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
@@ -375,15 +378,8 @@ const TableListAssignCPass = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
+         
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },

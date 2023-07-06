@@ -617,7 +617,7 @@ export default {
 
 
     'page.config.columns.mail': '1. Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
-    'page.config.required.mail': 'Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
+    'page.config.required.mail': 'Email gửi thông báo cho admin các giao dịch Ale',
     'page.config.columns.limitAlegerSellAle': '2. Số Ale tối đa 1 Aleger bán cho PL trong 1 tuần',
     'page.config.columns.fee': '3. Phí giao dịch Ale với PL',
     'page.config.columns.infoAccountBank': '3. Thông tin tài khoản của PL',
@@ -744,7 +744,16 @@ export default {
     'page.detailFair.mega.wgs.slot': 'Khoảng Slot', 
 
     
-
+    'page.logTransaction.colums.code': 'Mã',
+    'page.logTransaction.colums.types': 'Loại giao dịch',
+    'page.logTransaction.colums.methodPayment': 'PTTT',
+    'page.logTransaction.colums.content': 'Hoạt động',
+    'page.logTransaction.colums.adminUser': 'Admin',
+    'page.logTransaction.colums.transaction': 'Mã giao dịch',
+    'page.logTransaction.colums.statusFrom': 'Trạng thái trước',
+    'page.logTransaction.colums.statusTo': 'Trạng thái sau',
+    'page.logTransaction.colums.user': 'Mega',
+    'page.logTransaction.colums.action': 'Thao tác',
 
 
 

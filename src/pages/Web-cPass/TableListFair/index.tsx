@@ -41,13 +41,6 @@ const handleAdd = async (fields: any) => {
 
 const handleUpdate = async (fields: any, id: any) => {
 
-  if (fields?.c_passes[0]?.value) {
-    const configCPass = fields?.c_passes.map((e: any) => {
-      return e.value;
-    });
-    fields.c_passes = configCPass;
-  }
-  console.log(fields.dateStartFeed)
 
   fields.timeStart = moment(fields.timeStart);
   fields.timeEnd = moment(fields.timeEnd);

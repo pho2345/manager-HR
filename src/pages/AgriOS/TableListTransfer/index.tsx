@@ -337,7 +337,7 @@ const TableListAssignCPass = () => {
       <ModalForm
         open={showModal}
         form={form}
-        width={300}
+        width={window.innerWidth * 0.3}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {

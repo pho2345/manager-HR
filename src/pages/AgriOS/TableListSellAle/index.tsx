@@ -464,7 +464,7 @@ const TableListAssignCPass = () => {
         title='Bán Ale'
         open={showModal}
         form={form}
-        width={300}
+        width={window.innerWidth * 0.3}
 
         modalProps={{
           destroyOnClose: true,
@@ -475,8 +475,7 @@ const TableListAssignCPass = () => {
         }}
         submitter={{
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+           
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },

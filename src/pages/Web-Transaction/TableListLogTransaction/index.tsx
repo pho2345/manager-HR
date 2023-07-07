@@ -4,7 +4,7 @@ import DetailUser from '@/pages/Web-Aleger/components/DetailUser';
 import {
   customAPIGet,
 } from '@/services/ant-design-pro/api';
-import { ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -18,6 +18,7 @@ import {
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
+import { Button, Input, InputRef, Space } from 'antd';
 const configDefaultText = configText;
 
 const getLog = async (page: number, sizePage: number) => {
@@ -48,29 +49,14 @@ const TableList: React.FC = () => {
   const [page, setPage] = useState<any>(1);
   const [totalLog, setTotalLog] = useState<any>();
   const [log, setLog] = useState<any>();
+  const searchInput = useRef<InputRef>(null);
 
   const actionRef = useRef<ActionType>();
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     setLoading(true);
-  //     const data = await getLog(1, 100);
-  //     if (data) {
-  //       setLog(data.data);
-  //       setTotalLog(data.total);
-  //       setLoading(false);
-
-  //     }
-
-  //   }
-  //   getData();
-
-  // }, []);
 
   useEffect(() => {
     const getData = async () => {
     setLoading(true);
-      const data = await getLog(page, 1);
+      const data = await getLog(page, 100);
       if (data) {
         setLog(data.data);
         setTotalLog(data.total);
@@ -83,7 +69,7 @@ const TableList: React.FC = () => {
   const reloadTable = () => {
     const getData = async () => {
       setLoading(true);
-      const data = await getLog(page, 1);
+      const data = await getLog(page, 100);
       if (data) {
         setLog(data.data);
         setTotalLog(data.total);
@@ -92,6 +78,89 @@ const TableList: React.FC = () => {
     }
     getData();
   }
+
+
+  const handleSearch = (selectedKeys: any, confirm: any) => {
+    confirm();
+  };
+  const handleReset = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    confirm({
+      closeDropdown: false,
+    });
+  };
+  const getColumnSearchProps = (dataIndex: any) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Tìm kiếm`}
+          value={selectedKeys[0]}
+          onChange={(e: any) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type='primary'
+            onClick={() => handleSearch(selectedKeys, confirm)}
+            icon={<SearchOutlined />}
+            size='small'
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters && handleReset(clearFilters, confirm);
+              setTimeout(() => {
+                searchInput.current?.focus()
+              }, 500);
+            }}
+            size='small'
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+        onClick={() => {
+          setTimeout(() => {
+            searchInput.current?.focus()
+          }, 500);
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (record[dataIndex]) {
+        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+      }
+      return null;
+    }
+    ,
+    onFilterDropdownOpenChange: (visible: any) => {
+      if (visible) {
+      }
+    },
+  });
 
   const columns: ProColumns<any>[] = [
     {
@@ -145,6 +214,7 @@ const TableList: React.FC = () => {
         <>
           {text?.adminUser}
         </>,
+      ...getColumnSearchProps('adminUser')
     },
 
     {
@@ -170,13 +240,28 @@ const TableList: React.FC = () => {
       key: 'statusTo',
       renderText: (_, text: any) => text?.textStatusTo
     },
+    {
+      title: configDefaultText['page.logTransaction.colums.cPass'],
+      dataIndex: 'cPass',
+      valueType: 'textarea',
+      key: 'cPass',
+      render: (_, text: any) => {
+        return (
+          <>{text?.cPass}</>
+        )
+      },
+      ...getColumnSearchProps('cPass')
+
+    },
 
     {
       title: configDefaultText['page.logTransaction.colums.user'],
       dataIndex: 'user',
       valueType: 'textarea',
       key: 'user',
-      renderText: (_, text: any) => text?.users
+      renderText: (_, text: any) => text?.users,
+      ...getColumnSearchProps('users')
+
     },
     {
       title: 'Ngày tạo',
@@ -185,6 +270,7 @@ const TableList: React.FC = () => {
       key: 'createdAt',
       renderText: (_, text: any) => moment(text?.createdAt).format('HH:mm DD/MM/YYYY')
     },
+
   ];
 
   return (
@@ -230,7 +316,7 @@ const TableList: React.FC = () => {
             prev_page: configDefaultText['prePage'],
           },
           total: totalLog,
-          pageSize: 1,
+          pageSize: 100,
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           },

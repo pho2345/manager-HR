@@ -754,6 +754,12 @@ export default {
     'page.logTransaction.colums.statusTo': 'Trạng thái sau',
     'page.logTransaction.colums.user': 'Mega',
     'page.logTransaction.colums.action': 'Thao tác',
+    'page.logTransaction.colums.cPass': 'cPass',
+
+    'page.logTransactionAle.colums.aleger': 'Aleger',
+    'page.logTransactionAle.colums.receiver': 'Aleger nhận',
+    'page.logTransactionAle.colums.qr': 'Mã QR',
+
 
 
 

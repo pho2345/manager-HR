@@ -14,24 +14,24 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage, useIntl } from '@umijs/max';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { Button, Input, InputRef, Space } from 'antd';
+import { Button, Input, message, Space } from 'antd';
+import { values } from 'lodash';
 const configDefaultText = configText;
 
-const getLog = async (page: number, sizePage: number) => {
+
+const getLog = async (page: number, sizePage: number, filter: any) => {
+  console.log(filter);
   const data = await customAPIGet(
-    { page, 'size-page': sizePage },
+    { page, 'size-page': sizePage, ...filter },
     'log-transactions');
   return {
     data: data.data.log,
     total: data.data.total
   }
 }
-
-
 
 const TableList: React.FC = () => {
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
@@ -49,48 +49,48 @@ const TableList: React.FC = () => {
   const [page, setPage] = useState<any>(1);
   const [totalLog, setTotalLog] = useState<any>();
   const [log, setLog] = useState<any>();
-  const searchInput = useRef<InputRef>(null);
+  // const searchInput = useRef<InputRef>(null);
+
+  const [filtered, setFiltered] = useState<any>({
+    c_pass: null,
+    users: null,
+    admin: null,
+    transaction: null
+  });
 
   const actionRef = useRef<ActionType>();
 
-  useEffect(() => {
-    const getData = async () => {
+  const [filters, setFilters] = useState<any>({
+    c_pass: null,
+    admin: null,
+    users: null,
+    transaction: null
+  });
+
+  const getData = async (page: number, filters: any) => {
     setLoading(true);
-      const data = await getLog(page, 100);
+    try {
+      const data = await getLog(page, 100, filters);
       if (data) {
         setLog(data.data);
         setTotalLog(data.total);
       }
-      setLoading(false);
+    } catch (error: any) {
+      message.error(error?.response.data.error.message);
     }
-    getData();
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getData(page, filters);
   }, [page]);
 
-  const reloadTable = () => {
-    const getData = async () => {
-      setLoading(true);
-      const data = await getLog(page, 100);
-      if (data) {
-        setLog(data.data);
-        setTotalLog(data.total);
-      }
-      setLoading(false);
-    }
-    getData();
-  }
-
-
-  const handleSearch = (selectedKeys: any, confirm: any) => {
-    confirm();
+  const reloadTable = async (page: number, filters: any) => {
+    await getData(page, filters);
   };
-  const handleReset = (clearFilters: any, confirm: any) => {
-    clearFilters();
-    confirm({
-      closeDropdown: false,
-    });
-  };
+
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    filterDropdown: () => (
       <div
         style={{
           padding: 8,
@@ -98,11 +98,23 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          ref={searchInput}
           placeholder={`Tìm kiếm`}
-          value={selectedKeys[0]}
-          onChange={(e: any) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm)}
+          value={filters[dataIndex]}
+          onChange={(e: any) => {
+            setFilters((prevFilters: any) => ({
+              ...prevFilters,
+              [dataIndex]: e.target.value,
+            }));
+
+            setFiltered((preFitered: any) => ({
+              ...preFitered,
+              [dataIndex]: true
+            }));
+
+          }}
+          onPressEnter={() => {
+            getData(page, filters);
+          }}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -111,7 +123,9 @@ const TableList: React.FC = () => {
         <Space>
           <Button
             type='primary'
-            onClick={() => handleSearch(selectedKeys, confirm)}
+            onClick={() => {
+              getData(page, filters);
+            }}
             icon={<SearchOutlined />}
             size='small'
             style={{
@@ -121,11 +135,27 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={() => {
-              clearFilters && handleReset(clearFilters, confirm);
-              setTimeout(() => {
-                searchInput.current?.focus()
-              }, 500);
+            onClick={async () => {
+
+              setFilters((prevFilters: any) => {
+                return {
+                  ...prevFilters,
+                  [dataIndex]: null
+                }
+              });
+
+              setFiltered((preFitered: any) => ({
+                ...preFitered,
+                [dataIndex]: false
+              }));
+
+              let filter = {
+                ...filters,
+                [dataIndex]: null
+              }
+
+
+              reloadTable(page, filter);
             }}
             size='small'
             style={{
@@ -137,30 +167,21 @@ const TableList: React.FC = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? '#1890ff' : undefined,
-        }}
-        onClick={() => {
-          setTimeout(() => {
-            searchInput.current?.focus()
-          }, 500);
-        }}
-      />
-    ),
-    onFilter: (value: any, record: any) => {
-      if (record[dataIndex]) {
-        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-      }
-      return null;
-    }
-    ,
+    filterIcon: () => {
+      return (
+        <SearchOutlined
+          style={{
+            color: filtered[dataIndex] ? '#1890ff' : undefined,
+          }}
+        />
+      );
+    },
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
       }
     },
   });
+
 
   const columns: ProColumns<any>[] = [
     {
@@ -182,7 +203,6 @@ const TableList: React.FC = () => {
       filters: true,
       filterSearch: true,
       onFilter: true,
-      //valueEnum: filterCode
     },
     {
       title: configDefaultText['page.logTransaction.colums.types'],
@@ -191,7 +211,36 @@ const TableList: React.FC = () => {
       key: 'types',
       renderText: (_, text: any) => {
         return (text?.type);
-      }
+      },
+      filters: [
+        {
+          value: 'cpassPayment',
+          text: 'Thanh toán MegaS'
+        },
+        {
+          value: 'cpassSettlement',
+          text: 'Thanh quyết toán'
+        }
+      ],
+      onFilter: (value, record) => {
+        setLoading(true);
+        if (value === record.types) {
+          setLoading(false);
+          return record;
+        }
+        setLoading(false);
+        return null;
+      },
+    },
+    {
+      title: configDefaultText['page.logTransaction.colums.transaction'],
+      dataIndex: 'transaction',
+      valueType: 'textarea',
+      key: 'transaction',
+      renderText: (_, text: any) => {
+        return (text?.transaction);
+      },
+      ...getColumnSearchProps('transaction')
     },
     {
       title: configDefaultText['page.logTransaction.colums.methodPayment'],
@@ -214,7 +263,7 @@ const TableList: React.FC = () => {
         <>
           {text?.adminUser}
         </>,
-      ...getColumnSearchProps('adminUser')
+      ...getColumnSearchProps('admin')
     },
 
     {
@@ -273,25 +322,18 @@ const TableList: React.FC = () => {
 
   ];
 
+
   return (
     <PageContainer>
       <ProTable
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
         actionRef={actionRef}
         rowKey='id'
         loading={loading}
         search={false}
-        // request={async () => {
-        //   const data = await customAPIGet(
-        //     {
-        //     },
-        //     'log-transactions');
-        //   return {
-        //     data: data.data,
-        //     success: true,
-        //     total: data?.data?.length
-        //   }
-        // }
-        // }
+
         dataSource={log}
         columns={columns}
         rowSelection={false}
@@ -303,7 +345,7 @@ const TableList: React.FC = () => {
             onClick: () => {
               if (actionRef.current) {
                 // actionRef.current.reload();
-                reloadTable()
+                reloadTable(page, filters)
               }
             }
           }]
@@ -320,7 +362,7 @@ const TableList: React.FC = () => {
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           },
-          onChange(page, pageSize) {
+          onChange(page) {
             setPage(page);
           },
         }}

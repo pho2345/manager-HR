@@ -199,7 +199,7 @@ const TableListFairDetail: React.FC = () => {
   };
 
 
-  const getColumnSearchRange = (dataIndex: any) => ({
+  const getColumnSearchRange = () => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
       //close
     }: any) => (
@@ -447,7 +447,7 @@ const TableListFairDetail: React.FC = () => {
       renderText: (_, text: any) => {
         return text?.pZero;
       },
-      ...getColumnSearchRange('pZero')
+      ...getColumnSearchRange()
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs (VNĐ)' />,

@@ -17,8 +17,9 @@ import {
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { Button, Input, InputRef, message, Space } from 'antd';
+import { Button, Input, message, Space } from 'antd';
 const configDefaultText = configText;
+
 
 const getLog = async (page: number, sizePage: number, filter: any) => {
   console.log(filter);
@@ -30,8 +31,6 @@ const getLog = async (page: number, sizePage: number, filter: any) => {
     total: data.data.total
   }
 }
-
-
 
 const TableList: React.FC = () => {
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
@@ -49,7 +48,7 @@ const TableList: React.FC = () => {
   const [page, setPage] = useState<any>(1);
   const [totalLog, setTotalLog] = useState<any>();
   const [log, setLog] = useState<any>();
-  const searchInput = useRef<InputRef>(null);
+  // const searchInput = useRef<InputRef>(null);
 
   const [filtered, setFiltered] = useState<any>({
     admin: null,
@@ -60,15 +59,14 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-
   const [filters, setFilters] = useState<any>({
     admin: null,
     aleger: null,
     receiver: null,
     qr: null,
   });
-  
-  const getData = async () => {
+
+  const getData = async (page: number ,filters: any) => {
     setLoading(true);
     try {
       const data = await getLog(page, 100, filters);
@@ -81,21 +79,17 @@ const TableList: React.FC = () => {
     }
     setLoading(false);
   };
-  
+
   useEffect(() => {
-    getData();
+    getData(page, filters);
   }, [page]);
-  
-  const reloadTable = async () => {
-    // setFilters((prevFilters: any) => ({
-    //   ...prevFilters,
-    //   ['receiver']: null,
-    // }));
-    await getData();
+
+  const reloadTable = async (page: number, filters: any) => {
+    await getData(page, filters);
   };
   
   const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    filterDropdown: () => (
       <div
         style={{
           padding: 8,
@@ -110,7 +104,7 @@ const TableList: React.FC = () => {
               ...prevFilters,
               [dataIndex]: e.target.value,
             }));
-            
+
             setFiltered((preFitered: any) => ({
               ...preFitered,
               [dataIndex]: true
@@ -118,7 +112,7 @@ const TableList: React.FC = () => {
 
           }}
           onPressEnter={() => {
-            reloadTable();
+            getData(page, filters);
           }}
           style={{
             marginBottom: 8,
@@ -129,7 +123,7 @@ const TableList: React.FC = () => {
           <Button
             type='primary'
             onClick={() => {
-              reloadTable();
+              getData(page, filters);
             }}
             icon={<SearchOutlined />}
             size='small'
@@ -140,26 +134,27 @@ const TableList: React.FC = () => {
             Tìm
           </Button>
           <Button
-            onClick={ async() => {
-              const deplay = new Promise((res, rej) => {
+            onClick={async () => {
+
                 setFilters((prevFilters: any) => {
                   return {
                     ...prevFilters,
-                    [dataIndex]: null,
+                    [dataIndex]: null
                   }
-                });
-                return res({
-                  ...filters,
-                  [dataIndex]: null
-                }) 
               });
 
-              const newFilter = await deplay;
               setFiltered((preFitered: any) => ({
                 ...preFitered,
                 [dataIndex]: false
-              }))
-              await reloadTable();
+              }));
+
+              let filter = {
+                ...filters,
+                [dataIndex]: null
+              }
+              
+              
+              reloadTable(page, filter);
             }}
             size='small'
             style={{
@@ -185,7 +180,7 @@ const TableList: React.FC = () => {
       }
     },
   });
-  
+
 
   const columns: ProColumns<any>[] = [
     {
@@ -318,7 +313,7 @@ const TableList: React.FC = () => {
             onClick: () => {
               if (actionRef.current) {
                 // actionRef.current.reload();
-                reloadTable()
+                reloadTable(page, filters)
               }
             }
           }]

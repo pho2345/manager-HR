@@ -557,10 +557,12 @@ const TableListAssignCPass = () => {
                 label: 'Ví điện tử'
               }
             ]}
-
+              style={{
+                width: '100%'
+              }}
               disabled
               placeholder={configDefaultText['methodPayment']}
-              width='md' name='method' label={configDefaultText['methodPayment']}
+              name='method' label={configDefaultText['methodPayment']}
               // rules={[
               //   {
               //     required: true,

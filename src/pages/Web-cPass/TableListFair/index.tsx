@@ -15,6 +15,7 @@ import moment from 'moment';
 import TableListAddCPassInFair from '../TableListAddCPassInFair';
 //import DetailCPass from '../components/DetailCPass';
 import DetailFair from '@/pages/components/DetailFair';
+import AssignCPass from '@/pages/Web-cPass/TableListAddMegaAndAssignCPass';
 
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -82,16 +83,16 @@ const handleRemove = async (selectedRows: any) => {
   }
 };
 
-const getCPassNotFair = async () => {
-  const cPass = await customAPIGet({}, 'c-passes/get/cpassnotfair');
-  let data = cPass.data.map((e: any) => {
-    return {
-      value: e?.id,
-      label: e?.cow?.name,
-    };
-  });
-  return data;
-};
+// const getCPassNotFair = async () => {
+//   const cPass = await customAPIGet({}, 'c-passes/get/cpassnotfair');
+//   let data = cPass.data.map((e: any) => {
+//     return {
+//       value: e?.id,
+//       label: e?.cow?.name,
+//     };
+//   });
+//   return data;
+// };
 
 const getPlans = async () => {
   const plans = await customAPIGet({ 'fields[0]': 'name', 'fields[1]': 'profit' }, 'plans');
@@ -145,28 +146,24 @@ const TableList: React.FC = () => {
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
+  const [showModalAssign, setShowModalAssign] = useState<boolean>(false);
+  const refFair = useRef<any>();
+
   const [dateEnd, setDateEnd] = useState<any>();
-
-
 
   useEffect(() => {
     const getData = async () => {
       const getPlan = await getPlans();
       setPlan(getPlan);
-
     };
     getData();
   }, []);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -433,22 +430,9 @@ const TableList: React.FC = () => {
 
 
 
-  // const disabledDate = (current: any) => {
-  //   // Kiểm tra ngày hiện tại
-  //   if (current && current.day() !== 1) { // Kiểm tra ngày không phải thứ Hai (Monday)
-  //     return true; // Vô hiệu hóa ngày không phải thứ Hai
-  //   }
 
-  //   // Kiểm tra ngày trong tương lai
-  //   if (current && current.day() === 1 && current.isBefore(moment())) {
-  //     return true; // Vô hiệu hóa thứ Hai trong tương lai
-  //   }
-
-  //   return false; // Cho phép chọn thứ Hai hiện tại và trong quá khứ
-  // };
 
   const disabledDateStartFeed = (current: any, dateEnd: any) => {
-    // Kiểm tra ngày hiện tại
     if (current && current.day() !== 1) { // Kiểm tra ngày không phải thứ Hai (Monday)
       return true; // Vô hiệu hóa ngày không phải thứ Hai
     }
@@ -466,7 +450,6 @@ const TableList: React.FC = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='page.listFair.columns.code' defaultMessage='Đợt mở bán' />,
       title: configDefaultText['page.listFair.columns.code'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
@@ -485,7 +468,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      //title: <FormattedMessage id='page.listFair.column.timeStart' defaultMessage='Ngày giờ mở bán' />,
       title: configDefaultText['page.listFair.column.timeStart'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -502,7 +484,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchRange()
     },
     {
-      // title: <FormattedMessage id='page.listFair.column.timeEnd' defaultMessage='Ngày giờ đóng bán' />,
       title: configDefaultText['page.listFair.placeHolder.timeEnd'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -517,7 +498,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='page.listFair.column.dateStartFeed' defaultMessage='Ngày bắt đầu nuôi' />,
       title: configDefaultText['page.listFair.column.dateStartFeed'],
       dataIndex: 'dateStartFeed',
       valueType: 'textarea',
@@ -532,7 +512,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      //title: <FormattedMessage id='page.listFair.column.timeFeed' defaultMessage='Thời gian nuôi(Tuần)' />,
       title: configDefaultText['page.listFair.placeHolder.timeFeed'],
       dataIndex: 'timeFeed',
       valueType: 'textarea',
@@ -542,7 +521,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.listFair.column.plans' defaultMessage='PAHT Mega/PL' />,
       title: configDefaultText['page.listFair.column.plans'],
       dataIndex: 'plans',
       valueType: 'dateRange',
@@ -561,7 +539,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='page.listFair.column.cPassPublished' defaultMessage='cPass phát hành/Đã bán' />,
       title: configDefaultText['page.listFair.column.cPassPublished'],
       dataIndex: 'cPassPublished',
       valueType: 'textarea',
@@ -569,7 +546,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => `${text?.cPassPublished} / ${text?.quantitySellCpass}`
     },
     {
-      // title: <FormattedMessage id='page.listFair.column.status' defaultMessage='Trạng thái' />,
       title: configDefaultText['page.listFair.column.status'],
       dataIndex: 'status',
       valueType: 'textarea',
@@ -621,7 +597,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='page.listFair.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
       title: configDefaultText['page.listFair.placeHolder.unitPriceMeat'],
       dataIndex: 'unitPriceMeat',
       valueType: 'textarea',
@@ -630,7 +605,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.listFair.column.unitPriceMeat' defaultMessage='Đơn giá thịt(VNĐ/kg)' />,
       title: 'Đơn giá bảo hiểm (VNĐ/kg)',
       dataIndex: 'unitSicknessInsurance',
       valueType: 'textarea',
@@ -639,7 +613,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      //title: <FormattedMessage id='page.listFair.column.nameFarm' defaultMessage='Tên trang trại' />,
       title: configDefaultText['page.listFair.column.nameFarm'],
       dataIndex: 'nameFarm',
       valueType: 'textarea',
@@ -647,9 +620,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.nameFarm
     },
 
-
     {
-      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -681,10 +652,17 @@ const TableList: React.FC = () => {
                   setShowModalCPass(true);
                 }}>{configDefaultText['addCPass']}</Menu.Item>
 
-              <Menu.Item key="3">
-                <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
+              <Menu.Item key="3"
+                onClick={() => {
+                  setShowModalAssign(true);
+                  refFair.current = entity.id;
+                }}
+              >
+                {/* <Link to={`/web-c-pass/fairs/add-mega-assign/` + entity.id}>
                   {configDefaultText['assignCPass']}
-                </Link>
+                </Link> */}
+
+                {configDefaultText['assignCPass']}
               </Menu.Item>
 
             </>)}
@@ -705,21 +683,25 @@ const TableList: React.FC = () => {
                 refIdFair.current = entity.id;
                 const fair = await customAPIGetOne(entity.id, 'fairs/fairadmin', {});
                 setDateEnd(fair.timeEnd);
+
                 const c_passes = fair?.c_passes.map((e: any) => {
                   return {
                     label: e?.cow?.name,
                     value: e?.id
                   }
-                })
+                });
+
                 const plans = fair.plans.map((e: any) => {
                   return e?.id
-                })
+                });
+
                 form.setFieldsValue({
                   ...fair,
                   c_passes,
                   plans
                 })
               }}
+
             >{configDefaultText['edit']}</Menu.Item>) : (<></>)}
 
             {entity?.status === 'opening' || entity?.status === 'closed' || !moment(entity.timeEnd).isAfter(moment().toISOString()) ? (<Menu.Item key="6"
@@ -1692,7 +1674,32 @@ const TableList: React.FC = () => {
               setShowDetail(false);
             }}
           />
-        )
+        )}
+
+        {
+          showModalAssign && (
+            <ModalForm
+              title={configDefaultText['page.listFair.read']}
+              open={showModalAssign}
+              width={window.innerWidth * 0.85}
+              form={form}
+              submitter={false}
+              autoFocusFirstInput
+              modalProps={{
+                destroyOnClose: false,
+                onCancel: () => {
+                  form.resetFields();
+                  setShowModalAssign(false);
+                },
+              }}
+            >
+              <AssignCPass
+                fairId = {refFair.current}
+                onCloseModal={() => {
+                  setShowModalAssign(false);
+                }}
+              />
+            </ModalForm>)
         }
       </PageContainer>
 

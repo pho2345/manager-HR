@@ -18,7 +18,6 @@ import moment from 'moment';
 
 
 const handleAdd = async (fields: any) => {
-  console.log(fields);
   const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'provinces');
@@ -34,7 +33,6 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật');
   try {
     await customAPIUpdate({

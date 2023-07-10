@@ -90,7 +90,7 @@ export default {
     //Web-cPass: Assign
     'page.assign.column.aleger': 'Aleger',
     'page.assign.column.cPass': 'số CPass đã mua trong phiên',
-    'page.assign.textConfirmAssign': 'Bạn có muốn gán cPass cho Mega đã chọn không?',
+    'page.assign.textConfirmAssign': 'Bạn có muốn chỉ định cPass ',
 
     
 
@@ -153,7 +153,7 @@ export default {
     'page.DetailCPass.menu.removeCPass':'Loại bỏ cPass',
 
 
-    'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
+    // 'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
     'page.DetailCPass.message.removeCPassFair':'Loại bỏ cPass khỏi phiên?',
 
 

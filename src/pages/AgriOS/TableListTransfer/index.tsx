@@ -410,6 +410,9 @@ const TableListAssignCPass = () => {
               required
               label={configDefaultText['page.transfer.method']}
               placeholder={configDefaultText['page.transfer.method']}
+              style={{
+                width: '100%'
+              }}
             />
           </Col>
         </Row>

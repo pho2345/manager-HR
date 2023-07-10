@@ -189,6 +189,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -288,6 +289,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -369,12 +371,6 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.listCategory.code'],
       key: 'code',
       dataIndex: 'atrributes',

@@ -23,10 +23,10 @@ const configDefaultText = configText;
 import "./styles.css";
 import { MdOutlineCurrencyExchange, MdOutlinePaid } from 'react-icons/md';
 import DetailCPass from '@/pages/AgriGate/TableListCPass/components/DetailCPass';
+import DetailUser from '@/pages/components/DetailUser';
 
 
 const handleCreate = async (fields: any, api: any) => {
-  console.log('fields', fields);
   const hide = message.loading('Đang tạo...');
   try {
 
@@ -50,7 +50,6 @@ const handleCreate = async (fields: any, api: any) => {
 };
 
 const handleUpdate = async (fields: any, api: any, value: any) => {
-  //console.log('fields', fields);
   const hide = message.loading('Đang cập nhật...');
   try {
 
@@ -74,22 +73,18 @@ const handleUpdate = async (fields: any, api: any, value: any) => {
   }
 };
 
-
-
-
-
-
-
 const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<any>();
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const refTransaction = useRef<any>();
   const params = useParams<any>();
+  const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
 
   const confirm = (entity: any, message: any, api: string, types: any) => {
     Modal.confirm({
@@ -126,7 +121,6 @@ const TableList: React.FC = () => {
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -233,6 +227,8 @@ const TableList: React.FC = () => {
         return (
           <><a
             onClick={() => {
+              setCurrentUser(entity?.sender.id);
+              setShowDetailUser(true);
             }}>
             {entity?.sender?.fullname ? entity?.sender?.fullname : entity?.sender?.username}-{entity?.sender?.id}
           </a><br />{entity?.sender.phone}{entity?.sender.phone && entity.sender?.email ? `|` : ''}{entity?.sender.email}
@@ -401,9 +397,7 @@ const TableList: React.FC = () => {
         }
 
         if ((entity?.status === 'waitConfirm' || (entity?.status === 'inProgress' && entity?.method === 'vnd')) && entity?.ale <= entity?.aleWallet?.availableBalance) {
-          console.log(
-            'day', entity.id
-          )
+
           button.push(<>
             <Tooltip title={configDefaultText['pay']}>
               <MdOutlinePaid
@@ -431,6 +425,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
+        headerTitle={'Quản lý'}
         scroll={{
           x: window.innerWidth * 0.7
         }}
@@ -444,7 +439,6 @@ const TableList: React.FC = () => {
             return ''
           }
         }}
-
 
         search={false}
         toolBarRender={() => [
@@ -509,7 +503,6 @@ const TableList: React.FC = () => {
                 text += index === 0 ? e?.c_pass?.code : `, ${e?.c_pass?.code}`;
                 return e?.id
               })
-              console.log('transaction', transaction);
               confirm({
                 transaction: transaction
               }, `Chắc chắn muốn thanh toán MegaS của cPass: ${text} bằng Ale không?`, 'transactions/payale', '');
@@ -523,9 +516,7 @@ const TableList: React.FC = () => {
       )}
 
       <ModalForm
-
         open={createModalOpen}
-        //form={form}
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -536,7 +527,6 @@ const TableList: React.FC = () => {
         width={window.innerWidth * 0.2}
         submitTimeout={2000}
         onFinish={async (values) => {
-          //await waitTime(2000);
           const refund = await handleCreate({
             types: values.method, transaction: [refTransaction.current]
           }, 'transactions/refund/create');
@@ -552,8 +542,6 @@ const TableList: React.FC = () => {
 
         submitter={{
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },
@@ -595,6 +583,16 @@ const TableList: React.FC = () => {
           setCurrentRow(undefined);
         }}
       />}
+
+      {
+        currentUser && <DetailUser
+          currentRowUser={currentUser}
+          onDetail={showDetailUser}
+          onCloseDetail={() => {
+            setShowDetailUser(false);
+          }}
+        />
+      }
 
     </PageContainer>
   );

@@ -244,6 +244,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -345,6 +346,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -360,8 +362,6 @@ const TableList: React.FC = () => {
                 setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
               }
               handleSearchRange(selectedKeys, confirm);
-              // confirm()\
-
             }}
             icon={<SearchOutlined />}
             size="small"

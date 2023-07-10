@@ -199,6 +199,15 @@ const getGroupFarm = async (id: number) => {
   return configGroupFarm;
 }
 
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
 
 
 const TableList: React.FC = () => {
@@ -230,6 +239,7 @@ const TableList: React.FC = () => {
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [bodyCondition, setBodyCondition] = useState<any>([]);
 
 
 
@@ -239,6 +249,8 @@ const TableList: React.FC = () => {
       let getCate = await getCategory();
       let getFarms = await getFarm();
       let getGroups = await getGroup();
+      let getOptionBodyCondition = await getBodyCondition();
+      setBodyCondition(getOptionBodyCondition);
       setCategory(getCate);
       setFarm(getFarms);
       setCow(getCow);
@@ -744,30 +756,8 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
-      filters: true,
+      filters: bodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
     },
     {
       title: configDefaultText['page.listCPass.column.wgePercent'],
@@ -879,7 +869,6 @@ const TableList: React.FC = () => {
         search={false}
 
         toolBarRender={() => {
-
           return showDowloadFile ? [
             <Button
               type='primary'
@@ -1126,21 +1115,12 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-
         <Row gutter={24} className='m-0'>
-
-
           <Col span={12} className='gutter-row p-0'>
             <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
 
           </Col>
         </Row>
-
-
-
-
-
-
       </ModalForm>
 
 
@@ -1477,33 +1457,6 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-        {/* <Row gutter={24} className='m-0'>
-          <Col span={12} className='gutter-row p-0' >
-            <ProFormDigit min={1} className='w-full' name='vZero'
-              label={configDefaultText['page.listCPass.modal.vZero']}
-              placeholder={configDefaultText['page.listCPass.modal.vZero']}
-              fieldProps={{
-                formatter,
-                parser,
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.listCPass.required.vZero']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.Cpass.pZero'
-                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
-                  //   />
-                  // ),
-                },
-              ]}
-            />
-          </Col>
-
-
-        </Row> */}
-
         <ProFormUploadButton
           name="photos"
           title={configDefaultText['page.listCow.column.upload']}
@@ -1517,7 +1470,7 @@ const TableList: React.FC = () => {
             onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
             accept: 'image/*',
             multiple: true,
-            beforeUpload: (file: any, fileSize) => {
+            beforeUpload: () => {
               if (fileList.length > 5) {
                 return false;
               }

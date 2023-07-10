@@ -1,12 +1,11 @@
 import { customAPIGetOne, customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import { useParams } from '@umijs/max';
 import { Button, Typography, message, Modal, Space, Input } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
@@ -18,6 +17,7 @@ const configDefaultText = configText;
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
+  console.log(fields);
   try {
     const updateTransaction = await customAPIUpdateMany(
       fields,
@@ -44,7 +44,7 @@ const getFair = async (id: number) => {
 
 
 
-const TableListAssignCPass = () => {
+const TableListAssignCPass = (props: any) => {
   const actionRef = useRef<ActionType>();
   const actionRefMega = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
@@ -52,13 +52,15 @@ const TableListAssignCPass = () => {
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
   const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
 
-
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  const params = useParams<any>();
   const [fair, setFair] = useState<any>();
   const searchInput = useRef(null);
+
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+  const [searchRange, setSearchRange] = useState<any>();
+  const [searchRangeTo, setSearchRangeTo] = useState<any>();
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -69,6 +71,7 @@ const TableListAssignCPass = () => {
       closeDropdown: false,
     });
   };
+
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters
       // , close
@@ -147,6 +150,157 @@ const TableListAssignCPass = () => {
   });
 
 
+
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+
+  };
+  const handleResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    setShowRangeTo(false);
+    setSearchRange(null);
+    setSearchRangeTo(null);
+    setOptionRangeSearch(null);
+    confirm({
+      closeDropdown: false,
+    });
+  };
+
+
+  const getColumnSearchRange = () => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <ProFormDigit
+          // allowClear={true}
+        
+          placeholder={`Cân nặng ${showRangeTo ? `từ` : ``}`}
+          fieldProps={{
+            onChange: (e: any) => {
+              setSearchRange(e);
+            },
+            value: searchRange
+          }}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        {
+          showRangeTo && (<ProFormDigit
+            // allowClear={true}
+            placeholder={`Cân nặng đến`}
+            fieldProps={{
+              onChange: (e: any) => {
+                setSearchRangeTo(e);
+              }
+            }}
+            style={{
+              marginBottom: 8,
+              display: 'block',
+            }}
+          />)
+        }
+        <ProFormSelect
+          options={[
+            {
+              value: 'lesser',
+              label: 'Nhỏ hơn'
+            },
+            {
+              value: 'greater',
+              label: 'Lớn hơn'
+            },
+            {
+              value: 'range',
+              label: 'Khoảng'
+            }
+          ]}
+          fieldProps={{
+            onChange: (value) => {
+              if (value === 'range') {
+                setOptionRangeSearch(value);
+                setShowRangeTo(true);
+              }
+              else {
+                setShowRangeTo(false);
+                setOptionRangeSearch(value);
+              }
+            },
+            value: optionRangeSearch
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (optionRangeSearch !== 'range') {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange])])
+              }
+              else {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange, searchRangeTo])])
+              }
+              handleSearchRange(selectedKeys, confirm);
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (typeof value === 'string') {
+        const convertValue = JSON.parse(value);
+        if (convertValue[0] === 'lesser') {
+          if (record.pZero < convertValue[1]) {
+            return record;
+          }
+        }
+        else if (convertValue[0] === 'greater') {
+          if (record.pZero > convertValue[1]) {
+            return record;
+          }
+        }
+        else {
+          if (record.pZero >= convertValue[1] && record.pZero <= convertValue[2]) {
+            return record
+          }
+        }
+      }
+      return null;
+    }
+    ,
+  });
+
+
   const confirm = (entity: any, message: string, api: string, id: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
@@ -156,16 +310,21 @@ const TableListAssignCPass = () => {
       cancelText: 'Không',
       onOk: async () => {
 
-        await handleUpdateMany({
+        const update = await handleUpdateMany({
           ...entity,
-          fairId: params?.id
+          fairId: props.fairId
         }, api, id);
-        if (actionRef.current && actionRefMega.current) {
-          setSelectedRowsCPass([]);
-          setSelectedRowsMega([]);
-          actionRef.current?.reloadAndRest?.();
-          actionRefMega.current?.reloadAndRest?.();
+        if (update) {
+          props.onCloseModal();
+
+          if (actionRef.current && actionRefMega.current) {
+            setSelectedRowsCPass([]);
+            setSelectedRowsMega([]);
+            actionRef.current?.reloadAndRest?.();
+            actionRefMega.current?.reloadAndRest?.();
+          }
         }
+
       }
     });
   };
@@ -173,7 +332,7 @@ const TableListAssignCPass = () => {
 
   useEffect(() => {
     const fetchDataFair = async () => {
-      const getFairData = await getFair(params.id as any);
+      const getFairData = await getFair(props.fairId as any);
       setFair(getFairData);
     }
     fetchDataFair();
@@ -265,7 +424,6 @@ const TableListAssignCPass = () => {
 
         );
       },
-
     },
     {
       title: configDefaultText['page.addMegaAndAssign.column.farm'],
@@ -349,7 +507,8 @@ const TableListAssignCPass = () => {
       key: 'pZero',
       renderText: (_, text: any) => {
         return text?.pZero;
-      }
+      },
+      ...getColumnSearchRange()
     },
     {
       title: configDefaultText['page.addMegaAndAssign.column.vs'],
@@ -421,30 +580,24 @@ const TableListAssignCPass = () => {
         }}
 
         request={async () => {
-          const data = await customAPIGetOne(params.id, 'users/list-and-cpass', {});
+          const data = await customAPIGetOne(props.fairId, 'users/list-and-cpass', {});
           return {
             data: data,
             success: true,
             total: data?.length
           }
         }}
-        toolBarRender={() => [
-          <>
-
-          </>
-        ]}
         columns={columns}
         dataSource={fair?.c_passes}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-
             if (selectedRows.length > 1) {
               message.error(configDefaultText['page.addMegaAndAssign.errorOnlyAleger']);
             }
             setSelectedRowsMega(selectedRows);
           },
           type: 'radio'
-          
+
         }}
 
         tableAlertRender={false}
@@ -471,7 +624,7 @@ const TableListAssignCPass = () => {
         }}
 
         request={async () => {
-          const data = await customAPIPostOne(params.id, 'fairs/cpass-not-owner', {});
+          const data = await customAPIPostOne(props.fairId, 'fairs/cpass-not-owner', {});
           const { c_passes } = data;
           return {
             data: c_passes,
@@ -486,13 +639,13 @@ const TableListAssignCPass = () => {
               key='primary'
               onClick={() => {
                 const cPassId = selectedRowsCPass.map((e: any) => e.id);
-
+                console.log('props', props);
                 confirm(
                   {
                     data: {
                       cPassId: cPassId,
-                      userId: selectedRowsMega[0]?.id
-                    }
+                      userId: selectedRowsMega[0]?.id,
+                    },
                   }, configDefaultText['page.addMegaAndAssign.textConfirmAssign'], 'c-passes/update/assign', null);
               }}
             >
@@ -549,8 +702,6 @@ const TableListAssignCPass = () => {
             setShowDetailCPass(false);
           }}
         />
-
-
       )}
 
 

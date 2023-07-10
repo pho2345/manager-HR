@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import { ModalForm, PageContainer, ProFormText, ProTable } from '@ant-design/pro-components';
 // import { FormattedMessage } from '@umijs/max';
@@ -7,23 +7,23 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
 const configDefaultText = configText;
 import { SketchPicker } from 'react-color';
 
-const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('Đang thêm...');
-  try {
-    await customAPIAdd({ ...fields }, 'body-conditions');
-    hide();
-    message.success('Thêm thành công');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error.response.data.error.message);
-    return false;
-  }
-};
+// const handleAdd = async (fields: API.RuleListItem) => {
+//   const hide = message.loading('Đang thêm...');
+//   try {
+//     await customAPIAdd({ ...fields }, 'body-conditions');
+//     hide();
+//     message.success('Thêm thành công');
+//     return true;
+//   } catch (error: any) {
+//     hide();
+//     message.error(error.response.data.error.message);
+//     return false;
+//   }
+// };
 
 
 const handleUpdate = async (fields: any, id: any) => {
@@ -63,7 +63,6 @@ const handleRemove = async (selectedRows: any) => {
 
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [color, setColor] = useState();
   const [colorBackground, setColorBackground] = useState();
 
@@ -222,6 +221,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -323,6 +323,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -554,17 +555,6 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
-        toolBarRender={() => [
-          <Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-              handleModalOpen(true);
-            }}
-          >
-            <PlusOutlined /> {configDefaultText['buttonAdd']}
-          </Button>,
-        ]}
         request={async () => {
           const data = await customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'body-conditions');
 
@@ -615,37 +605,8 @@ const TableList: React.FC = () => {
         }}
 
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
-        //         confirm(
-        //           selectedRowsState, configDefaultText['textConfirmDelete']
-        //         );
-
-        //         // await handleRemove(selectedRowsState);
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['delete']}
-        //     </Button>
-
-        //   </FooterToolbar>)
-
-      }
-      <ModalForm
+     
+      {/* <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
         width='35vh'
@@ -815,13 +776,13 @@ const TableList: React.FC = () => {
             )}
           </Col>
         </Row>
-      </ModalForm>
+      </ModalForm> */}
 
 
       <ModalForm
         form={form}
 
-        width='35vh'
+        width={window.innerWidth * 0.25}
         open={updateModalOpen}
         modalProps={{
           destroyOnClose: true,
@@ -841,43 +802,13 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
 
-        {/* <Row gutter={24} className='m-0'>
-          <Col span={24} className='gutter-row p-0' >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
-                },
-              ]}
-              className='w-full'
-              name='code'
-              label={configDefaultText['page.code']}
-              placeholder={configDefaultText['page.code']}
-            />
-          </Col>
-        </Row> */}
 
         <Row gutter={24} className='m-0'>
           <Col span={24} className='gutter-row p-0' >
@@ -886,18 +817,18 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.classify']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
+              // fieldProps={{
+              //   onChange: (value) => {
+              //     form.setFieldValue('value', value);
+              //   }
+              // }}
               className='w-full'
               name='name'
               label={configDefaultText['page.classify']}
               placeholder={configDefaultText['page.classify']}
+              
             />
           </Col>
         </Row>
@@ -905,24 +836,44 @@ const TableList: React.FC = () => {
 
         <Row gutter={24} className='m-0'>
           <Col span={24} className='gutter-row p-0' >
-            <ProFormText
+            <ProFormSelect
               rules={[
                 {
                   required: true,
                   message: configDefaultText['page.required.value']
 
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.value'
-                  //     defaultMessage='Nhập giá trị'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
               name='value'
               label={configDefaultText['page.value']}
               placeholder={configDefaultText['page.value']}
+              options={[
+                {
+                  label: 'noneValue',
+                  value: 'noneValue'
+                },
+                {
+                  label: 'dead',
+                  value: 'dead'
+                },
+                {
+                  label: 'sick',
+                  value: 'sick'
+                },
+                {
+                  label: 'weak',
+                  value: 'weak'
+                },
+                {
+                  label: 'good',
+                  value: 'good'
+                },
+                {
+                  label: 'malnourished',
+                  value: 'malnourished'
+                }
+              ]}
             />
           </Col>
         </Row>

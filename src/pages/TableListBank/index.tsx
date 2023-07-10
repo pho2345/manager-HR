@@ -18,7 +18,6 @@ import React, { useRef, useState } from 'react';
 
 
 const handleAdd = async (fields: any) => {
-  console.log(fields);
   const hide = message.loading('Đang tải...');
   try {
     await customAPIAdd({ ...fields }, 'banks');

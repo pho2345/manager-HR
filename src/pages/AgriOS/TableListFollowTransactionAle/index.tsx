@@ -18,7 +18,6 @@ import { Button, Col, Input, Row, Space } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { MdOutlineMms } from 'react-icons/md';
 const configDefaultText = configText;
 
 
@@ -125,13 +124,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
@@ -143,6 +137,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -242,6 +237,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>

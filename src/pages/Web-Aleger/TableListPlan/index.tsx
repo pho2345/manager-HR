@@ -117,12 +117,10 @@ const TableList: React.FC = () => {
   }, []);
 
   const toggleColorPicker = () => {
-    // console.log('abc');
     setOpenColor(!openColor);
   };
 
   const toggleColorBackgroundPicker = () => {
-    // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
 

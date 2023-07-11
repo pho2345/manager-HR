@@ -78,7 +78,7 @@ const handleRemove = async (selectedRows: any) => {
     return true;
   } catch (error: any) {
     hide();
-    message.error(error?.response?.data.error.message);
+    message.error(error?.response?.data?.error?.message || 'Không thể xóa');
     return false;
   }
 };

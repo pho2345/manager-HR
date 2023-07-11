@@ -115,15 +115,8 @@ const TableList: React.FC = () => {
   const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
 
-  // useEffect(() => {
-  //   const getValues = async () => {
-  //   }
-  //   getValues();
-  // }, [])
-
   useEffect(() => {
     const getData = async () => {
-
       const getOptionBodyCondition = getBodyCondition();
       const getOptionWGE = getWGE();
       const getOptionAWG = getAWG();

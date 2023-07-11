@@ -408,7 +408,7 @@ const TableList: React.FC = () => {
                 onClick={() => {
                   confirm({
                     transaction: [entity.id]
-                  }, `${configDefaultText['page.ManagerCPass.column.textConfirmPay']} ${entity.c_pass.code} bằng Ale không?`, 'transactions/payale', '');
+                  }, <>{configDefaultText['page.ManagerCPass.column.textConfirmPay']} <strong>{entity.c_pass.code} </strong>bằng Ale không?</>, 'transactions/payale', '');
                 }}
               />
             </Tooltip>

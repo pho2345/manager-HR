@@ -336,12 +336,9 @@ const TableList: React.FC = () => {
           </>
         );
       },
-
-      //valueEnum: filterCode
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
       title: configDefaultText['page.confirm.column.aleger'],
       dataIndex: 'username',
       valueType: 'textarea',
@@ -352,7 +349,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.app' defaultMessage='Ứng dụng' />,
       title: configDefaultText['page.follow.column.app'],
       dataIndex: 'app',
       valueType: 'textarea',
@@ -360,10 +356,8 @@ const TableList: React.FC = () => {
       renderText: (_, entity: any) => {
         return ``;
       },
-      //...getColumnSearchProps('mega')
     },
     {
-      // title: <FormattedMessage id='page.follow.column.types' defaultMessage='Hoạt động' />,
       title: configDefaultText['page.follow.column.types'],
       dataIndex: 'types',
       valueType: 'textarea',
@@ -376,7 +370,6 @@ const TableList: React.FC = () => {
             return (<span style={{
               color: 'green'
             }}>Mua Ale</span>);
-
             break;
 
           case 'sellAle':
@@ -431,7 +424,7 @@ const TableList: React.FC = () => {
 
             types = (<span style={{
               color: '#fb7185'
-            }}>Thanh toán cPass</span>);
+            }}>Thanh quyết toán cPass</span>);
             break;
           default:
             break;
@@ -446,8 +439,33 @@ const TableList: React.FC = () => {
         {
           text: 'Bán Ale',
           value: 'sellAle'
-        }
+        },
+        {
+          text: 'Nhận ProduceAle',
+          value: 'megaDeltaWeightproduceAle'
+        },
+        {
+          text: 'Chuyển Ale',
+          value: 'aleTransfer'
+        },
+        {
+          text: 'Chuyển ProduceAle sang Ale',
+          value: 'produceAleExchangeAle'
+        },
+        {
+          text: 'Chuyển ProduceAle sang PromoAle',
+          value: 'produceAleExchangePromo'
+        },
+        {
+          text: 'Thanh toán cPass',
+          value: 'cpassPayment'
+        },
+        {
+          text: 'Thanh quyết toán cPass',
+          value: 'cpassSettlement'
+        },
       ],
+      
       onFilter: (value, record) => {
         if (record.types === value) {
           return record

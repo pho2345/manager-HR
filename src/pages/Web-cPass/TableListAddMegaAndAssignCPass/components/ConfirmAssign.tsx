@@ -46,74 +46,74 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const searchInput = useRef(null);
 
-  const handleSearch = (selectedKeys: any, confirm: any) => {
-    confirm();
-  };
-  const handleReset = (clearFilters: any) => {
-    clearFilters();
-  };
-  const getColumnSearchProps = (dataIndex: any) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-      <div
-        style={{
-          padding: 8,
-        }}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <Input
-          ref={searchInput}
-          placeholder={`Tìm thẻ tai`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm)}
-          style={{
-            marginBottom: 8,
-            display: 'block',
-          }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Tìm
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Làm mới
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? '#1890ff' : undefined,
-        }}
-      />
-    ),
-    onFilter: (value: any, record: any) => {
-      if (record[dataIndex]) {
-        return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-      }
-      return null;
-    }
-    ,
-    onFilterDropdownOpenChange: (visible: any) => {
-      if (visible) {
-      }
-    },
-  });
+  // const handleSearch = (selectedKeys: any, confirm: any) => {
+  //   confirm();
+  // };
+  // const handleReset = (clearFilters: any) => {
+  //   clearFilters();
+  // };
+  // const getColumnSearchProps = (dataIndex: any) => ({
+  //   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+  //     <div
+  //       style={{
+  //         padding: 8,
+  //       }}
+  //       onKeyDown={(e) => e.stopPropagation()}
+  //     >
+  //       <Input
+  //         ref={searchInput}
+  //         placeholder={`Tìm thẻ tai`}
+  //         value={selectedKeys[0]}
+  //         onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+  //         onPressEnter={() => handleSearch(selectedKeys, confirm)}
+  //         style={{
+  //           marginBottom: 8,
+  //           display: 'block',
+  //         }}
+  //       />
+  //       <Space>
+  //         <Button
+  //           type="primary"
+  //           onClick={() => handleSearch(selectedKeys, confirm)}
+  //           icon={<SearchOutlined />}
+  //           size="small"
+  //           style={{
+  //             width: 90,
+  //           }}
+  //         >
+  //           Tìm
+  //         </Button>
+  //         <Button
+  //           onClick={() => clearFilters && handleReset(clearFilters)}
+  //           size="small"
+  //           style={{
+  //             width: 90,
+  //           }}
+  //         >
+  //           Làm mới
+  //         </Button>
+  //       </Space>
+  //     </div>
+  //   ),
+  //   filterIcon: (filtered: boolean) => (
+  //     <SearchOutlined
+  //       style={{
+  //         color: filtered ? '#1890ff' : undefined,
+  //       }}
+  //     />
+  //   ),
+  //   onFilter: (value: any, record: any) => {
+  //     if (record[dataIndex]) {
+  //       return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+  //     }
+  //     return null;
+  //   }
+  //   ,
+  //   onFilterDropdownOpenChange: (visible: any) => {
+  //     if (visible) {
+  //     }
+  //   },
+  // });
 
 
   const columnCPass: ProColumns<any>[] = [
@@ -121,7 +121,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       key: 'code',
       dataIndex: 'code',
       title: configDefaultText['page.addMegaAndAssign.column.cPass'],
-      ...getColumnSearchProps('code'),
+      // ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
           <a
@@ -141,7 +141,7 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       dataIndex: 'farm',
       valueType: 'textarea',
       key: 'farm',
-      ...getColumnSearchProps('farmName'),
+      // ...getColumnSearchProps('farmName'),
       renderText: (_, text) => text.farmName ? text.farmName : null
 
 
@@ -188,28 +188,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
       filters: true,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
     },
     {
       title: configDefaultText['page.addMegaAndAssign.column.pZero'],

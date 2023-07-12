@@ -323,7 +323,6 @@ const TableListAssignCPass = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-
       />
 
       {
@@ -378,7 +377,7 @@ const TableListAssignCPass = () => {
         submitter={{
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
-            submitText: configDefaultText['buttonUpdate'],
+            submitText: configDefaultText['submit'],
           },
         }}
       >

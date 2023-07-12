@@ -34,7 +34,19 @@ const handleAdd = async (fields: any, api: string) => {
 };
 
 
+const formatter = (value: any) => {
+  if (value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  return '';
+};
 
+const parser = (value: any) => {
+  if (value) {
+    return value.replace(/\$\s?|(,*)/g, '');
+  }
+  return undefined;
+};
 
 
 
@@ -151,7 +163,7 @@ const DialogTransfer = (props: any) => {
   });
 
 
-  const confirm = (entity: any, message: string, api: string) => {
+  const confirm = (entity: any, message: any, api: string) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
@@ -171,9 +183,7 @@ const DialogTransfer = (props: any) => {
     });
   };
 
-
-
-
+  
 
   const columns: ProColumns<any>[] = [
     {
@@ -207,7 +217,6 @@ const DialogTransfer = (props: any) => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.transfer.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -217,7 +226,6 @@ const DialogTransfer = (props: any) => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
       title: configDefaultText['page.transfer.column.availableBalance'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
@@ -227,7 +235,6 @@ const DialogTransfer = (props: any) => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
       title: configDefaultText['page.transfer.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -238,7 +245,6 @@ const DialogTransfer = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Số dư PromoAle' />,
       title: configDefaultText['page.transfer.column.promoAle'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
@@ -248,18 +254,17 @@ const DialogTransfer = (props: any) => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
       render: (_, text: any) => {
 
-        if(!text?.blocked){
+        if (!text?.blocked) {
           return (
             <Space>
-               <Tooltip title={configDefaultText['page.transfer.choosen']}><Button
-                 onClick={() => {
+              <Tooltip title={configDefaultText['page.transfer.choosen']}><Button
+                onClick={() => {
                   setShowTransfer(true);
                   setCurrentRowUser(text);
                 }}
@@ -352,7 +357,8 @@ const DialogTransfer = (props: any) => {
 
       {currentRowUser && (
         <ModalForm
-          width={window.innerWidth * 0.35}
+          width={window.innerWidth * 0.3}
+          title={(<>Số Ale có thể chuyển: <span style={{ color: 'red' }}>{props.megaChoosen.availableBalance.toLocaleString()}</span></>)}
           open={showTransfer}
           modalProps={{
             destroyOnClose: true,
@@ -361,14 +367,13 @@ const DialogTransfer = (props: any) => {
             },
           }}
           onFinish={async (values) => {
-            console.log(props?.megaChoosen);
             confirm({
               receiverId: currentRowUser.id,
               senderId: props?.megaChoosen?.id,
               ale: values?.ale
             },
-              `Chắc chắn chuyển ${values.ale} Ale từ Aleger  ${props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - ${props?.megaChoosen?.id} 
-           sang Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}`,
+              <>Chắc chắn chuyển <strong>{values.ale}</strong> Ale từ Aleger:<strong> {props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - {props?.megaChoosen?.id}</strong>  
+           sang Aleger:<strong> {currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - {currentRowUser.id}</strong></>,
               'transactions/transfer-admin');
 
             return true;
@@ -392,10 +397,14 @@ const DialogTransfer = (props: any) => {
                 min={1}
                 max={props?.megaChoosen?.availableBalance}
                 fieldProps={{
-                  precision: 2
+                  precision: 2,
+                  formatter,
+                  parser,
                 }}
               />
             </Col>
+
+            
           </Row>
 
 

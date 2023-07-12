@@ -49,7 +49,6 @@ const TableList: React.FC = () => {
 
 
 
-  // const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -58,7 +57,6 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
       title: configDefaultText['page.confirmSettlementVnd.code'],
       key: 'code',
       dataIndex: 'code',
@@ -130,9 +128,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.cpass' defaultMessage='CPass' />
-      // ),
       title: configDefaultText['page.confirmSettlementVnd.codeCPass'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -149,7 +144,6 @@ const TableList: React.FC = () => {
       </>,
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.types' defaultMessage='Loại GD' />,
       title: configDefaultText['page.confirmSettlementVnd.types'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -163,16 +157,16 @@ const TableList: React.FC = () => {
             return (<div>Thanh quyết toán</div>);
 
           case 'produceAleExchangePromo':
-            return (<div style={{ color: 'cyan' }}>produceAle sang promoAle</div>);
+            return (<div>produceAle sang promoAle</div>);
 
           case 'megaDeltaWeightproduceAle':
-            return (<div style={{ color: 'cyan' }}>MegaΔP sang ProduceAle</div>);
+            return (<div>MegaΔP sang ProduceAle</div>);
 
           case 'aleExchange':
-            return (<div style={{ color: 'blue' }}>Chuyển đổi ale</div>);
+            return (<div>Chuyển đổi ale</div>);
 
           case 'refund':
-            return (<div style={{ color: 'yellow' }}>Hoàn trả</div>);
+            return (<div>Hoàn trả</div>);
           default:
             break;
         }
@@ -244,9 +238,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => null
     },
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
-      // ),
       title: configDefaultText['page.confirmSettlementVnd.statusTransaction'],
       dataIndex: 'status',
       valueType: 'textarea',
@@ -254,35 +245,25 @@ const TableList: React.FC = () => {
       filters: filterStatus,
       onFilter: true,
       filterSearch: true,
-
       render: (_, text: any) => {
         switch (text?.status) {
           case 'waitConfirm':
-            return (<div style={{ color: 'cyan' }}>Chờ Mega xác nhận</div>);
-
+            return (<div>Chờ Mega xác nhận</div>);
           case 'inProgress':
-            return (<div style={{ color: 'blue' }}>Chờ xác nhận</div>);
-
+            return (<div>Chờ xác nhận</div>);
           case 'done':
-            return (<div style={{ color: 'green' }}>Hoàn thành</div>);
-
+            return (<div>Hoàn thành</div>);
           case 'cancel':
-            return (<div style={{ color: 'red' }}>Đã hủy</div>);
-
+            return (<div>Đã hủy</div>);
           case 'waitRefund':
-            return (<div style={{ color: 'red' }}>Chờ xác nhận hoàn trả</div>);
-
+            return (<div>Chờ xác nhận hoàn trả</div>);
           default:
             break;
         }
       },
-
-
-
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
       title: configDefaultText['page.confirmSettlementVnd.priceVnd'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
@@ -290,7 +271,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.priceVnd.toLocaleString()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
       title: configDefaultText['page.confirmSettlementVnd.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -307,10 +287,6 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        // headerTitle={intl.formatMessage({
-        //   id: 'pages.searchTable.title',
-        //   defaultMessage: 'Enquiry form',
-        // })}
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -370,11 +346,6 @@ const TableList: React.FC = () => {
                     $in: ['cpassPayment', 'cpassSettlement', 'megaDeltaWeightproduceAle']
                   }
                 },
-                // {
-                //   status: {
-                //     $not: 'cancel'
-                //   }
-                // }
               ]
             },
             orderBy: {

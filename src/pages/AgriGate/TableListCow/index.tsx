@@ -46,7 +46,6 @@ const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
     hide();
-    console.log(fields)
 
 
     const cow = await customAPIAdd({ ...fields }, 'cows');
@@ -62,7 +61,7 @@ const handleAdd = async (fields: any) => {
           data: formdata
         })
       });
-      await Promise.all(uploadImages);
+   const photoCow = await Promise.all(uploadImages);
     }
 
     message.success('Thêm thành công');
@@ -79,9 +78,9 @@ const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
     let uploadImages: any[] = [];
-    console.log(fields);
-    if (fields?.upload && fields.upload.length !== 0) {
-      fields?.upload.map((e: any) => {
+    let photoCowCustom: any[] = [];
+    if (fields?.photos && fields.photos.length !== 0) {
+      fields?.photos.map((e: any) => {
         if (e.originFileObj) {
           let formdata = new FormData();
           formdata.append('files', e?.originFileObj);
@@ -92,10 +91,22 @@ const handleUpdate = async (fields: any, id: any) => {
             data: formdata
           }))
         }
+        else {
+          photoCowCustom.push(e.uid)
+        }
         return null;
       });
     }
-    await Promise.all(uploadImages);
+
+    // fields.photos =  [121]
+    let photoCow = await Promise.all(uploadImages);
+    if(photoCow.length !== 0){
+      photoCow.map((e) => {
+        photoCowCustom.push(e[0].id)
+      })
+    }
+    console.log('photoCow', photoCowCustom);
+    fields.photos = photoCowCustom
     await customAPIUpdate(
       {
         ...fields,
@@ -271,11 +282,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
 
@@ -693,7 +701,8 @@ const TableList: React.FC = () => {
               if (photos) {
                 const photoCow = photos.map((e: any) => {
                   return { uid: e.id, status: 'done', url: SERVERURL + e.url };
-                })
+                });
+                setFileList(photoCow);
 
                 form.setFieldsValue({
                   ...cow,
@@ -716,8 +725,7 @@ const TableList: React.FC = () => {
                     label: cow?.group_cow?.name,
                     value: cow?.group_cow?.id
                   }
-                  //upload: photoCow
-
+                  // upload: photoCow
                 })
               }
             }}
@@ -734,39 +742,19 @@ const TableList: React.FC = () => {
 
 
   const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    // const needValue = 5 - fileList.length;
-    // console.log('newFileList', newFileList);
-
-    if(fileList.length > 5){
+    if (fileList.length > 5) {
       const maxImages = newFileList.slice(0, 5);
       setFileList(maxImages);
     }
     else {
       setFileList(newFileList);
-
     }
-
-    // if(fileList.length > newFileList.length){
-    //   console.log('vao');
-    //   return
-    // }
-    // else {
-
-    // }
   }
 
   const handleRemoveImage = (file: any) => {
     const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
     setFileList(updatedFileList);
   };
-
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
   return (
     !params.id ? (
@@ -789,7 +777,6 @@ const TableList: React.FC = () => {
               >
                 <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>,
-              // <Tooltip title='Tải lại'><ReloadOutlined style={{fontSize: '100%' }}   key="re"  /></Tooltip>
             ]
           }}
 
@@ -851,6 +838,7 @@ const TableList: React.FC = () => {
             onCancel: () => {
               handleModalOpen(false);
               setGroupCow([]);
+              setFileList([])
             },
           }}
           submitTimeout={2000}
@@ -1038,22 +1026,16 @@ const TableList: React.FC = () => {
               accept: 'image/*',
               multiple: true,
               beforeUpload: (file: any, fileSize) => {
-
                 if (fileList.length > 5) {
-                  console.log('vao day');
-                  message.error('Chỉ có thể upload 5 hình ảnh');
                   return false;
                 }
                 else {
-                  console.log('vao');
-
-                  // handleChange(file); // Update the fileList state when uploading files
                   return true;
                 }
-                
+
               },
             }}
-          ></ProFormUploadButton>
+          />
 
 
           <ProFormTextArea
@@ -1081,6 +1063,7 @@ const TableList: React.FC = () => {
             onCancel: () => {
               handleUpdateModalOpen(false);
               refIdPicture.current = null;
+              setFileList([]);
 
             },
           }}
@@ -1091,18 +1074,10 @@ const TableList: React.FC = () => {
 
 
             if (success) {
-              if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
-                if (refIdPicture.current !== null) {
-                  const deletePicture = refIdPicture?.current.map((e: any) => {
-                    return customAPIDelete(e as any, 'upload/files');
-                  })
-                  await Promise.all(deletePicture);
-                }
-              }
-
               handleUpdateModalOpen(false);
               form.resetFields();
               if (actionRef.current) {
+                setFileList([]);
                 actionRef.current.reload();
                 refIdPicture.current = null;
               }
@@ -1111,15 +1086,7 @@ const TableList: React.FC = () => {
           }}
 
           submitter={{
-            // render: (_, dom) => (
-            //   <div style={{ marginBlockStart: '5vh' }}>
-            //     {dom.pop()}
-            //     {dom.shift()}
-            //   </div>
-            // ),
             searchConfig: {
-              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
               resetText: configDefaultText['buttonClose'],
               submitText: configDefaultText['buttonUpdate'],
             },
@@ -1135,7 +1102,6 @@ const TableList: React.FC = () => {
                 label={configDefaultText['page.listCow.column.name']}
                 placeholder={configDefaultText['page.listCow.column.name']}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                   { required: true, message: configDefaultText['page.listCow.required.name'] },
                 ]}
               />
@@ -1151,7 +1117,6 @@ const TableList: React.FC = () => {
                 label={configDefaultText['page.listCow.column.firstWeight']}
                 placeholder={configDefaultText['page.listCow.column.firstWeight']}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.firstWeight' defaultMessage='Vui lòng nhập P0' /> },
                 ]}
               />
             </Col>
@@ -1166,7 +1131,6 @@ const TableList: React.FC = () => {
                 className='w-full'
                 name='category'
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.category' defaultMessage='Vui lòng chọn giống bò' /> },
                   { required: true, message: configDefaultText['page.listCow.required.category'] },
                 ]}
               />
@@ -1190,7 +1154,6 @@ const TableList: React.FC = () => {
                   },
                 ]}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
                   { required: true, message: configDefaultText['page.listCow.required.sex'] }
                 ]}
               />
@@ -1204,7 +1167,6 @@ const TableList: React.FC = () => {
                 label={configDefaultText['page.listCow.column.farm']}
                 placeholder={configDefaultText['page.listCow.column.farm']}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='page.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
                   {
                     required: true, message: configDefaultText['page.listCow.required.farm'
                     ]
@@ -1223,12 +1185,10 @@ const TableList: React.FC = () => {
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect className='w-full'
                 options={groupCow?.length ? groupCow : null}
-                // disabled={groupCow?.length !== 0 ? false : true} name='group_cow'
                 label={configDefaultText['page.listCow.column.group_cow']}
                 placeholder={configDefaultText['page.listCow.column.group_cow']}
                 name={`group_cow`}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listCow.required.group_cow' defaultMessage='Vui lòng chọn nhóm bò' /> },
                   { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
                 ]}
               />
@@ -1250,7 +1210,6 @@ const TableList: React.FC = () => {
                 label={configDefaultText['page.listCow.column.birthdate']}
                 placeholder={configDefaultText['page.listCow.column.birthdate']}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id='page.listCow.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
                   { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
 
                 ]}
@@ -1261,26 +1220,25 @@ const TableList: React.FC = () => {
           </Row>
 
           <ProFormUploadButton
-            name="upload"
+            name="photos"
             title={configDefaultText['page.listCow.column.upload']}
             label={configDefaultText['page.listCow.column.upload']}
+            fileList={fileList}
+            onChange={handleChange}
+            max={5}
             fieldProps={{
               name: 'file',
               listType: 'picture-card',
               onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
               accept: 'image/*',
               multiple: true,
-              fileList: fileList, // Pass the fileList state variable to update the UI
-              beforeUpload: (file, fileSize) => {
-                if (fileSize.length > 5) {
-                  message.error('Chỉ có thể upload 5 hình ảnh');
+              beforeUpload: (file: any, fileSize) => {
+                if (fileList.length > 5) {
                   return false;
                 }
-                let totalFile = [
-                  ...fileList, file
-                ]
-                setFileList(totalFile); // Update the fileList state when uploading files
-                return true;
+                else {
+                  return true;
+                }
               },
             }}
           />
@@ -1290,7 +1248,6 @@ const TableList: React.FC = () => {
             placeholder={configDefaultText['page.listCow.column.description']}
             name='description'
             rules={[
-              // { required: true, message: <FormattedMessage id='page.listCow.required.sex' defaultMessage='Vui lòng chọn giới tính' /> }
               { required: true, message: configDefaultText['page.listCow.required.description'] }
             ]}
           />

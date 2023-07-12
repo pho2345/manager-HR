@@ -8,7 +8,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Col, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import moment from 'moment';
@@ -74,9 +73,7 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  // const intl = useIntl();
 
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
@@ -102,13 +99,10 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
+    
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -122,7 +116,6 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          // ref={configDefaultText[]}
           placeholder={`Tìm kiếm`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -174,11 +167,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
@@ -189,6 +179,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -288,6 +279,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -356,25 +348,11 @@ const TableList: React.FC = () => {
       return null;
     }
     ,
-    // onFilterDropdownOpenChange: (visible: any) => {
-    //   if (visible) {
-    //     // setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
-
-    // render: (text: any) =>{
-    // }
   });
 
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.listCategory.code'],
       key: 'code',
       dataIndex: 'atrributes',
@@ -385,11 +363,9 @@ const TableList: React.FC = () => {
         );
       },
       width: '30vh',
-      // filtered: true,
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Description' />,
       title: configDefaultText['page.listCategory.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -400,7 +376,6 @@ const TableList: React.FC = () => {
     
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.listCategory.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -413,7 +388,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -438,7 +412,6 @@ const TableList: React.FC = () => {
         )
       }
     },
-
   ];
 
 
@@ -456,9 +429,7 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            //actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -534,44 +505,11 @@ const TableList: React.FC = () => {
           return renderTableAlertOption(selectedRows)
         }}
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //           <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //           {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //           {configDefaultText['selectedItem']}
-
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
-        //         // await handleRemove(selectedRowsState);
-        //         confirm(
-        //           selectedRowsState, configDefaultText['textConfirmDelete']
-        //         );
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['delete']}
-        //     </Button>
-
-        //   </FooterToolbar>
-        // )
-      }
-
 
       <ModalForm
         form={form}
         title={configDefaultText['page.listCategory.createModal']}
-        width={'30vh'}
-
-      
+        width={window.innerWidth * 0.3}
         open={createModalOpen}
         modalProps={{
           destroyOnClose: true,
@@ -591,15 +529,7 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
           },
@@ -620,12 +550,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listCategory.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.category.required.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
                 },
               ]} />
           </Col>
@@ -639,12 +563,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listCategory.required.name']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.category.required.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
 
@@ -657,15 +575,13 @@ const TableList: React.FC = () => {
         </Row>
 
 
-
-
       </ModalForm>
 
 
       <ModalForm
         title={configDefaultText['page.listCategory.updateModal']}
         form={form}
-        width={'30vh'}
+        width={window.innerWidth * 0.3}
         open={updateModalOpen}
         modalProps={{
           destroyOnClose: true,

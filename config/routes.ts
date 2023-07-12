@@ -95,6 +95,7 @@
       { path: '/agrios/dashboard',hideInMenu: false,  name: 'Dashboard', component: './AgriOS/TableListDashboard' },
       { path: '/agrios/ale',hideInMenu: false,  name: 'Ale', component: './AgriOS/TableListAle' },
       { path: '/agrios/product-kind-code',hideInMenu: false,  name: 'Chủng loại sản phẩm', component: './AgriOS/TableListProductKindCode' },
+      { path: '/agrios/log-transaction-ale',hideInMenu: false,  name: 'Log giao dịch Ale', component: './AgriOS/TableListLogTransactionAle' },
     ],
   },
   {
@@ -150,7 +151,8 @@
     routes: [
       { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
       { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
-      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' }
+      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' },
+      { path: '/transactions/log-transaction', name: 'Log giao dịch', component: './Web-Transaction/TableListLogTransaction' }
     ],
   },
   {

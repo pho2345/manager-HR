@@ -46,20 +46,13 @@ const DialogTransfer = (props: any) => {
 
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
-  //const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  //const params = useParams<any>();
-  //const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    //setSearchText('');
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -109,8 +102,6 @@ const DialogTransfer = (props: any) => {
               confirm({
                 closeDropdown: false,
               });
-              //setSearchText(selectedKeys[0]);
-              //setSearchedColumn(dataIndex);
             }}
           >
             Lọc
@@ -353,8 +344,7 @@ const DialogTransfer = (props: any) => {
 
       {currentRowUser && (
         <ModalForm
-
-          width={`30vh`}
+          width={window.innerWidth * 0.2}
           open={showTransfer}
           modalProps={{
             destroyOnClose: true,

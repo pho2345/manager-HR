@@ -387,6 +387,9 @@ const TableListAssignCPass = () => {
             return entity.classColor
           }
         }
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
 
         request={async () => {
           const data = await customAPIGet({}, 'users/aleger/get/sell-ale');
@@ -461,7 +464,7 @@ const TableListAssignCPass = () => {
         title='Bán Ale'
         open={showModal}
         form={form}
-        width={300}
+        width={window.innerWidth * 0.3}
 
         modalProps={{
           destroyOnClose: true,
@@ -472,8 +475,7 @@ const TableListAssignCPass = () => {
         }}
         submitter={{
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
+           
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },
@@ -555,10 +557,12 @@ const TableListAssignCPass = () => {
                 label: 'Ví điện tử'
               }
             ]}
-
+              style={{
+                width: '100%'
+              }}
               disabled
               placeholder={configDefaultText['methodPayment']}
-              width='md' name='method' label={configDefaultText['methodPayment']}
+              name='method' label={configDefaultText['methodPayment']}
               // rules={[
               //   {
               //     required: true,

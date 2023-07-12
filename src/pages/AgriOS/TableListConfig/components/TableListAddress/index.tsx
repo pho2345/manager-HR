@@ -72,15 +72,8 @@ const handleRemove = async (selectedRows: any) => {
 
 
 const getProvines = async () => {
-    const provine = await customAPIGet({}, 'provinces');
-    let data = provine.data.map((e: any) => {
-        return {
-            value: e?.id,
-            text: e?.attributes?.fullname,
-            label: e?.attributes?.fullname,
-        };
-    });
-    return data;
+    const provine = await customAPIGet({}, 'provinces/get-option');
+    return provine.data;
 };
 
 
@@ -370,9 +363,6 @@ const TableList: React.FC = () => {
                 request={() => customAPIGet({}, 'addresses/get/plaform')}
                 columns={columns}
                 rowSelection={{
-                    // onChange: (_, selectedRows: any) => {
-                    //   //setSelectedRows(selectedRows);
-                    // },
                 }}
 
                 toolbar={{
@@ -388,20 +378,14 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-
-
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-
                 tableAlertOptionRender={({ selectedRows }: any) => {
                     return renderTableAlertOption(selectedRows)
                 }}
-
             />
-
-
 
             <ModalForm
                 form={form}
@@ -447,6 +431,7 @@ const TableList: React.FC = () => {
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0">
                         <ProFormSelect
+                            showSearch
                             label={configDefaultText['page.address.province']}
                             options={provine}
                             rules={[
@@ -460,6 +445,7 @@ const TableList: React.FC = () => {
                             placeholder={configDefaultText['page.address.province']}
                             fieldProps={{
                                 onChange: async (value: any) => {
+                                    
                                     form.setFieldValue('district', null);
                                     form.setFieldValue('ward', null)
                                     if (typeof value !== 'undefined') {
@@ -468,9 +454,10 @@ const TableList: React.FC = () => {
                                         setDistrict(data);
                                         setDistrictLoading(false);
                                     }
-
-
-
+                                    else {
+                                        setDistrict([]);
+                                        setWard([]);
+                                    }
                                 },
                             }}
                         />
@@ -501,11 +488,14 @@ const TableList: React.FC = () => {
                                         setWard(data);
                                         setWardLoading(false);
                                     }
+                                    else {
+                                        setWard([]);
+                                    }
                                 },
                                 loading: districtLoading
                             }}
+                            disabled={districtLoading}
                         />
-
                     </Col>
                 </Row>
 
@@ -524,14 +514,10 @@ const TableList: React.FC = () => {
                             name='ward'
                             placeholder={configDefaultText['page.address.ward']}
                             fieldProps={{
-                                // onChange: (value: any) => {
-
-                                // },
                                 loading: wardLoading
                             }}
-
+                            disabled={wardLoading}
                         />
-
                     </Col>
                 </Row>
                 {/* 

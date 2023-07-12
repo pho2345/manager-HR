@@ -17,7 +17,6 @@ import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
 const handleAdd = async (fields: any) => {
-  console.log(fields);
   const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'e-wallets');

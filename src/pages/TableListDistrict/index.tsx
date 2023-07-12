@@ -39,7 +39,6 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const getProvince = await customAPIGetOne(fields.province, 'provinces');
  
   let setFields = {

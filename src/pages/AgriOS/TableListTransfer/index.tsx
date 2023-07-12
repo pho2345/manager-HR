@@ -337,7 +337,7 @@ const TableListAssignCPass = () => {
       <ModalForm
         open={showModal}
         form={form}
-        width={300}
+        width={window.innerWidth * 0.3}
         modalProps={{
           destroyOnClose: true,
           onCancel: () => {
@@ -410,6 +410,9 @@ const TableListAssignCPass = () => {
               required
               label={configDefaultText['page.transfer.method']}
               placeholder={configDefaultText['page.transfer.method']}
+              style={{
+                width: '100%'
+              }}
             />
           </Col>
         </Row>

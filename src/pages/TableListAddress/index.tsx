@@ -17,7 +17,6 @@ import React, { useRef, useState } from 'react';
 import moment from 'moment';
 
 const handleAdd = async (fields: any) => {
-  console.log(fields);
   const hide = message.loading('Đang thêm...');
   try {
     await customAPIAdd({ ...fields }, 'wards');
@@ -33,7 +32,6 @@ const handleAdd = async (fields: any) => {
 
 
 const handleUpdate = async (fields: any, id: any) => {
-  console.log(fields);
   const hide = message.loading('Đang cập nhật...');
   try {
     await customAPIUpdate({
@@ -342,7 +340,6 @@ const TableList: React.FC = () => {
         open={updateModalOpen}
         onOpenChange={handleUpdateModalOpen}
         onFinish={async (value) => {
-          console.log(value);
           const success = await handleUpdate(value as any, refIdProvince);
           if (success) {
             handleUpdateModalOpen(false);

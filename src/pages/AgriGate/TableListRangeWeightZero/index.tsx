@@ -102,13 +102,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -188,6 +184,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -222,8 +219,6 @@ const TableList: React.FC = () => {
                     value: searchRangeFrom
                   }}
                   placeholder={'Thời gian từ'}
-
-
                 />
               </Col>
             </Row>
@@ -288,6 +283,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -360,12 +356,6 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',

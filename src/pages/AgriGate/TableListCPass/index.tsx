@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { BsGraphUpArrow } from 'react-icons/bs';
 import { MdOutlineEdit } from 'react-icons/md';
-import { Avatar, Button, Col, Form, Input, message, Modal, Row, Space, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Col, Form, Input, message, Modal, Row, Space, Tooltip, Typography, UploadFile, UploadProps } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import DetailCPass from './components/DetailCPass';
@@ -38,6 +38,7 @@ const handleAdd = async (fields: any) => {
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
   try {
+    let photoCowCustom: any[] = [];
     let { category, farm, group_cow, cow, birthdate, sex, ...other } = fields;
     let fieldCow = {
       category: category?.value || category,
@@ -46,13 +47,7 @@ const handleUpdate = async (fields: any, id: any) => {
       birthdate: birthdate,
       sex
     }
-    const updateCow = await customAPIUpdate(
-      {
-        ...fieldCow,
-      },
-      'cows',
-      cow.value
-    );
+   
     const updateCPass = await customAPIUpdate(
       {
         cow,
@@ -62,10 +57,9 @@ const handleUpdate = async (fields: any, id: any) => {
       id.current
     );
 
-    if (updateCow && updateCPass) {
       let uploadImages: Array<any> = [];
-      if (fields?.upload && fields.upload.length !== 0) {
-        fields?.upload.map((e: any) => {
+      if (fields?.photos && fields.photos.length !== 0) {
+        fields?.photos.map((e: any) => {
           if (e.originFileObj) {
             let formdata = new FormData();
             formdata.append('files', e?.originFileObj);
@@ -76,10 +70,27 @@ const handleUpdate = async (fields: any, id: any) => {
               data: formdata
             }))
           }
+          else {
+              photoCowCustom.push(e.uid)
+          }
           return null;
         });
+      
+      let photoCow = await Promise.all(uploadImages);
+      if(photoCow.length !== 0){
+        photoCow.map((e) => {
+          photoCowCustom.push(e[0].id);
+        })
       }
-      await Promise.all(uploadImages);
+
+      const updateCow = await customAPIUpdate(
+        {
+          ...fieldCow,
+          photos: photoCowCustom
+        },
+        'cows',
+        cow.value
+      );
     }
 
     hide();
@@ -188,6 +199,15 @@ const getGroupFarm = async (id: number) => {
   return configGroupFarm;
 }
 
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
 
 
 const TableList: React.FC = () => {
@@ -201,15 +221,12 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
-
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
   const refIdPicture = useRef<any>();
-
   const [groupCow, setGroupCow] = useState<any>([]);
   const [getAllGroup, setGetAllGroup] = useState<any>([]);
   const searchInput = useRef(null);
-
   const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
 
@@ -218,6 +235,8 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [bodyCondition, setBodyCondition] = useState<any>([]);
 
 
 
@@ -227,6 +246,8 @@ const TableList: React.FC = () => {
       let getCate = await getCategory();
       let getFarms = await getFarm();
       let getGroups = await getGroup();
+      let getOptionBodyCondition = await getBodyCondition();
+      setBodyCondition(getOptionBodyCondition);
       setCategory(getCate);
       setFarm(getFarms);
       setCow(getCow);
@@ -536,6 +557,21 @@ const TableList: React.FC = () => {
     ,
   });
 
+  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    if (fileList && fileList.length > 5) {
+      const maxImages = newFileList.slice(0, 5);
+      setFileList(maxImages);
+    }
+    else {
+      setFileList(newFileList);
+    }
+  }
+
+  const handleRemoveImage = (file: any) => {
+    const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
+    setFileList(updatedFileList);
+  };
+
   const columns: ProColumns<any>[] = [
 
     {
@@ -717,30 +753,8 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
-      filters: true,
+      filters: bodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
     },
     {
       title: configDefaultText['page.listCPass.column.wgePercent'],
@@ -799,6 +813,7 @@ const TableList: React.FC = () => {
                 return { uid: e.id, status: 'done', url: SERVERURL + e.url };
               })
 
+              setFileList(photoCow);
 
               form.setFieldsValue({
                 cow: {
@@ -827,7 +842,7 @@ const TableList: React.FC = () => {
                 price: cPass?.price,
                 nowWeight: cPass?.nowWeight,
                 activeAleTransfer: cPass?.activeAleTransfer,
-                upload: photoCow,
+                photos: photoCow,
                 vZero: cPass?.vZero.toLocaleString(),
                 vs: cPass?.vs.toLocaleString()
               })
@@ -851,7 +866,6 @@ const TableList: React.FC = () => {
         search={false}
 
         toolBarRender={() => {
-      
           return showDowloadFile ? [
             <Button
               type='primary'
@@ -871,7 +885,7 @@ const TableList: React.FC = () => {
             >
               <PlusOutlined /> Excel
             </Button>,
-  
+
             <Button
               type='primary'
               key='primary'
@@ -893,9 +907,9 @@ const TableList: React.FC = () => {
             </Button>,
           ]
         }}
-        request={ async () => {
+        request={async () => {
           const data = await customAPIGet({}, 'c-passes/get/c-pass-agrigate');
-          if(data.data && data.data.length > 0) {
+          if (data.data && data.data.length > 0) {
             setShowDowloadFile(true);
           }
           else {
@@ -1098,21 +1112,12 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-
         <Row gutter={24} className='m-0'>
-
-
           <Col span={12} className='gutter-row p-0'>
             <ProFormSwitch name='activeAleTransfer' label='Tự động chuyển đổi Ale' />
 
           </Col>
         </Row>
-
-
-
-
-
-
       </ModalForm>
 
 
@@ -1138,19 +1143,11 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           const success = await handleUpdate(values as any, refIdCpass);
           if (success) {
-            if (typeof refIdPicture.current !== 'undefined' && refIdPicture?.current?.length !== 0) {
-              if (refIdPicture.current !== null) {
-                const deletePicture = refIdPicture?.current.map((e: any) => {
-                  return customAPIDelete(e as any, 'upload/files');
-                })
-                const deletePicturea = await Promise.all(deletePicture);
-                console.log('deletePicturea', deletePicturea)
-              }
-            }
+         
             handleUpdateModalOpen(false);
             form.resetFields();
             if (actionRef.current) {
-              actionRef.current.reload();
+              actionRef.current.reload(); 
               refIdPicture.current = null;
             }
           }
@@ -1434,7 +1431,6 @@ const TableList: React.FC = () => {
 
 
         <Row gutter={24} className='m-0'>
-
           <Col span={12} className='gutter-row p-0'>
             <ProFormDigit min={1} className='w-full' name='vs'
               fieldProps={{
@@ -1458,64 +1454,29 @@ const TableList: React.FC = () => {
           </Col>
         </Row>
 
-        {/* <Row gutter={24} className='m-0'>
-          <Col span={12} className='gutter-row p-0' >
-            <ProFormDigit min={1} className='w-full' name='vZero'
-              label={configDefaultText['page.listCPass.modal.vZero']}
-              placeholder={configDefaultText['page.listCPass.modal.vZero']}
-              fieldProps={{
-                formatter,
-                parser,
-              }}
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.listCPass.required.vZero']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.Cpass.pZero'
-                  //     defaultMessage='Nhập chi phí bảo trì và bảo hiểm'
-                  //   />
-                  // ),
-                },
-              ]}
-            />
-          </Col>
-
-
-        </Row> */}
-
         <ProFormUploadButton
-          name='upload'
-          label='Upload'
-          title='Upload'
+          name="photos"
+          title={configDefaultText['page.listCow.column.upload']}
+          label={configDefaultText['page.listCow.column.upload']}
+          fileList={fileList}
+          onChange={handleChange}
           max={5}
           fieldProps={{
             name: 'file',
             listType: 'picture-card',
-            onRemove(file) {
-              if (!file.lastModified) {
-                if (refIdPicture.current) {
-                  refIdPicture.current = [...refIdPicture.current, file.uid];
-                }
-                else {
-                  refIdPicture.current = [file.uid];
-                }
-              }
-            },
+            onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
             accept: 'image/*',
             multiple: true,
-            maxCount: 5,
-            beforeUpload: (fileList, listSize) => {
-              if (listSize.length > 5) {
-                message.error('Chỉ có thể upload 5 hình ảnh');
+            beforeUpload: () => {
+              if (fileList.length > 5) {
                 return false;
               }
-              return true;
-            }
-
+              else {
+                return true;
+              }
+            },
           }}
-          />
+        />
       </ModalForm>
 
       {

@@ -1,39 +1,21 @@
-import { customAPIGetOne, customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { customAPIGet, customAPIGetOne, customAPIPostOne } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import { useParams } from '@umijs/max';
-import { Button, Typography, message, Modal, Space, Input } from 'antd';
+import { Button, Typography, message, Space, Input } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
+import ConfirmAssign from './components/ConfirmAssign';
 const { Text, } = Typography;
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
-const handleUpdateMany = async (fields: any, api: string, id: any) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    const updateTransaction = await customAPIUpdateMany(
-      fields,
-      api,
-      id);
-    hide();
-    if (updateTransaction) {
-      message.success('Cập nhật thành công');
-    }
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error.response.data.error.message);
-    return false;
-  }
-};
 
 
 
@@ -43,38 +25,54 @@ const getFair = async (id: number) => {
 }
 
 
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
 
-const TableListAssignCPass = () => {
+
+
+const TableListAssignCPass = (props: any) => {
   const actionRef = useRef<ActionType>();
   const actionRefMega = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
   const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
-
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-  const params = useParams<any>();
   const [fair, setFair] = useState<any>();
-  // const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+  const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
+  const [searchRange, setSearchRange] = useState<any>();
+  const [searchRangeTo, setSearchRangeTo] = useState<any>();
+  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+  const [bodyCondition, setBodyCondition] = useState<any>([]);
+
+  const [showConfirmAssign, setShowConfirmAssign] = useState<boolean>(false);
+
+  useEffect(() => {
+     const getData = async () => {
+        const getOption = await getBodyCondition();
+        setBodyCondition(getOption);
+     };
+     getData();
+  }, [])
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
   };
+
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters
       // , close
@@ -144,47 +142,167 @@ const TableListAssignCPass = () => {
       }
 
       return null;
-    }
-    ,
+    },
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
-  const confirm = (entity: any, message: string, api: string, id: any) => {
-    Modal.confirm({
-      title: configDefaultText['titleConfirm'],
-      icon: <ExclamationCircleOutlined />,
-      content: configDefaultText['page.addMegaAndAssign.textConfirmAssign'],
-      okText: 'Có',
-      cancelText: 'Không',
-      onOk: async () => {
 
-        await handleUpdateMany({
-          ...entity,
-          fairId: params?.id
-        }, api, id);
-        if (actionRef.current && actionRefMega.current) {
-          setSelectedRowsCPass([]);
-          setSelectedRowsMega([]);
-          actionRef.current?.reloadAndRest?.();
-          actionRefMega.current?.reloadAndRest?.();
-        }
-      }
+  const handleSearchRange = (selectedKeys: any, confirm: any) => {
+    confirm();
+  };
+
+  const handleResetRange = (clearFilters: any, confirm: any) => {
+    clearFilters();
+    setShowRangeTo(false);
+    setSearchRange(null);
+    setSearchRangeTo(null);
+    setOptionRangeSearch(null);
+    confirm({
+      closeDropdown: false,
     });
   };
 
 
+  const getColumnSearchRange = () => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+      //close
+    }: any) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <ProFormDigit
+          placeholder={`Cân nặng ${showRangeTo ? `từ` : ``}`}
+          fieldProps={{
+            onChange: (e: any) => {
+              setSearchRange(e);
+            },
+            value: searchRange
+          }}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        {
+          showRangeTo && (<ProFormDigit
+            // allowClear={true}
+            placeholder={`Cân nặng đến`}
+            fieldProps={{
+              onChange: (e: any) => {
+                setSearchRangeTo(e);
+              }
+            }}
+            style={{
+              marginBottom: 8,
+              display: 'block',
+            }}
+          />)
+        }
+        <ProFormSelect
+          options={[
+            {
+              value: 'lesser',
+              label: 'Nhỏ hơn'
+            },
+            {
+              value: 'greater',
+              label: 'Lớn hơn'
+            },
+            {
+              value: 'range',
+              label: 'Khoảng'
+            }
+          ]}
+          fieldProps={{
+            onChange: (value) => {
+              if (value === 'range') {
+                setOptionRangeSearch(value);
+                setShowRangeTo(true);
+              }
+              else {
+                setShowRangeTo(false);
+                setOptionRangeSearch(value);
+              }
+            },
+            value: optionRangeSearch
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (optionRangeSearch !== 'range') {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange])])
+              }
+              else {
+                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRange, searchRangeTo])])
+              }
+              handleSearchRange(selectedKeys, confirm);
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleResetRange(clearFilters, confirm)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm mới
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1890ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value: any, record: any) => {
+      if (typeof value === 'string') {
+        const convertValue = JSON.parse(value);
+        if (convertValue[0] === 'lesser') {
+          if (record.pZero < convertValue[1]) {
+            return record;
+          }
+        }
+        else if (convertValue[0] === 'greater') {
+          if (record.pZero > convertValue[1]) {
+            return record;
+          }
+        }
+        else {
+          if (record.pZero >= convertValue[1] && record.pZero <= convertValue[2]) {
+            return record
+          }
+        }
+      }
+      return null;
+    }
+    ,
+  });
+
+
+
   useEffect(() => {
     const fetchDataFair = async () => {
-      const getFairData = await getFair(params.id as any);
+      const getFairData = await getFair(props.fairId as any);
       setFair(getFairData);
     }
     fetchDataFair();
@@ -199,15 +317,19 @@ const TableListAssignCPass = () => {
   }
 
 
-  function renderTableAlertOption(onCleanSelected: any) {
+  function renderTableAlertOption() {
     return (
       <>
         <Fragment>
-          <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
-            onCleanSelected()
-            // actionRef.current?.reloadAndRest?.();
-          }}>Bỏ chọn</Button>
+          <Button
+            type='primary'
+            key='primary'
+            onClick={() => {
+              setShowConfirmAssign(true);
+            }}
+          >
+            <PlusOutlined /> Chỉ định
+          </Button>
         </Fragment>
       </>
     );
@@ -219,7 +341,6 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.addMegaAndAssign.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
@@ -240,7 +361,6 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.buyCPass' defaultMessage='cPass đã mua trong đợt mở bán' />,
       title: configDefaultText['page.addMegaAndAssign.column.buyCPass'],
       dataIndex: 'buyCPass',
       valueType: 'textarea',
@@ -265,13 +385,10 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-
-      //title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.addMegaAndAssign.column.cPass'],
       ...getColumnSearchProps('code'),
       render: (_, entity: any) => {
         return (
-          // <Text>{`${entity.code}|${entity.id}`}</Text>
           <a
             onClick={() => {
               setCurrentRowCPass(entity?.id);
@@ -283,10 +400,8 @@ const TableListAssignCPass = () => {
 
         );
       },
-
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
       title: configDefaultText['page.addMegaAndAssign.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
@@ -297,7 +412,6 @@ const TableListAssignCPass = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
       title: configDefaultText['page.addMegaAndAssign.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
@@ -309,7 +423,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.firstWeight' defaultMessage='Pss(Kg)' />,
       title: configDefaultText['page.addMegaAndAssign.column.firstWeight'],
       dataIndex: 'firstWeight',
       valueType: 'textarea',
@@ -317,7 +430,6 @@ const TableListAssignCPass = () => {
       renderText: (_, text: any) => text?.firstWeight
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.age' defaultMessage='Tuổi' />,
       title: configDefaultText['page.addMegaAndAssign.column.age'],
       dataIndex: 'age',
       valueType: 'textarea',
@@ -332,7 +444,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
       title: configDefaultText['page.addMegaAndAssign.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
@@ -340,43 +451,21 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
-      filters: true,
+      filters: bodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
+     
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage='P0(kg)' />,
       title: configDefaultText['page.addMegaAndAssign.column.pZero'],
       dataIndex: 'pZero',
       valueType: 'textarea',
       key: 'pZero',
       renderText: (_, text: any) => {
         return text?.pZero;
-      }
+      },
+      ...getColumnSearchRange()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.vs' defaultMessage='Vs(VNĐ)' />,
       title: configDefaultText['page.addMegaAndAssign.column.vs'],
       dataIndex: 'vs',
       valueType: 'textarea',
@@ -386,7 +475,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.vZero' defaultMessage='V0(VNĐ)' />,
       title: configDefaultText['page.addMegaAndAssign.column.vZero'],
       dataIndex: 'vZero',
       valueType: 'textarea',
@@ -396,7 +484,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaS' defaultMessage='MegaS' />,
       title: configDefaultText['page.addMegaAndAssign.column.megaS'],
       dataIndex: 'megaS',
       valueType: 'textarea',
@@ -448,44 +535,29 @@ const TableListAssignCPass = () => {
         }}
 
         request={async () => {
-          const data = await customAPIGetOne(params.id, 'users/list-and-cpass', {});
-          //console.log('usersss', data);
-
+          const data = await customAPIGetOne(props.fairId, 'users/list-and-cpass', {});
           return {
             data: data,
             success: true,
             total: data?.length
           }
         }}
-        toolBarRender={() => [
-          <>
-
-          </>
-        ]}
         columns={columns}
         dataSource={fair?.c_passes}
         rowSelection={{
           onChange: (_, selectedRows: any) => {
-
             if (selectedRows.length > 1) {
               message.error(configDefaultText['page.addMegaAndAssign.errorOnlyAleger']);
             }
             setSelectedRowsMega(selectedRows);
           },
           type: 'radio'
-          // getCheckboxProps: (record: any) => ({
-          //   disabled: false, // Column configuration not to be checked
-          //  //name: record.name,
-          // }),
+
         }}
 
         tableAlertRender={false}
         tableAlertOptionRender={false}
-
-
       />
-
-
       <ProTable
         headerTitle={(<>
           {configDefaultText['fair']} {fair?.code}
@@ -503,8 +575,7 @@ const TableListAssignCPass = () => {
         }}
 
         request={async () => {
-          const data = await customAPIPostOne(params.id, 'fairs/cpass-not-owner', {});
-          //console.log('usersss', data);
+          const data = await customAPIPostOne(props.fairId, 'fairs/cpass-not-owner', {});
           const { c_passes } = data;
           return {
             data: c_passes,
@@ -512,27 +583,34 @@ const TableListAssignCPass = () => {
             total: c_passes?.length
           }
         }}
-        toolBarRender={() => [
-          <>
-            {selectedRowsCPass.length >= 1 && selectedRowsMega.length === 1 && (<Button
-              type='primary'
-              key='primary'
-              onClick={() => {
-                const cPassId = selectedRowsCPass.map((e: any) => e.id);
-
-                confirm(
-                  {
-                    data: {
-                      cPassId: cPassId,
-                      userId: selectedRowsMega[0]?.id
-                    }
-                  }, configDefaultText['page.addMegaAndAssign.textConfirmAssign'], 'c-passes/update/assign', null);
-              }}
-            >
-              <PlusOutlined /> {configDefaultText['buttonAdd']}
-            </Button>)}
-          </>
-        ]}
+        // toolBarRender={() => [
+        //   <>
+        //     {selectedRowsCPass.length >= 1 && selectedRowsMega.length === 1 && (
+        //     <Button
+        //       type='primary'
+        //       key='primary'
+        //       onClick={() => {
+        //         let cPass = '';
+        //         const cPassId = selectedRowsCPass.map((e: any) => {
+        //           cPass += `${e?.code}, `;
+        //           return e.id
+        //         });
+        //         console.log('props', props);
+        //         confirm(
+        //           {
+        //             data: {
+        //               cPassId: cPassId,
+        //               userId: selectedRowsMega[0]?.id,
+        //             },
+        //           }, <>Bạn có muốn chỉ định cPass: <strong>{cPass}</strong> cho Mega: <strong style={{
+        //             color: 'red'
+        //           }}>{selectedRowsMega[0]?.fullname ? selectedRowsMega[0]?.fullname : selectedRowsMega[0]?.username} - {selectedRowsMega[0]?.id}</strong></>, 'c-passes/update/assign', null);
+        //       }}
+        //     >
+        //       <PlusOutlined /> Chỉ định
+        //     </Button>)}
+        //   </>
+        // ]}
         columns={columnCPass}
         dataSource={fair?.c_passes}
         rowSelection={{
@@ -565,11 +643,12 @@ const TableListAssignCPass = () => {
         }}
 
         tableAlertRender={({ selectedRowKeys }: any) => {
+          console.log('selectedRowKeys', selectedRowKeys)
           return renderTableAlert(selectedRowKeys);
         }}
 
-        tableAlertOptionRender={({ onCleanSelected }: any) => {
-          return renderTableAlertOption(onCleanSelected)
+        tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }: any) => {
+          return renderTableAlertOption(selectedRowKeys, onCleanSelected)
         }}
 
       />
@@ -582,8 +661,6 @@ const TableListAssignCPass = () => {
             setShowDetailCPass(false);
           }}
         />
-
-
       )}
 
 
@@ -595,10 +672,24 @@ const TableListAssignCPass = () => {
             setCurrentRowUser(undefined);
             setShowDetailUser(false);
           }}
-        />
-      )
+        />)
       }
 
+      {
+        showConfirmAssign && (
+          <ConfirmAssign
+            openModal={showConfirmAssign}
+            cPass={selectedRowsCPass}
+            mega={selectedRowsMega[0]}
+            fairId={props.fairId}
+            onCloseModal={() => {
+              setShowConfirmAssign(false);
+              actionRef.current?.reloadAndRest?.();
+              setCurrentRowCPass([])
+            }}
+          />
+        )
+      }
     </>
   );
 };

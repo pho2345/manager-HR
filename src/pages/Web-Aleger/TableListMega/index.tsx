@@ -13,34 +13,17 @@ import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
-
-
-
-
-
-
-
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
-  // const [currentRowCPass, setCurrentRowCPass] = useState<any>();
-  // const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
-  //const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
-
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -116,20 +99,14 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
   const columns: ProColumns<any>[] = [
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
       title: configDefaultText['page.listAleger.column.aleger'],
       ...getColumnSearchProps('username'),
       render: (_, entity: any) => {
@@ -150,7 +127,6 @@ const TableListAssignCPass = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.totalMegaCPass' defaultMessage='Tổng cPass Mega' />,
       title: configDefaultText['page.listAleger.column.totalMegaCPass'],
       dataIndex: 'totalMegaCPass',
       valueType: 'textarea',
@@ -161,7 +137,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeight' defaultMessage='Tổng MegaΔP (kg)' />,
       title: configDefaultText['page.listAleger.column.totalMegaCPass'],
       dataIndex: 'megaDeltaWeight',
       valueType: 'textarea',
@@ -172,7 +147,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: (<>Tổng MegaP (kg) <br />MegaE (VNĐ)</>),
       title: (<>{configDefaultText['page.listAleger.column.totalMegaP']}<br /> {configDefaultText['page.listAleger.column.megaE']}</>),
       dataIndex: 'megaWeight',
       valueType: 'textarea',
@@ -183,7 +157,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số dư ProduceAle' />,
       title: configDefaultText['page.listAleger.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -194,7 +167,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.listAleger.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -204,7 +176,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.detail' defaultMessage='Chi tiết' />,
       title: configDefaultText['page.listAleger.column.detail'],
       dataIndex: 'detail',
       valueType: 'textarea',
@@ -228,6 +199,9 @@ const TableListAssignCPass = () => {
         <ProTable
           actionRef={actionRef}
           rowKey='id'
+          scroll={{
+            x: window.innerWidth * 0.8
+          }}
           search={false}
           rowClassName={
             (entity) => {

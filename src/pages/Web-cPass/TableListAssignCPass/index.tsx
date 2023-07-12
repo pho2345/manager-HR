@@ -1,5 +1,5 @@
-import {  customAPIGetOne,  customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import {  ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { customAPIGetOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns } from '@ant-design/pro-components';
 import {
   ProTable,
@@ -50,7 +50,9 @@ const TableListAssignCPass = (props: any) => {
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const [fair, setFair] = useState<any>();
-  const confirm = (entity: any, message: string, api: string, id: any) => {
+
+
+  const confirm = (entity: any, message: any, api: string, id: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
@@ -58,8 +60,7 @@ const TableListAssignCPass = (props: any) => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        
-        console.log('props.fairId', props.fairId);
+
         await handleUpdateMany({
           ...entity
         }, api, id);
@@ -85,18 +86,17 @@ const TableListAssignCPass = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.cPass' defaultMessage='Thẻ tai|cPass' />,
       title: configDefaultText['page.assign.column.aleger'],
       render: (_, entity: any) => {
         return (
           <>
-          <a
-            onClick={() => {
-              setCurrentRowUser(entity?.id);
-              setShowDetailUser(true);
-            }}>
-            {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-          </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
+            <a
+              onClick={() => {
+                setCurrentRowUser(entity?.id);
+                setShowDetailUser(true);
+              }}>
+              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
             <br /> CCCD/HC: {entity?.passport}
           </>
         );
@@ -122,15 +122,15 @@ const TableListAssignCPass = (props: any) => {
         return (<>{cPass}</>);
       }
     },
-    
+
   ];
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-     
-          <Fragment>
-            Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-          </Fragment>
+
+      <Fragment>
+        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
+      </Fragment>
     );
   }
 
@@ -139,10 +139,8 @@ const TableListAssignCPass = (props: any) => {
     return (
       <>
         <Fragment>
-        <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
+          <Button onClick={async () => {
             onCleanSelected()
-            // actionRef.current?.reloadAndRest?.();
           }}>Bỏ chọn</Button>
         </Fragment>
       </>
@@ -154,9 +152,7 @@ const TableListAssignCPass = (props: any) => {
     <>
 
       <ModalForm
-        //title='Cập nhật Phiên mở bán'
         open={props.openModal}
-        
         autoFocusFirstInput
         modalProps={{
           destroyOnClose: true,
@@ -168,105 +164,104 @@ const TableListAssignCPass = (props: any) => {
         submitter={false}
       >
 
-    <ProTable
-        headerTitle={(<>
-          {configDefaultText['fair']}: {fair?.code}
-        </>)}
-        actionRef={actionRef}
-        rowKey='id'
-        search={false}
-        rowClassName={
-          (entity) => {
-            return entity.classColor
-          }
-        }
-
-        request={async () => {
-          const data = await customAPIGetOne(props.fairId, 'users/list-and-cpass', {});
-
-          return {
-            data: data,
-            success: true,
-            total: data?.length
-          }
-        }}
-        toolBarRender={() => [
-          <>
-          { selectedRowsState.length === 1 && (<Button
-            type='primary'
-            key='primary'
-            onClick={() => {
-            
-             confirm(
-              {
-                data: {
-                  cPassId: [props.currentCPass],
-                  userId: selectedRowsState[0]?.id,
-               },
-               fairId: props.fairId
-              }, configDefaultText['page.assign.textConfirmAssign'], 'c-passes/update/assign', null);
-            }}
-          >
-            <PlusOutlined /> {configDefaultText['buttonAdd']}
-          </Button>)}
-          </>
-        ]}
-        columns={columns}
-        dataSource={fair?.c_passes}
-        rowSelection={{
-          onChange: (_, selectedRows: any) => {
-           
-            setSelectedRows(selectedRows);
-          },
-          type: 'radio'
-        }}
-
-        pagination={{
-          locale: {
-            next_page: configDefaultText['nextPage'],
-              prev_page: configDefaultText['prePage'],
-          },
-          showTotal: (total, range) => {
-            return `${range[range.length - 1]} / Tổng số: ${total}`
-          }
-        }}
-
-        
-        tableAlertRender={({selectedRowKeys}: any) => {
-          return renderTableAlert(selectedRowKeys);
-        }}
-
-
-        tableAlertOptionRender={({  selectedRows, onCleanSelected }: any) => {
-         return renderTableAlertOption(selectedRows, onCleanSelected)
-        }}
-
-        toolbar={{
-          settings: [{
-            key: 'reload',
-            tooltip: 'Tải lại',
-            icon: <ReloadOutlined />,
-            onClick: () => {
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+        <ProTable
+          headerTitle={(<>
+            {configDefaultText['fair']}: {fair?.code}
+          </>)}
+          actionRef={actionRef}
+          rowKey='id'
+          search={false}
+          rowClassName={
+            (entity) => {
+              return entity.classColor
             }
-          }]
-        }}
+          }
 
-      />
-      {currentRowCPass && (
-        <DetailCPass
-          openModal={showDetailCPass}
-          idCPass={currentRowCPass}
-          closeModal={() => {
-            setCurrentRowCPass(undefined);
-            setShowDetailCPass(false);
+          request={async () => {
+            const data = await customAPIGetOne(props.fairId, 'users/list-and-cpass', {});
+
+            return {
+              data: data,
+              success: true,
+              total: data?.length
+            }
           }}
+          toolBarRender={() => [
+            <>
+              {selectedRowsState.length === 1 && (<Button
+                type='primary'
+                key='primary'
+                onClick={() => {
+                  confirm(
+                    {
+                      data: {
+                        cPassId: [props.currentCPass],
+                        userId: selectedRowsState[0]?.id,
+                      },
+                      fairId: props.fairId
+                    }, (<>{configDefaultText['page.assign.textConfirmAssign']}: <strong>{props.codeCPass ?? ''}</strong> cho Mega:  <strong>{selectedRowsState[0].fullname ? selectedRowsState[0].fullname : selectedRowsState[0].username} - {selectedRowsState[0].id}</strong> đã chọn không?</>), 'c-passes/update/assign', null);
+                }}
+              >
+                <PlusOutlined /> {configDefaultText['assignCPass']}
+              </Button>)}
+            </>
+          ]}
+          columns={columns}
+          dataSource={fair?.c_passes}
+          rowSelection={{
+            onChange: (_, selectedRows: any) => {
+
+              setSelectedRows(selectedRows);
+            },
+            type: 'radio'
+          }}
+
+          pagination={{
+            locale: {
+              next_page: configDefaultText['nextPage'],
+              prev_page: configDefaultText['prePage'],
+            },
+            showTotal: (total, range) => {
+              return `${range[range.length - 1]} / Tổng số: ${total}`
+            }
+          }}
+
+
+          tableAlertRender={({ selectedRowKeys }: any) => {
+            return renderTableAlert(selectedRowKeys);
+          }}
+
+
+          tableAlertOptionRender={({ selectedRows, onCleanSelected }: any) => {
+            return renderTableAlertOption(selectedRows, onCleanSelected)
+          }}
+
+          toolbar={{
+            settings: [{
+              key: 'reload',
+              tooltip: 'Tải lại',
+              icon: <ReloadOutlined />,
+              onClick: () => {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            }]
+          }}
+
         />
-      )}
+        {currentRowCPass && (
+          <DetailCPass
+            openModal={showDetailCPass}
+            idCPass={currentRowCPass}
+            closeModal={() => {
+              setCurrentRowCPass(undefined);
+              setShowDetailCPass(false);
+            }}
+          />
+        )}
       </ModalForm>
-      
+
       {currentRowUser && (
         <DetailUser
           onDetail={showDetailUser}

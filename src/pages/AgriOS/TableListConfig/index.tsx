@@ -17,6 +17,7 @@ import AccountBank from './components/TableListAccountBank';
 import EWallet from './components/TableListEWallet';
 import Address from './components/TableListAddress';
 import Ale from './components/TableListRateAle';
+import Detail from './components/TableListDetail';
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -65,23 +66,13 @@ const parser = (value: any) => {
   return undefined;
 };
 
-
-
-
-
-
-
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [rowCurrent, setRowCurrent] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm<any>();
   const [updateOpenModalFee, setUpdateOpenModalFee] = useState<boolean>(false);
-  // const [rowCurrentFee, setRowCurrentFee] = useState<any>();
   const refFee = useRef<any>();
-
-
-
 
   const columnFee: ProColumns<any>[] = [
     {
@@ -89,53 +80,29 @@ const TableList: React.FC = () => {
       dataIndex: 'index',
       valueType: 'index',
     },
-    // {
-    //   // title: (
-    //   //   <FormattedMessage
-    //   //     id='pages.searchTable.column.code'
-    //   //     defaultMessage='Rule name'
-    //   //   />
-    //   // ),
-    //   title: configDefaultText['page.code'],
-    //   key: 'code',
-    //   dataIndex: 'atrributes',
-    //   render: (_, entity: any) => {
-    //     ;
-    //     return (
-    //       <>
-    //       </>
-    //     );
-    //   },
-    // },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeFrom' defaultMessage='Giá trị dưới' />,
       title: configDefaultText['page.rangeFrom'],
       dataIndex: 'rangeFrom',
       valueType: 'textarea',
       key: 'rangeFrom',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         return text?.attributes?.rangeFrom;
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.rangeTo'],
       dataIndex: 'rangeTo',
       valueType: 'textarea',
       key: 'rangeTo',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         return text?.attributes?.rangeTo;
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.fee.typesFee'],
       dataIndex: 'typesFee',
       valueType: 'textarea',
       key: 'typesFee',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         switch (text?.attributes?.types) {
           case 'cash':
@@ -154,12 +121,10 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.fee.valueFee'],
       dataIndex: 'valueFee',
       valueType: 'textarea',
       key: 'valueFee',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.types === 'free') {
           return text?.attributes?.valueFee;
@@ -170,13 +135,11 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.valueFeeText.column.classify' defaultMessage='Phân loại' />,
       title: configDefaultText['page.fee.valueFeeText'],
       dataIndex: 'valueFee',
       valueType: 'textarea',
       key: 'valueFee',
       align: 'center',
-      // ...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         let textFee;
         if (text?.attributes?.rangeFrom === 0 && text?.attributes?.rangeTo !== 0) {
@@ -197,7 +160,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -277,19 +239,7 @@ const TableList: React.FC = () => {
         {
           tab: 'Chi tiết',
           key: '1',
-          children: (<>
-            <ProDescriptions
-              actionRef={actionRef}
-              column={2}
-              columns={columns}
-              request={async () => {
-                const data = await customAPIGet({}, 'config-plaform');
-                return data;
-              }}
-            >
-
-
-            </ProDescriptions></>)
+          children: (<Detail />)
 
         },
         {
@@ -304,10 +254,6 @@ const TableList: React.FC = () => {
           key: '2',
           children: (<>
             <ProTable
-              // headerTitle={intl.formatMessage({
-              //   id: 'page.searchTable.title',
-              //   defaultMessage: 'Enquiry form',
-              // })}
               actionRef={actionRef}
               rowKey='id'
               search={false}
@@ -374,110 +320,11 @@ const TableList: React.FC = () => {
       ]}
     >
 
-      <ModalForm
-        title='Cập nhật'
-        open={updateModalOpen}
-        form={form}
-
-        autoFocusFirstInput
-        modalProps={{
-          destroyOnClose: true,
-          onCancel: () => {
-            handleUpdateModalOpen(false);
-          },
-        }}
-
-        submitTimeout={2000}
-        onFinish={async (values: any) => {
-          // const update = await handleUpdate(values, rowCurrent);
-          const hide = message.loading('Đang cập nhật...');
-          const updateEmail = handleUpdateTabOne({
-            data: {
-              emailPlaform: values?.emailPlaform
-            }
-          }, null, 'config-plaform');
-
-          const updateMega = handleUpdateTabOne({
-            data: {
-              limitAlegerSellAle: values?.limitAlegerSellAle
-            }
-          }, 1, 'config-default-megas');
-
-          const update = await Promise.all([updateEmail, updateMega]);
-          if (update.length === 2) {
-            message.success('Cập nhật thành công');
-            hide();
-            handleUpdateModalOpen(false);
-            actionRef.current?.reload();
-          }
-          return true;
-        }}
-
-        submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
-          searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
-            resetText: configDefaultText['buttonClose'],
-            submitText: configDefaultText['buttonUpdate'],
-          },
-        }}
-      >
-
-
-
-
-
-
-
-        <Row gutter={24} className="m-0">
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormText
-              className='w-full'
-              name='emailPlaform'
-              label={configDefaultText['page.config.required.mail']}
-              placeholder={configDefaultText['page.config.required.mail']}
-              rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.config.required.mail'] },
-              ]}
-            />
-          </Col>
-
-          <Col span={12} className="gutter-row p-0" >
-            <ProFormDigit
-              min={1}
-              className='w-full'
-              name='limitAlegerSellAle'
-              label={configDefaultText['page.configMega.modal.limitAlegerSellAle']}
-              placeholder={configDefaultText['page.configMega.modal.limitAlegerSellAle']}
-              rules={[
-                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                { required: true, message: configDefaultText['page.configMega.modal.limitAlegerSellAle'] },
-              ]}
-              
-              fieldProps={{
-                formatter,
-                parser,
-              }}
-            />
-          </Col>
-
-        </Row>
-
-      </ModalForm>
-
-
       {
         updateOpenModalFee && (
           <ModalForm
             title='Cập nhật'
-            width={`35vh`}
+            width={window.innerWidth * 0.3}
             open={updateOpenModalFee}
             form={form}
             autoFocusFirstInput
@@ -499,15 +346,8 @@ const TableList: React.FC = () => {
             }}
 
             submitter={{
-              // render: (_, dom) => (
-              //   <div style={{ marginBlockStart: '5vh' }}>
-              //     {dom.pop()}
-              //     {dom.shift()}
-              //   </div>
-              // ),
+          
               searchConfig: {
-                // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-                // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
                 resetText: configDefaultText['buttonClose'],
                 submitText: configDefaultText['buttonUpdate'],
               },
@@ -523,7 +363,6 @@ const TableList: React.FC = () => {
                   label={configDefaultText['page.rangeFrom']}
                   placeholder={configDefaultText['page.rangeFrom']}
                   rules={[
-                    //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                     { required: true, message: configDefaultText['page.listCow.required.name'] },
                   ]}
                 />
@@ -538,7 +377,6 @@ const TableList: React.FC = () => {
                   label={configDefaultText['page.rangeTo']}
                   placeholder={configDefaultText['page.rangeTo']}
                   rules={[
-                    //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                     { required: true, message: 'Giá trị trên' },
                   ]}
                 />
@@ -565,16 +403,13 @@ const TableList: React.FC = () => {
                   label={configDefaultText['page.fee.typesFee']}
                   placeholder={configDefaultText['page.fee.typesFee']}
                   rules={[
-                    // { required: true, message: <FormattedMessage id='page.listCow.required.farm' defaultMessage='Vui lòng chọn trang trại' /> },
                     {
                       required: true, message: configDefaultText['page.fee.typesFee'
                       ]
                     },
                   ]}
                   fieldProps={{
-                    // onChange: (value) => {
-
-                    // }
+                    
                   }}
                 />
               </Col>
@@ -589,7 +424,6 @@ const TableList: React.FC = () => {
                   label={configDefaultText['page.fee.valueFee']}
                   placeholder={configDefaultText['page.fee.valueFee']}
                   rules={[
-                    //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                     { required: true, message: configDefaultText['page.fee.valueFee'] },
                   ]}
                 />

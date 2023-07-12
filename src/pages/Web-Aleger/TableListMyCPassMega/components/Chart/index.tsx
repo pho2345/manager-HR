@@ -5,7 +5,7 @@ import { customAPIGetFileSlotChart, customAPIPost } from '@/services/ant-design-
 import moment from 'moment';
 import { Button } from 'antd';
 import configText from '@/locales/configText';
-import { ConsoleSqlOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 const configDefaultText = configText;
 
 const DemoLine = (props: any) => {
@@ -20,11 +20,7 @@ const DemoLine = (props: any) => {
             "cPassId": props.cPassId,
             "types": props.types
         });
-        // console.log('getSlot', getSlot);
         setData(getSlot?.data?.chart);
-        // setSlot(getSlot?.data?.slots);
-
-        // setSlots(getSlot?.data?.slots);
     };
 
     useEffect(() => {
@@ -64,7 +60,6 @@ const DemoLine = (props: any) => {
             shared: true,
             customItems: (originalItems: any) => {
                 // process originalItems, 
-                console.log(originalItems);
                 const data = originalItems.map((e: any) => {
                     return {
                         ...e,
@@ -74,9 +69,6 @@ const DemoLine = (props: any) => {
                 return data;
             },
             customContent: (x: any, data: any) => {
-                // console.log(slot);
-               
-                console.log(data);
                
                 let display = `<div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${data[0]?.title}@S${x}- ${moment(data[0]?.data?.dateWeight).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY')} </div>
                 <ul class="g2-tooltip-list" style="margin: 0px; list-style-type: none; padding: 0px;">`;

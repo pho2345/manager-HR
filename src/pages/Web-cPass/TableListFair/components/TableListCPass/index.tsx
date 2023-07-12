@@ -93,16 +93,12 @@ const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCpass = useRef<any>();
-  // const [currentRow, setCurrentRow] = useState<any>();
   const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
 
-  // const [currentRowUser, setCurrentRowUser] = useState<any>();
-  // const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   useEffect(() => {
     const getValues = async () => {
       let getCow = await getCownotInCpass();

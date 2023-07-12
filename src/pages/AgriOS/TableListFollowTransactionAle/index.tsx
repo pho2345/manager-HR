@@ -14,12 +14,10 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage, useIntl } from '@umijs/max';
 import { Button, Col, Input, Row, Space } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
-import { MdOutlineMms } from 'react-icons/md';
 const configDefaultText = configText;
 
 
@@ -33,11 +31,6 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
-
-  //const [selectedRowsState, setSelectedRowsState] = useState<number[]>([]);
-  // const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
 
@@ -131,13 +124,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
@@ -149,6 +137,7 @@ const TableList: React.FC = () => {
     clearFilters();
     setSearchRangeFrom(null);
     setSearchRangeTo(null);
+    setOptionRangeSearch(null);
     confirm({
       closeDropdown: false,
     });
@@ -248,6 +237,7 @@ const TableList: React.FC = () => {
                   }
                   setOptionRangeSearch(value);
                 },
+                value: optionRangeSearch
               }}
             />
           </Col>
@@ -316,21 +306,9 @@ const TableList: React.FC = () => {
       return null;
     }
     ,
-    // onFilterDropdownOpenChange: (visible: any) => {
-    //   if (visible) {
-    //     // setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
-
-    // render: (text: any) =>{
-    // }
   });
 
 
-
-
-
-  // const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -350,12 +328,9 @@ const TableList: React.FC = () => {
           </>
         );
       },
-
-      //valueEnum: filterCode
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
       title: configDefaultText['page.confirm.column.aleger'],
       dataIndex: 'username',
       valueType: 'textarea',
@@ -366,7 +341,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.app' defaultMessage='Ứng dụng' />,
       title: configDefaultText['page.follow.column.app'],
       dataIndex: 'app',
       valueType: 'textarea',
@@ -374,10 +348,8 @@ const TableList: React.FC = () => {
       renderText: (_, entity: any) => {
         return ``;
       },
-      //...getColumnSearchProps('mega')
     },
     {
-      // title: <FormattedMessage id='page.follow.column.types' defaultMessage='Hoạt động' />,
       title: configDefaultText['page.follow.column.types'],
       dataIndex: 'types',
       valueType: 'textarea',
@@ -390,7 +362,6 @@ const TableList: React.FC = () => {
             return (<span style={{
               color: 'green'
             }}>Mua Ale</span>);
-
             break;
 
           case 'sellAle':
@@ -445,7 +416,7 @@ const TableList: React.FC = () => {
 
             types = (<span style={{
               color: '#fb7185'
-            }}>Thanh toán cPass</span>);
+            }}>Thanh quyết toán cPass</span>);
             break;
           default:
             break;
@@ -460,8 +431,33 @@ const TableList: React.FC = () => {
         {
           text: 'Bán Ale',
           value: 'sellAle'
-        }
+        },
+        {
+          text: 'Nhận ProduceAle',
+          value: 'megaDeltaWeightproduceAle'
+        },
+        {
+          text: 'Chuyển Ale',
+          value: 'aleTransfer'
+        },
+        {
+          text: 'Chuyển ProduceAle sang Ale',
+          value: 'produceAleExchangeAle'
+        },
+        {
+          text: 'Chuyển ProduceAle sang PromoAle',
+          value: 'produceAleExchangePromo'
+        },
+        {
+          text: 'Thanh toán cPass',
+          value: 'cpassPayment'
+        },
+        {
+          text: 'Thanh quyết toán cPass',
+          value: 'cpassSettlement'
+        },
       ],
+      
       onFilter: (value, record) => {
         if (record.types === value) {
           return record
@@ -600,74 +596,23 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-        // headerTitle={intl.formatMessage({
-        //   id: 'pages.searchTable.title',
-        //   defaultMessage: 'Enquiry form',
-        // })}
         actionRef={actionRef}
         rowKey='id'
         search={false}
         toolBarRender={() => [
 
         ]}
+
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
+        
         request={async () => {
           const data = await customAPIGet(
             {
 
             },
             'transactions/follow-ale');
-
-          //  const filter = data?.data.reduce((pre: any, cur: any) =>{
-          //   let element;
-          //   switch (cur?.status) {
-          //     case 'waitConfirm':
-          //       element = {
-          //         text: `Chờ Mega xác nhận`,
-          //         value: 'waitConfirm'
-          //       }
-          //       break;
-          //     case 'inProgress':
-          //       element = {
-          //         text: `Chờ xác nhận`,
-          //         value: 'inProgress'
-          //       }
-          //       break;
-
-          //     case 'done':
-          //       element = {
-          //         text: `Hoàn thành`,
-          //         value: 'done'
-          //       }
-          //       break;
-
-          //     case 'cancel':
-          //       element = {
-          //         text: `Đã hủy`,
-          //         value: 'cancel'
-          //       }
-          //       break;
-
-          //     case 'waitRefund':
-          //       element = {
-          //         text: `Chờ xác nhận hoàn trả`,
-          //         value: 'waitRefund'
-          //       }
-          //       break;
-
-          //     default:
-          //       break;
-          //   }
-          //   pre.push(element);
-          //   return pre;
-          //  }, []);
-
-          //  console.log('filter', filter);
-
-          //  const uniqueArr = filter.filter((item: any, index: any, self: any) => {
-          //   return index === self.findIndex((t: any) => t.value === item.value);
-          // });
-
-          // setFilterStatus(uniqueArr);
           return {
             data: data?.data,
             success: true,
@@ -700,57 +645,7 @@ const TableList: React.FC = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-
-      // rowSelection={{
-      //   onChange: (_, selectedRows: any) => {
-      //     setSelectedRowsState(selectedRows);
-      //     const confitSelectedRows = selectedRows.map((e: any) => {
-      //       return {
-      //         id: e?.id,
-      //         types: e?.types
-      //       }
-      //     });
-      //     setSelectedRows(confitSelectedRows);
-      //     // setSelectedRows([
-      //     //   {
-      //     //     id:record?.id,
-      //     //     types: record?.types
-      //     //   }
-      //     // ])
-      //   },
-      //   getCheckboxProps: (record: any) => ({
-      //     disabled: record?.status === 'inProgress' ? false : true, // Column configuration not to be checked
-      //   }),
-      // }}
       />
-
-      {/* {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              <FormattedMessage id='pages.searchTable.chosen' defaultMessage='Chosen' />{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              //await handleRemove(selectedRowsState);
-              setShowModal(true);
-              //setSelectedRows([]);
-              //actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            Thực hiện
-          </Button>
-
-        </FooterToolbar>
-      )} */}
-
-
-
-
 
       {currentRowUser && (
         <DetailUser

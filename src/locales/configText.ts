@@ -90,7 +90,7 @@ export default {
     //Web-cPass: Assign
     'page.assign.column.aleger': 'Aleger',
     'page.assign.column.cPass': 'số CPass đã mua trong phiên',
-    'page.assign.textConfirmAssign': 'Bạn có muốn gán cPass cho Mega đã chọn không?',
+    'page.assign.textConfirmAssign': 'Bạn có muốn chỉ định cPass ',
 
     
 
@@ -153,7 +153,7 @@ export default {
     'page.DetailCPass.menu.removeCPass':'Loại bỏ cPass',
 
 
-    'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
+    // 'page.DetailCPass.message.removeCPassMega':'Loại bỏ Mega khỏi cPass?',
     'page.DetailCPass.message.removeCPassFair':'Loại bỏ cPass khỏi phiên?',
 
 
@@ -528,7 +528,7 @@ export default {
     'page.listSettlement.column.megaDeltaP': 'MegaΔP (kg)',
     'page.listSettlement.column.megaP': 'MegaP (kg)',
     'page.listSettlement.column.megaE': 'MegaE (VNĐ)',
-    'page.listSettlement.column.reasonSettlement': 'Lý do',
+    'page.listSettlement.column.reasonSettlement': 'Lý do quyết toán',
     'page.listSettlement.registeringSettlementCancel': 'Đăng kí thanh quyết toán trước hạn',
     'page.listSettlement.registeringSettlementSickOrDeath': 'Đăng kí thanh quyết toán bệnh chết',
     'page.listSettlement.modal.registeringSettlementCancel': 'Chọn Aleger muốn thanh quyết toán trước hạn',
@@ -617,7 +617,7 @@ export default {
 
 
     'page.config.columns.mail': '1. Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
-    'page.config.required.mail': 'Địa chỉ email gửi thông báo cho admin các giao dịch Ale',
+    'page.config.required.mail': 'Email gửi thông báo cho admin các giao dịch Ale',
     'page.config.columns.limitAlegerSellAle': '2. Số Ale tối đa 1 Aleger bán cho PL trong 1 tuần',
     'page.config.columns.fee': '3. Phí giao dịch Ale với PL',
     'page.config.columns.infoAccountBank': '3. Thông tin tài khoản của PL',
@@ -744,6 +744,21 @@ export default {
     'page.detailFair.mega.wgs.slot': 'Khoảng Slot', 
 
     
+    'page.logTransaction.colums.code': 'Mã',
+    'page.logTransaction.colums.types': 'Loại giao dịch',
+    'page.logTransaction.colums.methodPayment': 'PTTT',
+    'page.logTransaction.colums.content': 'Hoạt động',
+    'page.logTransaction.colums.adminUser': 'Admin',
+    'page.logTransaction.colums.transaction': 'Mã giao dịch',
+    'page.logTransaction.colums.statusFrom': 'Trạng thái trước',
+    'page.logTransaction.colums.statusTo': 'Trạng thái sau',
+    'page.logTransaction.colums.user': 'Mega',
+    'page.logTransaction.colums.action': 'Thao tác',
+    'page.logTransaction.colums.cPass': 'cPass',
+
+    'page.logTransactionAle.colums.aleger': 'Aleger',
+    'page.logTransactionAle.colums.receiver': 'Aleger nhận',
+    'page.logTransactionAle.colums.qr': 'Mã QR',
 
 
 

@@ -614,6 +614,9 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey='id'
         search={false}
+        scroll={{
+          x: window.innerWidth * 0.8
+        }}
         toolBarRender={() => {
           return showDowloadFile ? [
             <Button

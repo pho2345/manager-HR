@@ -489,10 +489,6 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-          //   setSelectedRows(selectedRows);
-          // },
-
         }}
         
 
@@ -601,12 +597,6 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonUpdate'],
@@ -629,12 +619,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listCategory.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.category.required.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
                 },
               ]} />
           </Col>
@@ -648,12 +632,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listCategory.required.name']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.category.required.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
 

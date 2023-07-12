@@ -16,6 +16,25 @@ const { Text, } = Typography;
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
+const handleUpdateMany = async (fields: any, api: string, id: any) => {
+  const hide = message.loading('Đang cập nhật...');
+  console.log(fields);
+  try {
+    const updateTransaction = await customAPIUpdateMany(
+      fields,
+      api,
+      id);
+    hide();
+    if (updateTransaction) {
+      message.success('Cập nhật thành công');
+    }
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.error?.message || 'Lỗi');
+    return false;
+  }
+};
 
 
 
@@ -154,6 +173,7 @@ const TableListAssignCPass = (props: any) => {
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     confirm();
   };
+
 
   const handleResetRange = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -299,6 +319,34 @@ const TableListAssignCPass = (props: any) => {
   });
 
 
+  const confirm = (entity: any, message: any, api: string, id: any) => {
+    Modal.confirm({
+      title: configDefaultText['titleConfirm'],
+      icon: <ExclamationCircleOutlined />,
+      content: message,
+      okText: 'Có',
+      cancelText: 'Không',
+      onOk: async () => {
+
+        const update = await handleUpdateMany({
+          ...entity,
+          fairId: props.fairId
+        }, api, id);
+        if (update) {
+          props.onCloseModal();
+
+          if (actionRef.current && actionRefMega.current) {
+            setSelectedRowsCPass([]);
+            setSelectedRowsMega([]);
+            actionRef.current?.reloadAndRest?.();
+            actionRefMega.current?.reloadAndRest?.();
+          }
+        }
+
+      }
+    });
+  };
+
 
   useEffect(() => {
     const fetchDataFair = async () => {
@@ -317,7 +365,7 @@ const TableListAssignCPass = (props: any) => {
   }
 
 
-  function renderTableAlertOption() {
+  function renderTableAlertOption(selectedRowKeys: any, onCleanSelected: any) {
     return (
       <>
         <Fragment>

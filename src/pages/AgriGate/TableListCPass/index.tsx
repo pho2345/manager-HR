@@ -221,15 +221,12 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
   const [cow, setCow] = useState<any>();
-
   const [category, setCategory] = useState<any>();
   const [farm, setFarm] = useState<any>();
   const refIdPicture = useRef<any>();
-
   const [groupCow, setGroupCow] = useState<any>([]);
   const [getAllGroup, setGetAllGroup] = useState<any>([]);
   const searchInput = useRef(null);
-
   const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
 

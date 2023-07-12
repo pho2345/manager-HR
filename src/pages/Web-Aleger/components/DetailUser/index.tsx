@@ -247,7 +247,6 @@ const TableList = (props: any) => {
       valueType: 'textarea',
       key: 'edit',
       render: (_, record) => {
-        console.log(record);
         return (<><Button
           onClick={() => {
             handleUpdateModalOpen(true);

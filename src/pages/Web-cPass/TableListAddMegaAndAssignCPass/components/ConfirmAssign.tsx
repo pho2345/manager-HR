@@ -188,28 +188,6 @@ const ConfirmRegisteringSettlement: React.FC<any> = (props) => {
       },
       filters: true,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
     },
     {
       title: configDefaultText['page.addMegaAndAssign.column.pZero'],

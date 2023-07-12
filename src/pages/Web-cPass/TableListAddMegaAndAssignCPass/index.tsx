@@ -1,12 +1,12 @@
-import { customAPIGetOne, customAPIPostOne, customAPIUpdateMany } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { customAPIGet, customAPIGetOne, customAPIPostOne } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-import { Button, Typography, message, Modal, Space, Input } from 'antd';
+import { Button, Typography, message, Space, Input } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
@@ -44,6 +44,16 @@ const getFair = async (id: number) => {
 }
 
 
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
+
 
 const TableListAssignCPass = (props: any) => {
   const actionRef = useRef<ActionType>();
@@ -52,18 +62,25 @@ const TableListAssignCPass = (props: any) => {
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
   const [selectedRowsCPass, setSelectedRowsCPass] = useState<any>([]);
   const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
   const [fair, setFair] = useState<any>();
   const searchInput = useRef(null);
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRange, setSearchRange] = useState<any>();
   const [searchRangeTo, setSearchRangeTo] = useState<any>();
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+  const [bodyCondition, setBodyCondition] = useState<any>([]);
 
   const [showConfirmAssign, setShowConfirmAssign] = useState<boolean>(false);
+
+  useEffect(() => {
+     const getData = async () => {
+        const getOption = await getBodyCondition();
+        setBodyCondition(getOption);
+     };
+     getData();
+  }, [])
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -156,6 +173,7 @@ const TableListAssignCPass = (props: any) => {
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     confirm();
   };
+
 
   const handleResetRange = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -355,22 +373,7 @@ const TableListAssignCPass = (props: any) => {
             type='primary'
             key='primary'
             onClick={() => {
-              let cPass = '';
-              const cPassId = selectedRowsCPass.map((e: any) => {
-                cPass += `${e?.code}, `;
-                return e.id
-              });
-
               setShowConfirmAssign(true);
-              // confirm(
-              //   {
-              //     data: {
-              //       cPassId: cPassId,
-              //       userId: selectedRowsMega[0]?.id,
-              //     },
-              //   }, <>Bạn có muốn chỉ định cPass: <strong>{cPass}</strong> cho Mega: <strong style={{
-              //     color: 'red'
-              //   }}>{selectedRowsMega[0]?.fullname ? selectedRowsMega[0]?.fullname : selectedRowsMega[0]?.username} - {selectedRowsMega[0]?.id}</strong></>, 'c-passes/update/assign', null);
             }}
           >
             <PlusOutlined /> Chỉ định
@@ -496,30 +499,9 @@ const TableListAssignCPass = (props: any) => {
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
-      filters: true,
+      filters: bodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
+     
     },
     {
       title: configDefaultText['page.addMegaAndAssign.column.pZero'],

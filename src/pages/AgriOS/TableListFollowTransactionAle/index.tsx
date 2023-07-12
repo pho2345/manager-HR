@@ -306,14 +306,6 @@ const TableList: React.FC = () => {
       return null;
     }
     ,
-    // onFilterDropdownOpenChange: (visible: any) => {
-    //   if (visible) {
-    //     // setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
-
-    // render: (text: any) =>{
-    // }
   });
 
 

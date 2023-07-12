@@ -14,7 +14,7 @@ import moment from 'moment';
 import './styles.css';
 import DetailUser from '@/pages/components/DetailUser';
 import DetailCPass from '@/pages/components/DetailCPass';
-import TableListAssignCPass from '../TableListAssignCPass';
+import TableListAssignMega from '../TableListAssignMega';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
@@ -631,13 +631,11 @@ const TableListFairDetail: React.FC = () => {
         }
         toolBarRender={() => {
           return [
-            // eslint-disable-next-line react/jsx-no-undef
             <Button
               type='primary'
               key='excel'
               onClick={async () => {
                 await customAPIDowload('fairs/cpass-of-fair/excel', params?.id, {
-
                 });
               }}
             >
@@ -727,7 +725,7 @@ const TableListFairDetail: React.FC = () => {
 
       {
         currentCPass && (<>
-          <TableListAssignCPass
+          <TableListAssignMega
             openModal={showModalMega}
             currentCPass={currentCPass}
             codeCPass={codeCPass}

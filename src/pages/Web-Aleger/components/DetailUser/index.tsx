@@ -8,32 +8,21 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 const { Text } = Typography;
 import configText from '@/locales/configText';
+import { act } from '@testing-library/react';
 const configDefaultText = configText;
 
 
 function sleeper(ms: number) {
-  return new Promise((resolve) => setTimeout(() => resolve(), ms));
+  return new Promise((resolve: any) => setTimeout(() => resolve(), ms));
 }
-
-
 
 const DescriptionCustom = (props: any) => {
   return (<><ProDescriptions
     column={props.quantityColumns || 1}
     title='Thông tin Mega'
-    // request={async () => {
-    //   const getUser = await customAPIGetOne(props?.id, props.api);
-    //   return {
-    //     data: getUser,
-    //     success: true
-    //   }
-    // }}
-    // params={{
-    //   id: props?.id
-    // }}
     dataSource={props?.data}
-
     columns={props.columns}
+    actionRef={props?.actionRef}
   ></ProDescriptions>
   </>)
 }
@@ -136,7 +125,6 @@ const TableList = (props: any) => {
   const [notifyEmail, setNotifyEmail] = useState<boolean>();
 
 
-
   const confirm = (entity: any, messageConfirm: string, api: string) => {
     Modal.confirm({
       title: 'Confirm',
@@ -147,14 +135,17 @@ const TableList = (props: any) => {
       onOk: async () => {
         try {
 
-          await handleDisabled({
+          const update = await handleDisabled({
             ...entity
           }, api);
+
+          if(update){
+            await getData();
+          }
 
         } catch (error) {
 
         }
-
       }
     });
   };
@@ -163,12 +154,10 @@ const TableList = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.searchTable.column.id' defaultMessage='ID' />,
       title: configDefaultText['page.DetailAleger.column.id'],
       renderText: (_, record: any) => record.id
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.username' defaultMessage='Tên đăng nhập' />,
       title: configDefaultText['page.DetailAleger.column.username'],
       dataIndex: 'username',
       valueType: 'textarea',
@@ -176,7 +165,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record.username
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.email' defaultMessage='email' />,
       title: configDefaultText['page.DetailAleger.column.email'],
       dataIndex: 'email',
       valueType: 'textarea',
@@ -184,7 +172,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record.email
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.fullname' defaultMessage='Tên đầy đủ' />,
       title: configDefaultText['page.DetailAleger.column.fullname'],
       dataIndex: 'fullname',
       valueType: 'textarea',
@@ -192,7 +179,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record.fullname
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.phone' defaultMessage='Số điện thoại' />,
       title: configDefaultText['page.DetailAleger.column.phone'],
       dataIndex: 'phone',
       valueType: 'textarea',
@@ -200,7 +186,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record.phone
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.passport' defaultMessage='CCCD/HC' />,
       title: configDefaultText['page.DetailAleger.column.passport'],
       dataIndex: 'passport',
       valueType: 'textarea',
@@ -208,7 +193,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record?.passport
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.address' defaultMessage='Địa chỉ' />,
       title: configDefaultText['page.DetailAleger.column.address'],
       dataIndex: 'address',
       valueType: 'textarea',
@@ -216,7 +200,6 @@ const TableList = (props: any) => {
       renderText: (_, record) => record?.address
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.birthdate' defaultMessage='Ngày sinh' />,
       title: configDefaultText['page.DetailAleger.column.birthdate'],
       dataIndex: 'birthdate',
       valueType: 'textarea',
@@ -224,7 +207,6 @@ const TableList = (props: any) => {
       renderText: (_, record: any) => record.birthdate ? moment(record?.birthdate).add(new Date().getTimezoneOffset() / -60, 'hour').format('DD/MM/YYYY') : null
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.sex' defaultMessage='Giới tính' />,
       title: configDefaultText['page.DetailAleger.column.sex'],
       dataIndex: 'sex',
       valueType: 'textarea',
@@ -244,7 +226,6 @@ const TableList = (props: any) => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.firebaseUid' defaultMessage='Firebase UID' />,
       title: configDefaultText['page.DetailAleger.column.firebaseUid'],
       dataIndex: 'firebaseUid',
       valueType: 'textarea',
@@ -253,7 +234,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.bank' defaultMessage='Tài khoản ngân hàng' />,
       title: configDefaultText['page.DetailAleger.column.bank'],
       dataIndex: 'bank',
       valueType: 'textarea',
@@ -280,12 +260,10 @@ const TableList = (props: any) => {
             style={{
               marginLeft: '10px'
             }}
-            disabled={!record?.disabled}
             onClick={() => confirm({
               userId: record?.id
-            }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], 'users/disabled')} danger
+            }, configDefaultText['page.DetailAleger.column.textConfirmDisable'], !record?.disabled ? 'users/disabled' : 'users/open-disabled')} danger
           >{record?.disabled ? configDefaultText['page.DetailAleger.column.openDisabled'] : configDefaultText['page.DetailAleger.column.disabled']}</Button></>)
-
       }
     },
 
@@ -294,7 +272,6 @@ const TableList = (props: any) => {
   const columnDetailUserAle: ProColumns<any>[] = [
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư ale' />,
       title: configDefaultText['page.DetailAleger.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -303,7 +280,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.quantityAleRecharge' defaultMessage='Số ale đã nạp' />,
       title: configDefaultText['page.DetailAleger.column.quantityAleRecharge'],
       dataIndex: 'quantityAleRecharge',
       valueType: 'textarea',
@@ -312,7 +288,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.aleUsed' defaultMessage='Số ale đã dùng' />,
       title: configDefaultText['page.DetailAleger.column.aleUsed'],
       dataIndex: 'aleUsed',
       valueType: 'textarea',
@@ -321,7 +296,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='ProduceAle' />,
       title: configDefaultText['page.DetailAleger.column.produceAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -329,7 +303,6 @@ const TableList = (props: any) => {
       renderText: (_, text) => text?.produceAle?.toLocaleString() || 0
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='promoAle' />,
       title: configDefaultText['page.DetailAleger.column.promoAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -352,7 +325,6 @@ const TableList = (props: any) => {
 
   const columnDetailUserMegaCurrent: ProColumns<any>[] = [
     {
-      // title: <FormattedMessage id='pages.searchTable.column.totalCPassCurrent' defaultMessage='Tổng cPass Mega sở hữu' />,
       title: configDefaultText['page.DetailAleger.column.totalCPassCurrent'],
       dataIndex: 'totalCPassCurrent',
       valueType: 'textarea',
@@ -361,7 +333,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightCurrent' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
       title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'megaDeltaWeightCurrent',
       valueType: 'textarea',
@@ -370,7 +341,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAleCurrent' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
       title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'produceAleCurrent',
       valueType: 'textarea',
@@ -379,7 +349,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaWeightCurrent' defaultMessage=' Tổng trọng lượng MegaP (kg)' />,
       title: configDefaultText['page.DetailAleger.column.megaDeltaWeightCurrent'],
       dataIndex: 'megaWeightCurrent',
       valueType: 'textarea',
@@ -387,7 +356,6 @@ const TableList = (props: any) => {
       renderText: (_, text) => text?.megaWeightCurrent.toLocaleString()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaECurrent' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
       title: configDefaultText['page.DetailAleger.column.megaECurrent'],
       dataIndex: 'megaECurrent',
       valueType: 'textarea',
@@ -395,7 +363,6 @@ const TableList = (props: any) => {
       renderText: (_, text) => text?.megaECurrent.toLocaleString()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaCPRCurrent' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
       title: configDefaultText['page.DetailAleger.column.megaECurrent'],
       dataIndex: 'megaCPRCurrent',
       valueType: 'textarea',
@@ -407,7 +374,6 @@ const TableList = (props: any) => {
 
   const columnDetailUserMegaHistory: ProColumns<any>[] = [
     {
-      // title: <FormattedMessage id='pages.searchTable.column.totalCPassHistory' defaultMessage='Tổng cPass Mega sở hữu' />,
       title: configDefaultText['page.DetailAleger.column.totalCPassHistory'],
       dataIndex: 'totalCPassHistory',
       valueType: 'textarea',
@@ -416,7 +382,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaDeltaWeightHistory' defaultMessage='Tổng tăng trọng tích lũy MegaΔP (kg)' />,
       title: configDefaultText['page.DetailAleger.column.megaDeltaWeightHistory'],
       dataIndex: 'megaDeltaWeightHistory',
       valueType: 'textarea',
@@ -425,7 +390,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAleHistory' defaultMessage='Tổng ProduceAle đã chuyển đổi từ MegaΔP' />,
       title: configDefaultText['page.DetailAleger.column.produceAleHistory'],
       dataIndex: 'produceAleHistory',
       valueType: 'textarea',
@@ -434,7 +398,6 @@ const TableList = (props: any) => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaWeightHistory' defaultMessage='Tổng trọng lượng MegaP (kg)' />,
       title: configDefaultText['page.DetailAleger.column.megaWeightHistory'],
       dataIndex: 'megaWeightHistory',
       valueType: 'textarea',
@@ -442,7 +405,6 @@ const TableList = (props: any) => {
       renderText: (_, text) => text?.megaWeightHistory || 0
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaEHistory' defaultMessage='Tổng giá trị tài sản MegaE (VNĐ)' />,
       title: configDefaultText['page.DetailAleger.column.megaEHistory'],
       dataIndex: 'megaEHistory',
       valueType: 'textarea',
@@ -450,7 +412,6 @@ const TableList = (props: any) => {
       renderText: (_, text) => text?.megaEHistory?.toLocaleString() || 0
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaCPRHistory' defaultMessage='Tỷ suất lợi nhuận tích lũy MegaCPR (%)' />,
       title: configDefaultText['page.DetailAleger.column.megaCPRHistory'],
       dataIndex: 'megaCPRHistory',
       valueType: 'textarea',
@@ -535,18 +496,19 @@ const TableList = (props: any) => {
   ];
 
 
-
+  const getData = async () => {
+    const getInfor = await getInformation(props?.currentRowUser);
+    setDetailUser(getInfor);
+    setNotification(getInfor?.config?.notification);
+    setNotifyEmail(getInfor?.config?.notifyEmail);
+    setNotifyWG(getInfor?.config?.notifyWG);
+  }
 
   useEffect(() => {
-    const getData = async () => {
-      const getInfor = await getInformation(props?.currentRowUser);
-      setDetailUser(getInfor);
-      setNotification(getInfor?.config?.notification);
-      setNotifyEmail(getInfor?.config?.notifyEmail);
-      setNotifyWG(getInfor?.config?.notifyWG);
-    }
     getData();
   }, [props?.currentRowUser]);
+
+
 
   return (
     <>
@@ -559,6 +521,7 @@ const TableList = (props: any) => {
         closable={false}
       >
         <PageContainer
+          
           tabList={[
             {
               tab: configDefaultText['page.DetailAleger.tab.information'],
@@ -566,9 +529,9 @@ const TableList = (props: any) => {
               children: DescriptionCustom({
                 columns: columnDetailUser,
                 data: detailUser?.user,
-                //id: props?.currentRowUser,
-                //api: 'users/find-admin'
-              })
+                actionRef: actionRef
+              }),
+              
             },
             {
               tab: configDefaultText['page.DetailAleger.tab.ale'],
@@ -576,8 +539,6 @@ const TableList = (props: any) => {
               children: DescriptionCustom({
                 columns: columnDetailUserAle,
                 data: detailUser?.ale
-                //id: props?.ale,
-                //api: 'users/find-admin'
               })
             },
 
@@ -588,8 +549,6 @@ const TableList = (props: any) => {
                 columns: columnDetailUserMegaCurrent,
                 columnsHistory: columnDetailUserMegaHistory,
                 data: detailUser?.mega
-                //id: props?.currentRowUser,
-                //api: 'users/aleger'
               })
             },
 
@@ -599,9 +558,6 @@ const TableList = (props: any) => {
               children: DescriptionCustom({
                 columns: columnDetailUserMegaConfig,
                 data: detailUser?.config,
-                //id: props?.currentRowUser,
-                //api: 'users/find-admin'
-                //quantityColumns: 2
               })
             },
           ]}

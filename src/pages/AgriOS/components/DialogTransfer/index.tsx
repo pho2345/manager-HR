@@ -5,7 +5,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Tooltip, Row, Col } from 'antd';
 import React, { useRef, useState } from 'react';
 import './styles.css';
@@ -146,12 +145,8 @@ const DialogTransfer = (props: any) => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
 
   });
 
@@ -189,7 +184,6 @@ const DialogTransfer = (props: any) => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
       title: configDefaultText['page.transfer.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
@@ -198,11 +192,14 @@ const DialogTransfer = (props: any) => {
             <a
               onClick={() => {
                 setCurrentRowUser(entity?.id);
-                //setShowDetailUser(true);
               }}>
-              {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+
+              <span style={{
+                color: entity?.blocked ? 'red' : ''
+              }}>{entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}</span> </a>
+            <br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
+
           </>
         );
       },
@@ -257,24 +254,35 @@ const DialogTransfer = (props: any) => {
       valueType: 'textarea',
       key: 'config',
       render: (_, text: any) => {
-        return [
-          <>
-            <Tooltip title={configDefaultText['page.transfer.choosen']}> <MdOutlineCompareArrows
-              style={{
-                fontSize: 25,
-              }}
-              onClick={() => {
-                setShowTransfer(true);
-                setCurrentRowUser(text);
-              }}
-            /></Tooltip>
-          </>,
 
-        ]
+        if(!text?.blocked){
+          return [
+            <Space>
+               <Tooltip title={configDefaultText['page.transfer.choosen']}><Button
+                 onClick={() => {
+                  setShowTransfer(true);
+                  setCurrentRowUser(text);
+                }}
+                style={{
+                  marginLeft: '3px',
+                  padding: 0,
+                }}
+                icon={<MdOutlineCompareArrows style={{
+                  fontSize: 20,
+                }} />}
+              />
+              </Tooltip>
+            </Space>
+          ]
+        }
+        else {
+          return <span style={{
+            color: 'red'
+          }}>Bị khóa</span>
+        }
       }
     },
   ];
-
 
 
   return (
@@ -344,7 +352,7 @@ const DialogTransfer = (props: any) => {
 
       {currentRowUser && (
         <ModalForm
-          width={window.innerWidth * 0.2}
+          width={window.innerWidth * 0.35}
           open={showTransfer}
           modalProps={{
             destroyOnClose: true,
@@ -367,8 +375,6 @@ const DialogTransfer = (props: any) => {
           }}
           submitter={{
             searchConfig: {
-              // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-              // submitText: <FormattedMessage id='buttonSubmit' defaultMessage='Xác nhận' />,
               resetText: configDefaultText['buttonClose'],
               submitText: configDefaultText['submit'],
             },

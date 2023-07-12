@@ -11,6 +11,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '@/pages/components/DetailUser';
+import ConfirmAssign from './components/ConfirmAssign';
 const { Text, } = Typography;
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -30,7 +31,7 @@ const handleUpdateMany = async (fields: any, api: string, id: any) => {
     return true;
   } catch (error: any) {
     hide();
-    message.error(error.response.data.error.message);
+    message.error(error?.response?.data?.error?.message || 'Lỗi');
     return false;
   }
 };
@@ -61,6 +62,8 @@ const TableListAssignCPass = (props: any) => {
   const [searchRange, setSearchRange] = useState<any>();
   const [searchRangeTo, setSearchRangeTo] = useState<any>();
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+  const [showConfirmAssign, setShowConfirmAssign] = useState<boolean>(false);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -141,8 +144,7 @@ const TableListAssignCPass = (props: any) => {
       }
 
       return null;
-    }
-    ,
+    },
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
       }
@@ -153,8 +155,8 @@ const TableListAssignCPass = (props: any) => {
 
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     confirm();
-
   };
+
   const handleResetRange = (clearFilters: any, confirm: any) => {
     clearFilters();
     setShowRangeTo(false);
@@ -178,8 +180,6 @@ const TableListAssignCPass = (props: any) => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <ProFormDigit
-          // allowClear={true}
-        
           placeholder={`Cân nặng ${showRangeTo ? `từ` : ``}`}
           fieldProps={{
             onChange: (e: any) => {
@@ -301,11 +301,11 @@ const TableListAssignCPass = (props: any) => {
   });
 
 
-  const confirm = (entity: any, message: string, api: string, id: any) => {
+  const confirm = (entity: any, message: any, api: string, id: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
-      content: configDefaultText['page.addMegaAndAssign.textConfirmAssign'],
+      content: message,
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
@@ -347,13 +347,34 @@ const TableListAssignCPass = (props: any) => {
   }
 
 
-  function renderTableAlertOption(onCleanSelected: any) {
+  function renderTableAlertOption(selectedRowKeys: any, onCleanSelected: any) {
     return (
       <>
         <Fragment>
-          <Button onClick={async () => {
-            onCleanSelected()
-          }}>Bỏ chọn</Button>
+          <Button
+            type='primary'
+            key='primary'
+            onClick={() => {
+              let cPass = '';
+              const cPassId = selectedRowsCPass.map((e: any) => {
+                cPass += `${e?.code}, `;
+                return e.id
+              });
+
+              setShowConfirmAssign(true);
+              // confirm(
+              //   {
+              //     data: {
+              //       cPassId: cPassId,
+              //       userId: selectedRowsMega[0]?.id,
+              //     },
+              //   }, <>Bạn có muốn chỉ định cPass: <strong>{cPass}</strong> cho Mega: <strong style={{
+              //     color: 'red'
+              //   }}>{selectedRowsMega[0]?.fullname ? selectedRowsMega[0]?.fullname : selectedRowsMega[0]?.username} - {selectedRowsMega[0]?.id}</strong></>, 'c-passes/update/assign', null);
+            }}
+          >
+            <PlusOutlined /> Chỉ định
+          </Button>
         </Fragment>
       </>
     );
@@ -602,11 +623,7 @@ const TableListAssignCPass = (props: any) => {
 
         tableAlertRender={false}
         tableAlertOptionRender={false}
-
-
       />
-
-
       <ProTable
         headerTitle={(<>
           {configDefaultText['fair']} {fair?.code}
@@ -632,27 +649,34 @@ const TableListAssignCPass = (props: any) => {
             total: c_passes?.length
           }
         }}
-        toolBarRender={() => [
-          <>
-            {selectedRowsCPass.length >= 1 && selectedRowsMega.length === 1 && (<Button
-              type='primary'
-              key='primary'
-              onClick={() => {
-                const cPassId = selectedRowsCPass.map((e: any) => e.id);
-                console.log('props', props);
-                confirm(
-                  {
-                    data: {
-                      cPassId: cPassId,
-                      userId: selectedRowsMega[0]?.id,
-                    },
-                  }, configDefaultText['page.addMegaAndAssign.textConfirmAssign'], 'c-passes/update/assign', null);
-              }}
-            >
-              <PlusOutlined /> Chỉ định
-            </Button>)}
-          </>
-        ]}
+        // toolBarRender={() => [
+        //   <>
+        //     {selectedRowsCPass.length >= 1 && selectedRowsMega.length === 1 && (
+        //     <Button
+        //       type='primary'
+        //       key='primary'
+        //       onClick={() => {
+        //         let cPass = '';
+        //         const cPassId = selectedRowsCPass.map((e: any) => {
+        //           cPass += `${e?.code}, `;
+        //           return e.id
+        //         });
+        //         console.log('props', props);
+        //         confirm(
+        //           {
+        //             data: {
+        //               cPassId: cPassId,
+        //               userId: selectedRowsMega[0]?.id,
+        //             },
+        //           }, <>Bạn có muốn chỉ định cPass: <strong>{cPass}</strong> cho Mega: <strong style={{
+        //             color: 'red'
+        //           }}>{selectedRowsMega[0]?.fullname ? selectedRowsMega[0]?.fullname : selectedRowsMega[0]?.username} - {selectedRowsMega[0]?.id}</strong></>, 'c-passes/update/assign', null);
+        //       }}
+        //     >
+        //       <PlusOutlined /> Chỉ định
+        //     </Button>)}
+        //   </>
+        // ]}
         columns={columnCPass}
         dataSource={fair?.c_passes}
         rowSelection={{
@@ -685,11 +709,12 @@ const TableListAssignCPass = (props: any) => {
         }}
 
         tableAlertRender={({ selectedRowKeys }: any) => {
+          console.log('selectedRowKeys', selectedRowKeys)
           return renderTableAlert(selectedRowKeys);
         }}
 
-        tableAlertOptionRender={({ onCleanSelected }: any) => {
-          return renderTableAlertOption(onCleanSelected)
+        tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }: any) => {
+          return renderTableAlertOption(selectedRowKeys, onCleanSelected)
         }}
 
       />
@@ -713,10 +738,24 @@ const TableListAssignCPass = (props: any) => {
             setCurrentRowUser(undefined);
             setShowDetailUser(false);
           }}
-        />
-      )
+        />)
       }
 
+      {
+        showConfirmAssign && (
+          <ConfirmAssign
+            openModal={showConfirmAssign}
+            cPass={selectedRowsCPass}
+            mega={selectedRowsMega[0]}
+            fairId={props.fairId}
+            onCloseModal={() => {
+              setShowConfirmAssign(false);
+              actionRef.current?.reloadAndRest?.();
+              setCurrentRowCPass([])
+            }}
+          />
+        )
+      }
     </>
   );
 };

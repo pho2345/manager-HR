@@ -528,7 +528,7 @@ export default {
     'page.listSettlement.column.megaDeltaP': 'MegaΔP (kg)',
     'page.listSettlement.column.megaP': 'MegaP (kg)',
     'page.listSettlement.column.megaE': 'MegaE (VNĐ)',
-    'page.listSettlement.column.reasonSettlement': 'Lý do',
+    'page.listSettlement.column.reasonSettlement': 'Lý do quyết toán',
     'page.listSettlement.registeringSettlementCancel': 'Đăng kí thanh quyết toán trước hạn',
     'page.listSettlement.registeringSettlementSickOrDeath': 'Đăng kí thanh quyết toán bệnh chết',
     'page.listSettlement.modal.registeringSettlementCancel': 'Chọn Aleger muốn thanh quyết toán trước hạn',

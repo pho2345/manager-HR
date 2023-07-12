@@ -41,7 +41,7 @@ const getFair = async (id: number) => {
 
 
 
-const TableListAssignCPass = (props: any) => {
+const TableListAssignMega = (props: any) => {
   const actionRef = useRef<ActionType>();
   const [currentRowCPass, setCurrentRowCPass] = useState<any>();
   const [showDetailCPass, setShowDetailCPass] = useState<boolean>(false);
@@ -96,8 +96,8 @@ const TableListAssignCPass = (props: any) => {
                 setShowDetailUser(true);
               }}>
               {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
-            </a><br /> {entity?.phone}{`${entity?.email ? `|${entity?.email}` : null}`}
-            <br /> CCCD/HC: {entity?.passport}
+            </a><br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
+            <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
         );
       },
@@ -278,6 +278,6 @@ const TableListAssignCPass = (props: any) => {
   );
 };
 
-export default TableListAssignCPass;
+export default TableListAssignMega;
 
 

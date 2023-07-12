@@ -7,7 +7,6 @@ import {
 import { Button, Space, Input } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
-// import DetailCPass from '@/pages/components/DetailCPass';
 import DetailUser from '../components/DetailUser';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import configText from '@/locales/configText';
@@ -123,8 +122,6 @@ const TableListAssignCPass = () => {
           </>
         );
       },
-
-
     },
     {
       title: configDefaultText['page.listAleger.column.totalMegaCPass'],

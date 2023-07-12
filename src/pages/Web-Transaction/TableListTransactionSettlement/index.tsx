@@ -16,9 +16,9 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage } from '@umijs/max';
+
 import { Button, Dropdown, Input, Menu, message, Modal, Space, Typography } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 // import SettlementCPassModal from './components/SettlementMegaCancel';
 import SettlementCPassSickOrDeath from './components/SettlementSickOrDeath';
 import DialogTransfer from './components/DialogChooseUserSettlement';
@@ -49,6 +49,34 @@ const handleUpdateMany = async (fields: any, api: any) => {
   }
 };
 
+const getStatusTransaction = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'status-transactions/get/option',
+  );
+  return data.data
+}
+
+const getReasonSettlment = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'reason-settlements/get/option',
+  );
+  return data.data
+}
+
+const getBodyCondition = async () => {
+  const data = await customAPIGet(
+    {
+    },
+    'body-conditions/get/option',
+  );
+  return data.data
+}
+
+
 
 const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -62,7 +90,24 @@ const TableList: React.FC = () => {
   const [showRegisteringSettlementSickOrDeath, setShowRegisteringSettlementSickOrDeath] = useState<boolean>(false);
   const [filterFair, setFilterFair] = useState<any>();
 
+  const [optionStatusTransaction, setOptionStatusTransaction] = useState<any>([]);
+  const [optionReasonSettlement, setOptionReasonSettlement] = useState<any>([]);
+  const [optionBodyCondition, setOptionBodyCondition] = useState<any>([]);
 
+  useEffect(() => {
+    const getData = async () => {
+      const getOptionStatusTrasaction = getStatusTransaction();
+      const getReasonSettlement = getReasonSettlment();
+      const getOptionBodyCondition = getBodyCondition();
+
+      const getAllData = await Promise.all([getOptionStatusTrasaction, getReasonSettlement, getOptionBodyCondition]);
+      setOptionStatusTransaction(getAllData[0]);
+      setOptionReasonSettlement(getAllData[1]);
+      setOptionBodyCondition(getAllData[2]);
+
+    }
+    getData();
+  }, [])
 
 
 
@@ -71,7 +116,6 @@ const TableList: React.FC = () => {
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -85,7 +129,6 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          // ref={configDefaultText[]}
           placeholder={`Tìm kiếm`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -141,16 +184,13 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
 
 
-  const confirm = (entity: any, message: string, api: string, types: any) => {
+  const confirm = (entity: any, message: any, api: string, types: any) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
@@ -163,20 +203,12 @@ const TableList: React.FC = () => {
           types: types
         }, api);
         if (actionRef.current) {
-          // actionRef.current.reload();
           actionRef.current?.reloadAndRest?.();
-
         }
       }
     });
   };
 
-
-
-
-
-
-  //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -185,7 +217,6 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.cPassCode' defaultMessage='cPass' />,
       title: configDefaultText['page.listSettlement.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
@@ -206,7 +237,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.fair' defaultMessage='Đợt mở bán' />,
       title: configDefaultText['page.settlementMegaCancel.column.fair'],
       key: 'fair',
       dataIndex: 'fair',
@@ -219,9 +249,7 @@ const TableList: React.FC = () => {
             }}
           >
             {entity?.fair}
-
           </a>
-
         );
       },
       filters: true,
@@ -231,9 +259,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: (
-      //   <>Mega <br />sở hữu</>
-      // ),
       title: configDefaultText['page.listSettlement.column.owner'],
       dataIndex: 'owner',
       valueType: 'textarea',
@@ -250,7 +275,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ageAndSlot' defaultMessage={<>Tuổi/Snow</>} />,
       title: configDefaultText['page.listSettlement.column.ageAndSlot'],
       dataIndex: 'ageAndSlot',
       valueType: 'textarea',
@@ -266,7 +290,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.bodyCondition' defaultMessage='Thể trạng' />,
       title: configDefaultText['page.addCPassInFair.column.bodyCondition'],
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
@@ -274,33 +297,11 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         return (<Text style={{ color: text?.colorBodyCondition }}>{text?.textBodyCondition}</Text>);
       },
-      filters: true,
+      filters: optionBodyCondition,
       onFilter: true,
-      valueEnum: {
-        good: {
-          text: 'Tốt',
-          value: 'good'
-        },
-        malnourished: {
-          text: 'Suy dinh dưỡng',
-          value: 'malnourished'
-        },
-        weak: {
-          text: 'Yếu',
-          value: 'weak'
-        },
-        sick: {
-          text: 'Bệnh',
-          value: 'sick'
-        },
-        dead: {
-          text: 'Chết',
-          value: 'dead'
-        },
-      },
+
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage={<>Hiệu quả<br />tăng trọng</>} />,
       title: <>{configDefaultText['page.listSettlement.column.wgePercentOne']}</>,
       dataIndex: 'wgePercent',
       valueType: 'textarea',
@@ -308,8 +309,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.wgePercent
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.awgAvg' defaultMessage={<>Tăng trọng<br />trung bình<br />(kg/Tuần)</>} />,
-      // title: <>{configDefaultText['page.listSettlement.column.awgAvgOne']}<br /> {configDefaultText['page.listSettlement.column.awgAvgTwo']} <br /> {configDefaultText['page.listSettlement.column.awgAvgThree']} </>,
       title: 'TTTB (kg/Tuần)',
       dataIndex: 'awgAvg',
       valueType: 'textarea',
@@ -317,7 +316,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.awgAvg
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.pZero' defaultMessage={<>P0<br />Pnow<br />(kg)</>} />,
       title: <>{configDefaultText['page.listSettlement.column.pZero']}<br /> {configDefaultText['page.listSettlement.column.pNow']} </>,
       dataIndex: 'pZero',
       valueType: 'textarea',
@@ -325,7 +323,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => `${text?.pZero}/${text?.nowWeight}`
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage={<>MegaΔP(kg)<br />ProduceAle</>} />,
       title: <>{configDefaultText['page.listSettlement.column.megaDeltaP']}<br /> {configDefaultText['page.DetailAleger.column.produceAle']} </>,
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -336,7 +333,6 @@ const TableList: React.FC = () => {
         {text?.produceAle}</>)
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaP' defaultMessage={<>MegaP (kg)</>} />,
       title: <>{configDefaultText['page.listSettlement.column.megaP']}</>,
       dataIndex: 'megaP',
       valueType: 'textarea',
@@ -344,7 +340,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.megaP
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.megaE' defaultMessage={<>MegaE (VNĐ)</>} />,
       title: <>{configDefaultText['page.listSettlement.column.megaE']}</>,
       dataIndex: 'megaE',
       valueType: 'textarea',
@@ -358,22 +353,39 @@ const TableList: React.FC = () => {
       key: 'reasonSettlement',
       render: (_, text: any) => {
         return (<Text style={{ color: `${text?.colorTextReason}` }}>{text.textReason}</Text>);
-
-      }
+      },
+      filters: optionReasonSettlement,
+      onFilter: (value, record) => {
+        if (value === record.reasonSettlement) {
+          return record;
+        }
+        return null;
+      },
     },
 
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.status' defaultMessage='Trạng thái' />
-      // ),
       title: <>{configDefaultText['page.listSettlement.column.status']}</>,
       dataIndex: 'atrributes',
       valueType: 'textarea',
       key: 'status',
       render: (_, text: any) => {
-
         return (<div style={{ color: text?.colorStatusTransaction }}>{text?.textStatusTransaction}</div>);
-
+      },
+      filters: [
+        {
+          text: 'Đang đăng kí thanh quyết toán',
+          value: 'inProgress',
+        },
+        {
+          text: 'Đã thanh quyết toán',
+          value: 'done',
+        }
+      ],
+      onFilter: (value, record) => {
+        if (value === record.status) {
+          return record;
+        }
+        return null;
       },
     },
 
@@ -388,11 +400,11 @@ const TableList: React.FC = () => {
           <Menu>
 
             <Menu.Item key="1"
-              onClick={() => confirm([entity.id], `Chắc chắn tiến hành thanh quyết toán cho cPass:${entity.cPassCode}`, 'transactions/done', entity.types)}
+              onClick={() => confirm([entity.id], <>Chắc chắn tiến hành thanh quyết toán cho cPass:<strong> {entity.cPassCode}</strong></>, 'transactions/done', entity.types)}
             >{configDefaultText['submit']}</Menu.Item>
             <Menu.Item key="2"
-              onClick={() => confirm([entity.id], `Chắc chắn hủy thanh quyết toán cho cPass:${entity.cPassCode}?`, 'transactions/settlement/cancel', null)}
-            >{configDefaultText['delete']}</Menu.Item>
+              onClick={() => confirm([entity.id], <>Chắc chắn hủy thanh quyết toán cho cPass:<strong> {entity.cPassCode}</strong>?</>, 'transactions/settlement/cancel', null)}
+            >Hủy</Menu.Item>
 
           </Menu>
         );

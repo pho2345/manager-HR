@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined, TranslationOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormMoney } from '@ant-design/pro-components';
+import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ModalForm, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -256,7 +256,7 @@ const DialogTransfer = (props: any) => {
       render: (_, text: any) => {
 
         if(!text?.blocked){
-          return [
+          return (
             <Space>
                <Tooltip title={configDefaultText['page.transfer.choosen']}><Button
                  onClick={() => {
@@ -273,7 +273,7 @@ const DialogTransfer = (props: any) => {
               />
               </Tooltip>
             </Space>
-          ]
+          )
         }
         else {
           return <span style={{

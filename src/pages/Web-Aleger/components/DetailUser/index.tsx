@@ -877,18 +877,6 @@ const TableList = (props: any) => {
               />
             </Col>
 
-            {/* <Col span={8} className="gutter-row p-0" >
-              <ProFormText
-                className='w-full'
-                name='bank'
-                label={configDefaultText['page.DetailAleger.form.bank']}
-                placeholder={configDefaultText['page.DetailAleger.form.bank']}
-                rules={[
-                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.bank' defaultMessage='Vui lòng nhập STK' /> },
-                  { required: true, message: configDefaultText['page.DetailAleger.form.required.bank'] },
-                ]}
-              />
-            </Col> */}
           </Row>
 
 
@@ -901,12 +889,9 @@ const TableList = (props: any) => {
                   }
                 }}
                 name='birthdate'
-                // placeholder={`Ngày sinh`}
-                // label={<FormattedMessage id='pages.detailMega.birthdate' defaultMessage='Ngày sinh' />}
                 label={configDefaultText['page.DetailAleger.form.birthdate']}
                 placeholder={configDefaultText['page.DetailAleger.form.birthdate']}
                 rules={[
-                  // { required: true, message: <FormattedMessage id='pages.detailMega.required.birthdate' defaultMessage='Vui lòng chọn ngày sinh' /> },
                   { required: true, message: configDefaultText['page.DetailAleger.form.required.birthdate'] },
                 ]}
               />
@@ -925,9 +910,7 @@ const TableList = (props: any) => {
                 disabled
               />
             </Col>
-
             <Col span={8} className="gutter-row p-0" >
-
             </Col>
           </Row>
 

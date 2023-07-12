@@ -58,7 +58,6 @@ const handleRemove = async (selectedRows: any) => {
     const deleteRowss = selectedRows.map((e: any) => {
       return customAPIDelete(e.id, 'farms')
     })
-
     await Promise.all(deleteRowss);
     hide();
     message.success('Xóa thành công');
@@ -79,9 +78,6 @@ const confirm = (entity: any, message: string, actionRef: any) => {
     okText: 'Có',
     cancelText: 'Không',
     onOk: async () => {
-      // await handleUpdateMany({
-      //   cPass: [entity.id]
-      // }, api, id);
       await handleRemove(entity);
       if (actionRef.current) {
         actionRef.current?.reloadAndRest?.();
@@ -94,23 +90,15 @@ const TableList: React.FC = () => {
 
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  //const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdEWallet = useRef<any>();
-  //const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
-  // const [searchText, setSearchText] = useState<any>();
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -124,7 +112,6 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          // ref={configDefaultText[]}
           placeholder={`Tìm kiếm`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -176,11 +163,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
   const columns: ProColumns<any>[] = [
@@ -207,13 +191,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('name')
 
     },
-    // {
-    //   title:  configDefaultText['page.listFarm.column.phone'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'phone',
-    //   renderText: (_, text: any) => text?.attributes?.phone
-    // },
     {
       title: configDefaultText['page.listFarm.column.taxId'],
       dataIndex: 'atrributes',
@@ -221,37 +198,6 @@ const TableList: React.FC = () => {
       key: 'mst',
       renderText: (_, text: any) => text?.attributes?.taxId
     },
-    // {
-    //   title: configDefaultText['page.listFarm.column.address'],
-    //   dataIndex: 'atrributes.address',
-    //   valueType: 'textarea',
-    //   key: 'address',
-    //   renderText: (_, text: any) => {
-    //     if (text.attributes.address) {
-    //       let address = text?.attributes?.address?.data?.attributes.address;
-    //       let pathAddress = text?.attributes?.address?.data?.attributes?.ward?.data?.attributes?.pathFullName;
-    //       if (typeof address !== 'undefined' && typeof pathAddress !== 'undefined') {
-    //         return `${address}, ${pathAddress}`;
-    //       }
-    //     }
-    //     return null;
-    //   }
-    // },
-    // {
-    //   title: <FormattedMessage id='pages.searchTable.column.owner' defaultMessage='Code Tax' />,
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'owner',
-    //   renderText: (_, text: any) => {
-    //     let fullName = text?.attributes?.owner?.data?.attributes?.fullname;
-    //     if (typeof fullName !== 'undefined' && fullName) {
-    //       return fullName;
-    //     }
-    //     return null;
-    //   }
-    // },
-    
-
     {
       title:  configDefaultText['createdAt'],
       dataIndex: 'atrributes',
@@ -275,22 +221,20 @@ const TableList: React.FC = () => {
           style={{
             textAlign: 'center'
           }}
-        ><MdOutlineEdit
-            onClick={() => {
-              handleUpdateModalOpen(true);
-              refIdEWallet.current = entity.id;
-              // setCodeEWallet(entity?.attributes?.code);
-              // setNameEWallet(entity?.attributes?.name);
-              // setAccountNumber(entity?.attributes?.accountNumber);
-              // setOwner(entity?.attributes?.owner);
-              form.setFieldsValue({
-                code: entity?.attributes?.code,
-                name: entity?.attributes?.name,
-                taxId :  entity?.attributes?.taxId
-
-              })
-            }}
-          /></Tooltip>
+        >
+          <Button icon={<MdOutlineEdit
+          />}
+          onClick={() => {
+            handleUpdateModalOpen(true);
+            refIdEWallet.current = entity.id;
+            form.setFieldsValue({
+              code: entity?.attributes?.code,
+              name: entity?.attributes?.name,
+              taxId :  entity?.attributes?.taxId
+            });
+          }}
+          ></Button>
+        </Tooltip>
 
         )
       }
@@ -314,24 +258,16 @@ const TableList: React.FC = () => {
         <Fragment>
         <Button onClick={async () => {
              await confirm(selectedRows as any, 'xóa', actionRef);
-            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
     );
   }
 
-
-
   return (
     <PageContainer>
       <ProTable
-        // headerTitle={intl.formatMessage({
-        //   id: 'pages.searchTable.title',
-        //   defaultMessage: 'Enquiry form',
-        // })}
         actionRef={actionRef}
-
         rowKey='id'
         search={false}
         toolBarRender={() => [
@@ -348,9 +284,6 @@ const TableList: React.FC = () => {
         request={() => customAPIGet({ 'populate[0]': 'address.ward.district.province', 'populate[1]': 'owner',  'sort[0]': 'createdAt:desc' }, 'farms')}
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-          //   //setSelectedRows(selectedRows);
-          // },
         }}
 
         toolbar={{
@@ -366,10 +299,6 @@ const TableList: React.FC = () => {
           }]
         }}
 
-        // tableAlertRender={({selectedRowKeys}: any) => {
-        //   return renderTableAlert(selectedRowKeys);
-        // }}
-
         tableAlertRender={({selectedRowKeys}: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
@@ -382,36 +311,6 @@ const TableList: React.FC = () => {
 
       />
 
-      
-
-      {
-      // selectedRowsState?.length > 0 && (
-      //   <FooterToolbar
-      //     extra={
-      //       <div>
-      //         {`${configDefaultText['chosen']} `}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-      //         {configDefaultText['selectedItem']}
-
-
-      //       </div>
-      //     }
-      //   >
-      //     <Button
-      //       onClick={async () => {
-      //         await confirm(selectedRowsState as any, 'xóa', actionRef);
-      //         setSelectedRows([]);
-
-      //         await actionRef.current?.reloadAndRest?.();
-      //       }}
-      //     >
-      //       {configDefaultText['delete']}
-      //     </Button>
-
-      //   </FooterToolbar>
-      // )
-      }
       <ModalForm
         form={form}
         title='Tạo mới'
@@ -470,28 +369,8 @@ const TableList: React.FC = () => {
           name='name'
           placeholder='Tên'
         />
-{/* 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Owner'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          width='md'
-          name='owner'
-          placeholder='Owner'
-        /> */}
-
-
         <ProFormText
           label='Mã số thuế'
-          
           rules={[
             {
               required: true,
@@ -507,8 +386,6 @@ const TableList: React.FC = () => {
           name='taxId'
           placeholder='Mã số thuế'
         />
-
-
       </ModalForm>
 
 
@@ -569,24 +446,6 @@ const TableList: React.FC = () => {
           name='name'
           placeholder='Tên'
         />
-{/* 
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id='pages.searchTable.Owner'
-                  defaultMessage='Rule name is required'
-                />
-              ),
-            },
-          ]}
-          width='md'
-          name='owner'
-          placeholder='Owner'
-        /> */}
-
 
         <ProFormText
           label='Mã số thuế'

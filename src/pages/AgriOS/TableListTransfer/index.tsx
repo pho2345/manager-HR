@@ -1,6 +1,6 @@
 import { customAPIAdd, customAPIGet } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
   ProTable,
 } from '@ant-design/pro-components';
@@ -234,8 +234,7 @@ const TableListAssignCPass = () => {
       align: 'center',
       render: (_, text: any) => {
         if (!text?.blocked) {
-          return [
-            <Space>
+          return <Space>
               <Tooltip title={configDefaultText['page.transfer.transfer']}><Button
                 onClick={() => {
                   setShowDialog(true);
@@ -245,12 +244,14 @@ const TableListAssignCPass = () => {
                   marginLeft: '3px',
                   padding: 0,
                 }}
+                key={1}
                 icon={<MdOutlineCompareArrows style={{
                   fontSize: 20,
                 }} />}
               />
               </Tooltip>
               <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}><Button
+              key={2}
                 style={{
                   marginLeft: '3px',
                   padding: 0,
@@ -260,11 +261,10 @@ const TableListAssignCPass = () => {
                   setShowModal(true);
                   setCurrentRowUser(text);
                 }}
-
               />
               </Tooltip>
             </Space>
-          ]
+          
         }
         else {
           return <span style={{

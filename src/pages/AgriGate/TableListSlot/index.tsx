@@ -37,7 +37,7 @@ const handleUpdateFile = async (fields: any) => {
   const hide = message.loading('Đang sửa...');
   try {
     await customAPIUpdateFile({
-     ...fields
+      ...fields
     }, 'slots/input-weight');
     hide();
     message.success('Sửa thành công');
@@ -49,26 +49,16 @@ const handleUpdateFile = async (fields: any) => {
   }
 };
 
-
-
-
-
-
-
 const TableList: React.FC = () => {
-
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [openModalTemplate, setOpenModalTemplate] = useState<boolean>(false);
   const [openModalDowTemplate, setOpenModalDowTemplate] = useState<boolean>(false);
   const [farm, setFarm] = useState<any>([]);
-
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdSlot = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
-
 
   const columns: ProColumns<any>[] = [
 
@@ -77,7 +67,7 @@ const TableList: React.FC = () => {
       dataIndex: 'index',
       valueType: 'index',
     },
-   
+
     {
       title: configDefaultText['page.slot.columns.farm'],
       dataIndex: 'farm',
@@ -93,7 +83,6 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'codeCow',
       renderText: (_, text: any) => text?.codeCow
-
     },
     {
       title: configDefaultText['page.slot.columns.codeCPass'],
@@ -143,13 +132,18 @@ const TableList: React.FC = () => {
       align: 'center',
       key: 'option',
       render: (_, entity: any) => {
-        return (<SettingOutlined
-          onClick={() => {
-            handleUpdateModalOpen(true);
-            refIdSlot.current = entity.id;
-          }}
-        />)
-        //return null
+        return (
+          <Button
+            onClick={() => {
+              handleUpdateModalOpen(true);
+              refIdSlot.current = entity.id;
+            }}
+            icon={
+              <SettingOutlined
+              />
+            }
+          />
+        )
       }
     },
   ];
@@ -177,7 +171,7 @@ const TableList: React.FC = () => {
             key='primary'
             onClick={async () => {
               setOpenModalTemplate(true)
-             
+
             }}
           >
             <PlusOutlined /> {configDefaultText['uploadTemplate']}
@@ -195,7 +189,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
 
-        request={ async() => {
+        request={async () => {
           const data = await customAPIGet({}, 'c-passes/get/c-pass-slot');
           setFarm(data?.data?.farm);
           return {
@@ -276,15 +270,15 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values) => {
           //await waitTime(2000);
-         const updateFile =  await handleUpdateFile(values);
+          const updateFile = await handleUpdateFile(values);
 
-         if(updateFile){
-          setOpenModalTemplate(false);
-          if(actionRef.current){
-            actionRef.current.reload();
+          if (updateFile) {
+            setOpenModalTemplate(false);
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
           }
-         }
-          
+
         }}
       >
 
@@ -318,7 +312,7 @@ const TableList: React.FC = () => {
           label={configDefaultText['page.slot.typeTemplate']}
           options={[
             {
-              label:  configDefaultText['page.slot.cPass'] ,
+              label: configDefaultText['page.slot.cPass'],
               value: 'cPass',
             },
             {
@@ -352,10 +346,10 @@ const TableList: React.FC = () => {
           //await waitTime(2000);
           console.log(values);
           if (values.template === 'cPass') {
-            await  customAPIGetFile( 'cPass', 'slots/dowload-template');
+            await customAPIGetFile('cPass', 'slots/dowload-template');
           }
           else {
-            await  customAPIGetFile( 'code', 'slots/dowload-template-code');
+            await customAPIGetFile('code', 'slots/dowload-template-code');
           }
         }}
       >

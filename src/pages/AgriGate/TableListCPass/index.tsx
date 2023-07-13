@@ -47,7 +47,7 @@ const handleUpdate = async (fields: any, id: any) => {
       birthdate: birthdate,
       sex
     }
-   
+
     const updateCPass = await customAPIUpdate(
       {
         cow,
@@ -57,27 +57,27 @@ const handleUpdate = async (fields: any, id: any) => {
       id.current
     );
 
-      let uploadImages: Array<any> = [];
-      if (fields?.photos && fields.photos.length !== 0) {
-        fields?.photos.map((e: any) => {
-          if (e.originFileObj) {
-            let formdata = new FormData();
-            formdata.append('files', e?.originFileObj);
-            formdata.append('ref', 'api::cow.cow');
-            formdata.append('refId', fields.cow.value);
-            formdata.append('field', 'photos');
-            uploadImages.push(customAPIUpload({
-              data: formdata
-            }))
-          }
-          else {
-              photoCowCustom.push(e.uid)
-          }
-          return null;
-        });
-      
+    let uploadImages: Array<any> = [];
+    if (fields?.photos && fields.photos.length !== 0) {
+      fields?.photos.map((e: any) => {
+        if (e.originFileObj) {
+          let formdata = new FormData();
+          formdata.append('files', e?.originFileObj);
+          formdata.append('ref', 'api::cow.cow');
+          formdata.append('refId', fields.cow.value);
+          formdata.append('field', 'photos');
+          uploadImages.push(customAPIUpload({
+            data: formdata
+          }))
+        }
+        else {
+          photoCowCustom.push(e.uid)
+        }
+        return null;
+      });
+
       let photoCow = await Promise.all(uploadImages);
-      if(photoCow.length !== 0){
+      if (photoCow.length !== 0) {
         photoCow.map((e) => {
           photoCowCustom.push(e[0].id);
         })
@@ -228,16 +228,12 @@ const TableList: React.FC = () => {
   const [getAllGroup, setGetAllGroup] = useState<any>([]);
   const searchInput = useRef(null);
   const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
-
-
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [bodyCondition, setBodyCondition] = useState<any>([]);
-
 
 
   useEffect(() => {
@@ -573,7 +569,6 @@ const TableList: React.FC = () => {
   };
 
   const columns: ProColumns<any>[] = [
-
     {
       title: configDefaultText['page.listCPass.column.code'],
       key: 'code',
@@ -597,7 +592,6 @@ const TableList: React.FC = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.groupCow' defaultMessage='Nhóm' />,
       title: configDefaultText['page.listCPass.column.groupCow'],
       dataIndex: 'groupCow',
       valueType: 'textarea',
@@ -613,7 +607,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
       title: configDefaultText['page.listCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -622,8 +615,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.nameCow,
     },
     {
-      title: (<>
-        {configDefaultText['page.listCPass.column.category']}</>),
+      title: (<>{configDefaultText['page.listCPass.column.category']}</>),
       dataIndex: 'category',
       valueType: 'textarea',
       key: 'category',
@@ -664,7 +656,6 @@ const TableList: React.FC = () => {
         return value === record.farmId
       }
     },
-
 
     {
       title: configDefaultText['page.listCPass.column.image'],
@@ -803,51 +794,61 @@ const TableList: React.FC = () => {
       key: 'grtitleOptionaph',
       render: (_, text: any) => {
         return (<>
-          <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
-            onClick={async () => {
-              handleUpdateModalOpen(true);
-              refIdCpass.current = text.id;
-              const cPass = await customAPIGetOne(text.id, 'c-passes/get/find-admin', {});
-              const photos = cPass.photos;
-              const photoCow = photos?.map((e: any) => {
-                return { uid: e.id, status: 'done', url: SERVERURL + e.url };
-              })
 
-              setFileList(photoCow);
+          <Tooltip title={configDefaultText['buttonUpdate']}>
 
-              form.setFieldsValue({
-                cow: {
-                  value: cPass?.cowId,
-                  label: cPass?.cowName,
-                },
-                farm: {
-                  value: cPass?.farmId,
-                  label: cPass?.farmName,
-                },
-                category: {
-                  value: cPass?.categoryId,
-                  label: cPass?.categoryName,
-                },
-                group_cow: {
-                  value: cPass?.groupId,
-                  label: cPass?.groupName,
-                },
-                sex: cPass?.sex,
-                birthdate: cPass?.birthdate,
-                dateInStable: cPass?.dateInStable,
-                weightInStable: cPass?.weightInStable,
-                bodyCondition: cPass?.bodyCondition,
-                code: cPass?.code,
-                pZero: cPass?.pZero,
-                price: cPass?.price,
-                nowWeight: cPass?.nowWeight,
-                activeAleTransfer: cPass?.activeAleTransfer,
-                photos: photoCow,
-                vZero: cPass?.vZero.toLocaleString(),
-                vs: cPass?.vs.toLocaleString()
-              })
-            }}
-          /></Tooltip>
+            <Button
+
+              style={{
+                border: 'none'
+              }}
+              icon={<MdOutlineEdit />}
+              onClick={async () => {
+                handleUpdateModalOpen(true);
+                refIdCpass.current = text.id;
+                const cPass = await customAPIGetOne(text.id, 'c-passes/get/find-admin', {});
+                const photos = cPass.photos;
+                const photoCow = photos?.map((e: any) => {
+                  return { uid: e.id, status: 'done', url: SERVERURL + e.url };
+                })
+
+                setFileList(photoCow);
+
+                form.setFieldsValue({
+                  cow: {
+                    value: cPass?.cowId,
+                    label: cPass?.cowName,
+                  },
+                  farm: {
+                    value: cPass?.farmId,
+                    label: cPass?.farmName,
+                  },
+                  category: {
+                    value: cPass?.categoryId,
+                    label: cPass?.categoryName,
+                  },
+                  group_cow: {
+                    value: cPass?.groupId,
+                    label: cPass?.groupName,
+                  },
+                  sex: cPass?.sex,
+                  birthdate: cPass?.birthdate,
+                  dateInStable: cPass?.dateInStable,
+                  weightInStable: cPass?.weightInStable,
+                  bodyCondition: cPass?.bodyCondition,
+                  code: cPass?.code,
+                  pZero: cPass?.pZero,
+                  price: cPass?.price,
+                  nowWeight: cPass?.nowWeight,
+                  activeAleTransfer: cPass?.activeAleTransfer,
+                  photos: photoCow,
+                  vZero: cPass?.vZero.toLocaleString(),
+                  vs: cPass?.vs.toLocaleString()
+                })
+              }}
+            />
+
+             </Tooltip>
         </>)
       }
     },
@@ -1143,11 +1144,11 @@ const TableList: React.FC = () => {
         onFinish={async (values) => {
           const success = await handleUpdate(values as any, refIdCpass);
           if (success) {
-         
+
             handleUpdateModalOpen(false);
             form.resetFields();
             if (actionRef.current) {
-              actionRef.current.reload(); 
+              actionRef.current.reload();
               refIdPicture.current = null;
             }
           }

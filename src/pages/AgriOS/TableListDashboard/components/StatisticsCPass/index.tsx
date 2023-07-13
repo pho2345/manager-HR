@@ -15,7 +15,6 @@ const StatisticsCPass = () => {
   const [dataStatisticCPass, setDataStatisticCPass] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [openDateRange, setOpenDateRange] = useState<boolean>(false);
-  // const [type, setType] = useState<any>();
 
   useEffect(() => {
     const getValues = async () => {
@@ -38,18 +37,8 @@ const StatisticsCPass = () => {
         request={async () => {
           return [
             {
-              title: 'Tuần',
+              title: 'Theo tuần',
               value: 'week',
-              children: [
-                {
-                  title: 'Tuần trước',
-                  value: 'preWeek',
-                },
-                {
-                  title: 'Tuần này',
-                  value: 'currentWeek',
-                },
-              ],
             },
             // {
             //   title: 'Tháng này,',
@@ -74,7 +63,7 @@ const StatisticsCPass = () => {
               value: 'quarters',
               children: [
                 {
-                  title: 'Quí trước',
+                  title: 'Tháng trước',
                   value: 'preQuarter',
                 },
                 {
@@ -177,14 +166,7 @@ const StatisticsCPass = () => {
             autoRotate: false,
           },
         }}
-        meta={{
-          type: {
-            alias: '类别',
-          },
-          sales: {
-            alias: '销售额',
-          },
-        }}
+       
       />)}
     </>
   );

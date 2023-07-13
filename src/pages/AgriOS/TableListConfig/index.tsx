@@ -7,7 +7,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage } from '@umijs/max';
-import { Col, Form, message, Row, Tooltip } from 'antd';
+import { Button, Col, Form, message, Row, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -168,7 +168,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               refFee.current = entity?.id;
               setUpdateOpenModalFee(true);
@@ -176,7 +177,15 @@ const TableList: React.FC = () => {
                 ...entity?.attributes
               })
             }}
-          /></Tooltip>
+
+            style={{
+              border: 'none'
+            }}
+            icon={
+              <MdOutlineEdit />
+            }
+          />
+        </Tooltip>
 
         )
       }
@@ -216,8 +225,10 @@ const TableList: React.FC = () => {
       key: 'option',
       render: (_, entity: any) => {
         return (<Tooltip
-          title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-        ><MdOutlineEdit
+          title={`Cập nhật`}
+        >
+
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               setRowCurrent(entity?.id);
@@ -225,7 +236,11 @@ const TableList: React.FC = () => {
                 ...entity
               })
             }}
-          /></Tooltip>
+            icon={
+              <MdOutlineEdit />
+            }
+          />
+        </Tooltip>
 
         )
       }
@@ -346,7 +361,7 @@ const TableList: React.FC = () => {
             }}
 
             submitter={{
-          
+
               searchConfig: {
                 resetText: configDefaultText['buttonClose'],
                 submitText: configDefaultText['buttonUpdate'],
@@ -409,7 +424,7 @@ const TableList: React.FC = () => {
                     },
                   ]}
                   fieldProps={{
-                    
+
                   }}
                 />
               </Col>

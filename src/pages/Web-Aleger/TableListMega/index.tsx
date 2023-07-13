@@ -4,12 +4,13 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Space, Input } from 'antd';
+import { Button, Space, Input, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import "./styles.css";
 import DetailUser from '../components/DetailUser';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import configText from '@/locales/configText';
+import { MdOutlineEdit } from 'react-icons/md';
 const configDefaultText = configText;
 
 const TableListAssignCPass = () => {
@@ -179,12 +180,22 @@ const TableListAssignCPass = () => {
       key: 'detail',
       align: 'center',
       render: (_, record) => {
-        return <Button
-          onClick={() => {
-            setCurrentRowUser(record?.id);
-            setShowDetailUser(true);
-          }}
-        >{configDefaultText['page.listAleger.column.detail']}</Button>
+        return (<Tooltip
+          title={configDefaultText['buttonUpdate']}
+        >
+           <Button
+             onClick={() => {
+              setCurrentRowUser(record?.id);
+              setShowDetailUser(true);
+            }}
+            icon={
+              <MdOutlineEdit />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+          </Tooltip>)
       }
     },
 
@@ -224,22 +235,6 @@ const TableListAssignCPass = () => {
             return data;
           }}
           columns={columns}
-          // rowSelection={{
-          //   onChange: (_, selectedRows: any) => {
-          //     console.log(selectedRows);
-          //     if (selectedRows.length > 1) {
-          //       message.error('Chỉ được chọn 1 Mega!');
-
-          //     }
-
-          //     //setSelectedRowsMega(selectedRows);
-          //   },
-          //   // getCheckboxProps: (record: any) => ({
-          //   //   disabled: false, // Column configuration not to be checked
-          //   //  //name: record.name,
-          //   // }),
-          // }}
-
           pagination={{
             locale: {
               next_page: configDefaultText['nextPage'],
@@ -251,19 +246,6 @@ const TableListAssignCPass = () => {
           }}
         />
 
-
-
-        {/* {currentRowCPass && (
-        <DetailCPass
-          openModal={showDetailCPass}
-          idCPass={currentRowCPass}
-          closeModal={() => {
-            setCurrentRowCPass(undefined);
-            setShowDetailCPass(false);
-          }}
-        />
-      )}
- */}
 
         {currentRowUser && (
           <DetailUser

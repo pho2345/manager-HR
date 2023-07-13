@@ -11,20 +11,6 @@ import { customAPIGet, customAPIUpdate, customAPIDelete } from '@/services/ant-d
 const configDefaultText = configText;
 import { SketchPicker } from 'react-color';
 
-// const handleAdd = async (fields: API.RuleListItem) => {
-//   const hide = message.loading('Đang thêm...');
-//   try {
-//     await customAPIAdd({ ...fields }, 'body-conditions');
-//     hide();
-//     message.success('Thêm thành công');
-//     return true;
-//   } catch (error: any) {
-//     hide();
-//     message.error(error.response.data.error.message);
-//     return false;
-//   }
-// };
-
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -38,7 +24,7 @@ const handleUpdate = async (fields: any, id: any) => {
     return true;
   } catch (error: any) {
     hide();
-    message.error(error.response.data.error.message);
+    message.error(error?.response?.data?.error?.message ?? 'Lỗi');
     return false;
   }
 };
@@ -53,10 +39,9 @@ const handleRemove = async (selectedRows: any) => {
     hide();
     message.success('Xóa thành công');
     return true;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
     hide();
-    message.error('Xóa thất bại!!');
+    message.error(error?.response?.data?.error?.message ?? 'Lỗi');
     return false;
   }
 };
@@ -65,18 +50,14 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [color, setColor] = useState();
   const [colorBackground, setColorBackground] = useState();
-
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
   const pickerRef = useRef(null);
   const [filter, setFilter] = useState<[]>([]);
-
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
@@ -130,13 +111,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -203,13 +180,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
@@ -404,36 +376,28 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-
       title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
-        ;
         return (
-
           <>{entity?.attributes?.code}</>
-
         );
       },
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
       title: configDefaultText['page.classify'],
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      //...getColumnSearchProps('name'),
       filters: filter,
       onFilter: (value, record: any) => {
         return record?.id === value;
       },
       renderText: (_, text: any) => text?.attributes?.name,
-      //...getColumnSearchProps('name')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.value'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -444,7 +408,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('value')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
       dataIndex: 'color',
       valueType: 'textarea',
@@ -454,7 +417,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
       title: configDefaultText['page.backgroundColor'],
       dataIndex: 'backgroundColor',
       valueType: 'textarea',
@@ -466,7 +428,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -475,11 +436,9 @@ const TableList: React.FC = () => {
         return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
       },
       ...getColumnSearchRange()
-
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -488,7 +447,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
@@ -498,11 +458,16 @@ const TableList: React.FC = () => {
                 value: entity?.attributes?.value,
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
-              })
-
+              });
             }}
-          /></Tooltip>
-
+            icon={
+              <MdOutlineEdit />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
         )
       }
     },
@@ -511,19 +476,16 @@ const TableList: React.FC = () => {
 
 
   const toggleColorPicker = () => {
-    // console.log('abc');
     setOpenColor(!openColor);
   };
 
   const toggleColorBackgroundPicker = () => {
-    // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
 
 
   function renderTableAlert(selectedRowKeys: any) {
     return (
-
       <Fragment>
         Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
       </Fragment>
@@ -536,9 +498,7 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -551,7 +511,6 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable
-
         actionRef={actionRef}
         rowKey='id'
         search={false}
@@ -566,10 +525,6 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-
-          //   setSelectedRows(selectedRows);
-          // },
         }}
 
         toolbar={{
@@ -605,7 +560,7 @@ const TableList: React.FC = () => {
         }}
 
       />
-     
+
       {/* <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
@@ -781,7 +736,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         form={form}
-
+        title='Cập nhật'
         width={window.innerWidth * 0.25}
         open={updateModalOpen}
         modalProps={{
@@ -828,7 +783,7 @@ const TableList: React.FC = () => {
               name='name'
               label={configDefaultText['page.classify']}
               placeholder={configDefaultText['page.classify']}
-              
+
             />
           </Col>
         </Row>
@@ -913,13 +868,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.backgroundColor']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.backgroundColor'
-                  //     defaultMessage='Yêu cấu nhập màu nền'
-                  //   />
-                  // ),
                 },
               ]}
 

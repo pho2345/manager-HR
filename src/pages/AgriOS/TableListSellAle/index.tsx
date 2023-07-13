@@ -145,7 +145,7 @@ const TableListAssignCPass = () => {
   });
 
 
-  const confirm = (entity: any, content: string, api: string) => {
+  const confirm = (entity: any, content: any, api: string) => {
     Modal.confirm({
       title: configDefaultText['titleConfirm'],
       icon: <ExclamationCircleOutlined />,
@@ -178,13 +178,14 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
       title: configDefaultText['page.transfer.column.aleger'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
         return (
           <>
-            {entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}
+            <span style={{
+              color: entity?.blocked ? 'red' : ''
+            }}>{entity?.fullname ? entity?.fullname : entity?.username}-{entity?.id}</span>
             <br /> {entity?.phone}{entity?.phone && entity.email ? `|` : ''}{entity?.email}
             <br /> {entity?.passport ? `CCCD/HC:${entity?.passport}` : ``}
           </>
@@ -192,7 +193,6 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Tài khoản thanh toán' />,
       title: configDefaultText['page.sellAle.column.payment'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -203,7 +203,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.transfer.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -213,7 +212,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
       title: configDefaultText['page.transfer.column.availableBalance'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
@@ -223,7 +221,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale đặt cọc' />,
       title: configDefaultText['page.transfer.column.aleDeposit'],
       dataIndex: 'availableBalance',
       valueType: 'textarea',
@@ -233,7 +230,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần bán' />,
       title: configDefaultText['page.sellAle.column.timeSellAle'],
       dataIndex: 'produceAle',
       valueType: 'textarea',
@@ -244,7 +240,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã bán | VNĐ qui đổi' />,
       title: configDefaultText['page.sellAle.column.totalBuyAndConvert'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
@@ -255,30 +250,45 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
       key: 'config',
       align: 'center',
       render: (_, text: any) => {
-        return [
-          <>
-            <Tooltip title={configDefaultText['page.sellAle.tooltip.sellAle']}>
-              <AiOutlineLine
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5,
+        if (!text?.blocked) {
+          return (
+            <>
+              <Tooltip title={configDefaultText['page.sellAle.tooltip.sellAle']}>
+                <Button
+                  onClick={() => {
+                    setShowModal(true);
+                    setCurrentRowUser(text);
+                  }}
 
-                }}
-                onClick={() => {
-                  setShowModal(true);
-                  setCurrentRowUser(text);
-                }}
-              />
-            </Tooltip>
-          </>
-        ]
+                  style={{
+                    border: 'none',
+                  }}
+
+                  icon={
+                    <AiOutlineLine
+                      style={{
+                        fontSize: 20,
+                      }}
+                    />
+                  }
+                />
+
+              </Tooltip>
+            </>
+          )
+        }
+        else {
+          return <span style={{
+            color: 'red'
+          }}>Bị khóa</span>
+        }
+
       }
     },
   ];
@@ -320,13 +330,11 @@ const TableListAssignCPass = () => {
         case 'percent':
           priceVnd = rateConvert?.rateAle * value;
           fee = (priceVnd * rateFee.valueFee / 100);
-          // fee = (priceVnd * rateFee.valueFee / 100);
           priceVnd = priceVnd - fee;
           break;
         default:
           break;
       }
-      // console.log(rateFee);
       form.setFieldValue('fee', fee);
       return priceVnd;
     }
@@ -396,12 +404,11 @@ const TableListAssignCPass = () => {
           setRateConvert(
             data?.data.rate,
           );
-          if( data?.data?.user && data?.data?.user.length > 0) {
+          if (data?.data?.user && data?.data?.user.length > 0) {
             setShowDowloadFile(true)
           }
           else {
             setShowDowloadFile(false)
-          
           }
           return {
             data: data?.data?.user,
@@ -475,29 +482,22 @@ const TableListAssignCPass = () => {
         }}
         submitter={{
           searchConfig: {
-           
+
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['submit'],
           },
-
-
         }}
         onFinish={async () => {
           confirm({
             senderId: currentRowUser?.id,
             ale: convertAle
           },
-            `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn thực hiện bán ${convertAle.toLocaleString()} Ale?`,
+            <>Aleger <strong>{currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - {currentRowUser.id}</strong> : Chắc chắn thực hiện bán <strong>{convertAle.toLocaleString()}</strong> Ale?</>,
             'transactions/sell-ale-admin');
           return true
         }}
-
-
       >
-
-
         <Text style={{ fontWeight: 'bolder', color: 'black' }}> 1 Ale = {rateConvert?.rateAle.toLocaleString()} VNĐ,</Text> <br />
-
         {rateConvert?.fee &&
           rateConvert?.fee.map((value: any, index: any) => {
             return (<> <Text style={{ fontWeight: 'bolder', color: 'black' }} key={index}>{value?.text} {value?.value}</Text> <br /></>)
@@ -563,18 +563,18 @@ const TableListAssignCPass = () => {
               disabled
               placeholder={configDefaultText['methodPayment']}
               name='method' label={configDefaultText['methodPayment']}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: configDefaultText['methodPayment.required']
-              //     //  (
-              //     //   <FormattedMessage
-              //     //     id='pages.sellAle.required.methodPayment'
-              //     //     defaultMessage='Chọn PTTT'
-              //     //   />
-              //     // ),
-              //   }
-              // ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: configDefaultText['methodPayment.required']
+            //     //  (
+            //     //   <FormattedMessage
+            //     //     id='pages.sellAle.required.methodPayment'
+            //     //     defaultMessage='Chọn PTTT'
+            //     //   />
+            //     // ),
+            //   }
+            // ]}
             />
           </Col>
         </Row>

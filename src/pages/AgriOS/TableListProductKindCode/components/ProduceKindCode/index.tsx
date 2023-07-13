@@ -6,7 +6,6 @@ import {
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-// import { FormattedMessage, } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Tooltip, Row, Col, Form } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
@@ -75,40 +74,19 @@ const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
-  //const [showDialog, setShowDialog] = useState<boolean>(false);
-  //const [typeConvert, setTypeConvert] = useState<boolean>(false);
-
   const refId = useRef<any>();
-
-
-  // const [searchText, setSearchText] = useState('');
-  // const [searchedColumn, setSearchedColumn] = useState('');
   const [form] = Form.useForm<any>();
-
-
-  // const [visible, setVisible] = useState(false);
-  // const [previewImage, setPreviewImage] = useState('');
-
-
-
-
 
   const searchInput = useRef(null);
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    // setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     confirm({
       closeDropdown: false,
     });
-    //setSearchText('');
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -185,35 +163,9 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
-
-
-  // const disabledDate = (current: any) => {
-  //   return current && current < moment();
-  // };
-
-  // const formatter = (value: any) => {
-  //   if (value) {
-  //     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  //   }
-  //   return '';
-  // };
-
-  // const parser = (value: any) => {
-  //   if (value) {
-  //     return value.replace(/\$\s?|(,*)/g, '');
-  //   }
-  //   return undefined;
-  // };
-
-
 
 
   const confirm = (entity: any) => {
@@ -227,7 +179,6 @@ const TableListAssignCPass = () => {
         const checkSuccess = await handleRemove(entity);
         if (actionRef.current && checkSuccess) {
           actionRef.current?.reloadAndRest?.();
-          // setTypeConvert(false);
         }
 
       }
@@ -250,7 +201,6 @@ const TableListAssignCPass = () => {
         <Fragment>
           <Button onClick={async () => {
             await confirm(selectedRows as any);
-            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -268,7 +218,6 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
       title: configDefaultText['page.managerAleCurrent.columns.code'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
@@ -282,7 +231,6 @@ const TableListAssignCPass = () => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.produceKindCode.column.option'],
       dataIndex: 'option',
       valueType: 'textarea',
@@ -292,7 +240,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
       title: configDefaultText['page.produceKindCode.column.valueAuto'],
       dataIndex: 'valueAuto',
       valueType: 'textarea',
@@ -312,7 +259,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
@@ -323,12 +269,7 @@ const TableListAssignCPass = () => {
         return [
           <>
             <Tooltip title={configDefaultText['buttonUpdate']}>
-              <MdOutlineEdit
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5
-
-                }}
+              <Button
                 onClick={() => {
                   handleUpdateModalOpen(true);
                   refId.current = text?.id;
@@ -336,7 +277,16 @@ const TableListAssignCPass = () => {
                     ...text?.attributes
                   })
                 }}
+
+                icon={
+                  <MdOutlineEdit />
+                }
+
+                style={{
+                  border: 'none'
+                }}
               />
+             
             </Tooltip>
           </>
         ]

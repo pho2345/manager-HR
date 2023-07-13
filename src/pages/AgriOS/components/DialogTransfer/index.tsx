@@ -271,6 +271,7 @@ const DialogTransfer = (props: any) => {
                 style={{
                   marginLeft: '3px',
                   padding: 0,
+                  border: 'none'
                 }}
                 icon={<MdOutlineCompareArrows style={{
                   fontSize: 20,
@@ -372,7 +373,7 @@ const DialogTransfer = (props: any) => {
               senderId: props?.megaChoosen?.id,
               ale: values?.ale
             },
-              <>Chắc chắn chuyển <strong>{values.ale}</strong> Ale từ Aleger:<strong> {props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - {props?.megaChoosen?.id}</strong>  
+              <>Chắc chắn chuyển <strong>{values.ale}</strong> Ale từ Aleger:<strong> {props?.megaChoosen?.fullname ? props?.megaChoosen?.fullname : props?.megaChoosen?.username} - {props?.megaChoosen?.id} </strong>  
            sang Aleger:<strong> {currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - {currentRowUser.id}</strong></>,
               'transactions/transfer-admin');
 

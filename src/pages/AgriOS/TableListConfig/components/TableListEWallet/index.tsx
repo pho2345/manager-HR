@@ -202,11 +202,8 @@ const TableList: React.FC = () => {
         ,
         onFilterDropdownOpenChange: (visible: any) => {
             if (visible) {
-                //setTimeout(() => searchInput.current?.select(), 100);
             }
         },
-        // render: (text: any) =>{
-        // }
     });
 
     const columns: ProColumns<any>[] = [
@@ -256,20 +253,23 @@ const TableList: React.FC = () => {
                     style={{
                         textAlign: 'center'
                     }}
-                ><MdOutlineEdit
+                >
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             refIdEWallet.current = entity.id;
-                            // setCodeEWallet(entity?.attributes?.code);
-                            // setNameEWallet(entity?.attributes?.name);
-                            // setAccountNumber(entity?.attributes?.accountNumber);
-                            // setOwner(entity?.attributes?.owner);
                             form.setFieldsValue({
                                 ...entity,
-                                // bank: entity?.bank?.id
-                            })
+                            });
                         }}
-                    /></Tooltip>
+                        style={{
+                            border: 'none'
+                        }}
+                        icon={
+                            <MdOutlineEdit />
+                        }
+                    />
+                </Tooltip>
                 )
             }
         },

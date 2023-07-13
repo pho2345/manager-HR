@@ -8,7 +8,7 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Col, Form, message, Row, Tooltip } from 'antd';
+import { Button, Col, Form, message, Row, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -81,7 +81,9 @@ const TableList: React.FC = () => {
                     style={{
                         textAlign: 'center'
                     }}
-                ><MdOutlineEdit
+                >
+
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             refIdEWallet.current = entity.id;
@@ -89,7 +91,16 @@ const TableList: React.FC = () => {
                                 ...entity,
                             })
                         }}
-                    /></Tooltip>
+
+                        style={{
+                            border: 'none'
+                        }}
+
+                        icon={
+                            <MdOutlineEdit />
+                        }
+                    />
+                </Tooltip>
                 )
             }
         },

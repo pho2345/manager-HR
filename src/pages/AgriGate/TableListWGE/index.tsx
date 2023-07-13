@@ -8,7 +8,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState, useEffect, Fragment } from 'react';
 import moment from 'moment';
@@ -28,7 +27,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -48,7 +46,6 @@ const handleUpdate = async (fields: any, id: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -74,30 +71,20 @@ const handleRemove = async (selectedRows: any) => {
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
-
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
   const pickerRef = useRef(null);
-
   const [color, setColor] = useState();
   const [colorBackground, setColorBackground] = useState();
-
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
-
   const [filter, setFilter] = useState<any>();
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
-
-
 
   const handleColorChange = (newColor: any) => {
     setColor(newColor.hex);
@@ -124,7 +111,6 @@ const TableList: React.FC = () => {
   }, []);
 
   const toggleColorPicker = () => {
-    // console.log('abc');
     setOpenColor(!openColor);
   };
 
@@ -220,12 +206,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
 
   });
 
@@ -353,8 +335,6 @@ const TableList: React.FC = () => {
                 setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
               }
               handleSearchRange(selectedKeys, confirm);
-              // confirm()\
-
             }}
             icon={<SearchOutlined />}
             size="small"
@@ -406,26 +386,12 @@ const TableList: React.FC = () => {
       return null;
     }
     ,
-    // onFilterDropdownOpenChange: (visible: any) => {
-    //   if (visible) {
-    //     // setTimeout(() => searchInput.current?.select(), 100);
-    //   }
-    // },
-
-    // render: (text: any) =>{
-    // }
   });
 
 
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',
@@ -439,7 +405,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
       title: configDefaultText['page.classify'],
       dataIndex: 'name',
       valueType: 'textarea',
@@ -451,12 +416,10 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
       title: configDefaultText['page.valueFrom'],
       dataIndex: 'valueFrom',
       valueType: 'textarea',
       key: 'valueFrom',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.valueFrom === 0) {
           return null;
@@ -465,12 +428,10 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.valueTo'],
       dataIndex: 'valueTo',
       valueType: 'textarea',
       key: 'valueTo',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.valueTo > 200) {
           return null;
@@ -479,7 +440,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.rangeValue'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -495,20 +455,9 @@ const TableList: React.FC = () => {
         if (valueTo === 0) {
           return `WGE > ${text?.attributes?.valueFrom}%`
         }
-        // if (text?.attributes?.valueFrom > 100) {
-        //   return `WGE > ${text?.attributes?.valueFrom}%`
-        // }
-        // else if (text?.attributes?.valueFrom >= 95) {
-        //   return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
-        // } else if (text?.attributes?.valueFrom >= 90) {
-        //   return ` ${text?.attributes?.valueFrom}% < WGE <=  ${text?.attributes?.valueTo}%`
-        // } else if (text?.attributes?.valueFrom < 90) {
-        //   return `WGE <= ${text?.attributes?.valueTo}%`
-        // }
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
       dataIndex: 'color',
       valueType: 'textarea',
@@ -518,7 +467,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
       title: configDefaultText['page.backgroundColor'],
       dataIndex: 'backgroundColor',
       valueType: 'textarea',
@@ -527,10 +475,7 @@ const TableList: React.FC = () => {
         return `${text?.attributes?.background}`
       }
     },
-
-
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -542,7 +487,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -551,7 +495,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
@@ -562,7 +507,7 @@ const TableList: React.FC = () => {
                 valueTo: entity?.attributes?.valueTo,
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
-              })
+              });
 
               const { valueFrom, valueTo } = entity.attributes;
               if (valueFrom === 0 && valueTo > 0) {
@@ -574,14 +519,20 @@ const TableList: React.FC = () => {
               else if (valueFrom > 0 && valueTo === 0) {
                 form.setFieldValue('rangeValue', `WGE > ${valueFrom}%`);
               }
-
             }}
-          /></Tooltip>
 
+            icon={
+              <MdOutlineEdit />
+            }
+
+            style={{
+              border: 'none'
+            }}
+          />
+          </Tooltip>
         )
       }
     },
-
   ];
 
   function renderTableAlert(selectedRowKeys: any) {
@@ -598,9 +549,7 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            //actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -627,7 +576,6 @@ const TableList: React.FC = () => {
         ]}
         request={async () => {
           const data = await customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'weight-gain-effects');
-
           const output = data?.data.map((item: any) => {
             return { text: item.attributes.name, value: item.id };
           });
@@ -636,10 +584,6 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-
-          //   setSelectedRows(selectedRows);
-          // },
         }}
 
         toolbar={{
@@ -675,36 +619,7 @@ const TableList: React.FC = () => {
         }}
 
       />
-      {
-        // selectedRowsState?.length > 0 && (
-        //   <FooterToolbar
-        //     extra={
-        //       <div>
-        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-        //         {`${configDefaultText['chosen']} `}
-        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-        //         {configDefaultText['selectedItem']}
-        //       </div>
-        //     }
-        //   >
-        //     <Button
-        //       onClick={async () => {
 
-        //         confirm(
-        //           selectedRowsState, configDefaultText['textConfirmDelete']
-        //         );
-        //         // await handleRemove(selectedRowsState);
-        //         setSelectedRows([]);
-        //         actionRef.current?.reloadAndRest?.();
-        //       }}
-        //     >
-        //       {configDefaultText['delete']}
-        //     </Button>
-
-        //   </FooterToolbar>
-        // )
-      }
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
@@ -728,15 +643,7 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonAdd' defaultMessage='Thêm' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonAdd'],
           },
@@ -750,12 +657,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
@@ -773,12 +674,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.classify']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
 
@@ -798,13 +693,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangFrom'],
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
-
                 },
 
                 ({ getFieldValue }) => ({
@@ -819,7 +707,6 @@ const TableList: React.FC = () => {
               ]}
               fieldProps={{
                 onChange: (value: any) => {
-                  // const name = form.getFieldValue('name');
                   const rangeTo = form.getFieldValue('valueTo');
                   if (typeof rangeTo === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
@@ -868,12 +755,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangTo']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
                 },
 
                 ({ getFieldValue }) => ({
@@ -888,7 +769,6 @@ const TableList: React.FC = () => {
               ]}
               fieldProps={{
                 onChange: (value: any) => {
-                  // const name = form.getFieldValue('name');
                   const rangeFrom = form.getFieldValue('valueFrom');
                   if (typeof rangeFrom === 'undefined' && typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
@@ -930,12 +810,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangeValue']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
               disabled
@@ -966,7 +840,6 @@ const TableList: React.FC = () => {
               fieldProps={{
 
                 onClick: toggleColorPicker,
-                // onChange: handleColorSelect,
               }}
 
             />
@@ -985,13 +858,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.backgroundColor']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.backgroundColor'
-                  //     defaultMessage='Yêu cấu nhập màu nền'
-                  //   />
-                  // ),
                 },
               ]}
 
@@ -1010,10 +876,7 @@ const TableList: React.FC = () => {
             )}
           </Col>
         </Row>
-
-
       </ModalForm>
-
 
       <ModalForm
         form={form}
@@ -1038,42 +901,12 @@ const TableList: React.FC = () => {
         }}
 
         submitter={{
-          // render: (_, dom) => (
-          //   <div style={{ marginBlockStart: '5vh' }}>
-          //     {dom.pop()}
-          //     {dom.shift()}
-          //   </div>
-          // ),
           searchConfig: {
-            // resetText: <FormattedMessage id='buttonClose' defaultMessage='Đóng' />,
-            // submitText: <FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />,
             resetText: configDefaultText['buttonClose'],
             submitText: configDefaultText['buttonUpdate'],
           },
         }}
       >
-        {/* <Row gutter={24} className="m-0">
-          <Col span={24} className="gutter-row p-0" >
-            <ProFormText
-              rules={[
-                {
-                  required: true,
-                  message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
-                },
-              ]}
-              className='w-full'
-              name='code'
-              label={configDefaultText['page.code']}
-              placeholder={configDefaultText['page.code']}
-            />
-          </Col>
-        </Row> */}
 
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
@@ -1082,12 +915,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.classify']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
@@ -1106,12 +933,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangFrom']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -1125,7 +946,6 @@ const TableList: React.FC = () => {
               ]}
               fieldProps={{
                 onChange: (value: any) => {
-                  // const name = form.getFieldValue('name');
                   const rangeTo = form.getFieldValue('valueTo');
                   if (typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
@@ -1168,12 +988,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangTo']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listWGE.rangeFrom'
-                  //     defaultMessage='Nhập giá trị dưới'
-                  //   />
-                  // ),
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -1187,8 +1001,6 @@ const TableList: React.FC = () => {
               ]}
               fieldProps={{
                 onChange: (value: any) => {
-                  // const name = form.getFieldValue('name');
-
                   if (typeof value === 'undefined') {
                     form.setFieldValue('rangeValue', null);
                     return;
@@ -1230,12 +1042,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.rangeValue']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
               disabled
@@ -1284,13 +1090,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.backgroundColor']
-
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.backgroundColor'
-                  //     defaultMessage='Yêu cấu nhập màu nền'
-                  //   />
-                  // ),
                 },
               ]}
 

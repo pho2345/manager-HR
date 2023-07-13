@@ -26,7 +26,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -45,7 +44,6 @@ const handleUpdate = async (fields: any, id: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -70,14 +68,10 @@ const handleRemove = async (selectedRows: any) => {
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
-
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
@@ -171,7 +165,6 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
   });
@@ -370,7 +363,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
       title: configDefaultText['page.range'],
       dataIndex: 'index',
       valueType: 'textarea',
@@ -382,19 +374,16 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueFrom' defaultMessage='Giá trị dưới' />,
       title: configDefaultText['page.valueFrom'],
       dataIndex: 'valueFrom',
       valueType: 'textarea',
       key: 'valueFrom',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
 
         return text?.attributes?.valueFrom;
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.valueTo'],
       dataIndex: 'valueTo',
       valueType: 'textarea',
@@ -405,7 +394,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.rangeValue'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -417,7 +405,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -429,7 +416,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -438,7 +424,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
@@ -449,10 +436,19 @@ const TableList: React.FC = () => {
                 valueTo: entity?.attributes?.valueTo,
               });
 
-              const {valueFrom, valueTo} = entity?.attributes;
+              const { valueFrom, valueTo } = entity?.attributes;
               form.setFieldValue('rangeValue', `${valueFrom} < P0 <= ${valueTo}`)
             }}
-          /></Tooltip>
+
+            icon={
+              <MdOutlineEdit/>
+            }
+            
+            style={{
+              border: 'none'
+            }}
+          />
+           </Tooltip>
 
         )
       }
@@ -547,7 +543,7 @@ const TableList: React.FC = () => {
 
 
       />
-     
+
       <ModalForm
         form={form}
         title={configDefaultText['modalCreate']}
@@ -823,7 +819,7 @@ const TableList: React.FC = () => {
                   //   />
                   // ),
                 },
-                
+
               ]}
               className='w-full'
               name='index'

@@ -28,7 +28,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -47,7 +46,6 @@ const handleUpdate = async (fields: any, id: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -63,10 +61,8 @@ const handleRemove = async (selectedRows: any) => {
     message.success('Xóa thành công');
     return true;
   } catch (error: any) {
-
     hide();
     message.error(error?.response?.data?.error?.message);
-
     return false;
   }
 };
@@ -83,23 +79,18 @@ const getP0 = async (id: number) => {
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
-
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
-
   const [color, setColor] = useState();
   const [colorBackground, setColorBackground] = useState();
-
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
   const [filterCategory, setFilterCategory] = useState<any>([]);
   const [filterRangeP0, setFilterRangeP0] = useState<any>([]);
   const [categories, setCategories] = useState<any>([]);
   const [rangePZero, setRangePZero] = useState<any>([]);
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
@@ -413,17 +404,11 @@ const TableList: React.FC = () => {
       return null;
     }
     ,
- 
+
   });
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',
@@ -438,7 +423,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.wgs.column.category'],
       dataIndex: 'category',
       valueType: 'textarea',
@@ -453,7 +437,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.wgs.column.rangePZero'],
       dataIndex: 'rangePZero',
       valueType: 'textarea',
@@ -468,12 +451,10 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeFrom' defaultMessage='Giá trị dưới' />,
       title: configDefaultText['page.rangeFrom'],
       dataIndex: 'rangeFrom',
       valueType: 'textarea',
       key: 'rangeFrom',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.rangeFrom < 0) {
           return null;
@@ -482,12 +463,10 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.rangeTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.rangeTo'],
       dataIndex: 'rangeTo',
       valueType: 'textarea',
       key: 'rangeTo',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         if (text?.attributes?.rangeTo > 200) {
           return null;
@@ -497,7 +476,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.rangeValue'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -507,21 +485,17 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.classify' defaultMessage='Phân loại' />,
       title: configDefaultText['page.classify'],
       dataIndex: 'name',
       valueType: 'textarea',
       key: 'name',
-      // ...getColumnSearchProps('name'),
       renderText: (_, text: any) => text?.name,
-      // filters: filter,
       onFilter: (value, record: any) => {
         return record?.id === value;
       },
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
       dataIndex: 'color',
       valueType: 'textarea',
@@ -531,7 +505,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
       title: configDefaultText['page.backgroundColor'],
       dataIndex: 'backgroundColor',
       valueType: 'textarea',
@@ -541,7 +514,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -552,7 +524,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchRange()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -561,8 +532,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
-            onClick={ async () => {
+        >
+          <Button
+            onClick={async () => {
               handleUpdateModalOpen(true);
               const p0 = await getP0(entity?.category.id);
               setRangePZero(p0);
@@ -583,11 +555,18 @@ const TableList: React.FC = () => {
                   value: entity?.rangeWeightZero?.id,
                   label: `${entity?.rangeWeightZero?.valueFrom} < P0 <= ${entity?.rangeWeightZero?.valueTo}`
                 },
-
                 rangeValue: entity?.textRange
               });
             }}
-          /></Tooltip>
+
+            icon={
+              <MdOutlineEdit />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
 
         )
       }
@@ -612,9 +591,7 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -642,26 +619,16 @@ const TableList: React.FC = () => {
 
         request={async () => {
           const data = await customAPIGet({ 'sort[0]': 'createdAt:desc' }, 'average-weight-gains');
-
-          // const output = data?.data.map((item: any) => {
-          //   return { text: item.attributes.name, value: item.id };
-          // });
-          // console.log('data', data.data.avg);
           setFilterCategory(data?.data?.optionCategory);
           setFilterRangeP0(data?.data?.rangePZero)
           return {
-            data:  data.data.avg,
-            // total:  data.data.avg.length ?? 0,
+            data: data.data.avg,
             success: true
           }
         }
         }
         columns={columns}
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-
-          //   setSelectedRows(selectedRows);
-          // },
         }}
 
         pagination={{
@@ -672,9 +639,6 @@ const TableList: React.FC = () => {
           showTotal: (total, range) => {
             return `${range[0]} - ${range[1]} / Tổng số: ${total}`;
           },
-          // onChange:(page, pageSize) => {
-             
-          // },
           totalBoundaryShowSizeChanger: 1
         }}
 
@@ -737,12 +701,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.code']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.code'
-                  //     defaultMessage='Nhập mã'
-                  //   />
-                  // ),
                 },
               ]}
               className='w-full'
@@ -760,12 +718,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.required.value']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.listBodyCondition.name'
-                  //     defaultMessage='Nhập tên'
-                  //   />
-                  // ),
                 },
               ]}
 

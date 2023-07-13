@@ -32,13 +32,11 @@ const configDefaultText = configText;
 
 
 import {
-  // FormattedMessage, 
   useParams
 } from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import Field from '@ant-design/pro-field';
 import { MdOutlineEdit } from 'react-icons/md';
 
 
@@ -61,13 +59,12 @@ const handleAdd = async (fields: any) => {
           data: formdata
         })
       });
-   const photoCow = await Promise.all(uploadImages);
+      const photoCow = await Promise.all(uploadImages);
     }
 
     message.success('Thêm thành công');
     return true;
   } catch (error: any) {
-    //hide();
     message.error(error?.response?.data?.error?.message);
     return false;
   }
@@ -98,14 +95,12 @@ const handleUpdate = async (fields: any, id: any) => {
       });
     }
 
-    // fields.photos =  [121]
     let photoCow = await Promise.all(uploadImages);
-    if(photoCow.length !== 0){
+    if (photoCow.length !== 0) {
       photoCow.map((e) => {
         photoCowCustom.push(e[0].id)
       })
     }
-    console.log('photoCow', photoCowCustom);
     fields.photos = photoCowCustom
     await customAPIUpdate(
       {
@@ -194,7 +189,6 @@ const TableList: React.FC = () => {
   const [farm, setFarm] = useState<any>();
   const [groupCow, setGroupCow] = useState<any>([]);
   const searchInput = useRef(null);
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
@@ -265,7 +259,6 @@ const TableList: React.FC = () => {
           >
             Làm mới
           </Button>
-
         </Space>
       </div>
     ),
@@ -285,8 +278,6 @@ const TableList: React.FC = () => {
       }
     },
   });
-
-
 
   const handleSearchRange = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -490,7 +481,6 @@ const TableList: React.FC = () => {
       onOk: async () => {
         await handleRemove(entity);
         if (actionRef.current) {
-          // actionRef.current?.reload();
           actionRef.current?.reloadAndRest?.();
         }
       }
@@ -535,7 +525,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.searchTable.column.name' defaultMessage='name' />,
       title: configDefaultText['page.listCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -546,7 +535,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
       title: configDefaultText['page.listCow.column.farm'],
       key: 'farmName',
       dataIndex: 'atrributes',
@@ -561,12 +549,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='page.searchTable.column.firstWeight'
-      //     defaultMessage='Cân nặng sơ sinh'
-      //   />
-      // ),
       title: configDefaultText['page.listCow.column.firstWeight'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -575,7 +557,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.firstWeight,
     },
     {
-      // title: <FormattedMessage id='page.searchTable.column.photos' defaultMessage='Hình ảnh' />,
       title: configDefaultText['page.listCow.column.photos'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -613,7 +594,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.searchTable.column.sex' defaultMessage='Giới tính' />,
       title: configDefaultText['page.listCow.column.sex'],
       dataIndex: 'sex',
       valueType: 'textarea',
@@ -639,9 +619,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: (
-      //   <FormattedMessage id='page.searchTable.column.category' defaultMessage='Giống loài' />
-      // ),
       title: configDefaultText['page.listCow.column.category'],
       dataIndex: 'category',
       valueType: 'textarea',
@@ -654,7 +631,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='page.searchTable.column.age' defaultMessage='Tuổi' />,
       title: configDefaultText['page.listCow.column.age'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -670,9 +646,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: (
-      //   <FormattedMessage id='page.searchTable.column.birthdate' defaultMessage='Ngày sinh' />
-      // ),
       title: configDefaultText['page.listCow.column.birthdate'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -684,7 +657,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='page.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -692,44 +664,54 @@ const TableList: React.FC = () => {
       align: 'center',
       render: (_, entity: any) => {
         return (
-          <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
-            onClick={async () => {
-              handleUpdateModalOpen(true);
-              refIdCow.current = entity.id;
-              const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-              const photos = cow.photos;
-              if (photos) {
-                const photoCow = photos.map((e: any) => {
-                  return { uid: e.id, status: 'done', url: SERVERURL + e.url };
-                });
-                setFileList(photoCow);
+          <Tooltip title={configDefaultText['buttonUpdate']}>
+            <Button
 
-                form.setFieldsValue({
-                  ...cow,
-                  category: cow.category?.id,
-                  farm: cow.farm?.id,
-                  upload: photoCow,
-                  group_cow: {
-                    label: cow?.group_cow?.name,
-                    value: cow?.group_cow?.id
-                  }
+              style={{
+                border: 'none'
+              }}
 
-                })
+              onClick={async () => {
+                handleUpdateModalOpen(true);
+                refIdCow.current = entity.id;
+                const cow = await customAPIGetOne(entity.id, 'cows/find', {});
+                const photos = cow.photos;
+                if (photos) {
+                  const photoCow = photos.map((e: any) => {
+                    return { uid: e.id, status: 'done', url: SERVERURL + e.url };
+                  });
+                  setFileList(photoCow);
+
+                  form.setFieldsValue({
+                    ...cow,
+                    category: cow.category?.id,
+                    farm: cow.farm?.id,
+                    upload: photoCow,
+                    group_cow: {
+                      label: cow?.group_cow?.name,
+                      value: cow?.group_cow?.id
+                    }
+
+                  })
+                }
+                else {
+                  form.setFieldsValue({
+                    ...cow,
+                    category: cow.category?.id,
+                    farm: cow.farm?.id,
+                    group_cow: {
+                      label: cow?.group_cow?.name,
+                      value: cow?.group_cow?.id
+                    }
+                  })
+                }
+              }}
+
+              icon={
+                <MdOutlineEdit />
               }
-              else {
-                form.setFieldsValue({
-                  ...cow,
-                  category: cow.category?.id,
-                  farm: cow.farm?.id,
-                  group_cow: {
-                    label: cow?.group_cow?.name,
-                    value: cow?.group_cow?.id
-                  }
-                  // upload: photoCow
-                })
-              }
-            }}
-          /></Tooltip>
+            />
+          </Tooltip>
         );
       },
     },

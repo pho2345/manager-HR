@@ -11,7 +11,6 @@ import {
 import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
-// import ButtonCacel from '../../components/ButtonCancelChosen/indes';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
@@ -110,15 +109,11 @@ const TableList: React.FC = () => {
 
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    //const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdEWallet = useRef<any>();
-    //const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-    // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
     const [form] = Form.useForm<any>();
     const [bank, setBank] = useState<any>();
 
-    // const [searchText, setSearchText] = useState<any>();
 
     useEffect(() => {
         const getValues = async () => {
@@ -130,13 +125,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        // setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        //setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -150,7 +141,6 @@ const TableList: React.FC = () => {
                 onKeyDown={(e) => e.stopPropagation()}
             >
                 <Input
-                    // ref={configDefaultText[]}
                     placeholder={`Tìm kiếm`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -265,14 +255,18 @@ const TableList: React.FC = () => {
                     style={{
                         textAlign: 'center'
                     }}
-                ><MdOutlineEdit
+                >
+                    <Button
+                         style={{
+                            border: 'none'
+                        }}
+
+                        icon={
+                            <MdOutlineEdit/>
+                        }
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             refIdEWallet.current = entity.id;
-                            // setCodeEWallet(entity?.attributes?.code);
-                            // setNameEWallet(entity?.attributes?.name);
-                            // setAccountNumber(entity?.attributes?.accountNumber);
-                            // setOwner(entity?.attributes?.owner);
                             form.setFieldsValue({
                                ...entity,
                                bank: entity?.bank?.id
@@ -287,7 +281,6 @@ const TableList: React.FC = () => {
 
     function renderTableAlert(selectedRowKeys: any) {
         return (
-
             <Fragment>
                 Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
             </Fragment>
@@ -301,7 +294,6 @@ const TableList: React.FC = () => {
                 <Fragment>
                     <Button onClick={async () => {
                         await confirm(selectedRows as any, 'xóa', actionRef);
-                        // actionRef.current?.reloadAndRest?.();
                     }}>Xóa</Button>
                 </Fragment>
             </>

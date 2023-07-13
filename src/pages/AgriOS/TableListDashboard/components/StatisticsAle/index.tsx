@@ -66,18 +66,8 @@ const StatisticsCPass = () => {
         request={async () => {
           return [
             {
-              title: 'Tuần',
+              title: 'Theo tuần',
               value: 'week',
-              children: [
-                {
-                  title: 'Tuần trước',
-                  value: 'preWeek',
-                },
-                {
-                  title: 'Tuần này',
-                  value: 'currentWeek',
-                },
-              ],
             },
             // {
             //   title: 'Tháng này,',
@@ -212,14 +202,14 @@ const StatisticsCPass = () => {
           start: 0.1,
           end: 0.3,
         }}
-        meta={{
-          type: {
-            alias: '类别',
-          },
-          sales: {
-            alias: '销售额',
-          },
-        }}
+        // meta={{
+        //   type: {
+        //     alias: '类别',
+        //   },
+        //   sales: {
+        //     alias: '销售额',
+        //   },
+        // }}
       />)}
     </>
   );

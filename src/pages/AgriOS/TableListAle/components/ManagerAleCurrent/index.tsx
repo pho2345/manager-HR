@@ -6,7 +6,6 @@ import {
 } from '@ant-design/pro-components';
 
 import moment from 'moment';
-// import { FormattedMessage, } from '@umijs/max';
 import { Button, message, Modal, Space, Input, Tooltip, Checkbox, Row, Col, Form } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
@@ -32,8 +31,8 @@ const handleAdd = async (fields: API.RuleListItem) => {
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
-  
-  fields.dateExpire = moment(fields?.dateExpire).add(new Date().getTimezoneOffset()/-60,'hours').toISOString();
+
+  fields.dateExpire = moment(fields?.dateExpire).add(new Date().getTimezoneOffset() / -60, 'hours').toISOString();
   try {
     await customAPIUpdate({
       ...fields
@@ -64,7 +63,6 @@ const handleRemove = async (selectedRows: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data.error.message);
-
     return false;
   }
 };
@@ -75,14 +73,7 @@ const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-  // const [selectedRowsMega, setSelectedRowsMega] = useState<any>([]);
-
-  //const [showDialog, setShowDialog] = useState<boolean>(false);
-  //const [typeConvert, setTypeConvert] = useState<boolean>(false);
-
   const refId = useRef<any>();
-
-
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [form] = Form.useForm<any>();
@@ -106,14 +97,12 @@ const TableListAssignCPass = () => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
     confirm({
       closeDropdown: false,
     });
-    //setSearchText('');
   };
 
   const getColumnSearchProps = (dataIndex: any) => ({
@@ -190,35 +179,30 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
   const disabledDate = (current: any) => {
     return current && current < moment();
   };
-  
+
   const formatter = (value: any) => {
     if (value) {
       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     return '';
   };
-  
+
   const parser = (value: any) => {
     if (value) {
       return value.replace(/\$\s?|(,*)/g, '');
     }
     return undefined;
   };
-  
-  
+
+
 
 
   const confirm = (entity: any) => {
@@ -255,7 +239,6 @@ const TableListAssignCPass = () => {
         <Fragment>
           <Button onClick={async () => {
             await confirm(selectedRows as any);
-            // actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
@@ -273,7 +256,6 @@ const TableListAssignCPass = () => {
     {
       key: 'code',
       dataIndex: 'code',
-      // title: <FormattedMessage id='pages.se archTable.column.cPass' defaultMessage=' Aleger(AlegerID, SĐT, Email, CCCD/Hộ chiếu)' />,
       title: configDefaultText['page.managerAleCurrent.columns.code'],
       ...getColumnSearchProps('id'),
       render: (_, entity: any) => {
@@ -285,7 +267,6 @@ const TableListAssignCPass = () => {
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.produceAle' defaultMessage='Số lần mua' />,
       title: configDefaultText['page.managerAleCurrent.columns.image'],
       dataIndex: 'recharge',
       key: 'recharge',
@@ -301,7 +282,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Số dư Ale' />,
       title: configDefaultText['page.managerAleCurrent.columns.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -311,7 +291,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.availableBalance' defaultMessage='Số dư Ale khả dụng' />,
       title: configDefaultText['page.managerAleCurrent.columns.dateScan'],
       dataIndex: 'dateScan',
       valueType: 'textarea',
@@ -328,7 +307,7 @@ const TableListAssignCPass = () => {
       width: '15vh',
       key: 'dateExpire',
       renderText: (_, text: any) => {
-        return text.dateExpire ? moment(text?.dateExpire).subtract(new Date().getTimezoneOffset()/-60,'hours').format('HH:mm DD/MM/YYYY') : null;
+        return text.dateExpire ? moment(text?.dateExpire).subtract(new Date().getTimezoneOffset() / -60, 'hours').format('HH:mm DD/MM/YYYY') : null;
       }
     },
 
@@ -346,7 +325,6 @@ const TableListAssignCPass = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.promoAle' defaultMessage='Tổng Ale đã mua | VNĐ qui đổi' />,
       title: configDefaultText['page.managerAleCurrent.columns.scan'],
       dataIndex: 'promoAle',
       valueType: 'textarea',
@@ -358,7 +336,6 @@ const TableListAssignCPass = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'config',
       valueType: 'textarea',
@@ -368,21 +345,28 @@ const TableListAssignCPass = () => {
         return [
           <>
             <Tooltip title={configDefaultText['buttonUpdate']}>
-              <MdOutlineEdit
-                style={{
-                  fontSize: 20,
-                  paddingLeft: 5
-
-                }}
+              <Button
                 onClick={() => {
                   handleUpdateModalOpen(true);
                   refId.current = text?.id;
                   form.setFieldsValue({
                     ale: text?.ale,
-                    dateExpire: moment(text?.dateExpire).subtract(new Date().getTimezoneOffset()/-60,'hours').toISOString()
+                    dateExpire: moment(text?.dateExpire).subtract(new Date().getTimezoneOffset() / -60, 'hours').toISOString()
                   })
                 }}
+
+                style={{
+                  border: 'none',
+                }}
+
+                icon={
+                  <MdOutlineEdit
+                    style={{
+                    }}
+                  />
+                }
               />
+
             </Tooltip>
           </>
         ]

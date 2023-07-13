@@ -4,7 +4,6 @@ import {
   customAPIUpdate,
   customAPIDelete,
   customAPIGetOne,
-
 } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
@@ -26,12 +25,9 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import './styles.css';
 
 import { MdOutlineEdit } from 'react-icons/md';
-// import viVNIntl from 'antd/lib/locale/vi_VN';  
 import moment from 'moment';
 import configText from '@/locales/configText';
-
 const configDefaultText = configText;
-
 
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
@@ -57,7 +53,6 @@ const handleUpdate = async (fields: any, api: string, id: any) => {
         ...fields,
       },
       api,
-      // 'group-cows/update',
       id,
     );
     hide();
@@ -73,7 +68,6 @@ const handleUpdate = async (fields: any, api: string, id: any) => {
 
 
 const handleRemove = async (selectedRows: any) => {
-
   const hide = message.loading('Đang xóa...');
   if (!selectedRows) return true;
   try {
@@ -107,11 +101,9 @@ const getFarm = async () => {
 
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCow = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const [farm, setFarm] = useState<any>();
 
@@ -128,13 +120,9 @@ const TableList: React.FC = () => {
       okText: 'Có',
       cancelText: 'Không',
       onOk: async () => {
-        // await handleUpdateMany({
-        //   cPass: [entity.id]
-        // }, api, id);
         await handleRemove(entity);
         if (actionRef.current) {
           actionRef.current?.reloadAndRest?.();
-
         }
       }
     });
@@ -142,16 +130,12 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
 
 
 
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    // setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -165,7 +149,6 @@ const TableList: React.FC = () => {
         onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
-          // ref={configDefaultText[]}
           placeholder={`Tìm kiếm`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -220,11 +203,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
 
@@ -433,19 +413,15 @@ const TableList: React.FC = () => {
       <>
         <Fragment>
           <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
             confirm(selectedRows);
-            //actionRef.current?.reloadAndRest?.();
           }}>Xóa</Button>
         </Fragment>
       </>
     );
   }
-  //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
-      //title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Code' />,
       title: configDefaultText['page.listGroupCow.column.code'],
       key: 'code',
       dataIndex: 'atrributes',
@@ -457,7 +433,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.farm' defaultMessage='Trang trại' />,
       title: configDefaultText['page.listGroupCow.column.farm'],
       dataIndex: 'farm',
       valueType: 'textarea',
@@ -466,7 +441,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('farmName')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Tên' />,
       title: configDefaultText['page.listGroupCow.column.name'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -476,7 +450,6 @@ const TableList: React.FC = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.active' defaultMessage='Hoạt động' />,
       title: configDefaultText['page.listGroupCow.column.active'],
       dataIndex: 'active',
       valueType: 'textarea',
@@ -487,7 +460,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.description' defaultMessage='Mô tả' />,
       title: configDefaultText['page.listGroupCow.column.description'],
       dataIndex: 'description',
       valueType: 'textarea',
@@ -496,7 +468,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.listCategory.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -511,7 +482,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Tùy chọn' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -520,37 +490,38 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (
           <>
-            <Tooltip title={configDefaultText['buttonUpdate']}><MdOutlineEdit
-              onClick={async () => {
-                handleUpdateModalOpen(true);
-                refIdCow.current = entity.id;
-                const cow = await customAPIGetOne(entity.id, 'group-cows/find-admin', {});
+            <Tooltip title={configDefaultText['buttonUpdate']}>
+              <Button 
+                style={{
+                  border: 'none'
+                }}
+                onClick={async () => {
+                  handleUpdateModalOpen(true);
+                  refIdCow.current = entity.id;
+                  const cow = await customAPIGetOne(entity.id, 'group-cows/find-admin', {});
+                  form.setFieldsValue({
+                    ...cow
+                  });
+                }
+                }
+                icon={
+                  <MdOutlineEdit />
+                }
+              />
+            </Tooltip>
 
-                form.setFieldsValue({
-                  ...cow
-                });
-
-              }
-              }
-            /></Tooltip>
-          
           </>
         );
       },
     },
-
-
   ];
 
   return (
-
-
     <PageContainer>
       <ProTable
         actionRef={actionRef}
         rowKey='id'
         search={false}
-
         toolBarRender={() => [
           <Button
             type='primary'
@@ -595,15 +566,10 @@ const TableList: React.FC = () => {
         columns={columns}
 
         rowSelection={{
-          // onChange: (_, selectedRows: any) => {
-          //   setSelectedRows(selectedRows);
-          // },
         }}
 
         pagination={{
           locale: {
-            //  next_page: 'Trang sau',
-            //  prev_page: 'Trang trước',
             next_page: configDefaultText['nextPage'],
           },
           showTotal: (total, range) => {
@@ -619,7 +585,7 @@ const TableList: React.FC = () => {
           return renderTableAlertOption(selectedRows)
         }}
       />
-  
+
       <ModalForm
         title={configDefaultText['page.listGroupCow.newGroup']}
         open={createModalOpen}
@@ -634,7 +600,6 @@ const TableList: React.FC = () => {
         width={`40vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
-          //await waitTime(2000);
           const success = await handleAdd(values as any);
           if (success) {
             handleModalOpen(false);
@@ -643,7 +608,6 @@ const TableList: React.FC = () => {
               actionRef.current.reload();
             }
           }
-          //message.success('Success');
           return true;
         }}
         submitter={{
@@ -694,12 +658,6 @@ const TableList: React.FC = () => {
                 {
                   required: true,
                   message: configDefaultText['page.listGroupCow.required.description']
-                  // (
-                  //   <FormattedMessage
-                  //     id='pages.groupCow.required.description'
-                  //     defaultMessage='Mô tả chi tiết'
-                  //   />
-                  // ),
                 },
               ]}
               fieldProps={{
@@ -708,11 +666,6 @@ const TableList: React.FC = () => {
             />
           </Col>
         </Row>
-
-
-
-
-
       </ModalForm>
 
       <ModalForm

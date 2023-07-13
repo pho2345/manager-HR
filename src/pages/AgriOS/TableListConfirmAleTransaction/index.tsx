@@ -19,15 +19,11 @@ import {
 } from '@ant-design/pro-components';
 
 //import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Col, Input, message, Modal, Row, Space } from 'antd';
+import { Button, Col, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Fragment, useRef, useState } from 'react';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
-
-
-
-
 
 const handleUpdateMany = async (fields: any, api: string, id: any) => {
   const hide = message.loading('Đang cập nhật...');
@@ -55,18 +51,12 @@ const TableList: React.FC = () => {
 
   const [currentRowUser, setCurrentRowUser] = useState<any>();
   const [showDetailUser, setShowDetailUser] = useState<boolean>(false);
-
   const [showModal, setShowModal] = useState<boolean>(false);
-  // const [selectedRows, setSelectedRows] = useState<any>([]);
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
   const [selectedRowsState, setSelectedRowsState] = useState<any>([]);
-  //const [searchText, setSearchText] = useState('');
-  //const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
   const [showDowloadFile, setShowDowloadFile] = useState<boolean>(false);
 
@@ -76,17 +66,12 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    // setSearchedColumn(dataIndex);
-    //console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    //setSearchText('');
   };
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-      // close
     }: any) => (
       <div
         style={{
@@ -158,7 +143,6 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     // render: (text: any) =>{
@@ -367,7 +351,6 @@ const TableList: React.FC = () => {
         if (success) {
           if (actionRef.current) {
             setShowModal(false);
-            // actionRef.current.reload();
             actionRef.current?.reloadAndRest?.();
             setSelectedRowsState([]);
           }
@@ -377,7 +360,6 @@ const TableList: React.FC = () => {
   }
 
 
-  //const intl = useIntl();
 
   const columns: ProColumns<any>[] = [
     {
@@ -386,7 +368,6 @@ const TableList: React.FC = () => {
       valueType: 'index',
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.code' defaultMessage='Mã giao dịch' />,
       title: configDefaultText['page.confirm.column.code'],
       key: 'code',
       dataIndex: 'code',
@@ -397,12 +378,9 @@ const TableList: React.FC = () => {
           </>
         );
       },
-
-      //valueEnum: filterCode
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.typesTransaction' defaultMessage='Giao dịch' />,
       title: configDefaultText['page.confirm.column.typesTransaction'],
       dataIndex: 'types',
       valueType: 'textarea',
@@ -434,7 +412,6 @@ const TableList: React.FC = () => {
       filterSearch: true,
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.aleger' defaultMessage='Aleger' />,
       title: configDefaultText['page.confirm.column.aleger'],
       dataIndex: 'username',
       valueType: 'textarea',
@@ -447,9 +424,6 @@ const TableList: React.FC = () => {
 
 
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.method' defaultMessage='PTTT' />
-      // ),
       title: configDefaultText['page.confirm.column.method'],
       dataIndex: 'method',
       valueType: 'textarea',
@@ -476,7 +450,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.sender?.fullname || text?.sender?.username,
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.ale' defaultMessage='Ale' />,
       title: configDefaultText['page.confirm.column.ale'],
       dataIndex: 'ale',
       valueType: 'textarea',
@@ -484,7 +457,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.ale.toLocaleString()
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.priceVnd' defaultMessage='Giá trị(VNĐ)' />,
       title: configDefaultText['page.confirm.column.priceVnd'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
@@ -493,7 +465,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createdAt' defaultMessage='Ngày phát sinh' />,
       title: configDefaultText['page.confirm.column.createdAt'],
       dataIndex: 'createdAt',
       valueType: 'textarea',
@@ -504,9 +475,6 @@ const TableList: React.FC = () => {
       ...getColumnSearchRange()
     },
     {
-      // title: (
-      //   <FormattedMessage id='pages.searchTable.column.statusTransaction' defaultMessage='Tình trạng' />
-      // ),
       title: configDefaultText['page.confirm.column.statusTransaction'],
       dataIndex: 'status',
       valueType: 'textarea',
@@ -542,9 +510,7 @@ const TableList: React.FC = () => {
       },
     },
 
-
     {
-      // title: <FormattedMessage id='pages.searchTable.column.config' defaultMessage='Thao tác' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'priceVnd',
       valueType: 'textarea',
@@ -552,27 +518,31 @@ const TableList: React.FC = () => {
       align: 'center',
       render: (_, record: any) => {
         if (record?.status === 'inProgress') {
-          return [
-            (<>
-              <SettingOutlined
-                style={{
-                  fontSize: 20
-                }}
-                onClick={() => {
-                  setShowModal(true);
-                  setSelectedRowsState([
-                    {
-                      id: record?.id,
-                      types: record?.types
-                    }
-                  ]);
+          return (<Tooltip title='Xử lý'>
+            <Button
+              onClick={() => {
+                setShowModal(true);
+                setSelectedRowsState([
+                  {
+                    id: record?.id,
+                    types: record?.types
+                  }
+                ]);
+              }}
 
+              style={{
+                border: 'none'
+              }}
 
-                }}
-              />
-            </>),
-
-          ]
+              icon={
+                <SettingOutlined
+                  style={{
+                    fontSize: 20
+                  }}
+                />
+              }
+            />
+          </Tooltip>)
         }
       }
     },
@@ -647,12 +617,12 @@ const TableList: React.FC = () => {
             },
             'transactions/wait-confirm-ale');
 
-            if(data.data && data?.data?.length > 0) {
-              setShowDowloadFile(true);
-            }
-            else {
-              setShowDowloadFile(false);
-            }
+          if (data.data && data?.data?.length > 0) {
+            setShowDowloadFile(true);
+          }
+          else {
+            setShowDowloadFile(false);
+          }
           return {
             data: data?.data,
             success: true,

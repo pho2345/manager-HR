@@ -109,12 +109,10 @@ const TableList: React.FC = () => {
   }, []);
 
   const toggleColorPicker = () => {
-    // console.log('abc');
     setOpenColor(!openColor);
   };
 
   const toggleColorBackgroundPicker = () => {
-    // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
 
@@ -137,13 +135,9 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    //setSearchText(selectedKeys[0]);
-    //setSearchedColumn(dataIndex);
-    //console.log('selectedKeys',selectedKeys[0] );
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
-    //setSearchText('');
     confirm({
       closeDropdown: false,
     });
@@ -209,36 +203,24 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
-      // title: (
-      //   <FormattedMessage
-      //     id='pages.searchTable.column.code'
-      //     defaultMessage='Rule name'
-      //   />
-      // ),
       title: configDefaultText['page.code'],
       key: 'code',
       dataIndex: 'atrributes',
       render: (_, entity: any) => {
         ;
         return (
-         <>{entity?.attributes?.code}</>
+          <>{entity?.attributes?.code}</>
         );
       },
       ...getColumnSearchProps('code')
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.name' defaultMessage='Name' />,
       title: configDefaultText['page.name'],
       dataIndex: 'name',
       valueType: 'textarea',
@@ -248,7 +230,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.attributes?.name
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.value'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -259,7 +240,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.color' defaultMessage='Màu chữ' />,
       title: configDefaultText['page.color'],
       dataIndex: 'color',
       valueType: 'textarea',
@@ -269,7 +249,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.backgroundColor' defaultMessage='Màu nền' />,
       title: configDefaultText['page.backgroundColor'],
       dataIndex: 'backgroundColor',
       valueType: 'textarea',
@@ -279,7 +258,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -289,9 +267,8 @@ const TableList: React.FC = () => {
         return moment(text?.attributes?.createdAt).format('DD/MM/YYYY HH:mm')
       }
     },
-    
+
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -300,7 +277,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
@@ -312,15 +290,23 @@ const TableList: React.FC = () => {
                 value: entity?.attributes?.value,
                 color: entity?.attributes?.color,
                 background: entity?.attributes?.background
-              })
-
+              });
             }}
-          /></Tooltip>
+
+            icon={
+              <MdOutlineEdit />
+            }
+
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
 
         )
       }
     },
-   
+
 
   ];
 
@@ -408,34 +394,34 @@ const TableList: React.FC = () => {
 
       />
       {
-      // selectedRowsState?.length > 0 && (
-      //   <FooterToolbar
-      //     extra={
-      //       <div>
-      //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
-      //         {`${configDefaultText['chosen']} `}
-      //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-      //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
-      //         {configDefaultText['selectedItem']}
-      //       </div>
-      //     }
-      //   >
-      //     <Button
-      //       onClick={async () => {
+        // selectedRowsState?.length > 0 && (
+        //   <FooterToolbar
+        //     extra={
+        //       <div>
+        //         {/* <FormattedMessage id='chosen' defaultMessage='Đã chọn' />{' '} */}
+        //         {`${configDefaultText['chosen']} `}
+        //         <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+        //         {/* <FormattedMessage id='Item' defaultMessage='hàng' /> */}
+        //         {configDefaultText['selectedItem']}
+        //       </div>
+        //     }
+        //   >
+        //     <Button
+        //       onClick={async () => {
 
-      //         confirm(
-      //           selectedRowsState, configDefaultText['confirmDetele']
-      //         );
+        //         confirm(
+        //           selectedRowsState, configDefaultText['confirmDetele']
+        //         );
 
-      //         // await handleRemove(selectedRowsState);
-      //         setSelectedRows([]);
-      //         actionRef.current?.reloadAndRest?.();
-      //       }}
-      //     >
-      //       {configDefaultText['delete']}
-      //     </Button>
-      //   </FooterToolbar>
-      // )
+        //         // await handleRemove(selectedRowsState);
+        //         setSelectedRows([]);
+        //         actionRef.current?.reloadAndRest?.();
+        //       }}
+        //     >
+        //       {configDefaultText['delete']}
+        //     </Button>
+        //   </FooterToolbar>
+        // )
       }
       <ModalForm
         form={form}

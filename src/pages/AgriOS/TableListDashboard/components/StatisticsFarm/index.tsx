@@ -66,20 +66,13 @@ const StatisticsCPass = () => {
         request={async () => {
           return [
             {
-              title: 'Tuần',
+              title: 'Theo tuần',
               value: 'week',
-              children: [
-                {
-                  title: 'Tuần trước',
-                  value: 'preWeek',
-                },
-                {
-                  title: 'Tuần này',
-                  value: 'currentWeek',
-                },
-              ],
             },
-          
+            // {
+            //   title: 'Tháng này,',
+            //   value: 1,
+            // },
             {
               title: 'Tháng',
               value: 'months',
@@ -99,7 +92,7 @@ const StatisticsCPass = () => {
               value: 'quarters',
               children: [
                 {
-                  title: 'Quí trước',
+                  title: 'Tháng trước',
                   value: 'preQuarter',
                 },
                 {

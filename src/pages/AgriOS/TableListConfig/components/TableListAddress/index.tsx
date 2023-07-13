@@ -4,14 +4,12 @@ import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-component
 import {
     ModalForm,
     ProFormText,
-
     ProTable,
 } from '@ant-design/pro-components';
 
 import { Button, Col, Form, Input, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
-// import ButtonCacel from '../../components/ButtonCancelChosen/indes';
 import configText from '@/locales/configText';
 const configDefaultText = configText;
 
@@ -126,11 +124,8 @@ const TableList: React.FC = () => {
 
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    //const [showDetail, setShowDetail] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdEWallet = useRef<any>();
-    //const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-    // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
     const [form] = Form.useForm<any>();
     const [provine, setProvine] = useState<any>();
     const [district, setDistrict] = useState<any>();
@@ -139,8 +134,6 @@ const TableList: React.FC = () => {
     const [districtLoading, setDistrictLoading] = useState(false);
     const [wardLoading, setWardLoading] = useState(false);
 
-
-    // const [searchText, setSearchText] = useState<any>();
 
     useEffect(() => {
         const getValues = async () => {
@@ -152,13 +145,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        // setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        //setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -173,7 +162,6 @@ const TableList: React.FC = () => {
                 onKeyDown={(e) => e.stopPropagation()}
             >
                 <Input
-                    // ref={configDefaultText[]}
                     placeholder={`Tìm kiếm`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -296,10 +284,10 @@ const TableList: React.FC = () => {
                     style={{
                         textAlign: 'center'
                     }}
-                ><MdOutlineEdit
-                        onClick={ async () => {
+                >
+                    <Button
+                        onClick={async () => {
                             handleUpdateModalOpen(true);
-
                             const data = await Promise.all([getDistrict(entity?.district?.id), getWard(entity?.district?.id)]);
                             setWard(data[1]);
                             setDistrict(data[0]);
@@ -309,9 +297,18 @@ const TableList: React.FC = () => {
                                 address: entity?.address,
                                 district: entity?.district?.id,
                                 ward: entity?.ward?.id
-                            })
+                            });
                         }}
-                    /></Tooltip>
+                        style={{
+                            border: 'none'
+                        }}
+
+                        icon={
+                            <MdOutlineEdit/>
+                        }
+                    />
+                    
+                    </Tooltip>
                 )
             }
         },
@@ -334,7 +331,6 @@ const TableList: React.FC = () => {
                 <Fragment>
                     <Button onClick={async () => {
                         await confirm(selectedRows as any, 'xóa', actionRef);
-                        // actionRef.current?.reloadAndRest?.();
                     }}>Xóa</Button>
                 </Fragment>
             </>
@@ -445,7 +441,7 @@ const TableList: React.FC = () => {
                             placeholder={configDefaultText['page.address.province']}
                             fieldProps={{
                                 onChange: async (value: any) => {
-                                    
+
                                     form.setFieldValue('district', null);
                                     form.setFieldValue('ward', null)
                                     if (typeof value !== 'undefined') {

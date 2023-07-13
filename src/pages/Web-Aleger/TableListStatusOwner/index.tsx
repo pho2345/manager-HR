@@ -329,8 +329,9 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
-            onClick={() => {
+        >
+           <Button
+             onClick={() => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
               setColor(entity?.attributes?.color);
@@ -343,7 +344,14 @@ const TableList: React.FC = () => {
                 background: entity?.attributes?.background
               })
             }}
-          /></Tooltip>
+            icon={
+              <MdOutlineEdit />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+          </Tooltip>
         )
       }
     },

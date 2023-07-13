@@ -5,7 +5,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, message, Modal, Space, Input, Form, Tooltip, Col, Row, Typography } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "./styles.css";
 import DialogTransfer from '../components/DialogTransfer';
 import configText from '@/locales/configText';
@@ -37,7 +37,6 @@ const handleAdd = async (fields: any, api: string) => {
 };
 
 
-
 const TableListAssignCPass = () => {
   const actionRef = useRef<ActionType>();
   const [currentRowUser, setCurrentRowUser] = useState<any>();
@@ -49,10 +48,17 @@ const TableListAssignCPass = () => {
   const [rateConvert, setRateConvert] = useState<any>();
   const searchInput = useRef(null);
 
+  useEffect(() => {
+    const getConvertRate = async () => {
+      const rate = await customAPIGet({}, 'conversionrates');
+      setRateConvert(rate.data);
+    }
+
+    getConvertRate();
+  }, []);
+
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-
-    console.log('selectedKeys', selectedKeys[0]);
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -133,17 +139,12 @@ const TableListAssignCPass = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        //setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-
-    // }
-
   });
 
 
-  const confirm = (entity: any, content: string, api: string) => {
+  const confirm = (entity: any, content: any, api: string) => {
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
@@ -235,36 +236,39 @@ const TableListAssignCPass = () => {
       render: (_, text: any) => {
         if (!text?.blocked) {
           return <Space>
-              <Tooltip title={configDefaultText['page.transfer.transfer']}><Button
-                onClick={() => {
-                  setShowDialog(true);
-                  setCurrentRowUser(text);
-                }}
-                style={{
-                  marginLeft: '3px',
-                  padding: 0,
-                }}
-                key={1}
-                icon={<MdOutlineCompareArrows style={{
-                  fontSize: 20,
-                }} />}
-              />
-              </Tooltip>
-              <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}><Button
+            <Tooltip title={configDefaultText['page.transfer.transfer']}><Button
+              onClick={() => {
+                setShowDialog(true);
+                setCurrentRowUser(text);
+              }}
+              style={{
+                marginLeft: '3px',
+                padding: 0,
+                border: 'none'
+              }}
+              key={1}
+              icon={<MdOutlineCompareArrows style={{
+                fontSize: 20,
+
+              }} />}
+            />
+            </Tooltip>
+            <Tooltip title={configDefaultText['page.transfer.transferProduceAle']}><Button
               key={2}
-                style={{
-                  marginLeft: '3px',
-                  padding: 0,
-                }}
-                icon={<MdCurrencyExchange />}
-                onClick={() => {
-                  setShowModal(true);
-                  setCurrentRowUser(text);
-                }}
-              />
-              </Tooltip>
-            </Space>
-          
+              style={{
+                marginLeft: '3px',
+                padding: 0,
+                border: 'none'
+              }}
+              icon={<MdCurrencyExchange />}
+              onClick={() => {
+                setShowModal(true);
+                setCurrentRowUser(text);
+              }}
+            />
+            </Tooltip>
+          </Space>
+
         }
         else {
           return <span style={{
@@ -323,7 +327,6 @@ const TableListAssignCPass = () => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
           }
         }}
-
       />
 
       {
@@ -354,21 +357,18 @@ const TableListAssignCPass = () => {
         onFinish={async (values) => {
           if (convertAle !== 0) {
             if (values.method === 2) {
-              /// transfer produceAle to Ale
-
               confirm({
                 senderId: currentRowUser?.id,
                 produceAle: convertAle
-              }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang  ${(convertAle * rateConvert?.ratePromo).toFixed(2)}  Ale không?`, 'transactions/transfer-promo-admin');
+              }, <>Aleger <strong>{currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - {currentRowUser.id}</strong> : Chắc chắn chuyển <strong>{convertAle} </strong>ProduceAle sang <strong>{(convertAle * rateConvert?.ratePromo).toFixed(2)}</strong> Ale không?</>, 'transactions/transfer-promo-admin');
             }
             else {
-              /// transfer produceAle to PromoAle
               confirm({
                 senderId: currentRowUser?.id,
                 produceAle: convertAle
-              }, `Aleger ${currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - ${currentRowUser.id}: Chắc chắn chuyển ${convertAle} ProduceAle sang ${convertAle} Ale không?`, 'transactions/transfer-ale-admin');
+              },
+                <>Aleger <strong>{currentRowUser.fullname ? currentRowUser.fullname : currentRowUser.username} - {currentRowUser.id}</strong>:  Chắc chắn chuyển <strong>{convertAle}</strong> ProduceAle sang <strong>{convertAle * rateConvert?.rateProduceAleToAle}</strong> Ale không?</>, 'transactions/transfer-ale-admin');
             }
-
 
             return true
           }
@@ -378,12 +378,12 @@ const TableListAssignCPass = () => {
         submitter={{
           searchConfig: {
             resetText: configDefaultText['buttonClose'],
-            submitText: configDefaultText['buttonUpdate'],
+            submitText: configDefaultText['submit'],
           },
         }}
       >
 
-        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 ProduceAle = {typeConvert === true ? `${rateConvert?.ratePromo} PromoAle` : '1 Ale'}</Text>
+        <Text style={{ fontWeight: 'bolder', color: 'red' }}> 1 ProduceAle = {typeConvert === true ? `${rateConvert?.ratePromo} PromoAle` : `${rateConvert?.rateProduceAleToAle} Ale`}</Text>
         <Row gutter={24} className="m-0">
           <Col span={24} className="gutter-row p-0" >
             <ProFormSelect width='md' options={[
@@ -403,8 +403,7 @@ const TableListAssignCPass = () => {
                     setTypeConvert(false)
                   }
                   else {
-                    const rate = await customAPIGet({}, 'conversionrates');
-                    setRateConvert(rate.data);
+
                     setTypeConvert(true);
                   }
                 }
@@ -436,7 +435,6 @@ const TableListAssignCPass = () => {
                     setConvertAle(e);
                   }
                 },
-                //formatter: (value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 precision: 2
               }}
               required
@@ -471,7 +469,7 @@ const TableListAssignCPass = () => {
                   name="ale"
                   disabled
                   fieldProps={{
-                    value: convertAle,
+                    value: convertAle * rateConvert?.rateProduceAleToAle,
                     precision: 2
                   }}
                 />   </Col>

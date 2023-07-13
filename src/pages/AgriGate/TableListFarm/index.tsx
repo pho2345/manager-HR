@@ -233,6 +233,10 @@ const TableList: React.FC = () => {
               taxId :  entity?.attributes?.taxId
             });
           }}
+
+          style={{
+            border: 'none'
+          }}
           ></Button>
         </Tooltip>
 

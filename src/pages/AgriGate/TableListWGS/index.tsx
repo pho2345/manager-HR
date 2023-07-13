@@ -8,7 +8,6 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-// import { FormattedMessage } from '@umijs/max';
 import { Button, Col, Form, Input, InputRef, message, Modal, Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState, useEffect, Fragment } from 'react';
 import moment from 'moment';
@@ -27,7 +26,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Thêm thất bại!');
     return false;
   }
 };
@@ -47,7 +45,6 @@ const handleUpdate = async (fields: any, id: any) => {
   } catch (error: any) {
     hide();
     message.error(error?.response?.data?.error?.message);
-    // message.error('Cập nhật thất!');
     return false;
   }
 };
@@ -84,8 +81,6 @@ const getCategory = async () => {
   return categories.data;
 };
 
-
-
 const getRangePZero = async () => {
   const data = await customAPIGet({}, 'range-weight-zeros/option',
   );
@@ -96,31 +91,21 @@ const getRangePZero = async () => {
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-
-
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
-  // const [selectedRowsState, setSelectedRows] = useState<number[]>([]);
   const [form] = Form.useForm<any>();
   const searchInput = useRef<InputRef>(null);
   const pickerRef = useRef(null);
-
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [openColorBackground, setOpenBackground] = useState<boolean>(false);
-
   const [categories, setCategories] = useState<any>([]);
   const [rangePZero, setRangePZero] = useState<any>([]);
-
-  
   const [filterRangePZero, setFilterRangePZero] = useState<any>([]);
   const [filterCategory, setFilterCategory] = useState<any>([]);
-
-
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
 
 
   const handleClickOutside = (event: any) => {
@@ -148,12 +133,10 @@ const TableList: React.FC = () => {
   }, []);
 
   const toggleColorPicker = () => {
-    // console.log('abc');
     setOpenColor(!openColor);
   };
 
   const toggleColorBackgroundPicker = () => {
-    // console.log('abc');
     setOpenBackground(!openColorBackground);
   };
 
@@ -462,31 +445,27 @@ const TableList: React.FC = () => {
       dataIndex: 'rangePZero',
       valueType: 'textarea',
       key: 'rangePZero',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         return `${text?.rangeWeightZero?.valueFrom} < P0 <= ${text?.rangeWeightZero?.valueTo}`;
       },
       filters: filterRangePZero,
       onFilter: (value, record: any) => {
-          if(value === record?.rangeWeightZero?.id){
-            return record
-          }
-          return null
+        if (value === record?.rangeWeightZero?.id) {
+          return record
+        }
+        return null
       },
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.valueTo' defaultMessage='Giá trị trên' />,
       title: configDefaultText['page.wgs.column.slot'],
       dataIndex: 'slot',
       valueType: 'textarea',
       key: 'slot',
-      //...getColumnSearchProps('name'),
       renderText: (_, text: any) => {
         return `${text?.slotFrom}~${text?.slotTo}`;
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.value' defaultMessage='Giá trị' />,
       title: configDefaultText['page.wgs.column.wgs'],
       dataIndex: 'rate',
       valueType: 'textarea',
@@ -498,7 +477,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.column.createAt' defaultMessage='Description' />,
       title: configDefaultText['page.createdAt'],
       dataIndex: 'createdAt',
       valueType: 'textarea',
@@ -511,7 +489,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.searchTable.titleOption' defaultMessage='Option' />,
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -520,7 +497,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={configDefaultText['buttonUpdate']}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={async () => {
               handleUpdateModalOpen(true);
               refIdCateogry.current = entity.id;
@@ -536,9 +514,17 @@ const TableList: React.FC = () => {
                 slotTo: entity?.slotTo,
                 rate: entity?.rate
               })
-
             }}
-          /></Tooltip>
+
+            icon={
+              <MdOutlineEdit />
+            }
+
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
 
         )
       }

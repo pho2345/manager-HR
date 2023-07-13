@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
-    
+
   };
   const handleReset = (clearFilters: any, confirm: any) => {
     clearFilters();
@@ -213,8 +213,6 @@ const TableList: React.FC = () => {
                     value: searchRangeFrom
                   }}
                   placeholder={'Thời gian từ'}
-
-
                 />
               </Col>
             </Row>
@@ -373,7 +371,7 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.attributes?.name,
       ...getColumnSearchProps('name')
     },
-    
+
 
     {
       title: configDefaultText['page.listCategory.createdAt'],
@@ -397,9 +395,12 @@ const TableList: React.FC = () => {
         return (
           <Tooltip
             title={configDefaultText['buttonUpdate']}
-          ><MdOutlineEdit
-              type='primary'
-              key='primary'
+          >
+            <Button
+
+              style={{
+                border: 'none'
+              }}
               onClick={() => {
                 handleUpdateModalOpen(true);
                 refIdCateogry.current = entity.id;
@@ -408,7 +409,13 @@ const TableList: React.FC = () => {
                   name: entity?.attributes?.name
                 })
               }}
-            /></Tooltip>
+
+              icon={
+                <MdOutlineEdit
+                />
+              }
+            />
+          </Tooltip>
         )
       }
     },
@@ -490,12 +497,10 @@ const TableList: React.FC = () => {
         columns={columns}
         rowSelection={{
         }}
-        
 
         tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
-
 
         tableAlertOptionRender={({ selectedRows }: any) => {
           return renderTableAlertOption(selectedRows)
@@ -530,10 +535,7 @@ const TableList: React.FC = () => {
             submitText: configDefaultText['buttonAdd'],
           },
         }}
-        
       >
-
-
 
         <Row gutter={24} className='m-0'>
           <Col span={24} className='gutter-row p-0' >
@@ -569,10 +571,7 @@ const TableList: React.FC = () => {
             />
           </Col>
         </Row>
-
-
       </ModalForm>
-
 
       <ModalForm
         title={configDefaultText['page.listCategory.updateModal']}

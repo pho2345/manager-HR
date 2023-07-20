@@ -33,14 +33,11 @@ const handleUpdate = async (fields: any, id: any) => {
 };
 
 function removeHTMLTagsAndConvertVietnamese(text: string) {
-    // Loại bỏ các thẻ HTML
     let regex = /(<([^>]+)>)/ig;
     let cleanedText = text.replace(regex, "");
 
-    // Chuyển đổi các nội dung tiếng Việt
     cleanedText = cleanedText.replace(/&agrave;/g, "à");
     cleanedText = cleanedText.replace(/&agrave;/g, "ả");
-    // Thêm các ký tự tiếng Việt khác vào đây
 
     return cleanedText;
 }
@@ -53,6 +50,8 @@ const TableList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const [form] = Form.useForm<any>();
     const searchInput = useRef<InputRef>(null);
+    const [content, setContent] = useState<any>();
+
 
     useEffect(() => {
         if (searchInput.current) {
@@ -151,6 +150,9 @@ const TableList: React.FC = () => {
 
     });
 
+    const PaymentInfo = (text: string) => {
+        return <div dangerouslySetInnerHTML={{ __html: text }} />;
+    };
 
     const columns: ProColumns<API.RuleListItem>[] = [
         {
@@ -223,7 +225,8 @@ const TableList: React.FC = () => {
                                 content: removeHTMLTagsAndConvertVietnamese(entity?.content || ''),
                                 aleger: `${entity?.user?.fullname ? entity?.user?.fullname : entity?.user?.username} - ${entity?.user?.id}`,
                                 createdAt: `${moment(entity.createdAt).format('HH:mm DD/MM/YYYY')}`
-                            })
+                            });
+                            setContent(entity?.content);
                         }}
 
                         icon={
@@ -309,7 +312,6 @@ const TableList: React.FC = () => {
                             label={configDefaultText['page.notifyEmail.columns.title']}
                             placeholder={configDefaultText['page.notifyEmail.columns.title']}
                             rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                                 { required: true, message: configDefaultText['page.notifyEmail.columns.title'] },
                             ]}
                         />
@@ -321,11 +323,10 @@ const TableList: React.FC = () => {
                         <ProFormText
                             className='w-full'
                             disabled
-                            name='title'
+                            name='aleger'
                             label={configDefaultText['page.historyNotifyEmail.modal.aleger']}
                             placeholder={configDefaultText['page.historyNotifyEmail.modal.aleger']}
                             rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                                 { required: true, message: configDefaultText['page.historyNotifyEmail.modal.aleger'] },
                             ]}
                         />
@@ -335,20 +336,8 @@ const TableList: React.FC = () => {
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0" >
-                        <ProFormTextArea
-                            className='w-full'
-                            disabled
-                            name='content'
-                            fieldProps={{
-                                maxLength: 500
-                            }}
-                            label={configDefaultText['page.notifyEmail.columns.content']}
-                            placeholder={configDefaultText['page.notifyEmail.columns.content']}
-                            rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                                { required: true, message: configDefaultText['page.notifyEmail.columns.content'] },
-                            ]}
-                        />
+                        Nội dung:
+                        {PaymentInfo(content)}
                     </Col>
                 </Row>
 
@@ -364,7 +353,6 @@ const TableList: React.FC = () => {
                             label={configDefaultText['page.historyNotifyEmail.modal.createdAt']}
                             placeholder={configDefaultText['page.historyNotifyEmail.modal.createdAt']}
                             rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                                 { required: true, message: configDefaultText['page.historyNotifyEmail.modal.createdAt'] },
                             ]}
                         />

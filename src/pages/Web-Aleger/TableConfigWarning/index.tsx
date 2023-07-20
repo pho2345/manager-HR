@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage } from '@umijs/max';
-import { Col, Form, message, Row, Tooltip } from 'antd';
+import { Button, Col, Form, message, Row, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -40,10 +40,10 @@ const TableList: React.FC = () => {
   const [rowCurrent, setRowCurrent] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm<any>();
-  
+
 
   const columns: ProColumns<API.RuleListItem>[] = [
-    
+
     {
       // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
       title: configDefaultText['page.configWarning.column.quantityWeekAlarm'],
@@ -64,16 +64,18 @@ const TableList: React.FC = () => {
         return `${text?.attributes?.quantityWeekWarning}`
       }
     },
-   
+
     {
       title: <FormattedMessage id='pages.option' defaultMessage='Thao tác' />,
       dataIndex: 'atrributes',
       valueType: 'textarea',
+      align: 'center',
       key: 'option',
       render: (_, entity: any) => {
         return (<Tooltip
           title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               setRowCurrent(entity?.id);
@@ -81,7 +83,15 @@ const TableList: React.FC = () => {
                 ...entity.attributes
               })
             }}
-          /></Tooltip>
+            icon={
+              <MdOutlineEdit
+              />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
 
         )
       }
@@ -138,9 +148,9 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values: any) => {
           const update = await handleUpdate(values, rowCurrent);
-          if(update){
+          if (update) {
             handleUpdateModalOpen(false);
-            actionRef.current?.reloadAndRest?.(); 
+            actionRef.current?.reloadAndRest?.();
           }
           return true;
         }}

@@ -36,14 +36,14 @@ function removeHTMLTagsAndConvertVietnamese(text: string) {
     // Loại bỏ các thẻ HTML
     let regex = /(<([^>]+)>)/ig;
     let cleanedText = text.replace(regex, "");
-  
+
     // Chuyển đổi các nội dung tiếng Việt
     cleanedText = cleanedText.replace(/&agrave;/g, "à");
     cleanedText = cleanedText.replace(/&agrave;/g, "ả");
     // Thêm các ký tự tiếng Việt khác vào đây
-  
+
     return cleanedText;
-  }
+}
 
 
 
@@ -62,13 +62,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        //setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        // setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -164,7 +160,6 @@ const TableList: React.FC = () => {
             width: '3vh'
         },
         {
-            // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.code'],
             dataIndex: 'code',
             valueType: 'textarea',
@@ -176,7 +171,6 @@ const TableList: React.FC = () => {
             ...getColumnSearchProps('code')
         },
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.title'],
             dataIndex: 'types',
             valueType: 'textarea',
@@ -188,21 +182,19 @@ const TableList: React.FC = () => {
 
         },
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.aleger'],
             dataIndex: 'aleger',
             valueType: 'textarea',
             key: 'aleger',
             renderText: (_, text: any) => {
-                if(text?.user){
-                    return `${text?.user?.fullname ? text?.user?.fullname : text?.user?.username } - ${text?.user?.id}`
+                if (text?.user) {
+                    return `${text?.user?.fullname ? text?.user?.fullname : text?.user?.username} - ${text?.user?.id}`
                 }
                 return ''
             }
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.createdAt'],
             dataIndex: 'createdAt',
             valueType: 'textarea',
@@ -221,7 +213,8 @@ const TableList: React.FC = () => {
             render: (_, entity: any) => {
                 return (<Tooltip
                     title={<FormattedMessage id='buttonUpdate' defaultMessage='Xem' />}
-                ><MdRemoveRedEye
+                >
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             setRowCurrent(entity?.id);
@@ -232,7 +225,15 @@ const TableList: React.FC = () => {
                                 createdAt: `${moment(entity.createdAt).format('HH:mm DD/MM/YYYY')}`
                             })
                         }}
-                    /></Tooltip>
+
+                        icon={
+                            <MdRemoveRedEye />
+                        }
+                        style={{
+                            border: 'none'
+                        }}
+                    />
+                </Tooltip>
 
                 )
             }
@@ -276,7 +277,7 @@ const TableList: React.FC = () => {
                 title='Xem chi tiết'
                 open={updateModalOpen}
                 form={form}
-                
+
                 autoFocusFirstInput
                 modalProps={{
                     destroyOnClose: true,
@@ -330,7 +331,7 @@ const TableList: React.FC = () => {
                         />
                     </Col>
                 </Row>
-                
+
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0" >
@@ -340,7 +341,7 @@ const TableList: React.FC = () => {
                             name='content'
                             fieldProps={{
                                 maxLength: 500
-                              }}
+                            }}
                             label={configDefaultText['page.notifyEmail.columns.content']}
                             placeholder={configDefaultText['page.notifyEmail.columns.content']}
                             rules={[
@@ -359,7 +360,7 @@ const TableList: React.FC = () => {
                             name='createdAt'
                             fieldProps={{
                                 maxLength: 500
-                              }}
+                            }}
                             label={configDefaultText['page.historyNotifyEmail.modal.createdAt']}
                             placeholder={configDefaultText['page.historyNotifyEmail.modal.createdAt']}
                             rules={[

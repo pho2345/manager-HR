@@ -50,13 +50,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        //setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        // setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -120,14 +116,14 @@ const TableList: React.FC = () => {
             if (record[dataIndex]) {
                 return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
-            if(dataIndex === 'aleger'){
-                if(record['user'].fullname.toString().toLowerCase().includes(value.toLowerCase())){
+            if (dataIndex === 'aleger') {
+                if (record['user'].fullname.toString().toLowerCase().includes(value.toLowerCase())) {
                     return record
                 }
-                if(record['user'].username.toString().toLowerCase().includes(value.toLowerCase())){
+                if (record['user'].username.toString().toLowerCase().includes(value.toLowerCase())) {
                     return record
                 }
-                if(record['user'].id.toString().toLowerCase().includes(value.toLowerCase())){
+                if (record['user'].id.toString().toLowerCase().includes(value.toLowerCase())) {
                     return record
                 }
             }
@@ -135,13 +131,8 @@ const TableList: React.FC = () => {
         },
         onFilterDropdownOpenChange: (visible: any) => {
             if (visible) {
-                //setTimeout(() => searchInput.current?.select(), 100);
             }
         },
-        // render: (text: any) =>{
-
-        // }
-
     });
 
 
@@ -168,7 +159,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
             title: configDefaultText['page.feedback.title'],
             dataIndex: 'title',
             valueType: 'textarea',
@@ -180,7 +170,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.feedback.content'],
             dataIndex: 'content',
             valueType: 'textarea',
@@ -192,7 +181,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.feedback.status'],
             dataIndex: 'status',
             valueType: 'textarea',
@@ -240,7 +228,7 @@ const TableList: React.FC = () => {
                 }
             ],
             onFilter: (value, record: any) => {
-                if(value === record.status){
+                if (value === record.status) {
                     return record;
                 }
                 return null;
@@ -248,7 +236,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.feedback.createdAt'],
             dataIndex: 'createdAt',
             valueType: 'textarea',
@@ -256,7 +243,6 @@ const TableList: React.FC = () => {
             renderText: (_, text: any) => {
                 return `${moment(text?.createdAt).format('HH:mm:ss DD/MM/YYYY')}`
             },
-            // ...getColumnSearchProps('content')
         },
 
         {
@@ -268,7 +254,8 @@ const TableList: React.FC = () => {
             render: (_, entity: any) => {
                 return (<Tooltip
                     title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-                ><MdOutlineEdit
+                >
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             setRowCurrent(entity?.id);
@@ -277,7 +264,14 @@ const TableList: React.FC = () => {
                                 status: entity?.status
                             })
                         }}
-                    /></Tooltip>
+                        icon={
+                            <MdOutlineEdit />
+                        }
+                        style={{
+                            border: 'none'
+                        }}
+                    />
+                </Tooltip>
 
                 )
             }

@@ -226,11 +226,8 @@ const TableList: React.FC = () => {
     ,
     onFilterDropdownOpenChange: (visible: any) => {
       if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    // render: (text: any) =>{
-    // }
   });
 
   const columns: ProColumns<any>[] = [
@@ -380,15 +377,12 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'age',
       renderText: (_, text: any) => {
-
         let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
         if (age === 0) {
           return `0`;
         }
         let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
-
         return confiAge;
-
       }
     },
     {
@@ -416,46 +410,10 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'bodyCondition',
       render: (_, text: any) => {
-        // switch (text?.bodyCondition) {
-        //   case 'good':
-        //     return (<Text style={{ color: '#00CC00' }}>Tốt</Text>);
-        //   case 'malnourished':
-        //     return (<Text>Suy dinh dưỡng</Text>);
-        //   case 'weak':
-        //     return (<Text style={{ color: '#FF9900' }}>Yếu</Text>);
-        //   case 'sick':
-        //     return (<Text style={{ color: '#FF3333' }}>Bệnh</Text>);
-        //   case 'dead':
-        //     return (<Text style={{ color: '#FF0000' }}>Chết</Text>)
-        //   default:
-        //     break;
-        // }
         return (<Text style={{ color: text?.colorBodyCondition?.color || 'black' }}>{text?.colorBodyCondition?.name}</Text>);
       },
       filters: optionBodyCondition,
       onFilter: true,
-      // valueEnum: {
-      //   good: {
-      //     text: 'Tốt',
-      //     value: 'good'
-      //   },
-      //   malnourished: {
-      //     text: 'Suy dinh dưỡng',
-      //     value: 'malnourished'
-      //   },
-      //   weak: {
-      //     text: 'Yếu',
-      //     value: 'weak'
-      //   },
-      //   sick: {
-      //     text: 'Bệnh',
-      //     value: 'sick'
-      //   },
-      //   dead: {
-      //     text: 'Chết',
-      //     value: 'dead'
-      //   },
-      // },
     },
     {
       title: <FormattedMessage id='pages.searchTable.column.wgePercent' defaultMessage='HQTT' />,
@@ -558,20 +516,27 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
       title: configDefaultText['page.listCPass.column.graph'],
       dataIndex: 'graph',
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
         return (<>
-          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
-            onClick={() => {
-              refIdCpass.current = text?.id;
-              refIdCheckHistory.current = text?.checkHistory;
-              setOpenChart(true);
-            }}
-          /></Tooltip>
+          <Tooltip title={configDefaultText['page.listCPass.column.graph']}>
+            <Button
+              onClick={() => {
+                refIdCpass.current = text?.id;
+                refIdCheckHistory.current = text?.checkHistory;
+                setOpenChart(true);
+              }}
+              icon={
+                <BsGraphUpArrow />
+              }
+              style={{
+                border: 'none'
+              }}
+            />
+          </Tooltip>
         </>)
 
       }

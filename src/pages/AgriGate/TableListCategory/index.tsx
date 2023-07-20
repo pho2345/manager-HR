@@ -8,10 +8,12 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
+import WGS from './components/WGS';
+import AWG from './components/AWG';
 
 import configText from '@/locales/configText';
 const configDefaultText = configText;
@@ -71,14 +73,17 @@ const handleRemove = async (selectedRows: any) => {
 const TableList: React.FC = () => {
   const [createModalOpen, handleModalOpen] = useState<boolean>(false);
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+  const [openWgs, setOpenWgs] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refIdCateogry = useRef<any>();
+  const refNameCategory = useRef<any>();
   const [form] = Form.useForm<any>();
 
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+  const [openAwg, setOpenAwg] = useState<boolean>(false);
 
 
   const confirm = (entity: any) => {
@@ -392,15 +397,10 @@ const TableList: React.FC = () => {
       key: 'option',
       align: 'center',
       render: (_, entity: any) => {
-        return (
-          <Tooltip
-            title={configDefaultText['buttonUpdate']}
-          >
-            <Button
 
-              style={{
-                border: 'none'
-              }}
+        const menu = (
+          <Menu>
+            <Menu.Item key="1"
               onClick={() => {
                 handleUpdateModalOpen(true);
                 refIdCateogry.current = entity.id;
@@ -409,14 +409,35 @@ const TableList: React.FC = () => {
                   name: entity?.attributes?.name
                 })
               }}
+            >{configDefaultText['buttonUpdate']}</Menu.Item>
 
-              icon={
-                <MdOutlineEdit
-                />
-              }
-            />
-          </Tooltip>
-        )
+            <Menu.Item key="2"
+              onClick={() => {
+                setOpenWgs(true);
+                refIdCateogry.current = entity.id;
+                refNameCategory.current = entity.attributes.name;
+              }}
+            >Tăng trọng tiêu chuẩn</Menu.Item>
+
+            <Menu.Item key="2"
+              onClick={() => {
+                setOpenAwg(true);
+                refIdCateogry.current = entity.id;
+                refNameCategory.current =  entity.attributes.name;
+              }}
+            >Tăng trọng trung bình</Menu.Item>
+
+
+
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+              {configDefaultText['handle']}
+            </a>
+          </Dropdown>
+        );
       }
     },
   ];
@@ -644,6 +665,24 @@ const TableList: React.FC = () => {
 
       </ModalForm>
 
+      {openWgs && <WGS
+        openModal={openWgs}
+        onCloseModal={() => {
+          setOpenWgs(false);
+        }}
+        categoryId={refIdCateogry.current}
+        nameCategory = {refNameCategory.current}
+        
+      />}
+
+      {openAwg && <AWG
+        openModal={openAwg}
+        onCloseModal={() => {
+          setOpenAwg(false);
+        }}
+        nameCategory = {refNameCategory.current}
+        categoryId={refIdCateogry.current}
+      />}
 
     </PageContainer>
   );

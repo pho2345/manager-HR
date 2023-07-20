@@ -18,7 +18,6 @@ const configDefaultText = configText;
 
 const handleUpdate = async (fields: any, id: any) => {
   const hide = message.loading('Đang cập nhật...');
-  // console.log(fields);
   try {
     await customAPIUpdate({
       ...fields
@@ -60,7 +59,6 @@ const TableList: React.FC = () => {
   const [form] = Form.useForm<any>();
   const [updateOpenModalFee, setUpdateOpenModalFee] = useState<boolean>(false);
   const [data, setData] = useState<any>();
-  // const [rowCurrentFee, setRowCurrentFee] = useState<any>();
   const refFee = useRef<any>();
 
   useEffect(() => {
@@ -70,9 +68,6 @@ const TableList: React.FC = () => {
     };
     getData()
   }, []);
-
-
-
 
 
 

@@ -382,17 +382,19 @@ const TableList: React.FC = () => {
           button.push(
 
             <Tooltip title={configDefaultText['refund']}>
-              <MdOutlineCurrencyExchange
-                style={{
-                  fontSize: 20
-                }}
+              <Button
                 onClick={() => {
-
                   handleModalOpen(true);
                   refTransaction.current = entity.id
-
+                }}
+                icon={
+                  <MdOutlineCurrencyExchange/>
+                }
+                style={{
+                  border: 'none'
                 }}
               />
+              
             </Tooltip>);
         }
 
@@ -400,20 +402,23 @@ const TableList: React.FC = () => {
 
           button.push(<>
             <Tooltip title={configDefaultText['pay']}>
-              <MdOutlinePaid
-
-                style={{
-                  fontSize: 20
-                }}
+              <Button
                 onClick={() => {
                   confirm({
                     transaction: [entity.id]
                   }, <>{configDefaultText['page.ManagerCPass.column.textConfirmPay']} <strong>{entity.c_pass.code} </strong>bằng Ale không?</>, 'transactions/payale', '');
                 }}
+
+                style={{
+                  border: 'none'
+                }}
+
+                icon={
+                  <MdOutlinePaid />
+                }
               />
             </Tooltip>
           </>)
-
         }
         return (<>{button}</>);
       },
@@ -454,15 +459,6 @@ const TableList: React.FC = () => {
         }
         }
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows: any) => {
-        //     setSelectedRows(selectedRows);
-        //   },
-        //   getCheckboxProps: record => ({
-        //     disabled: record?.status === 'done' && record?.c_pass.statusTransaction === 'registeringSettlement'
-        //   })
-        // }}
-
         pagination={{
           locale: {
             next_page: configDefaultText['nextPage'],
@@ -507,7 +503,6 @@ const TableList: React.FC = () => {
                 transaction: transaction
               }, `Chắc chắn muốn thanh toán MegaS của cPass: ${text} bằng Ale không?`, 'transactions/payale', '');
               setSelectedRows([]);
-              //actionRef.current?.reloadAndRest?.();
             }}
           >
             {configDefaultText['pay']}

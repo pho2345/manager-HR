@@ -49,13 +49,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        //setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        // setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -123,13 +119,8 @@ const TableList: React.FC = () => {
         },
         onFilterDropdownOpenChange: (visible: any) => {
             if (visible) {
-                //setTimeout(() => searchInput.current?.select(), 100);
             }
         },
-        // render: (text: any) =>{
-
-        // }
-
     });
 
 
@@ -141,7 +132,6 @@ const TableList: React.FC = () => {
             width: '3vh'
         },
         {
-            // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
             title: configDefaultText['page.notifyEmail.columns.code'],
             dataIndex: 'code',
             valueType: 'textarea',
@@ -153,7 +143,6 @@ const TableList: React.FC = () => {
             ...getColumnSearchProps('code')
         },
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.notifyEmail.columns.types'],
             dataIndex: 'types',
             valueType: 'textarea',
@@ -164,7 +153,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.notifyEmail.columns.title'],
             dataIndex: 'title',
             valueType: 'textarea',
@@ -183,7 +171,8 @@ const TableList: React.FC = () => {
             render: (_, entity: any) => {
                 return (<Tooltip
                     title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-                ><MdOutlineEdit
+                >
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             setRowCurrent(entity?.id);
@@ -191,7 +180,16 @@ const TableList: React.FC = () => {
                                 ...entity
                             })
                         }}
-                    /></Tooltip>
+
+                        icon={
+                            <MdOutlineEdit/>
+                        }
+
+                        style={{
+                            border: 'none'
+                        }}
+                    />
+                </Tooltip>
 
                 )
             }
@@ -292,7 +290,7 @@ const TableList: React.FC = () => {
                             name='content'
                             fieldProps={{
                                 maxLength: 500
-                              }}
+                            }}
                             label={configDefaultText['page.notifyEmail.columns.content']}
                             placeholder={configDefaultText['page.notifyEmail.columns.content']}
                             rules={[

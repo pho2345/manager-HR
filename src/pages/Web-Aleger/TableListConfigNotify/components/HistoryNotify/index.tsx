@@ -62,13 +62,9 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-        //setSearchText(selectedKeys[0]);
-        //setSearchedColumn(dataIndex);
-        //console.log('selectedKeys',selectedKeys[0] );
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
-        // setSearchText('');
         confirm({
             closeDropdown: false,
         });
@@ -146,13 +142,8 @@ const TableList: React.FC = () => {
         },
         onFilterDropdownOpenChange: (visible: any) => {
             if (visible) {
-                //setTimeout(() => searchInput.current?.select(), 100);
             }
         },
-        // render: (text: any) =>{
-
-        // }
-
     });
 
 
@@ -165,7 +156,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.title'],
             dataIndex: 'types',
             valueType: 'textarea',
@@ -175,7 +165,6 @@ const TableList: React.FC = () => {
             }
         },
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.aleger'],
             dataIndex: 'aleger',
             valueType: 'textarea',
@@ -190,7 +179,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
             title: configDefaultText['page.historyNotifyEmail.columns.createdAt'],
             dataIndex: 'createdAt',
             valueType: 'textarea',
@@ -209,7 +197,8 @@ const TableList: React.FC = () => {
             render: (_, entity: any) => {
                 return (<Tooltip
                     title={<FormattedMessage id='buttonUpdate' defaultMessage='Xem' />}
-                ><MdRemoveRedEye
+                >
+                    <Button
                         onClick={() => {
                             handleUpdateModalOpen(true);
                             setRowCurrent(entity?.id);
@@ -220,7 +209,14 @@ const TableList: React.FC = () => {
                                 createdAt: `${moment(entity.createdAt).format('HH:mm DD/MM/YYYY')}`
                             })
                         }}
-                    /></Tooltip>
+                        icon={
+                            <MdRemoveRedEye />
+                        }
+                        style={{
+                            border: 'none'
+                        }}
+                    />
+                </Tooltip>
 
                 )
             }

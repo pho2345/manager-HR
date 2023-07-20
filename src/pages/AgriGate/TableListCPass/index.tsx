@@ -772,12 +772,22 @@ const TableList: React.FC = () => {
       render: (_, text: any) => {
         if (text?.owner) {
           return (<>
-            <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
-              onClick={() => {
-                refIdCpass.current = text?.id;
-                setOpenChart(true);
-              }}
-            /></Tooltip>
+          <Space>
+            <Tooltip title={configDefaultText['page.listCPass.column.graph']}>
+              <Button
+                onClick={() => {
+                  refIdCpass.current = text?.id;
+                  setOpenChart(true);
+                }}
+                icon={
+                  <BsGraphUpArrow />
+                }
+                style={{
+                  border: 'none'
+                }}
+              />
+            </Tooltip>
+            </Space>
           </>)
         }
         else {
@@ -810,7 +820,7 @@ const TableList: React.FC = () => {
                 const photos = cPass.photos;
                 const photoCow = photos?.map((e: any) => {
                   return { uid: e.id, status: 'done', url: SERVERURL + e.url };
-                })
+                });
 
                 setFileList(photoCow);
 
@@ -848,7 +858,7 @@ const TableList: React.FC = () => {
               }}
             />
 
-             </Tooltip>
+          </Tooltip>
         </>)
       }
     },

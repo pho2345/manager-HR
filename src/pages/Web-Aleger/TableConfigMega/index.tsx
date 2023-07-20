@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 
 import { FormattedMessage } from '@umijs/max';
-import { Col, Form, message, Row, Tooltip } from 'antd';
+import { Button, Col, Form, message, Row, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
@@ -40,7 +40,7 @@ const TableList: React.FC = () => {
   const [rowCurrent, setRowCurrent] = useState<any>();
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm<any>();
-  
+
 
   const columns: ProColumns<API.RuleListItem>[] = [
     {
@@ -63,7 +63,6 @@ const TableList: React.FC = () => {
 
     },
     {
-      // title: <FormattedMessage id='pages.configMega.timeSettlementMega' defaultMessage='Thời gian tối đa để PL thanh quyết toán cho Mega từ khi nhận được yêu cầu' />,
       title: configDefaultText['page.configDefault.column.timeSettlementMega'],
       dataIndex: 'timeSettlementMega',
       valueType: 'textarea',
@@ -71,7 +70,6 @@ const TableList: React.FC = () => {
       renderText: (_, text: any) => text?.attributes?.timeSettlementMega
     },
     {
-      // title: <FormattedMessage id='pages.configMega.percentSettlementMega' defaultMessage='CPass Mega thanh quyết toán tối đa trong tuần(%)' />,
       title: configDefaultText['page.configDefault.column.percentSettlementMega'],
       dataIndex: 'percentSettlementMega',
       valueType: 'textarea',
@@ -81,7 +79,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.configMega.limitPlaformReceivSettlement' defaultMessage='Số cPass Mega tối đa PL nhận thanh quyết toán trong 1 tuần' />,
       title: configDefaultText['page.configDefault.column.limitPlaformReceivSettlement'],
       dataIndex: 'limitPlaformReceivSettlement',
       valueType: 'textarea',
@@ -91,9 +88,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.configMega.cPassPLSellMega' defaultMessage='Số cPass Mega tối đa PL bán cho 1 Mega trong 1 tuần' />,
       title: configDefaultText['page.configDefault.column.cPassPLSellMega'],
-
       dataIndex: 'cPassPLSellMega',
       valueType: 'textarea',
       key: 'cPassPLSellMega',
@@ -102,7 +97,6 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />,
       title: configDefaultText['page.configDefault.column.autoSettlement'],
       dataIndex: 'autoSettlement',
       valueType: 'textarea',
@@ -115,7 +109,6 @@ const TableList: React.FC = () => {
     },
 
     {
-      // title: <FormattedMessage id='pages.configMega.autoSettlement' defaultMessage='Tự động thanh quyết toán do tăng trọng không đạt yêu cầu' />,
       title: configDefaultText['page.configDefault.column.autoSettlementFeed'],
       dataIndex: 'autoSettlement',
       valueType: 'textarea',
@@ -132,7 +125,8 @@ const TableList: React.FC = () => {
       render: (_, entity: any) => {
         return (<Tooltip
           title={<FormattedMessage id='buttonUpdate' defaultMessage='Cập nhật' />}
-        ><MdOutlineEdit
+        >
+          <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               setRowCurrent(entity?.id);
@@ -140,7 +134,14 @@ const TableList: React.FC = () => {
                 ...entity.attributes
               })
             }}
-          /></Tooltip>
+            icon={
+              <MdOutlineEdit />
+            }
+            style={{
+              border: 'none'
+            }}
+          />
+        </Tooltip>
 
         )
       }
@@ -197,9 +198,9 @@ const TableList: React.FC = () => {
         submitTimeout={2000}
         onFinish={async (values: any) => {
           const update = await handleUpdate(values, rowCurrent);
-          if(update){
+          if (update) {
             handleUpdateModalOpen(false);
-            actionRef.current?.reloadAndRest?.(); 
+            actionRef.current?.reloadAndRest?.();
           }
           return true;
         }}

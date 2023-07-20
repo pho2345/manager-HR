@@ -8,7 +8,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Drawer, Form, message } from 'antd';
+import { Button, Drawer, Form, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import configText from '@/locales/configText';
@@ -133,7 +133,7 @@ const TableList: React.FC = () => {
       key: 'option',
       render: (_, entity: any) => {
         return (
-          <Button
+        <Tooltip title='Nhập dữ liệu tăng trọng'>  <Button
             onClick={() => {
               handleUpdateModalOpen(true);
               refIdSlot.current = entity.id;
@@ -142,7 +142,11 @@ const TableList: React.FC = () => {
               <SettingOutlined
               />
             }
+            style={{
+              border: 'none'
+            }}
           />
+          </Tooltip>
         )
       }
     },
@@ -181,7 +185,6 @@ const TableList: React.FC = () => {
             type='primary'
             key='dowloadTemplate'
             onClick={async () => {
-              // await  customAPIGetFile({}, 'slots/dowload');
               setOpenModalDowTemplate(true);
             }}
           >
@@ -269,7 +272,6 @@ const TableList: React.FC = () => {
         width={`35vh`}
         submitTimeout={2000}
         onFinish={async (values) => {
-          //await waitTime(2000);
           const updateFile = await handleUpdateFile(values);
 
           if (updateFile) {
@@ -300,7 +302,6 @@ const TableList: React.FC = () => {
           }}
 
           rules={[
-            //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
             { required: true, message: configDefaultText['page.slot.required.upload'] },
 
           ]}
@@ -322,7 +323,6 @@ const TableList: React.FC = () => {
           ]}
 
           rules={[
-            //{ required: true, message: <FormattedMessage id='page.listFair.required.timeFeed' defaultMessage='Vui lòng nhập thời gian nuôi' /> },
             { required: true, message: configDefaultText['page.slot.required.template'] },
 
           ]}

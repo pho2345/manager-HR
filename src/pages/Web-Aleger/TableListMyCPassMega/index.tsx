@@ -255,7 +255,7 @@ const TableList: React.FC = () => {
           <br /> {moment(text?.fair?.dateEndFeed).format('DD/MM/YYYY')}
         </>)
       },
-      
+
     },
     {
       title: <>cPass<br />Tên gợi nhớ</>,
@@ -294,7 +294,7 @@ const TableList: React.FC = () => {
         }
         return (<>
           {`${text?.cow?.category?.name}`}
-        
+
         </>)
       }
     },
@@ -319,13 +319,13 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'farm',
       render: (_, text: any) => {
-       
+
         return (<>
           {text?.cow?.farm?.name}<br />
         </>)
       }
     },
-    
+
 
     {
       title: 'Hình',
@@ -389,7 +389,7 @@ const TableList: React.FC = () => {
     },
 
     {
-      title:'Thể trạng',
+      title: 'Thể trạng',
       dataIndex: 'bodyCondition',
       valueType: 'textarea',
       key: 'bodyCondition',
@@ -486,20 +486,28 @@ const TableList: React.FC = () => {
       }
     },
     {
-      // title: <FormattedMessage id='pages.searchTable.column.graph' defaultMessage='Graph' />,
       title: configDefaultText['page.listCPass.column.graph'],
       dataIndex: 'graph',
       valueType: 'textarea',
       key: 'graph',
       render: (_, text: any) => {
         return (<>
-          <Tooltip title={configDefaultText['page.listCPass.column.graph']}><BsGraphUpArrow
-            onClick={() => {
-              refIdCpass.current = text?.id;
-              refIdCheckHistory.current = text?.checkHistory;
-              setOpenChart(true);
-            }}
-          /></Tooltip>
+          <Tooltip title={configDefaultText['page.listCPass.column.graph']}>
+            <Button
+              onClick={() => {
+                refIdCpass.current = text?.id;
+                refIdCheckHistory.current = text?.checkHistory;
+                setOpenChart(true);
+              }}
+              icon={
+                <BsGraphUpArrow />
+              }
+
+              style={{
+                border: 'none'
+              }}
+            />
+          </Tooltip>
         </>)
 
       }
@@ -560,7 +568,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      // title: <FormattedMessage id='page.listFair.titleOption' defaultMessage='Thao tác' />,
       title: configDefaultText['page.listFair.titleOption'],
       dataIndex: 'atrributes',
       valueType: 'textarea',
@@ -618,9 +625,9 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         request={async () => {
           const data = await customAPIGetOne(params?.id, 'c-passes/get/my-c-pass-mega', {});
-          if(data && data.data){
+          if (data && data.data) {
             setOptionFair(data?.fair);
-            if(data.data.length > 0) {
+            if (data.data.length > 0) {
               setShowDowloadFile(true);
             }
             else {
@@ -640,7 +647,7 @@ const TableList: React.FC = () => {
               total: data?.length
             }
           }
-          
+
         }}
         columns={columns}
 
@@ -668,7 +675,7 @@ const TableList: React.FC = () => {
         }}
 
         toolBarRender={() => {
-          if(showDowloadFile){
+          if (showDowloadFile) {
             return [
               <Button
                 type='primary'
@@ -679,7 +686,7 @@ const TableList: React.FC = () => {
               >
                 <PlusOutlined /> Excel
               </Button>,
-  
+
               <Button
                 type='primary'
                 key='primary'
@@ -692,7 +699,7 @@ const TableList: React.FC = () => {
             ]
           }
           return []
-          
+
         }}
       />
 

@@ -41,6 +41,11 @@ const TableList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const [form] = Form.useForm<any>();
     const searchInput = useRef<InputRef>(null);
+    const [content, setContent] = useState<any>();
+
+    const Content = (text: string) => {
+        return <div dangerouslySetInnerHTML={{ __html: text }} />;
+    };
 
     useEffect(() => {
         if (searchInput.current) {
@@ -169,16 +174,7 @@ const TableList: React.FC = () => {
             ...getColumnSearchProps('title')
         },
 
-        {
-            title: configDefaultText['page.feedback.content'],
-            dataIndex: 'content',
-            valueType: 'textarea',
-            key: 'content',
-            renderText: (_, text: any) => {
-                return `${text?.content}`
-            },
-            ...getColumnSearchProps('content')
-        },
+      
 
         {
             title: configDefaultText['page.feedback.status'],
@@ -262,7 +258,8 @@ const TableList: React.FC = () => {
                             form.setFieldsValue({
                                 ...entity,
                                 status: entity?.status
-                            })
+                            });
+                            setContent(entity?.content);
                         }}
                         icon={
                             <MdOutlineEdit />
@@ -366,24 +363,7 @@ const TableList: React.FC = () => {
                     </Col>
                 </Row>
 
-                <Row gutter={24} className="m-0">
-                    <Col span={24} className="gutter-row p-0" >
-                        <ProFormTextArea
-                            disabled
-                            className='w-full'
-                            name='content'
-                            fieldProps={{
-                                maxLength: 500
-                            }}
-                            label={configDefaultText['page.notifyEmail.columns.content']}
-                            placeholder={configDefaultText['page.notifyEmail.columns.content']}
-                            rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                                { required: true, message: configDefaultText['page.notifyEmail.columns.content'] },
-                            ]}
-                        />
-                    </Col>
-                </Row>
+
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0" >
@@ -421,21 +401,8 @@ const TableList: React.FC = () => {
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0" >
-                        <ProFormTextArea
-                            disabled
-
-                            className='w-full'
-                            name='content'
-                            fieldProps={{
-                                maxLength: 500
-                            }}
-                            label={configDefaultText['page.notifyEmail.columns.content']}
-                            placeholder={configDefaultText['page.notifyEmail.columns.content']}
-                            rules={[
-                                //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
-                                { required: true, message: configDefaultText['page.notifyEmail.columns.content'] },
-                            ]}
-                        />
+                        Nội dung:
+                        {Content(content)}
                     </Col>
                 </Row>
             </ModalForm>

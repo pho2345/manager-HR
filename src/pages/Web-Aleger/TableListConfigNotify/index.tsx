@@ -58,13 +58,13 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm<any>();
   const [updateOpenModalFee, setUpdateOpenModalFee] = useState<boolean>(false);
-  const [data, setData] = useState<any>();
+  // const [data, setData] = useState<any>();
   const refFee = useRef<any>();
 
   useEffect(() => {
     const getData = async () => {
-     const data = await converRateAndCustomerCare();
-     setData(data);
+    //  const data = await converRateAndCustomerCare();
+    //  setData(data);
     };
     getData()
   }, []);

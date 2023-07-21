@@ -40,6 +40,11 @@ const TableList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const [form] = Form.useForm<any>();
     const searchInput = useRef<InputRef>(null);
+    const [content, setContent] = useState<any>();
+
+    const Content = (text: string) => {
+        return <div dangerouslySetInnerHTML={{ __html: text }} />;
+    };
 
     useEffect(() => {
         if (searchInput.current) {
@@ -178,7 +183,8 @@ const TableList: React.FC = () => {
                             setRowCurrent(entity?.id);
                             form.setFieldsValue({
                                 ...entity
-                            })
+                            });
+                            setContent(entity.content || '')
                         }}
 
                         icon={
@@ -285,18 +291,29 @@ const TableList: React.FC = () => {
 
                 <Row gutter={24} className="m-0">
                     <Col span={24} className="gutter-row p-0" >
+                        Nội dung:
+                        {Content(content)}
+                    </Col>
+                </Row>
+
+                <Row gutter={24} className="m-0">
+                    <Col span={24} className="gutter-row p-0" >
                         <ProFormTextArea
                             className='w-full'
                             name='content'
-                            fieldProps={{
-                                maxLength: 500
-                            }}
                             label={configDefaultText['page.notifyEmail.columns.content']}
                             placeholder={configDefaultText['page.notifyEmail.columns.content']}
                             rules={[
                                 //{ required: true, message: <FormattedMessage id='page.listCow.required.name' defaultMessage='Vui lòng nhập tên' /> },
                                 { required: true, message: configDefaultText['page.notifyEmail.columns.content'] },
                             ]}
+                            fieldProps={{
+                                onChange: (value: any) => {
+                                    if(value){
+                                        setContent(value.currentTarget.value);
+                                    }
+                                }
+                            }}
                         />
                     </Col>
                 </Row>

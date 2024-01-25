@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+// import { login } from '@/services/ant-design-pro/api';
 //import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   //AlipayCircleOutlined,
@@ -117,8 +117,13 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // 登录
-      const msg = await login({ ...values, type });
+      // const msg = await login({ ...values, type });\
+      const msg = {
+        jwt: "abccc",
+        user: {
+          username: 'photran'
+        }
+      }
 
       if (msg.jwt) {
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
@@ -135,7 +140,6 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
       
       setUserLoginState(msg);
     } catch (error) {

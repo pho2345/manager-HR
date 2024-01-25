@@ -4,7 +4,7 @@ import RightContent from '@/components/RightContent';
 import { Settings as LayoutSettings, PageLoading } from '@ant-design/pro-components';
 //import { SettingDrawer } from '@ant-design/pro-components';
 //// import type { RuntimeConfig } from '@umijs/max';
-import { history, } from '@umijs/max';
+import { RunTimeLayoutConfig, history, } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
@@ -23,15 +23,16 @@ export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   loading?: boolean;
+  // fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
         skipErrorHandler: true,
-      });
+      }) as API.CurrentUser ;
 
-      return msg;
+      return msg ;
     } catch (error) {
       history.push(loginPath);
     }
@@ -40,7 +41,7 @@ export async function getInitialState(): Promise<{
  
   const { location } = history;
   if (location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+    const currentUser: any = await fetchUserInfo() ;
     return {
       fetchUserInfo,
       currentUser,

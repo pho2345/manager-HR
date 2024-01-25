@@ -58,6 +58,12 @@ export default {
   'app.settings.open': 'Open',
   'app.settings.close': 'Close',
   'app.settings.testing': 'test',
-  'chosen': 'Được chọn'
+  'chosen': 'Được chọn',
+
+
+'abcdefhi': "Có cái nịt"
+
+
+
 };
 

@@ -57,7 +57,6 @@
       { path: '/agrigate/range-p-zero', name: 'Khoảng cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
       { path: '/agrigate/wgs', name: 'Tăng trọng tiêu chuẩn', component: './AgriGate/TableListWGS' },
       { path: '/agrigate/input-weight', name: 'Nhập dữ liệu tăng trọng', component: './AgriGate/TableListSlot' },
-      
     ],
   },
 
@@ -153,6 +152,15 @@
       { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
       { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' },
       { path: '/transactions/log-transaction', name: 'Log giao dịch', component: './Web-Transaction/TableListLogTransaction' }
+    ],
+  },
+  {
+    name: 'Quản lý viên chức',
+    icon: 'table',
+    path: '/hr-manager',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/TableListFarm' },
     ],
   },
   {

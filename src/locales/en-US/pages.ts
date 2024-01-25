@@ -166,6 +166,8 @@ export default {
 'pages.searchTable.column.unitPriceMeat': 'Đơn giá thịt',
 'pages.searchTable.column.nameFarm': 'Tên trang trại',
 
+'abcdefhi': "Có cái nịt"
+
 
 
 };

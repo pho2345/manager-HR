@@ -1340,7 +1340,7 @@ const TableList: React.FC = () => {
                 onChange: async (value) => {
                   console.log(value);
                   if (typeof value !== 'undefined') {
-                    const groupCow = await getGroupFarm(value);
+                    const groupCow = await getGroupFarm(value as any);
                     setGroupCow(groupCow);
                     form.setFieldValue('group_cow', null);
                   }

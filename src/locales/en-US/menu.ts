@@ -83,6 +83,10 @@ export default {
   'menu.AgriOS.Bán Ale cho PL': 'Bán Ale cho PL',
   'menu.AgriOS.Xác nhận giao dịch mua/bán Ale': 'Xác nhận giao dịch mua/bán Ale',
   'menu.AgriOS.Theo dõi giao dịch Ale': 'Theo dõi giao dịch Ale',
+  "menu.Web-cPass.Danh sách đợt mở bán": "Danh sách đợt mở bán",
+
+  "menu.Web-cPass.Danh sách CPass Mega": "Danh sách CPass Mega",
+  "menu.AgriGate.Danh sách trang trại": "Danh sách trang trại"
 
 
 

@@ -7,8 +7,8 @@ export default function access(initialState: { currentUser?: any } | undefined) 
   return {
     // canAdmin: currentUser && currentUser.access === 'admin',
     admin: () => {
-      return currentUser.username === 'pho'
+      return currentUser.username === 'pho1'
     },
-    op: () => currentUser.username === '123',
+    member: () => currentUser.username === 'tra',
   };
 }

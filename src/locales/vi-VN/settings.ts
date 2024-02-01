@@ -74,7 +74,7 @@ export default {
   'menu.Quản lý.Quản lý CBCCVC': 'Quản lý CBCCVC',
   'menu.Quản lý': 'Quản lý',
   'menu.Cấu hình.menu.policyObject': 'Đối tượng chính sách',
-  'menu.Cấu hình.menu.stateRank': 'Danh hiệu nhà nước phong',
+  'menu.Cấu hình.menu.stateRank': 'Danh hiệu nhà nước phong tặng',
   'menu.Cấu hình.menu.sex': 'Giới tính',
   'menu.Cấu hình.menu.academicDegrees': 'Học hàm',
   'menu.Cấu hình.menu.memberFamily': 'Thành phần gia đình',
@@ -82,6 +82,7 @@ export default {
   'menu.Cấu hình.menu.religion': 'Tôn giáo',
   'menu.Cấu hình.menu.secondaryEducationLevel': 'Trình độ giáo dục phổ thông',
   'menu.Cấu hình.menu.professionalLevel': 'Trình độ chuyên môn',
+  'menu.Cấu hình.menu.rankSalary': 'Bậc lương',
 
   ...requires,
 
@@ -147,6 +148,10 @@ export default {
      'page.ProfessionalLevel.modal.titleCreate': 'Tạo mới trình độ chuyên môn',
      'page.ProfessionalLevel.modal.titleUpdate': 'Cập nhật trình độ chuyên môn',
 
+      //RankSalary
+     'page.RankSalary.table.name': 'Tên bậc lương',
+     'page.RankSalary.modal.titleCreate': 'Tạo mới bậc lương',
+     'page.RankSalary.modal.titleUpdate': 'Cập nhật bậc lương',
 
 };
 

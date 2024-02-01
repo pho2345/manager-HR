@@ -9,4 +9,5 @@ export default {
     'page.Religion.require.name': 'Vui lòng nhập tên',
     'page.SecondaryEducationLevel.require.name': 'Vui lòng nhập tên',
     'page.ProfessionalLevel.require.name': 'Vui lòng nhập tên',
+    'page.RankSalary.require.name': 'Vui lòng nhập tên',
 }

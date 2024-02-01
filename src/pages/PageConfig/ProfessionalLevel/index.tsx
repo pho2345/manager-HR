@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/pages/utils';
+import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 

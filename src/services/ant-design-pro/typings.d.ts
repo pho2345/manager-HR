@@ -2,6 +2,11 @@
 /* eslint-disable */
 
 declare namespace API {
+  type List<T = any> = {
+    status_code?: number,
+    message?: string,
+    data?: T[]
+  }
   type CurrentUser = {
     username?: string;
     fullname?: string;
@@ -292,6 +297,11 @@ declare namespace API {
 
 declare namespace GEN {
 
+  type Option = {
+    value?: string;
+    label?: string;
+  }
+
   type PolicyObject = {
     id?: number;
     name?: string;
@@ -306,6 +316,9 @@ declare namespace GEN {
     create_at?: date;
     update_at?: date;
   }
+
+ 
+
 
   type Sex = {
     id?: number;
@@ -333,6 +346,7 @@ declare namespace GEN {
     name?: string;
     create_at?: date;
     update_at?: date;
+    title?: string;
   }
 
   type Religion = {
@@ -350,6 +364,13 @@ declare namespace GEN {
   }
 
   type ProfessionalLevel = {
+    id?: number;
+    name?: string;
+    create_at?: date;
+    update_at?: date;
+  }
+
+  type RankSalary = {
     id?: number;
     name?: string;
     create_at?: date;

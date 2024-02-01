@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/pages/utils';
+import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -382,7 +382,6 @@ const TableList: React.FC = () => {
             // ...getColumnSearchProps('name')
         },
 
-
         // {
         //     title: configDefaultText['page.listCategory.createdAt'],
         //     dataIndex: 'atrributes',
@@ -395,73 +394,71 @@ const TableList: React.FC = () => {
         //     ...getColumnSearchRange()
         // },
 
-        {
-            title: configDefaultText['titleOption'],
-            dataIndex: 'atrributes',
-            valueType: 'textarea',
-            key: 'option',
-            align: 'center',
-            render: (_, entity: any) => {
+        // {
+        //     title: configDefaultText['titleOption'],
+        //     dataIndex: 'atrributes',
+        //     valueType: 'textarea',
+        //     key: 'option',
+        //     align: 'center',
+        //     render: (_, entity: any) => {
+        //         // const menu = (
+        //         //     <Menu>
+        //         //         <Menu.Item key="1"
+        //         //             onClick={() => {
+        //         //                 handleUpdateModalOpen(true);
+        //         //                 refIdCateogry.current = entity.id;
+        //         //                 form.setFieldsValue({
+        //         //                     code: entity?.attributes?.code,
+        //         //                     name: entity?.attributes?.name
+        //         //                 })
+        //         //             }}
+        //         //         >{configDefaultText['buttonUpdate']}</Menu.Item>
 
-                // const menu = (
-                //     <Menu>
-                //         <Menu.Item key="1"
-                //             onClick={() => {
-                //                 handleUpdateModalOpen(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 form.setFieldsValue({
-                //                     code: entity?.attributes?.code,
-                //                     name: entity?.attributes?.name
-                //                 })
-                //             }}
-                //         >{configDefaultText['buttonUpdate']}</Menu.Item>
+        //         //         <Menu.Item key="2"
+        //         //             onClick={() => {
+        //         //                 setOpenWgs(true);
+        //         //                 refIdCateogry.current = entity.id;
+        //         //                 refNameCategory.current = entity.attributes.name;
+        //         //             }}
+        //         //         >Tăng trọng tiêu chuẩn</Menu.Item>
 
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenWgs(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng tiêu chuẩn</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenAwg(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng trung bình</Menu.Item>
-
+        //         //         <Menu.Item key="2"
+        //         //             onClick={() => {
+        //         //                 setOpenAwg(true);
+        //         //                 refIdCateogry.current = entity.id;
+        //         //                 refNameCategory.current = entity.attributes.name;
+        //         //             }}
+        //         //         >Tăng trọng trung bình</Menu.Item>
 
 
-                //     </Menu>
-                // );
-                // return (
-                //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-                //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-                //             {configDefaultText['handle']}
-                //         </a>
-                //     </Dropdown>
-                // );
 
-                return (
-                    <Tooltip title={configDefaultText['buttonUpdate']}>
-                        <Button
-                            style={{
-                                border: 'none'
-                            }}
+        //         //     </Menu>
+        //         // );
+        //         // return (
+        //         //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+        //         //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+        //         //             {configDefaultText['handle']}
+        //         //         </a>
+        //         //     </Dropdown>
+        //         // );
+        //         return (
+        //             <Tooltip title={configDefaultText['buttonUpdate']}>
+        //                 <Button
+        //                     style={{
+        //                         border: 'none'
+        //                     }}
 
-                            onClick={async () => {
-                                handleUpdateModalOpen(true);
-                                // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-                                form.setFieldsValue({
-                                })
-                            }}
-                            icon={<MdOutlineEdit />}
-                        />
-                    </Tooltip>)
-            }
-        },
+        //                     onClick={async () => {
+        //                         handleUpdateModalOpen(true);
+        //                         // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
+        //                         form.setFieldsValue({
+        //                         })
+        //                     }}
+        //                     icon={<MdOutlineEdit />}
+        //                 />
+        //             </Tooltip>)
+        //     }
+        // },
     ];
 
 
@@ -480,9 +477,8 @@ const TableList: React.FC = () => {
                             return true;
                         },
                         setting: {
-                            checkable: true
+                            checkable: false
                         }
-
                     }
                 }
                 toolBarRender={() => [
@@ -509,339 +505,10 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => {
-                    const data: API.Nation[] = [
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 1,
-                            name: "Ba Na"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 2,
-                            "name": "Bà Y"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 3,
-                            "name": "Bố Y"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 4,
-                            "name": "Brau"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 5,
-                            "name": "Bru - Vân Kiều"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 6,
-                            "name": "Chăm"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 7,
-                            "name": "Chơ Ro"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 8,
-                            "name": "Chứt"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 9,
-                            "name": "Cơ Ho"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 10,
-                            "name": "Cơ Tu"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 11,
-                            "name": "Cống"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 12,
-                            "name": "Coong"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 13,
-                            "name": "Cờ Lao"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 14,
-                            "name": "Ê Đê"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 15,
-                            "name": "Gia Rai"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 16,
-                            "name": "Giáy"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 17,
-                            "name": "Hà Nhì"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 18,
-                            "name": "Hrê"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 19,
-                            "name": "Kháng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 20,
-                            "name": "Khơ Mú"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 21,
-                            "name": "Khơ Lơ"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 22,
-                            "name": "Kinh"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 23,
-                            "name": "Krông"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 24,
-                            "name": "Lào"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 25,
-                            "name": "La Chí"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 26,
-                            "name": "La Ha"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 27,
-                            "name": "Lô Lô"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 28,
-                            "name": "Mảng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 29,
-                            "name": "M'nông"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 30,
-                            "name": "Mơ Nông"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 31,
-                            "name": "Mường"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 32,
-                            "name": "Nùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 33,
-                            "name": "Ô Đu"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 34,
-                            "name": "Pà Thẻn"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 35,
-                            "name": "Phù Lá"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 36,
-                            "name": "Pu Péo"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 37,
-                            "name": "Rơ Măm"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 38,
-                            "name": "Ra Glai"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 39,
-                            "name": "Rục"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 40,
-                            "name": "Sán Chay"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 41,
-                            "name": "Sán Dìu"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 42,
-                            "name": "Sán Rìu"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 43,
-                            "name": "Si La"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 44,
-                            "name": "Sơ Rếch"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 45,
-                            "name": "Tày"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 46,
-                            "name": "Tày Thái"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 47,
-                            "name": "Thổ"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 48,
-                            "name": "Thái"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 49,
-                            "name": "Xinh Mun"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 50,
-                            "name": "Xơ Đăng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 51,
-                            "name": "X' Tiêng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 52,
-                            "name": "Ya Chêng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 53,
-                            "name": "Ý Đình"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 54,
-                            "name": "Zao"
-                        }
-                    ]
-                    return {
-                        total: data.length,
-                        data: data,
-                        success: true
-                    }
-                }}
+
+                
+
+                request={async () => get('dan-toc')}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -852,8 +519,7 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{
-                }}
+                rowSelection={false}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);

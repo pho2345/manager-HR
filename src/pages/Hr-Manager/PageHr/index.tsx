@@ -39,6 +39,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import AddNew from './AddNew';
+import { getOption } from '@/services/utils';
 
 
 const handleAdd = async (fields: any) => {
@@ -168,6 +169,8 @@ const getFarm = async () => {
 
 
 
+
+
 const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
@@ -175,13 +178,17 @@ const TableList: React.FC = () => {
   const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
-  const [category, setCategory] = useState<any>();
-  const [farm, setFarm] = useState<any>();
   const searchInput = useRef(null);
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+  const [religion, setReligion] = useState<GEN.Option[]>([]);
+  const [sex, setSex] = useState<GEN.Option[]>([]);
+  const [membership, setMembership] = useState<GEN.Option[]>([]);
+
+
 
 
 
@@ -194,10 +201,8 @@ const TableList: React.FC = () => {
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
-      let getCate = await getCategory();
-      let getFarms = await getFarm();
-      setCategory(getCate);
-      setFarm(getFarms);
+      const getReligion = await getOption('dan-toc', 'id', 'name');
+      setReligion(getReligion);
     };
     getValues();
   }, []);
@@ -212,7 +217,7 @@ const TableList: React.FC = () => {
       closeDropdown: false,
     });
   };
-  
+
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
       <div
@@ -784,7 +789,7 @@ const TableList: React.FC = () => {
             }
           }}
 
-          request={ async () =>{
+          request={async () => {
             //customAPIGet({}, 'cows/find',)
             const data = [
               {
@@ -1114,7 +1119,7 @@ const TableList: React.FC = () => {
               success: true,
               total: data.length
             } as API.StaffList
-            
+
           }}
           columns={columns}
           rowSelection={{
@@ -1134,7 +1139,7 @@ const TableList: React.FC = () => {
 
         />
 
-        <AddNew display={visible} onChangeDisplay={onCloseModalAdd} />
+        <AddNew display={visible} onChangeDisplay={onCloseModalAdd} religion={religion} />
 
         {/* <ModalForm
 

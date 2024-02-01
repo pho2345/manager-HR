@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -354,14 +354,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.SecondaryEducationLevel>[] = [
+    const columns: ProColumns<GEN.RankSalary>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />,
+            title: <FormattedMessage id="page.RankSalary.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -494,64 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => {
-                    const data: GEN.SecondaryEducationLevel[] = [
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 1,
-                            "name": "Không"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 2,
-                            "name": "Tỉnh Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 3,
-                            "name": "Thành phố Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 4,
-                            "name": "Bà mẹ Việt Nam Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 5,
-                            "name": "Anh hùng Lực lượng vũ trang nhân dân"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 6,
-                            "name": "Anh hùng Lao động"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 7,
-                            "name": "Nhà giáo nhân dân"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 8,
-                            "name": "Nhà giáo ưu tú"
-                        }
-                    ];
-                    return {
-                        total: data.length,
-                        data: data,
-                        success: true
-                    }
-                }}
-
+                request={async () => get('bac-luong') }
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -576,7 +519,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleCreate" defaultMessage="Create SecondaryEducationLevel" />}
+                title={<FormattedMessage id="page.RankSalary.modal.titleCreate" defaultMessage="Create RankSalary" />}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -606,14 +549,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.RankSalary.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.RankSalary.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
@@ -621,7 +564,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleUpdate" defaultMessage="Update SecondaryEducationLevel" />}
+                title={<FormattedMessage id="page.RankSalary.modal.titleUpdate" defaultMessage="Update RankSalary" />}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -652,14 +595,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.RankSalary.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.RankSalary.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>

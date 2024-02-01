@@ -184,6 +184,7 @@
       { path: '/config/religion', name: 'menu.religion', component: './PageConfig/Religion' },
       { path: '/config/secondary-education-level', name: 'menu.secondaryEducationLevel', component: './PageConfig/SecondaryEducationLevel' },
       { path: '/config/professional-level', name: 'menu.professionalLevel', component: './PageConfig/ProfessionalLevel' },
+      { path: '/config/rank-salary', name: 'menu.rankSalary', component: './PageConfig/RankSalary' },
     ],
   },
   {

@@ -380,15 +380,17 @@ export async function customAPIDowloadPDF(collection?: string, id?: number) {
 
 
 export async function get(collection: string) {
-  const fetchData = await request<any>(SERVERURL + '/api/' + collection, {
+  const fetchData = await request<API.List>(SERVERURL + collection, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       // Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   });
+
+
   return {
-    total: fetchData?.meta?.pagination?.total,
+    total: fetchData?.data && fetchData?.data?.length,
     success: fetchData.data && true,
     data: fetchData.data
   }

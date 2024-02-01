@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/pages/utils';
+import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -496,27 +496,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => {
-                    const data: GEN.PolicyObject[] = [
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 1,
-                            "name": "Dân tộc thiểu số"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 2,
-                            "name": "Con liệt sĩ"
-                        }
-                    ]
-                    return {
-                        total: data.length,
-                        data: data,
-                        success: true
-                    }
-                }}
+                request={async () => get('doi-tuong-chinh-sach')}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

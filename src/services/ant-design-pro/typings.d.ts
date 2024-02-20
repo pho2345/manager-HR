@@ -8,19 +8,27 @@ declare namespace API {
     data?: T[]
   }
   type CurrentUser = {
-    username?: string;
-    fullname?: string;
-    avatar?: string;
-    id?: string;
-    email?: string;
-    phone?: string;
+    "id"?: number,
+    "hoVaten"?: string,
+    "soCCCD"?: string,
+    "username"?: string,
+    "email"?: string,
+    "maSoYeuLyLich"?: string,
+    "role"?: string,
+    "trangThai"?: boolean
   };
 
   type LoginResult = {
-    jwt?: string;
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    // jwt?: string;
+    // status?: string;
+    // type?: string;
+    // currentAuthority?: string;
+    status_code?: number;
+    message?: string;
+    data?: {
+      taikhoan?: object,
+      token?: string
+    }
   };
 
   type PageParams = {
@@ -317,7 +325,7 @@ declare namespace GEN {
     update_at?: date;
   }
 
- 
+
 
 
   type Sex = {
@@ -375,6 +383,25 @@ declare namespace GEN {
     name?: string;
     create_at?: date;
     update_at?: date;
+  }
+
+  type GroupBlood = {
+    id?: number;
+    name?: string;
+    create_at?: date;
+    update_at?: date;
+  }
+
+  type Employee = {
+    id: number,
+    ho_va_ten:  string,
+    sinhNgay: date,
+    chucVuHienTai: string,
+    trinhDoChuyenMon: string,
+    ngachNgheNghiep: string,
+    create_at: date,
+    update_at: date,
+    trang_thai: boolean
   }
 
 

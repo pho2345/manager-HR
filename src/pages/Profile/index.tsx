@@ -7,7 +7,7 @@ import {
   customAPIGetOne,
   get,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -22,10 +22,13 @@ import {
   ProDescriptions,
   ProFormText,
   ProTable,
+  ProCard,
 
 } from '@ant-design/pro-components';
 import {
-  Image, UploadFile, UploadProps
+  Card,
+  Descriptions,
+  Image, UploadFile
 } from 'antd';
 
 import configText from '@/locales/configText';
@@ -33,6 +36,7 @@ const configDefaultText = configText;
 
 
 import {
+  FormattedMessage,
   useParams
 } from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
@@ -188,6 +192,8 @@ const TableList: React.FC = () => {
   const [sex, setSex] = useState<GEN.Option[]>([]);
   const [membership, setMembership] = useState<GEN.Option[]>([]);
 
+  const [collapsed, setCollapsed] = useState(true);
+
 
 
 
@@ -201,8 +207,8 @@ const TableList: React.FC = () => {
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
-      const getReligion = await getOption('/dan-toc', 'id', 'name');
-      const getSex = await getOption('/gioi-tinh', 'id', 'name');
+      const getReligion = await getOption('dan-toc', 'id', 'name');
+      const getSex = await getOption('gioi-tinh', 'id', 'name');
       setReligion(getReligion);
       setSex(getSex);
     };
@@ -797,300 +803,226 @@ const TableList: React.FC = () => {
 
   return (
     !params.id ? (
-      <PageContainer>
-        <ProTable
-          scroll={{
-            x: window.innerHeight * 0.75
+      <div
+        style={{
+          background: '#F5F7FA',
+        }}
+      >
+        <PageContainer
+          ghost
+          header={{
+            title: 'Thông tin cơ bản',
+            breadcrumb: {},
           }}
-          actionRef={actionRef}
-          rowKey='id'
-          search={false}
-          toolBarRender={() => {
-            return [
-              <Button
-                type='primary'
-                key='primary'
-                onClick={() => {
-                  setVisible(true);
-                }}
-              >
-                <PlusOutlined /> {configDefaultText['buttonAdd']}
-              </Button>,
-            ]
-          }}
-
-          toolbar={{
-            settings: [{
-              key: 'reload',
-              tooltip: configDefaultText['reload'],
-              icon: <ReloadOutlined></ReloadOutlined>,
-              onClick: () => {
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }]
-          }}
-
-          pagination={{
-            pageSize: 10,
-            locale: {
-              next_page: configDefaultText['nextPage'],
-              prev_page: configDefaultText['prePage'],
-            },
-            showTotal: (total, range) => {
-              return `${range[range.length - 1]} / Tổng số: ${total}`
-            }
-          }}
-
-          request={async () => get('/nhan-vien/so-yeu-ly-lich')}
-          columns={columns}
-          rowSelection={{
-            // onChange: (_, selectedRows: any) => {
-            //   setSelectedRows(selectedRows);
-            // },
-          }}
-
-          tableAlertRender={({ selectedRowKeys }: any) => {
-            return renderTableAlert(selectedRowKeys);
-          }}
+          content={
+            <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>Phố Tran</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>2017-01-10</Descriptions.Item>
 
 
-          tableAlertOptionRender={({ selectedRows }: any) => {
-            return renderTableAlertOption(selectedRows)
-          }}
+              <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}><a>421421</a></Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>321757894</Descriptions.Item>
 
-        />
+              <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}>321757894</Descriptions.Item>
 
-        <AddNew display={visible} onChangeDisplay={onCloseModalAdd} religion={religion} sex={sex} />
+              <Descriptions.Item label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}>321757894</Descriptions.Item>
 
-        {/* <ModalForm
+              <Descriptions.Item label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>321757894</Descriptions.Item>
+              <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>321757894</Descriptions.Item>
+              
+            
 
-          title='Cập nhật'
-          open={updateModalOpen}
-          form={form}
-          autoFocusFirstInput
-          modalProps={{
-            destroyOnClose: true,
-            onCancel: () => {
-              handleUpdateModalOpen(false);
-              refIdPicture.current = null;
-              setFileList([]);
-
-            },
-          }}
-
-          submitTimeout={2000}
-          onFinish={async (values) => {
-            const success = await handleUpdate(values as any, refIdCow as any);
-
-
-            if (success) {
-              handleUpdateModalOpen(false);
-              form.resetFields();
-              if (actionRef.current) {
-                setFileList([]);
-                actionRef.current.reload();
-                refIdPicture.current = null;
-              }
-            }
-            return true;
-          }}
-
-          submitter={{
-            searchConfig: {
-              resetText: configDefaultText['buttonClose'],
-              submitText: configDefaultText['buttonUpdate'],
-            },
-          }}
+            </Descriptions>
+          }
         >
 
 
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText
-                className='w-full'
-                name='name'
-                label={configDefaultText['page.listCow.column.name']}
-                placeholder={configDefaultText['page.listCow.column.name']}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.name'] },
-                ]}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-
-              <ProFormDigit
-                min={1}
-                className='w-full'
-
-                name='firstWeight'
-                label={configDefaultText['page.listCow.column.firstWeight']}
-                placeholder={configDefaultText['page.listCow.column.firstWeight']}
-                rules={[
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={category}
-                label={configDefaultText['page.listCow.column.category']}
-                placeholder={configDefaultText['page.listCow.column.category']}
-                className='w-full'
-                name='category'
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.category'] },
-                ]}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormSelect
-                className='w-full'
-                name='sex'
-
-                label={configDefaultText['page.listCow.column.sex']}
-                placeholder={configDefaultText['page.listCow.column.sex']}
-                options={[
-                  {
-                    label: 'Đực',
-                    value: 'male',
-                  },
-                  {
-                    label: 'Cái',
-                    value: 'female',
-                  },
-                ]}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={farm} className='w-full' name='farm'
-                label={configDefaultText['page.listCow.column.farm']}
-                placeholder={configDefaultText['page.listCow.column.farm']}
-                rules={[
-                  {
-                    required: true, message: configDefaultText['page.listCow.required.farm'
-                    ]
-                  },
-                ]}
-                fieldProps={{
-                  onChange: async (value: any) => {
-                    const groupCow = await getGroupFarm(value);
-                    setGroupCow(groupCow);
-                    form.setFieldValue('group_cow', []);
-                  }
-                }}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormSelect className='w-full'
-                options={groupCow?.length ? groupCow : null}
-                label={configDefaultText['page.listCow.column.group_cow']}
-                placeholder={configDefaultText['page.listCow.column.group_cow']}
-                name={`group_cow`}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-
-          <Row gutter={24} className="m-0">
-
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormDatePicker className='w-full' name='birthdate'
-                fieldProps={{
-                  style: {
-                    width: '100%'
-                  },
-                  disabledDate: disabledDate
-                }}
-                label={configDefaultText['page.listCow.column.birthdate']}
-                placeholder={configDefaultText['page.listCow.column.birthdate']}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
-
-                ]}
-              />
-            </Col>
-
-
-          </Row>
-
-          <ProFormUploadButton
-            name="photos"
-            title={configDefaultText['page.listCow.column.upload']}
-            label={configDefaultText['page.listCow.column.upload']}
-            fileList={fileList}
-            onChange={handleChange}
-            max={5}
-            fieldProps={{
-              name: 'file',
-              listType: 'picture-card',
-              onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
-              accept: 'image/*',
-              multiple: true,
-              beforeUpload: (file: any, fileSize) => {
-                if (fileList.length > 5) {
-                  return false;
-                }
-                else {
-                  return true;
-                }
-              },
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              padding: 0,
+              gap: 12,
             }}
-          />
+          >
+            <ProCard
+              title={<FormattedMessage id="page.profile.card.tilte.job" defaultMessage="Biên chế, chức vụ, Ngạch, Bậc" />}
+              headerBordered
+              collapsible
+              defaultCollapsed
+              onCollapse={(collapse) => console.log(collapse)}
+            >
+              <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>Phố Tran</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>aa</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}><a>421421</a></Descriptions.Item>
 
-          <ProFormTextArea
-            label={configDefaultText['page.listCow.column.description']}
-            placeholder={configDefaultText['page.listCow.column.description']}
-            name='description'
-            rules={[
-              { required: true, message: configDefaultText['page.listCow.required.description'] }
-            ]}
-          />
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}><a>421421</a></Descriptions.Item>
 
-        </ModalForm> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}><a>421421</a></Descriptions.Item>
+                
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.salary" defaultMessage="Tiền lương" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalary" defaultMessage="Bậc lương" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePosition" defaultMessage="Phụ cấp chức vụ" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceChargePosition" defaultMessage="Phụ cấp kiêm nhiệm" />}><a>421421</a></Descriptions.Item>
+
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceOther" defaultMessage="Phụ cấp khác" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.workplace" defaultMessage="Vị trí việc làm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeWorkplace" defaultMessage="Mã số vị trí việc làm" />}><a>421421</a></Descriptions.Item>
+
+                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalaryWorkSpace" defaultMessage="Bậc lương trí việc làm" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.salaryMoney" defaultMessage="Lương" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryWorkSpace" defaultMessage="Ngày hưởng lương" />}><a>421421</a></Descriptions.Item>
+
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentSalaryWorkSpace" defaultMessage="Phần trăm hưởng lương" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}><a>421421</a></Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dadteGetSalaryAllowancePass" defaultMessage="Ngày hưởng phụ cấp vượt khung" />}><a>421421</a></Descriptions.Item>
 
 
-        <Drawer
-          width={600}
-          open={showDetail}
-          onClose={() => {
-            setCurrentRow(undefined);
-            setShowDetail(false);
-          }}
-          closable={false}
-        >
-          {currentRow?.name && (
-            <ProDescriptions<API.RuleListItem>
-              column={2}
-              title={currentRow?.name}
-              request={async () => ({
-                data: currentRow || {},
-              })}
-              params={{
-                id: currentRow?.name,
-              }}
-              columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
-            />
-          )}
-        </Drawer>
-      </PageContainer>) :
+
+                <Descriptions.Item label="Ngày sinh">2017-01-10</Descriptions.Item>
+                <Descriptions.Item label="CMND/CCCD">
+                  321757894
+                </Descriptions.Item>
+              </Descriptions>
+            </ProCard>
+            <ProCard
+              title="可折叠"
+              bordered
+              headerBordered
+              collapsible
+              defaultCollapsed
+              onCollapse={(collapse) => console.log(collapse)}
+              extra={
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  提交
+                </Button>
+              }
+            >
+              内容
+            </ProCard>
+            <ProCard
+              bordered
+              size="small"
+              title="可折叠"
+              headerBordered
+              collapsible
+              defaultCollapsed
+              onCollapse={(collapse) => console.log(collapse)}
+              extra={
+                <Button
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  提交
+                </Button>
+              }
+            >
+              内容
+            </ProCard>
+            <ProCard
+              title="可折叠-受控自定义"
+              extra={
+                <RightOutlined
+                  rotate={!collapsed ? 90 : undefined}
+                  onClick={() => {
+                    setCollapsed(!collapsed);
+                  }}
+                />
+              }
+              style={{ marginBlockStart: 16 }}
+              headerBordered
+              collapsed={collapsed}
+            >
+              内容
+            </ProCard>
+            <ProCard
+              title="可折叠-图标自定义"
+              collapsibleIconRender={({
+                collapsed: buildInCollapsed,
+              }: {
+                collapsed: boolean;
+              }) => (buildInCollapsed ? <span>收起 - </span> : <span>展开 - </span>)}
+              style={{ marginBlockStart: 16 }}
+              headerBordered
+              collapsible
+              defaultCollapsed
+            >
+              内容
+            </ProCard>
+            <ProCard title={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />} bordered gutter={16} boxShadow style={{ fontWeight: 'bolder' }} type='inner'>
+              <ProCard.Divider>
+              </ProCard.Divider>
+
+              <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
+                <Descriptions.Item label="Họ tên">Phố Tran</Descriptions.Item>
+                <Descriptions.Item label="Giới tính">
+                  <a>421421</a>
+                </Descriptions.Item>
+                <Descriptions.Item label="Ngày sinh">2017-01-10</Descriptions.Item>
+                <Descriptions.Item label="CMND/CCCD">
+                  321757894
+                </Descriptions.Item>
+              </Descriptions>
+            </ProCard>
+          </div>
+
+
+
+        </PageContainer>
+      </div>)
+      :
       (
         <ProDescriptions
           style={{

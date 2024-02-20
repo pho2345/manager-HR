@@ -13,17 +13,11 @@ export async function currentUser(options?: { [key: string]: any }) {
   //   },
   // });
 
-  const abc: API.CurrentUser = {
-    id: '1',
-    username: 'pho',
-    email: 'a@gmail.com',
-    fullname: "123",
-    avatar: "123",
-    phone: "122",
-  }
+  const current: API.CurrentUser = JSON.parse(localStorage.getItem('user') ?? "");
+
 
   return new Promise((res) => {
-    return res(abc)
+    return res(current)
   })
 }
 
@@ -32,14 +26,16 @@ export async function outLogin() {
   //   method: 'POST',
   //   ...(options || {}),
   // });
-  localStorage.setItem('access_token', '');
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('user');
 }
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(SERVERURL + '/api/users/login-admin', {
+  return request<API.LoginResult>(SERVERURL + '/dang-nhap', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      // 'Access-Control-Allow-Origin': '*'
     },
     data: body,
     ...(options || {}),
@@ -384,9 +380,11 @@ export async function get(collection: string) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      // Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   });
+
+  console.log('fe', fetchData);
 
 
   return {
@@ -396,12 +394,12 @@ export async function get(collection: string) {
   }
 }
 
-export async function post(collection: string, values: object, body: object) {
-  const fetchData = await request<any>(SERVERURL + '/api/' + collection, {
+export async function post(subSolder: string, values: object, body: object) {
+  const fetchData = await request<any>(SERVERURL + subSolder, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
     },
     params: {
       ...values,

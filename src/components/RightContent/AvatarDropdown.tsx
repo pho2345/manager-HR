@@ -38,7 +38,7 @@ const Name = () => {
 const AvatarLogo = () => {
   const { initialState } = useModel('@@initialState');
   //const { currentUser } = initialState  || {};
-  
+
   const avatarClassName = useEmotionCss(({ token }) => {
     return {
       marginRight: '8px',
@@ -51,7 +51,7 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size="small" className={avatarClassName} src={ '/uploads/sarahbaker_strapi_8623ac80da.jpg?updated_at=2022-12-26T11:16:45.281Z'} alt="avatar" />;
+  return <Avatar size="small" className={avatarClassName} src={'https://imgupscaler.com/images/samples/animal-after.webp'} alt="avatar" />;
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
@@ -60,9 +60,11 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     await outLogin();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
-   
+
     const redirect = urlParams.get('redirect');
-    
+
+    console.log('vao day')
+
     if (window.location.pathname !== '/user/login' && !redirect) {
       history.replace({
         pathname: '/user/login',
@@ -94,7 +96,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       const { key } = event;
       if (key === 'logout') {
         flushSync(() => {
-          setInitialState((s : any) => ({ ...s, currentUser: undefined }));
+          setInitialState((s: any) => ({ ...s, currentUser: undefined }));
         });
         loginOut();
         return;
@@ -129,20 +131,20 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const menuItems = [
     ...(menu
       ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: 'Center',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: 'Setting',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
+        {
+          key: 'center',
+          icon: <UserOutlined />,
+          label: 'Center',
+        },
+        {
+          key: 'settings',
+          icon: <SettingOutlined />,
+          label: 'Setting',
+        },
+        {
+          type: 'divider' as const,
+        },
+      ]
       : []),
     {
       key: 'logout',
@@ -156,7 +158,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       menu={{
         selectedKeys: [],
         onClick: onMenuClick,
-        items: menuItems,
+        items: [
+          {
+            key: 'logout',
+            icon: <LogoutOutlined />,
+            label: 'Đăng xuất',
+          }
+        ],
       }}
     >
       <span className={actionClassName}>

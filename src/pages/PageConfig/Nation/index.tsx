@@ -508,7 +508,7 @@ const TableList: React.FC = () => {
 
                 
 
-                request={async () => get('dan-toc')}
+                request={async () => get('/dan-toc')}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

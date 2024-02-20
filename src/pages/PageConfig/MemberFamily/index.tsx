@@ -494,7 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('thanh-phan-gia-dinh')} //TODO: lay thanh phan gia dinh
+                request={async () => get('/thanh-phan-gia-dinh')} //TODO: lay thanh phan gia dinh
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete } from '@/services/ant-design-pro/api';
+import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -494,63 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => {
-                    const data: GEN.SecondaryEducationLevel[] = [
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 1,
-                            "name": "Không"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 2,
-                            "name": "Tỉnh Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 3,
-                            "name": "Thành phố Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 4,
-                            "name": "Bà mẹ Việt Nam Anh hùng"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 5,
-                            "name": "Anh hùng Lực lượng vũ trang nhân dân"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 6,
-                            "name": "Anh hùng Lao động"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 7,
-                            "name": "Nhà giáo nhân dân"
-                        },
-                        {
-                            "create_at": "2024-01-28T15:18:41",
-                            "update_at": null,
-                            "id": 8,
-                            "name": "Nhà giáo ưu tú"
-                        }
-                    ];
-                    return {
-                        total: data.length,
-                        data: data,
-                        success: true
-                    }
-                }}
+                request={async () => get('/trinh-do-giao-duc-pho-thong')}
 
                 pagination={{
                     locale: {

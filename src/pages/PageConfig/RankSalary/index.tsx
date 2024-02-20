@@ -494,7 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('bac-luong') }
+                request={async () => get('/bac-luong') }
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

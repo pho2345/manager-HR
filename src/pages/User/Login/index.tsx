@@ -1,22 +1,22 @@
 import Footer from '@/components/Footer';
-// import { login } from '@/services/ant-design-pro/api';
+import { login } from '@/services/ant-design-pro/api';
 //import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 import {
   //AlipayCircleOutlined,
   LockOutlined,//
   //MobileOutlined,
- // TaobaoCircleOutlined,
+  // TaobaoCircleOutlined,
   UserOutlined,
   //WeiboCircleOutlined,
 } from '@ant-design/icons';
 import {
   LoginForm,
-  
+
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import {  history, useModel } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 
 import React, { useState } from 'react';
@@ -103,13 +103,13 @@ const Login: React.FC = () => {
   });
 
 
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (currentUser: API.CurrentUser) => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       flushSync(() => {
         setInitialState((s: any) => ({
           ...s,
-          currentUser: userInfo,
+          currentUser: currentUser,
         }));
       });
     }
@@ -117,30 +117,18 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // const msg = await login({ ...values, type });\
-      const msg = {
-        jwt: "abccc",
-        user: {
-          username: 'photran'
-        }
-      }
-
-      if (msg.jwt) {
+      const msg = await login({ ...values, type })
+      if (msg.status_code === 200) {
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
-        // intl.formatMessage({
-        //   id: 'pages.login.success',
-        //   defaultMessage: 'Login succes',
-        // });
-
-
-        localStorage.setItem('access_token', msg.jwt);
+        localStorage.setItem('access_token', msg?.data?.token || '');
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+        localStorage.setItem('user', JSON.stringify(msg?.data?.taikhoan));
+        await fetchUserInfo(msg?.data?.taikhoan as API.CurrentUser);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      
+
       setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = configDefaultText['pages.login.failure'];
@@ -151,8 +139,9 @@ const Login: React.FC = () => {
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
+   
   };
-  const { status, type: loginType } = userLoginState;
+  // const { status, type: loginType } = userLoginState;
 
   return (
     <div className={containerClassName}>
@@ -222,25 +211,25 @@ const Login: React.FC = () => {
               // },
             ]}
           />
-
+{/* 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage
-              content = {configDefaultText['pages.login.title']}
-              // {intl.formatMessage({
-              //   id: 'pages.login.accountLogin.errorMessage',
-              //   defaultMessage: 'Error Message',
-              // })}
+              content={configDefaultText['pages.login.title']}
+            {intl.formatMessage({
+              id: 'pages.login.accountLogin.errorMessage',
+              defaultMessage: 'Error Message',
+            })}
             />
-          )}
+          )} */}
           {type === 'account' && (
             <>
               <ProFormText
-                name="identifier"
+                name="username"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder = {configDefaultText['pages.login.accountLogin.username']}
+                placeholder={configDefaultText['pages.login.accountLogin.username']}
                 // {intl.formatMessage({
                 //   id: 'pages.login.username.placeholder',
                 //   defaultMessage: 'Username',
@@ -264,7 +253,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder= {configDefaultText['pages.login.accountLogin.password']}
+                placeholder={configDefaultText['pages.login.accountLogin.password']}
                 // {intl.formatMessage({
                 //   id: 'pages.login.password.placeholder',
                 //   defaultMessage: 'Passwrod',
@@ -285,7 +274,7 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="Mobile" />}
+          {/* {status === 'error' && loginType === 'mobile' && <LoginMessage content="Mobile" />} */}
           {type === 'mobile' && (
             // <>
             //   <ProFormText

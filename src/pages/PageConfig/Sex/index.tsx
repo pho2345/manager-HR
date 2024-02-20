@@ -494,7 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('gioi-tinh')}
+                request={async () => get('/gioi-tinh')}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

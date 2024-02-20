@@ -494,7 +494,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('hoc-ham')} // TODO: lay hoc ham
+                request={async () => get('/hoc-ham')} // TODO: lay hoc ham
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

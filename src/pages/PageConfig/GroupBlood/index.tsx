@@ -18,6 +18,8 @@ import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
+const collection = '/nhom-mau';
+
 const handleAdd = async (fields: API.RuleListItem) => {
     const hide = message.loading('Đang thêm...');
     try {
@@ -354,14 +356,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.Religion>[] = [
+    const columns: ProColumns<GEN.GroupBlood>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.Religion.table.name" defaultMessage="Name" />,
+            title: <FormattedMessage id="page.GroupBlood.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -494,7 +496,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('/ton-giao')} //TODO: lay ton giao
+                request={async () => get(collection)} //TODO: lấy tinh-trang-suc-khoe
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -519,7 +521,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.Religion.modal.titleCreate" defaultMessage="Create Religion" />}
+                title={<FormattedMessage id="page.GroupBlood.modal.titleCreate" defaultMessage="Create GroupBlood" />}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -549,14 +551,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.Religion.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.GroupBlood.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.Religion.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.GroupBlood.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
@@ -564,7 +566,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.Religion.modal.titleUpdate" defaultMessage="Update Religion" />}
+                title={<FormattedMessage id="page.GroupBlood.modal.titleUpdate" defaultMessage="Update GroupBlood" />}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -595,14 +597,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.Religion.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.GroupBlood.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.Religion.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.GroupBlood.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>

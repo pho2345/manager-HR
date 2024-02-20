@@ -164,6 +164,8 @@
     routes: [
       { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
     ],
+    // access: 'admin'
+
   },
   {
     name: 'Cấu hình',
@@ -177,7 +179,7 @@
       { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },
       {
         path: '/config/academic-degrees', name: 'menu.academicDegrees', component: './PageConfig/AcademicDegrees',
-        // access: 'admin'
+       
       },
       { path: '/config/member-family', name: 'menu.memberFamily', component: './PageConfig/MemberFamily' },
       { path: '/config/health-status', name: 'menu.healthStatus', component: './PageConfig/HealthStatus' },
@@ -185,7 +187,24 @@
       { path: '/config/secondary-education-level', name: 'menu.secondaryEducationLevel', component: './PageConfig/SecondaryEducationLevel' },
       { path: '/config/professional-level', name: 'menu.professionalLevel', component: './PageConfig/ProfessionalLevel' },
       { path: '/config/rank-salary', name: 'menu.rankSalary', component: './PageConfig/RankSalary' },
+      { path: '/config/group-blood', name: 'menu.groupBlood', component: './PageConfig/GroupBlood' },
+      {
+        path: '/config',
+        redirect: '/config/nation',
+      }
     ],
+    //  access: 'admin'
+  },
+
+  {
+    name: 'Profile',
+    icon: 'table',
+    path: '/profile',
+    menuHeaderRender: false,
+    routes: [
+      { path: '/profile', name: 'menu.profile', component: './Profile' },
+    ],
+    // access: 'admin'
   },
   {
     path: '/',

@@ -188,6 +188,8 @@
       { path: '/config/professional-level', name: 'menu.professionalLevel', component: './PageConfig/ProfessionalLevel' },
       { path: '/config/rank-salary', name: 'menu.rankSalary', component: './PageConfig/RankSalary' },
       { path: '/config/group-blood', name: 'menu.groupBlood', component: './PageConfig/GroupBlood' },
+      { path: '/config/military-ranks', name: 'menu.militaryRanks', component: './PageConfig/MilitaryRanks' },
+      { path: '/config/position', name: 'menu.position', component: './PageConfig/Position' },
       {
         path: '/config',
         redirect: '/config/nation',
@@ -201,9 +203,10 @@
     icon: 'table',
     path: '/profile',
     menuHeaderRender: false,
-    routes: [
-      { path: '/profile', name: 'menu.profile', component: './Profile' },
-    ],
+    component: './Profile',
+    // routes: [
+    //   { path: '/profile', name: 'menu.profile', component: './Profile' },
+    // ],
     // access: 'admin'
   },
   {

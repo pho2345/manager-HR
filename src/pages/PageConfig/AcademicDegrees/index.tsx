@@ -1,4 +1,4 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, get } from '@/services/ant-design-pro/api';
+import { get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -21,7 +21,6 @@ const configDefaultText = configText;
 const handleAdd = async (fields: API.RuleListItem) => {
     const hide = message.loading('Đang thêm...');
     try {
-        await customAPIAdd({ ...fields }, 'categories');
         hide();
         message.success('Thêm thành công');
         return true;
@@ -36,9 +35,6 @@ const handleAdd = async (fields: API.RuleListItem) => {
 const handleUpdate = async (fields: any, id: any) => {
     const hide = message.loading('Đang cập nhật...');
     try {
-        await customAPIUpdate({
-            ...fields
-        }, 'categories', id.current);
         hide();
 
         message.success('Cập nhật thành công');
@@ -56,7 +52,7 @@ const handleRemove = async (selectedRows: any) => {
     if (!selectedRows) return true;
     try {
         const deleteRowss = selectedRows.map((e: any) => {
-            return customAPIDelete(e.id, 'categories')
+           
         })
 
         await Promise.all(deleteRowss);

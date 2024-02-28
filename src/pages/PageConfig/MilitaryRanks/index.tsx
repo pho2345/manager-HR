@@ -1,22 +1,28 @@
-import { customAPIGet, customAPIAdd, customAPIUpdate, customAPIDelete, customAPIGetOne } from '@/services/ant-design-pro/api';
+import {  get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
+    PageContainer,
+    ProFormText,
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
+import React, { Fragment, useRef, useState } from 'react';
 import moment from 'moment';
+import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
+import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
+
+const collection = '/cap-bac-loai-quan-ham-quan-doi';
 
 const handleAdd = async (fields: API.RuleListItem) => {
     const hide = message.loading('Đang thêm...');
     try {
-        await customAPIAdd({ ...fields }, 'categories');
         hide();
         message.success('Thêm thành công');
         return true;
@@ -31,9 +37,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
 const handleUpdate = async (fields: any, id: any) => {
     const hide = message.loading('Đang cập nhật...');
     try {
-        await customAPIUpdate({
-            ...fields
-        }, 'categories', id.current);
+       
         hide();
 
         message.success('Cập nhật thành công');
@@ -51,7 +55,6 @@ const handleRemove = async (selectedRows: any) => {
     if (!selectedRows) return true;
     try {
         const deleteRowss = selectedRows.map((e: any) => {
-            return customAPIDelete(e.id, 'categories')
         })
 
         await Promise.all(deleteRowss);
@@ -65,36 +68,20 @@ const handleRemove = async (selectedRows: any) => {
     }
 };
 
-
-const getP0 = async () => {
-    try {
-        const data = await customAPIGet({}, 'range-weight-zeros/option');
-        return data.data;
-    } catch (error) {
-
-    }
-}
-
-const WGS = (props: any) => {
-    // const [createModalOpen, handleModalOpen] = useState<boolean>(false);
-    // const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+const TableList: React.FC = () => {
+    const [createModalOpen, handleModalOpen] = useState<boolean>(false);
+    const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
+    const [openWgs, setOpenWgs] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    // const refIdCateogry = useRef<any>();
-    // const [form] = Form.useForm<any>();
-    const [rangeP0, setRangeP0] = useState<any>([]);
+    const refIdCateogry = useRef<any>();
+    const refNameCategory = useRef<any>();
+    const [form] = Form.useForm<any>();
+
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
-    useEffect(() => {
-        const getData = async () => {
-            const getOptionP0 = await getP0();
-            setRangeP0(getOptionP0);
-        };
-
-        getData();
-    }, []);
+    const [openAwg, setOpenAwg] = useState<boolean>(false);
 
 
     const confirm = (entity: any) => {
@@ -175,8 +162,8 @@ const WGS = (props: any) => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -365,91 +352,110 @@ const WGS = (props: any) => {
     });
 
 
-    const columns: ProColumns[] = [
+    const columns: ProColumns<GEN.militaryRanks>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
-            valueType: 'index',
+            valueType: 'indexBorder',
         },
         {
-            title: 'Slot',
-            key: 'slot',
-            dataIndex: 'slot',
-            render: (_, entity: any) => {
-                ;
+            title: <FormattedMessage id="page.militaryRanks.table.name" defaultMessage="Name" />,
+            key: 'name',
+            dataIndex: 'name',
+            render: (_, entity) => {
                 return (
-                    <> {entity?.textSlot}</>
+                    <> {entity?.name}</>
                 );
             },
             width: '30vh',
+            ...getColumnSearchProps('name')
         },
         {
-            title: 'Tăng trọng tiêu chuẩn (kg)',
-            dataIndex: 'rate',
-            valueType: 'textarea',
-            key: 'rate',
-            renderText: (_, text: any) => text?.rate,
-            align: 'center'
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, text) => text?.create_at,
+            // ...getColumnSearchProps('name')
         },
+
+
         {
-            title: 'Khoảng cân nặng P0',
-            dataIndex: 'rangeWeightZero',
+            title: configDefaultText['titleOption'],
+            dataIndex: 'atrributes',
             valueType: 'textarea',
-            key: 'rangeWeightZero',
-            width: '20vh',
-            renderText: (_, text: any) => text?.rangeWeightZero,
-            filters: rangeP0,
-            onFilter: (value, record) => {
-                if (value === record.rangeWeightZeroId) {
-                    return record;
-                }
-            },
-            // ...getColumnSearchRange()
+            key: 'option',
+            align: 'center',
+            render: (_, entity: any) => {
+
+                // const menu = (
+                //     <Menu>
+                //         <Menu.Item key="1"
+                //             onClick={() => {
+                //                 handleUpdateModalOpen(true);
+                //                 refIdCateogry.current = entity.id;
+                //                 form.setFieldsValue({
+                //                     code: entity?.attributes?.code,
+                //                     name: entity?.attributes?.name
+                //                 })
+                //             }}
+                //         >{configDefaultText['buttonUpdate']}</Menu.Item>
+
+                //         <Menu.Item key="2"
+                //             onClick={() => {
+                //                 setOpenWgs(true);
+                //                 refIdCateogry.current = entity.id;
+                //                 refNameCategory.current = entity.attributes.name;
+                //             }}
+                //         >Tăng trọng tiêu chuẩn</Menu.Item>
+
+                //         <Menu.Item key="2"
+                //             onClick={() => {
+                //                 setOpenAwg(true);
+                //                 refIdCateogry.current = entity.id;
+                //                 refNameCategory.current = entity.attributes.name;
+                //             }}
+                //         >Tăng trọng trung bình</Menu.Item>
+
+
+
+                //     </Menu>
+                // );
+                // return (
+                //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+                //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+                //             {configDefaultText['handle']}
+                //         </a>
+                //     </Dropdown>
+                // );
+
+                return (
+                    <Tooltip title={configDefaultText['buttonUpdate']}>
+                        <Button
+                            style={{
+                                border: 'none'
+                            }}
+
+                            onClick={async () => {
+                                handleUpdateModalOpen(true);
+                                // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
+                                form.setFieldsValue({
+                                })
+                            }}
+                            icon={<MdOutlineEdit />}
+                        />
+                    </Tooltip>)
+            }
         },
     ];
 
 
-    // function renderTableAlert(selectedRowKeys: any) {
-    //     return (
-    //         <Fragment>
-    //             Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-    //         </Fragment>
-    //     );
-    // }
 
-
-    // function renderTableAlertOption(selectedRows: any) {
-    //     return (
-    //         <>
-    //             <Fragment>
-    //                 <Button onClick={async () => {
-    //                     confirm(selectedRows);
-    //                 }}>Xóa</Button>
-    //             </Fragment>
-    //         </>
-    //     );
-    // }
 
 
     return (
-        <ModalForm
-            title={`Giống: ${props.nameCategory}`}
-            width={window.innerWidth * 0.8}
-            submitter={false}
-            open={props.openModal}
-            modalProps={{
-                destroyOnClose: true,
-                onCancel: () => {
-                    props.onCloseModal();
-                },
-            }}
-
-        >
+        <PageContainer>
             <ProTable
-                headerTitle={`Tăng trọng tiêu chuẩn`}
-                scroll={{
-                    x: window.innerWidth * 0.6
-                }}
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
@@ -461,20 +467,18 @@ const WGS = (props: any) => {
                         setting: {
                             checkable: true
                         }
-
                     }
                 }
-                // toolBarRender={() => [
-                //     <Button
-                //         type='primary'
-                //         key='primary'
-                //         onClick={() => {
-                //             handleModalOpen(true);
-                //         }}
-                //     >
-                //         <PlusOutlined /> {configDefaultText['buttonAdd']}
-                //     </Button>,
-                // ]}
+                toolBarRender={() => [
+                    <Button
+                        type='primary'
+                        key='primary'
+                        onClick={() => {
+                            handleModalOpen(true);
+                        }}>
+                        <PlusOutlined /> {configDefaultText['buttonAdd']}
+                    </Button>,
+                ]}
                 toolbar={{
                     settings: [{
                         key: 'reload',
@@ -487,14 +491,8 @@ const WGS = (props: any) => {
                         }
                     }]
                 }}
-                request={async () => {
-                    const data = await customAPIGetOne(props.categoryId, 'categories/get-wgs');
-                    return {
-                        data: data,
-                        success: true,
-                        total: data.length || 0
-                    }
-                }}
+
+                request={async () => get(collection)} //TODO: lấy tinh-trang-suc-khoe
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -505,19 +503,112 @@ const WGS = (props: any) => {
                     }
                 }}
                 columns={columns}
-                rowSelection={false}
+                rowSelection={{
+                }}
 
-            // tableAlertRender={({ selectedRowKeys }: any) => {
-            //     return renderTableAlert(selectedRowKeys);
-            // }}
+                tableAlertRender={({ selectedRowKeys }: any) => {
+                    return renderTableAlert(selectedRowKeys);
+                }}
 
-            // tableAlertOptionRender={({ selectedRows }: any) => {
-            //     return renderTableAlertOption(selectedRows)
-            // }}
+                tableAlertOptionRender={({ selectedRows }: any) => {
+                    return renderTableAlertOption(selectedRows)
+                }}
             />
 
-        </ModalForm>
+            <ModalForm
+                form={form}
+                title={<FormattedMessage id="page.militaryRanks.modal.titleCreate" defaultMessage="Create militaryRanks" />}
+                width={window.innerWidth * 0.3}
+                open={createModalOpen}
+                modalProps={{
+                    destroyOnClose: true,
+                    onCancel: () => {
+                        handleModalOpen(false)
+                    },
+                }}
+                onFinish={async (value) => {
+                    const success = await handleAdd(value as API.RuleListItem);
+                    if (success) {
+                        handleModalOpen(false);
+                        form.resetFields();
+                        if (actionRef.current) {
+                            actionRef.current.reload();
+                        }
+                    }
+                }}
+
+                submitter={{
+                    searchConfig: {
+                        resetText: configDefaultText['buttonClose'],
+                        submitText: configDefaultText['buttonAdd'],
+                    },
+                }}
+            >
+                <Row gutter={24} >
+                    <Col span={24} >
+                        <ProFormText
+                            label={<FormattedMessage id="page.militaryRanks.table.name" defaultMessage="Name" />}
+                            // width='md'
+                            name='name'
+                            placeholder={`Tên đối tượng`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: <FormattedMessage id="page.militaryRanks.require.name" defaultMessage="Name" />
+                                },
+                            ]} />
+                    </Col>
+                </Row>
+            </ModalForm>
+
+            <ModalForm
+                title={<FormattedMessage id="page.militaryRanks.modal.titleUpdate" defaultMessage="Update militaryRanks" />}
+                form={form}
+                width={window.innerWidth * 0.3}
+                open={updateModalOpen}
+                modalProps={{
+                    destroyOnClose: true,
+                    onCancel: () => {
+                        handleUpdateModalOpen(false)
+                    },
+                }}
+                onFinish={async (values: any) => {
+                    const success = await handleUpdate(values as any, refIdCateogry);
+                    if (success) {
+                        handleUpdateModalOpen(false);
+                        form.resetFields();
+                        if (actionRef.current) {
+                            actionRef.current.reload();
+                        }
+                    }
+                }}
+
+                submitter={{
+                    searchConfig: {
+                        resetText: configDefaultText['buttonClose'],
+                        submitText: configDefaultText['buttonUpdate'],
+                    },
+                }}
+            >
+                <Row gutter={24} >
+                    <Col span={24} >
+                        <ProFormText
+                            label={<FormattedMessage id="page.militaryRanks.table.name" defaultMessage="Name" />}
+                            // width='md'
+                            name='name'
+                            placeholder={`Tên đối tượng`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: <FormattedMessage id="page.militaryRanks.require.name" defaultMessage="Name" />
+                                },
+                            ]} />
+                    </Col>
+                </Row>
+            </ModalForm>
+
+        </PageContainer>
     );
 };
 
-export default WGS;
+export default TableList;

@@ -8,14 +8,14 @@ declare namespace API {
     data?: T[]
   }
   type CurrentUser = {
-    "id"?: number,
-    "hoVaten"?: string,
-    "soCCCD"?: string,
-    "username"?: string,
-    "email"?: string,
-    "maSoYeuLyLich"?: string,
-    "role"?: string,
-    "trangThai"?: boolean
+    id?: number,
+    hoVaten?: string,
+    soCCCD?: string,
+    username?: string,
+    email?: string,
+    maSoYeuLyLich?: string,
+    role?: string,
+    trangThai?: boolean
   };
 
   type LoginResult = {
@@ -107,7 +107,7 @@ declare namespace API {
     avatar?: string;
     title?: string;
     status?: string;
-    datetime?: string;
+    Date?: string;
     description?: string;
     type?: NoticeIconItemType;
   };
@@ -207,7 +207,7 @@ declare namespace API {
     chucVuKiemNhiem: string;
     chucVuDangHienTai: string;
     chucVuDangKiemNhiem: string;
-    congVienChinhDuocGiao: string;
+    congViecChinhDuocGiao: string;
     soTruongCongTac: string;
     congViecLamLauNhat: string;
     tienLuong: number;
@@ -290,8 +290,8 @@ declare namespace API {
   type Nation = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   };
 
   type NationList = {
@@ -310,19 +310,33 @@ declare namespace GEN {
     label?: string;
   }
 
+  type militaryRanks = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
+  type Position = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
   type PolicyObject = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
 
   type StateRank = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
 
@@ -331,77 +345,145 @@ declare namespace GEN {
   type Sex = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type AcademicDegrees = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type MemberFamily = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type HealthStatus = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
     title?: string;
   }
 
   type Religion = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type SecondaryEducationLevel = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type ProfessionalLevel = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type RankSalary = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type GroupBlood = {
     id?: number;
     name?: string;
-    create_at?: date;
-    update_at?: date;
+    create_at?: Date;
+    update_at?: Date;
   }
 
   type Employee = {
     id: number,
-    ho_va_ten:  string,
-    sinhNgay: date,
+    ho_va_ten: string,
+    sinhNgay: Date,
     chucVuHienTai: string,
     trinhDoChuyenMon: string,
     ngachNgheNghiep: string,
-    create_at: date,
-    update_at: date,
+    create_at: Date,
+    update_at: Date,
     trang_thai: boolean
+  }
+
+  type Profile = {
+    hovaten: string,
+    gioiTinh: string,
+    cacTenGoiKhac: string,
+    sinhNgay: Date,
+    noiSinh: string,
+    queQuan: string,
+    danToc: string,
+    soCCCD: string,
+    ngayCapCCCD: string,
+    soDienThoai: string,
+    soBHXH: string,
+    soBHYT: string,
+    noiOHienNay: string,
+    thanhPhanGiaDinh: string,
+    ngheNghiepTruocKhiTuyenDung: string,
+    ngayDuocTuyenDungLanDau: string,
+    coQuanToChucDonViTuyenDung: string,
+    ngayVaoCoQuanHienDangCongTac: string,
+    ngayVaoDangCongSanVietNam: string,
+    ngayChinhThuc: string,
+    ngayThamGiaToChucChinhTriXaHoiDauTien:string,
+    ngayNhapNgu: string,
+    ngayXuatNgu: string
+    capBacLoaiQuanHamQuanDoi: string,
+    doiTuongChinhSach: string,
+    trinhDoGiaoDucPhoThong: string,
+    trinhDoChuyenMon: string,
+    hocHam: string,
+    danhHieuNhaNuocPhongTang: string,
+    chucVuHienTai: string,
+    ngayBoNhiem: string,
+    ngayBoNhiemLai: string,
+    duocQuyHoacChucDanh: string,
+    chucVuKiemNhiem: string,
+    chucVuDangHienTai: string,
+    chucVuDangKiemNhiem: string,
+    congViecChinhDuocGiao: string,
+    soTruongCongTac: string,
+    congViecLamLauNhat: string,
+    tienLuong: number,
+    ngachNgheNghiep: string,
+    maSoNgachNgheNghiep: string,
+    ngayBoNhiemNgachNgheNghiep: string,
+    bacLuong: string,
+    heSoLuongNgachNgheNghiep: number,
+    ngayHuongLuongNgachNgheNghiep: string,
+    phanTramHuongLuongNgachNgheNghiep: number,
+    phuCapThamNienVuotKhungNgachNgheNghiep: number,
+    ngayHuongPCTNVKNgachNgheNghiep: string,
+    phuCapChucVu: number,
+    phuCapKiemNhiem: number,
+    phuCapKhac: number,
+    viTriViecLam: string,
+    maSoViTriViecLam: string,
+    bacLuongTriViecLam: number,
+    luongTheoMucTien: number,
+    ngayHuongLuongTheoViTriViecLam: string,
+    phamTramHuongLuong: number,
+    phuCapThamNienVuotKhung: number,
+    ngayHuongPCTNVK: string,
+    tinhTrangSucKhoe: string,
+    chieuCao: number,
+    canNang: number,
+    nhomMau: string,
+    luongThucNhan: number
   }
 
 

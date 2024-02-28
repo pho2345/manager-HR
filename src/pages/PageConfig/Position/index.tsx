@@ -35,6 +35,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
 const handleUpdate = async (fields: any, id: any) => {
     const hide = message.loading('Đang cập nhật...');
     try {
+       
         hide();
 
         message.success('Cập nhật thành công');
@@ -65,7 +66,10 @@ const handleRemove = async (selectedRows: any) => {
     }
 };
 
+const collection = '/chuc-vu'
 const TableList: React.FC = () => {
+
+    
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const [openWgs, setOpenWgs] = useState<boolean>(false);
@@ -349,14 +353,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.MemberFamily>[] = [
+    const columns: ProColumns<GEN.Position>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.MemberFamily.table.name" defaultMessage="Name" />,
+            title: <FormattedMessage id="page.Position.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -489,7 +493,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('/thanh-phan-gia-dinh')} //TODO: lay thanh phan gia dinh
+                request={async () => get(collection)} //TODO: lay ton giao
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -514,7 +518,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.MemberFamily.modal.titleCreate" defaultMessage="Create MemberFamily" />}
+                title={<FormattedMessage id="page.Position.modal.titleCreate" defaultMessage="Create Position" />}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -544,14 +548,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.MemberFamily.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.Position.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.MemberFamily.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.Position.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
@@ -559,7 +563,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.MemberFamily.modal.titleUpdate" defaultMessage="Update MemberFamily" />}
+                title={<FormattedMessage id="page.Position.modal.titleUpdate" defaultMessage="Update Position" />}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -590,14 +594,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.MemberFamily.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.Position.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.MemberFamily.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.Position.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>

@@ -1,10 +1,4 @@
 import {
-  customAPIGet,
-  customAPIAdd,
-  customAPIUpdate,
-  customAPIDelete,
-  customAPIUpload,
-  customAPIGetOne,
   get,
 } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
@@ -46,24 +40,6 @@ const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
     hide();
-
-
-    const cow = await customAPIAdd({ ...fields }, 'cows');
-
-    if (fields?.upload && cow) {
-      const uploadImages = fields?.upload.map((e: any) => {
-        let formdata = new FormData();
-        formdata.append('files', e?.originFileObj);
-        formdata.append('ref', 'api::cow.cow');
-        formdata.append('refId', cow?.id);
-        formdata.append('field', 'photos');
-        return customAPIUpload({
-          data: formdata
-        })
-      });
-      const photoCow = await Promise.all(uploadImages);
-    }
-
     message.success('Thêm thành công');
     return true;
   } catch (error: any) {
@@ -86,9 +62,7 @@ const handleUpdate = async (fields: any, id: any) => {
           formdata.append('ref', 'api::cow.cow');
           formdata.append('refId', id.current);
           formdata.append('field', 'photos');
-          uploadImages.push(customAPIUpload({
-            data: formdata
-          }))
+         
         }
         else {
           photoCowCustom.push(e.uid)
@@ -104,13 +78,7 @@ const handleUpdate = async (fields: any, id: any) => {
       })
     }
     fields.photos = photoCowCustom
-    await customAPIUpdate(
-      {
-        ...fields,
-      },
-      'cows',
-      id.current,
-    );
+   
     hide();
     message.success('Cập nhật thành công');
     return true;
@@ -128,7 +96,6 @@ const handleRemove = async (selectedRows: any) => {
   if (!selectedRows) return true;
   try {
     const deleteRowss = selectedRows.map((e: any) => {
-      return customAPIDelete(e.id, 'cows');
     });
 
     await Promise.all(deleteRowss);
@@ -141,33 +108,6 @@ const handleRemove = async (selectedRows: any) => {
     return false;
   }
 };
-
-const getCategory = async () => {
-  const categories = await customAPIGet({}, 'categories');
-  let data = categories.data.map((e: any) => {
-    return {
-      value: e?.id,
-      label: e?.attributes?.name,
-      text: e?.attributes?.name
-    };
-  });
-  return data;
-};
-
-const getFarm = async () => {
-  const categories = await customAPIGet({}, 'farms');
-  let data = categories.data.map((e: any) => {
-    return {
-      value: e?.id,
-      text: e?.attributes?.name,
-      label: e?.attributes?.name,
-    };
-  });
-  return data;
-};
-
-
-
 
 
 
@@ -1100,30 +1040,7 @@ const TableList: React.FC = () => {
           column={2}
           layout='horizontal'
           size='middle'
-          request={async () => {
-            let cowDetail = await customAPIGetOne(params?.id, 'cows', { 'populate[0]': 'photos', 'populate[1]': 'farm', 'populate[2]': 'category', });
-
-
-            const photo = cowDetail?.data.attributes.photos?.data?.map((e: any) => {
-              return e.attributes.url;
-            })
-            let data = {
-              code: cowDetail?.data.attributes.code,
-              name: cowDetail?.data.attributes.name,
-              age: cowDetail?.data.attributes.age,
-              birthdate: cowDetail?.data.attributes.birthdate,
-              firstWeight: cowDetail?.data.attributes.firstWeight,
-              sex: cowDetail?.data.attributes.sex,
-              farm: cowDetail?.data.attributes.farm?.data.attributes.name,
-              photo: photo
-
-            }
-
-            return Promise.resolve({
-              success: true,
-              data: data
-            });
-          }}
+          
           columns={[
             {
               title: () => {

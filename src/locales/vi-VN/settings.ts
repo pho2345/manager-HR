@@ -84,6 +84,10 @@ export default {
   'menu.Cấu hình.menu.professionalLevel': 'Trình độ chuyên môn',
   'menu.Cấu hình.menu.rankSalary': 'Bậc lương',
   'menu.Cấu hình.menu.groupBlood': 'Nhóm máu',
+  'menu.Cấu hình.menu.militaryRanks': 'Cấp bậc quân hàm',
+  'menu.Cấu hình.menu.position': 'Chức vụ',
+  'menu.Profile.menu.profile': 'Thông tin',
+  'menu.Profile': 'Thông tin',
 
   ...requires,
 
@@ -166,6 +170,16 @@ export default {
      'page.hr.modal.addNew.email': 'Email',
      'page.hr.modal.addNew.name': 'Tên CBVC',
 
+     //militaryRanks
+     'page.militaryRanks.table.name': 'Tên cấp bậc quân hàm',
+     'page.militaryRanks.modal.titleCreate': 'Tạo mới cấp bậc quân hàm',
+     'page.militaryRanks.modal.titleUpdate': 'Cập nhật cấp bậc quân hàm',
+
+     //militaryRanks
+     'page.Position.table.name': 'Tên chức vụ',
+     'page.Position.modal.titleCreate': 'Tạo mới chức vụ',
+     'page.Position.modal.titleUpdate': 'Cập nhật chức vụ',
+
      //PAGE PROFILE
      'page.profile.name': 'Họ tên',
      'page.profile.diffName': 'Tên gọi khác',
@@ -179,13 +193,14 @@ export default {
      'page.profile.phone': 'Số điện thoại',
      'page.profile.socialInsurance': 'Mã BHXH',
      'page.profile.healthInsurance': 'Số BHYT',
-     'page.profile.tall': 'Chiều cao',
-     'page.profile.weight': 'Cân nặng',
+     'page.profile.tall': 'Chiều cao (cm)',
+     'page.profile.weight': 'Cân nặng (kg)',
      'page.profile.groupBlood': 'Nhóm máu',
 
      'page.profile.accommodationToday': 'Nơi ở hiện nay',
      'page.profile.card.tilte.job': 'Biên chế, Chức vụ, Ngạch, Bậc',
      'page.profile.card.tilte.': 'Nơi ở hiện nay',
+     'page.profile.card.tilte.basicInfor': 'Thông tin cơ bản',
 
      'page.profile.beforeJob': 'Nghề nghiệp trước khi tuyển dụng',
      'page.profile.dateFirstJob': 'Ngày được tuyển dụng lần đầu',
@@ -224,14 +239,15 @@ export default {
      'page.profile.allowancePosition': 'Phụ cấp chức vụ',
      'page.profile.allowanceChargePosition': 'Phụ cấp kiêm nhiệm',
      'page.profile.allowanceOther': 'Phụ cấp khác',
-     'page.profile.workplace': 'Vị trí việc làm',
-     'page.profile.codeWorkplace': 'Mã số vị trí việc làm',
-     'page.profile.rankSalaryWorkSpace': 'Bậc lương trí việc làm',
+     'page.profile.workplace': 'Vị trí công việc',
+     'page.profile.codeWorkplace': 'Mã số vị trí công việc',
+     'page.profile.rankSalaryWorkSpace': 'Bậc lương trí công việc',
      'page.profile.salaryMoney': 'Lương',
      'page.profile.dateGetSalaryWorkSpace': 'Ngày hưởng lương',
      'page.profile.percentSalaryWorkSpace': 'Phần trăm hưởng lương',
      'page.profile.allowancePass': 'Phụ cấp vượt khung',
      'page.profile.dadteGetSalaryAllowancePass': 'Ngày hưởng phụ cấp vượt khung',
+     'page.profile.membership': 'Thành phần gia đình',
 
 
 

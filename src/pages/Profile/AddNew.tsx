@@ -38,8 +38,17 @@ const disabledDate = (current: any) => {
 interface propsAddNew {
   display: boolean;
   onChangeDisplay: (params: boolean) => void;
-  religion?: [] | GEN.Option[]
-  sex?: [] | GEN.Option[]
+  religion?: [] | GEN.Option[];
+  sex?: [] | GEN.Option[];
+  position?: [] | GEN.Option[];
+  groupBlood?: [] | GEN.Option[];
+  policyObject?: [] | GEN.Option[];
+  secondaryEducationLevel?: [] | GEN.Option[];
+  professionalLevel?: [] | GEN.Option[];
+  stateRank?: [] | GEN.Option[];
+  academicDegrees?: [] | GEN.Option[];
+  militaryRanks?: [] | GEN.Option[];
+  membership?: [] | GEN.Option[];
 }
 
 const handleAdd = async (fields: any) => {
@@ -105,7 +114,7 @@ export default (props: propsAddNew) => {
           );
         }}
       >
-        <StepsForm.StepForm<{
+        {/* <StepsForm.StepForm<{
           name: string;
         }>
           name="base"
@@ -125,29 +134,25 @@ export default (props: propsAddNew) => {
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
               <ProFormText
-                // className="w-full"
-                name="name"
-                label={configDefaultText["page.listCow.column.name"]}
+                name="hovaten"
+                label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}
                 placeholder={configDefaultText["page.listCow.column.name"]}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: configDefaultText["page.listCow.required.name"] },
+                  { required: true, message: <FormattedMessage id="page.profile.name" defaultMessage="Họ tên" /> },
                 ]}
               />
             </Col>
 
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect
-                // className="w-full"
                 name="sex"
                 showSearch
 
-                label={configDefaultText["page.listCow.column.sex"]}
-                placeholder={configDefaultText["page.listCow.column.sex"]}
+                label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
+                placeholder={"Giới tính"}
                 options={sex}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  { required: true, message: configDefaultText["page.listCow.required.sex"] }
+                  { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
                 ]}
               />
             </Col>
@@ -158,13 +163,12 @@ export default (props: propsAddNew) => {
               <ProFormSelect
                 className="w-full"
                 name="religion"
-                label={"Dân tộc"}
+                label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                 placeholder={"Dân tộc"}
                 showSearch
                 options={religion}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  { required: true, message: "Dân tộc" }
+                  { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
                 ]}
               />
             </Col>
@@ -187,7 +191,6 @@ export default (props: propsAddNew) => {
                   { required: true, message: configDefaultText["page.listCow.required.birthdate"] },
                 ]}
               />
-
             </Col>
           </Row>
 
@@ -195,42 +198,11 @@ export default (props: propsAddNew) => {
             <Col span={12} className="gutter-row p-0" >
               <ProFormText
                 className="w-full"
-                name="taxId"
-                label={"Mã số thuế"}
-                placeholder={"Mã số thuế"}
+                name="soDienThoai"
+                label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}
+                placeholder={"Số điện thoại"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "Mã số thuế" },
-                ]}
-              />
-
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormText
-                className="w-full"
-                name="bhId"
-                label={"Mã số BHXH"}
-                placeholder={"Mã số BHXH"}
-                rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "Mã số BHXH" },
-                ]}
-              />
-
-            </Col>
-          </Row>
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText
-                className="w-full"
-                name="phone"
-                label={"Điện thoại di động"}
-                placeholder={"Điện thoại di động"}
-                rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "Điện thoại di động" },
+                  { required: true, message: <FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" /> },
                 ]}
               />
             </Col>
@@ -238,12 +210,11 @@ export default (props: propsAddNew) => {
             <Col span={12} className="gutter-row p-0">
               <ProFormText
                 className="w-full"
-                name="phoneOrgan"
-                label={"Điện thoại cơ quan"}
-                placeholder={"Điện thoại cơ quan"}
+                name="soBHXH"
+                label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}
+                placeholder={"Mã BHXH"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "Điện thoại cơ quan" },
+                  { required: true, message: <FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" /> },
                 ]}
               />
             </Col>
@@ -253,12 +224,11 @@ export default (props: propsAddNew) => {
             <Col span={12} className="gutter-row p-0" >
               <ProFormText
                 className="w-full"
-                name="email"
-                label={"Email"}
-                placeholder={"Email"}
+                name="soBHYT"
+                label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}
+                placeholder={"Số BHYT"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "Email" },
+                  { required: true, message: <FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" /> },
                 ]}
               />
             </Col>
@@ -266,12 +236,38 @@ export default (props: propsAddNew) => {
             <Col span={12} className="gutter-row p-0">
               <ProFormText
                 className="w-full"
-                name="yim"
-                label={"YIM"}
-                placeholder={"YIM"}
+                name="noiOHienNay"
+                label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}
+                placeholder={"Nơi ở hiện nay"}
                 rules={[
                   // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
-                  { required: true, message: "YIM" },
+                  { required: true, message: <FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className="w-full"
+                name="noiSinh"
+                label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}
+                placeholder={"Nơi sinh"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="queQuan"
+                label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}
+                placeholder={"Quê quán"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" /> },
                 ]}
               />
             </Col>
@@ -279,197 +275,89 @@ export default (props: propsAddNew) => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0">
-              <ProFormSelect
+              <ProFormText
                 className="w-full"
-                name="dv"
-                label={"Đảng viên"}
-                placeholder={"Đảng viên"}
-                showSearch
-                options={[
-                  {
-                    label: "Đực",
-                    value: "male",
-                  },
-                  {
-                    label: "Cái",
-                    value: "female",
-                  },
-                ]}
+                name="soCCCD"
+                label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}
+                placeholder={"CMND/CCCD"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  { required: true, message: "Đảng viên" }
+                  { required: true, message: <FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" /> }
                 ]}
               />
             </Col>
-          </Row>
-
-          <Row gutter={24} className="m-0">
-            <Col span={24} className="gutter-row p-0">
-              <ProFormTextArea
-                label={configDefaultText["page.listCow.column.description"]}
-                placeholder={configDefaultText["page.listCow.column.description"]}
-                name="description"
-                rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  { required: true, message: configDefaultText["page.listCow.required.description"] }
-                ]}
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
                 fieldProps={{
-                  maxLength: 500
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
                 }}
+                name="ngayCapCCCD"
+                label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}
+                placeholder={"Ngày cấp CCCD/CMND"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" /> },
+                ]}
               />
             </Col>
           </Row>
-
 
           <Row gutter={24} className="m-0">
-            <Col span={8} className="gutter-row p-0" >
-              <ProFormSelect
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
                 className="w-full"
-                name="province"
-                label={<FormattedMessage id="page.province" defaultMessage="Tỉnh thành" />}
-                placeholder={"Dân tộc"}
-                showSearch
-                options={[
-                  {
-                    label: "Đực",
-                    value: "male",
-                  },
-                  {
-                    label: "Cái",
-                    value: "female",
-                  },
-                ]}
+                name="cacTenGoiKhac"
+                label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}
+                placeholder={"Tên gọi khác"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  // { required: true, message: "Dân tộc" }
+                  { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
                 ]}
               />
             </Col>
 
-            <Col span={8} className="gutter-row p-0">
-              <ProFormSelect
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
                 className="w-full"
-                name="province"
-                label={<FormattedMessage id="page.district" defaultMessage="Quận huyện" />}
-                placeholder={"Dân tộc"}
-                showSearch
-                options={[
-                  {
-                    label: "Đực",
-                    value: "male",
-                  },
-                  {
-                    label: "Cái",
-                    value: "female",
-                  },
-                ]}
+                name="chieuCao"
+                label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}
+                placeholder={"Chiều cao"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  // { required: true, message: "Dân tộc" }
-                ]}
-              />
-            </Col>
-            <Col span={8} className="gutter-row p-0">
-              <ProFormSelect
-                className="w-full"
-                name="province"
-                label={<FormattedMessage id="page.ward" defaultMessage="Xã phường" />}
-                showSearch
-                placeholder={"Xã phường"}
-                options={[
-                  {
-                    label: "Đực",
-                    value: "male",
-                  },
-                  {
-                    label: "Cái",
-                    value: "female",
-                  },
-                ]}
-                rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                  // { required: true, message: "Dân tộc" }
+                  { required: true, message: <FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" /> }
                 ]}
               />
             </Col>
           </Row>
-        </StepsForm.StepForm>
 
-        <StepsForm.StepForm
-          name="base1"
-          title="Biên chế; Chức vụ; Ngạch, bậc;"
-          onFinish={async () => {
-            await waitTime(2000);
-            return true;
-          }}
-        >
-          <ProCard
-            title={<FormattedMessage id="page.contract" defaultMessage="Contract" />}
-            bordered
-            headerBordered
-            collapsible
-            style={{
-              marginBlockEnd: 16,
-              maxWidth: "100%",
-            }}
-          >
-            <ProFormSelect
-              className="w-full"
-              name="contract"
-              label={<FormattedMessage id="page.contract" defaultMessage="Contract" />}
-              placeholder={""}
-              options={[
-                {
-                  label: "Đực",
-                  value: "male",
-                },
-                {
-                  label: "Cái",
-                  value: "female",
-                },
-              ]}
-              showSearch
-              rules={[
-                // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                // { required: true, message: "Dân tộc" }
-              ]}
-            />
-          </ProCard>
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="canNang"
+                label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}
+                placeholder={"Cân nặng"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
+                ]}
+              />
+            </Col>
 
-          <ProCard
-            title={<FormattedMessage id="page.position" defaultMessage="Position" />}
-            bordered
-            headerBordered
-            collapsible
-            style={{
-              maxWidth: "100%",
-              marginBlockEnd: 16,
-            }}
-          >
-            <ProFormSelect
-              className="w-full"
-              name="position"
-              label={<FormattedMessage id="page.position" defaultMessage="Position" />}
-              placeholder={""}
-              options={[
-                {
-                  label: "Đực",
-                  value: "male",
-                },
-                {
-                  label: "Cái",
-                  value: "female",
-                },
-              ]}
-              showSearch
-              rules={[
-                // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                // { required: true, message: "Dân tộc" }
-              ]}
-            />
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="nhomMau"
+                label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}
+                placeholder={"Chiều cao"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
+                ]}
+              />
+            </Col>
+          </Row>
 
-          </ProCard>
-        </StepsForm.StepForm>
+        </StepsForm.StepForm> */}
+
+      
 
         <StepsForm.StepForm
           name="base2"
@@ -478,73 +366,190 @@ export default (props: propsAddNew) => {
             await waitTime(2000);
             return true;
           }}
+          className="w-full"
         >
-          <ProCard
-            title={<FormattedMessage id="page.level" defaultMessage="Level" />}
-            bordered
-            headerBordered
-            collapsible
-            style={{
-              marginBlockEnd: 16,
-              maxWidth: "100%",
-            }}
-          >
-            <ProFormSelect
-              className="w-full"
-              name="contract"
-              label={<FormattedMessage id="page.level.study" defaultMessage="Academic level" />}
-              placeholder={""}
-              options={[
-                {
-                  label: "Đực",
-                  value: "male",
-                },
-                {
-                  label: "Cái",
-                  value: "female",
-                },
-              ]}
-              showSearch
-              rules={[
-                // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                // { required: true, message: "Dân tộc" }
-              ]}
-            />
-          </ProCard>
 
-          <ProCard
-            title={<FormattedMessage id="page.position" defaultMessage="Position" />}
-            bordered
-            headerBordered
-            collapsible
-            style={{
-              marginBlockEnd: 16,
-              maxWidth: "100%",
-            }}
-          >
-            <ProFormSelect
-              className="w-full"
-              name="position"
-              label={<FormattedMessage id="page.position" defaultMessage="Position" />}
-              placeholder={""}
-              options={[
-                {
-                  label: "Đực",
-                  value: "male",
-                },
-                {
-                  label: "Cái",
-                  value: "female",
-                },
-              ]}
-              showSearch
-              rules={[
-                // { required: true, message: <FormattedMessage id="page.listCow.required.sex" defaultMessage="Vui lòng chọn giới tính" /> }
-                // { required: true, message: "Dân tộc" }
-              ]}
-            />
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormDatePicker
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+                name="ngayVaoDangCongSanVietNam"
+                label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}
+                placeholder={"Ngày vào Đảng"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" /> },
+                ]}
+              />
+            </Col>
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormDatePicker
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+                name="ngayNhapNgu"
+                label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}
+                placeholder={"Ngày nhập ngũ"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" /> },
+                ]}
+              />
+            </Col>
+          </Row>
 
-          </ProCard>
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormDatePicker
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+                name="ngayVaoDangCongSanVietNam"
+                label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}
+                placeholder={"Ngày xuất ngũ"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormDatePicker
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+                name="ngayThamGiaToChucChinhTriXaHoiDauTien"
+                label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}
+                placeholder={"Ngày tham gia tổ chức chính trị - xã hội đầu tiên"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" /> },
+                ]}
+              />
+            </Col>
+
+          </Row>
+
+          <Row gutter={24} className="m-0">
+
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="doiTuongChinhSach"
+                label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}
+                placeholder={"Đối tượng chính sách"}
+                options={props.policyObject}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
+                  // { required: true, message: "Dân tộc" }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="trinhDoGiaoDucPhoThong"
+                label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}
+                placeholder={"Trình độ giáo dục phổ thông"}
+                options={props.secondaryEducationLevel}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="trinhDoChuyenMon"
+                label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}
+                placeholder={"Trình độ chuyên môn"}
+                options={props.professionalLevel}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="danhHieuNhaNuocPhongTang"
+                label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}
+                placeholder={"Danh hiệu nhà nước0"}
+                options={props.stateRank}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="hocHam"
+                label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
+                placeholder={"Học hàm"}
+                options={props.academicDegrees}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="capBacLoaiQuanHamQuanDoi"
+                label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}
+                placeholder={"Cấp bậc quân hàm"}
+                options={props.militaryRanks}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0 w-full" >
+              <ProFormSelect
+                className="w-full"
+                name="thanhPhanGiaDinh"
+                label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}
+                placeholder={"Thành phần gia đình"}
+                options={props.membership}
+                showSearch
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
+                ]}
+              />
+            </Col>
+
+        
+          </Row>
         </StepsForm.StepForm>
 
       </StepsForm>

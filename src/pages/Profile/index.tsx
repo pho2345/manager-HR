@@ -353,7 +353,7 @@ const TableList: React.FC = () => {
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngachNgheNghiep ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{profile?.ngayBoNhiemNgachNgheNghiep ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.heSoLuongNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.soDienThoai ?? ""}</Descriptions.Item> */}
+                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.ngayHuongLuongNgachNgheNghiep ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.phanTramHuongLuongNgachNgheNghiep ?? 0} %</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongPCTNVKNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
@@ -373,7 +373,7 @@ const TableList: React.FC = () => {
 
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiem ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.congViecChinhDuocGiao ?? ""}</Descriptions.Item>
+                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.congViecChinhDuocGiao ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.soTruongCongTac ?? ""}</Descriptions.Item> */}
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.congViecLamLauNhat ?? ""}</Descriptions.Item> */}
               </Descriptions>

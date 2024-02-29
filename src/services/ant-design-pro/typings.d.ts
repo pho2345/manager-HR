@@ -310,11 +310,24 @@ declare namespace GEN {
     label?: string;
   }
 
+
+
   type militaryRanks = {
     id?: number;
     name?: string;
     create_at?: Date;
     update_at?: Date;
+  }
+
+  type Account = {
+    id: number,
+    hoVaten: string,
+    soCCCD: string,
+    username: string,
+    email: string,
+    maSoYeuLyLich: string,
+    role: "ADMIN" | "EMPLOYEE",
+    trangThai: boolean
   }
 
   type Position = {
@@ -439,7 +452,7 @@ declare namespace GEN {
     ngayVaoCoQuanHienDangCongTac: string,
     ngayVaoDangCongSanVietNam: string,
     ngayChinhThuc: string,
-    ngayThamGiaToChucChinhTriXaHoiDauTien:string,
+    ngayThamGiaToChucChinhTriXaHoiDauTien: string,
     ngayNhapNgu: string,
     ngayXuatNgu: string
     capBacLoaiQuanHamQuanDoi: string,

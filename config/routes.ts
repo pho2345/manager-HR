@@ -199,11 +199,22 @@
   },
 
   {
-    name: 'Profile',
-    icon: 'table',
+    name: 'Thông tin cá nhân',
+    icon: 'home',
     path: '/profile',
     menuHeaderRender: false,
     component: './Profile',
+    // routes: [
+    //   { path: '/profile', name: 'menu.profile', component: './Profile' },
+    // ],
+    // access: 'admin'
+  },
+  {
+    name: 'Tài khoản',
+    icon: 'user',
+    path: '/account',
+    menuHeaderRender: false,
+    component: './Account',
     // routes: [
     //   { path: '/profile', name: 'menu.profile', component: './Profile' },
     // ],

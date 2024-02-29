@@ -114,7 +114,7 @@ export default (props: propsAddNew) => {
           );
         }}
       >
-        {/* <StepsForm.StepForm<{
+        <StepsForm.StepForm<{
           name: string;
         }>
           name="base"
@@ -334,7 +334,7 @@ export default (props: propsAddNew) => {
               <ProFormText
                 className="w-full"
                 name="canNang"
-                label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}
+                label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
                 placeholder={"Cân nặng"}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
@@ -355,9 +355,242 @@ export default (props: propsAddNew) => {
             </Col>
           </Row>
 
-        </StepsForm.StepForm> */}
+        </StepsForm.StepForm>
 
-      
+        <StepsForm.StepForm<{
+          name: string;
+        }>
+          name="base1"
+          title="Biên chế, chức vụ, Ngạch, Bậc"
+          stepProps={{
+          }}
+
+          onFinish={async () => {
+            console.log(formRef.current?.getFieldsValue());
+            localStorage.setItem("current", formRef.current?.getFieldsValue());
+            sessionStorage.setItem("current", "1");
+            await waitTime(2000);
+            return true;
+          }}
+
+        >
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormSelect
+                name="ngachNgheNghiep"
+                label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}
+                placeholder={"Ngạch nghề nghiệp"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" /> },
+                ]}
+                options={[]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                name="ngayBoNhiemNgachNgheNghiep"
+                label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}
+                placeholder={"Ngày bổ nhiệm ngạch"}
+               
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+            <ProFormDatePicker
+                name="ngayHuongLuongNgachNgheNghiep"
+                label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
+                placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                // className="w-full
+                // style={{ width: "100%" }}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+                name="ngayHuongPCTNVKNgachNgheNghiep"
+                label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}
+                placeholder={"Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp"}
+                rules={[
+                  //{ required: true, message: <FormattedMessage id="page.listCow.required.birthdate" defaultMessage="Vui lòng chọn ngày sinh" /> },
+                  { required: true, message: <FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormText
+                className="w-full"
+                name="ngheNghiepTruocKhiTuyenDung"
+                label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}
+                placeholder={"Nghề nghiệp trước khi tuyển dụng"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="coQuanToChucDonViTuyenDung"
+                label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}
+                placeholder={"Cơ quan, đơn vị tuyển dụng"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
+                ]}
+                options={[]}
+              />
+
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker
+                className="w-full"
+                name="ngayVaoCoQuanHienDangCongTac"
+                label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
+                placeholder={"Ngày vào cơ quan công tác"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                className="w-full"
+                name="ngayBoNhiem"
+                label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}
+                placeholder={"Ngày bổ nhiệm"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker
+                className="w-full"
+                name="ngayBoNhiemLai"
+                label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}
+                placeholder={"Ngày bổ nhiệm lại"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" /> },
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="chucVuKiemNhiem"
+                label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}
+                placeholder={"Chức vụ kiêm nhiệm"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="duocQuyHoacChucDanh"
+                label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}
+                placeholder={"Được quy hoạch chức danh"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" /> }
+                ]}
+              />
+            </Col>
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                name="chucVuDangHienTai"
+                label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}
+                placeholder={"Chức vụ Đảng hiện tại"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
+                ]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="chucVuDangKiemNhiem"
+                label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}
+                placeholder={"Chức vụ Đảng kiêm nhiệm"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="congViecChinhDuocGiao"
+                label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}
+                placeholder={"Công việc chính"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" /> }
+                ]}
+                options={[]}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="soTruongCongTac"
+                label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
+                placeholder={"Sở trường công tác"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" /> }
+                ]}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="congViecLamLauNhat"
+                label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}
+                placeholder={"Công việc lâu nhất"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" /> }
+                ]}
+              />
+            </Col>
+          </Row>
+
+        </StepsForm.StepForm>
 
         <StepsForm.StepForm
           name="base2"

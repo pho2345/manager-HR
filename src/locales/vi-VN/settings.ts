@@ -88,6 +88,8 @@ export default {
   'menu.Cấu hình.menu.position': 'Chức vụ',
   'menu.Profile.menu.profile': 'Thông tin',
   'menu.Profile': 'Thông tin',
+  'menu.Thông tin cá nhân': 'Thông tin cá nhân',
+  "menu.Tài khoản": "Danh sách tài khoản",
 
   ...requires,
 
@@ -179,6 +181,15 @@ export default {
      'page.Position.table.name': 'Tên chức vụ',
      'page.Position.modal.titleCreate': 'Tạo mới chức vụ',
      'page.Position.modal.titleUpdate': 'Cập nhật chức vụ',
+
+      //Account
+      'page.Account.table.name': 'Họ tên',
+      'page.Account.table.numberIdentify': 'Số CMND/CCCD',
+      'page.Account.table.username': 'Username',
+      'page.Account.table.email': 'Email',
+      'page.Account.table.syll': 'SYLL',
+      'page.Account.table.role': 'Quyền',
+      'page.Account.table.status': 'Trạng thái',
 
      //PAGE PROFILE
      'page.profile.name': 'Họ tên',

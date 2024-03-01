@@ -77,7 +77,7 @@ export default (props: propsAddNew) => {
       }>
         formRef={formRef}
         onCurrentChange={(value: number) => {
-          console.log("current form", value);
+
         }}
         onFinish={async (value) => {
           console.log("finish form", value);
@@ -602,7 +602,7 @@ export default (props: propsAddNew) => {
               rules={[
                 {
                   required: true,
-                  message: <FormattedMessage id="page.hr.modal.addNew.require.passport" defaultMessage="Name" />
+                  message: <FormattedMessage id="page.hr.modal.addNew.require.passport" defaultMessage="CCCD/CMND" />
                 },
               ]} />
 

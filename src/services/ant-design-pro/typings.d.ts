@@ -18,6 +18,8 @@ declare namespace API {
     trangThai?: boolean
   };
 
+  
+
   type LoginResult = {
     // jwt?: string;
     // status?: string;

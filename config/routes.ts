@@ -169,7 +169,7 @@
   },
   {
     name: 'Cấu hình',
-    icon: 'table',
+    icon: 'setting',
     path: '/config',
     menuHeaderRender: false,
     routes: [

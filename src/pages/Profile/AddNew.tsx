@@ -15,10 +15,11 @@ import {
 } from "@ant-design/pro-components";
 import { FormattedMessage, useModel } from "@umijs/max";
 import { Button, Col, Modal, Row, message } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import configText from "@/locales/configText";
 import moment from "moment";
 import { post } from "@/services/ant-design-pro/api";
+import { useForm } from "antd/lib/form/Form";
 
 const configDefaultText = configText;
 
@@ -35,7 +36,7 @@ const disabledDate = (current: any) => {
   return current && current > moment();
 };
 
-interface propsAddNew {
+interface propAddNew {
   display: boolean;
   onChangeDisplay: (params: boolean) => void;
   religion?: [] | GEN.Option[];
@@ -49,14 +50,13 @@ interface propsAddNew {
   academicDegrees?: [] | GEN.Option[];
   militaryRanks?: [] | GEN.Option[];
   membership?: [] | GEN.Option[];
+  profile: any
 }
 
 const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
     hide();
-
-
     const add = await post('/nhan-vien/them', {}, { ...fields });
     if (add) {
       message.success('Thêm thành công');
@@ -65,18 +65,46 @@ const handleAdd = async (fields: any) => {
     return true;
   } catch (error: any) {
     message.success('Thất bại');
-    // message.error(error?.response?.data?.error?.message);
     return false;
   }
 };
 
 
-export default (props: propsAddNew) => {
+export default (props: propAddNew) => {
   const formRef = useRef<ProFormInstance>();
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const { religion, sex } = props;
+  const [form] = useForm<ProFormInstance>();
 
+  const handleSession = (value: any) => {
+    const getSessionInfo = sessionStorage.getItem(ID_SAVE_INFO);
+    if(getSessionInfo) {
+      const parseSessionInfor = JSON.parse(getSessionInfo);
+      if(value?.hovaten) {
+        sessionStorage.setItem(ID_SAVE_INFO, JSON.stringify(value)); // TODO: CREATE NEW SESSION WHEN CHECK FORM 1
+        return;
+      }
+      else {
+        const newValueSession = {
+          ...parseSessionInfor,
+          ...value
+        };
+        sessionStorage.setItem(ID_SAVE_INFO, JSON.stringify(newValueSession));
+      }
+    }
+    else {
+      sessionStorage.setItem(ID_SAVE_INFO, JSON.stringify(value));
+    }
+  }
+
+  useEffect(() => {
+    if(formRef.current && props.display){
+      formRef.current.setFieldsValue({
+        ...props.profile
+      })
+    }
+  }, []);
 
   return (
 
@@ -86,16 +114,14 @@ export default (props: propsAddNew) => {
       }>
         formRef={formRef}
         onCurrentChange={(value: number) => {
-          console.log("current form", value);
         }}
         onFinish={async (value) => {
-          console.log("finish form", value);
           await waitTime(1000);
-          message.success("提交成功");
+          message.success("Thành công");
         }}
         formProps={{
           validateMessages: {
-            required: "此项为必填项",
+            required: "Lỗi",
           },
         }}
 
@@ -122,14 +148,9 @@ export default (props: propsAddNew) => {
           stepProps={{
           }}
 
-          onFinish={async () => {
-            console.log(formRef.current?.getFieldsValue());
-            localStorage.setItem("current", formRef.current?.getFieldsValue());
-            sessionStorage.setItem("current", "1");
-            await waitTime(2000);
-            return true;
+          onFinish={async (value: object) => {
+            handleSession(value);
           }}
-
         >
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
@@ -175,8 +196,6 @@ export default (props: propsAddNew) => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                // className="w-full
-                // style={{ width: "100%" }}
                 fieldProps={{
                   style: {
                     width: "100%"
@@ -187,7 +206,6 @@ export default (props: propsAddNew) => {
                 label={configDefaultText["page.listCow.column.birthdate"]}
                 placeholder={configDefaultText["page.listCow.column.birthdate"]}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id="page.listCow.required.birthdate" defaultMessage="Vui lòng chọn ngày sinh" /> },
                   { required: true, message: configDefaultText["page.listCow.required.birthdate"] },
                 ]}
               />
@@ -240,7 +258,6 @@ export default (props: propsAddNew) => {
                 label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}
                 placeholder={"Nơi ở hiện nay"}
                 rules={[
-                  // { required: true, message: <FormattedMessage id="page.listCow.required.name" defaultMessage="Vui lòng nhập tên" /> },
                   { required: true, message: <FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" /> },
                 ]}
               />
@@ -347,10 +364,11 @@ export default (props: propsAddNew) => {
                 className="w-full"
                 name="nhomMau"
                 label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}
-                placeholder={"Chiều cao"}
+                placeholder={"Nhóm máu"}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
                 ]}
+                options={props.groupBlood}
               />
             </Col>
           </Row>
@@ -367,8 +385,6 @@ export default (props: propsAddNew) => {
 
           onFinish={async () => {
             console.log(formRef.current?.getFieldsValue());
-            localStorage.setItem("current", formRef.current?.getFieldsValue());
-            sessionStorage.setItem("current", "1");
             await waitTime(2000);
             return true;
           }}
@@ -387,12 +403,17 @@ export default (props: propsAddNew) => {
               />
             </Col>
 
-            <Col span={12} className="gutter-row p-0">
+            <Col span={12} className="gutter-row p-0 w-full">
               <ProFormDatePicker
                 name="ngayBoNhiemNgachNgheNghiep"
                 label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}
                 placeholder={"Ngày bổ nhiệm ngạch"}
-               
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
                 ]}
@@ -401,7 +422,7 @@ export default (props: propsAddNew) => {
           </Row>
 
           <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
+            <Col span={12} className="gutter-row p-0 w-full" >
             <ProFormDatePicker
                 name="ngayHuongLuongNgachNgheNghiep"
                 label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
@@ -414,8 +435,6 @@ export default (props: propsAddNew) => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormDatePicker
-                // className="w-full
-                // style={{ width: "100%" }}
                 fieldProps={{
                   style: {
                     width: "100%"
@@ -426,7 +445,6 @@ export default (props: propsAddNew) => {
                 label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}
                 placeholder={"Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp"}
                 rules={[
-                  //{ required: true, message: <FormattedMessage id="page.listCow.required.birthdate" defaultMessage="Vui lòng chọn ngày sinh" /> },
                   { required: true, message: <FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" /> },
                 ]}
               />
@@ -471,6 +489,12 @@ export default (props: propsAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
                 ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
               />
             </Col>
 
@@ -483,6 +507,12 @@ export default (props: propsAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" /> },
                 ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
               />
             </Col>
           </Row>
@@ -497,6 +527,12 @@ export default (props: propsAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" /> },
                 ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
               />
             </Col>
 
@@ -726,7 +762,7 @@ export default (props: propsAddNew) => {
                 className="w-full"
                 name="danhHieuNhaNuocPhongTang"
                 label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}
-                placeholder={"Danh hiệu nhà nước0"}
+                placeholder={"Danh hiệu nhà nước"}
                 options={props.stateRank}
                 showSearch
                 rules={[
@@ -789,7 +825,7 @@ export default (props: propsAddNew) => {
     ) : (<>
 
       <ModalForm
-        // form={form}
+        form={form}
         title={<FormattedMessage id="page.hr.modal.addNew.title" defaultMessage="Tạo CBVC" />}
         width={window.innerWidth * 0.3}
         open={props.display}

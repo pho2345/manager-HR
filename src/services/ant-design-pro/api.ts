@@ -76,21 +76,18 @@ const dataTest = {
 }
 
 export async function currentUser(options?: { [key: string]: any }) {
-  // const data = await request<API.CurrentUser>(SERVERURL + '/api/users/me', {
-  //   method: 'GET',
-  //   ...(options || {}),
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-  //   },
-  // });
+  const data = await request<any>(SERVERURL + '/ca-nhan/tai-khoan', {
+    method: 'GET',
+    ...(options || {}),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  });
 
-  const current: API.CurrentUser = JSON.parse(localStorage.getItem('user') ?? "");
-
-
-  return new Promise((res) => {
-    return res(current)
-  })
+  if(data?.data){
+    return data.data as API.CurrentUser
+  }
 }
 
 export async function outLogin() {

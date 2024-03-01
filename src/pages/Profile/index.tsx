@@ -229,9 +229,7 @@ const TableList: React.FC = () => {
         setAcademicDegrees(getAcademicDegrees);
         setMilitaryRanks(getMilitaryRanks);
         setMembership(getMembership);
-
-        // Nếu bạn muốn thực hiện các hành động khác sau khi set giá trị cho state
-        // thì đặt ở đây
+        getProfile(setProfile, setLoading);
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -314,27 +312,27 @@ const TableList: React.FC = () => {
           >
             <ProCard title={<FormattedMessage id="page.profile.card.tilte.basicInfor" defaultMessage="Thông tin cơ bản" />} type="inner" bordered>
               <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>{profile?.hovaten ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>{profile?.cacTenGoiKhac ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{moment(profile?.sinhNgay).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>{profile?.hovaten ?? ""}</Descriptions.Item> 
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>{profile?.cacTenGoiKhac ?? ""}</Descriptions.Item> 
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{moment(profile?.sinhNgay).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> 
 
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{profile?.gioiTinh ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>{profile?.soCCCD ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{moment(profile?.ngayCapCCCD).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{profile?.gioiTinh ?? ""}</Descriptions.Item> 
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>{profile?.soCCCD ?? ""}</Descriptions.Item> 
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{moment(profile?.ngayCapCCCD).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> 
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danToc ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}>{profile?.noiSinh ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}>{profile?.queQuan ?? ""}</Descriptions.Item> */}
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danToc ?? ""}</Descriptions.Item> 
+                 <Descriptions.Item label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}>{profile?.noiSinh ?? ""}</Descriptions.Item> 
+                <Descriptions.Item label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}>{profile?.queQuan ?? ""}</Descriptions.Item>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}>{profile?.soDienThoai ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}>{profile?.soBHXH ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}>{profile?.soBHYT ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}>{profile?.soDienThoai ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}>{profile?.soBHXH ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}>{profile?.soBHYT ?? ""}</Descriptions.Item>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}>{profile?.noiOHienNay ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.chieuCao ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.canNang ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.nhomMau ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}>{profile?.noiOHienNay ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.chieuCao ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.canNang ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.nhomMau ?? ""}</Descriptions.Item>
 
               </Descriptions>
             </ProCard>
@@ -349,33 +347,33 @@ const TableList: React.FC = () => {
             >
 
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.maSoNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{profile?.ngayBoNhiemNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.heSoLuongNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.ngayHuongLuongNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.phanTramHuongLuongNgachNgheNghiep ?? 0} %</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongPCTNVKNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.maSoNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{profile?.ngayBoNhiemNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.heSoLuongNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.ngayHuongLuongNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.phanTramHuongLuongNgachNgheNghiep ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongPCTNVKNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
               </Descriptions>
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Chức vụ"}>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.coQuanToChucDonViTuyenDung ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}>{moment(profile?.ngayVaoCoQuanHienDangCongTac).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.coQuanToChucDonViTuyenDung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}>{moment(profile?.ngayVaoCoQuanHienDangCongTac).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.ngayBoNhiem).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.ngayBoNhiemLai).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.ngayBoNhiem).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.ngayBoNhiemLai).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.duocQuyHoacChucDanh ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.duocQuyHoacChucDanh ?? ""}</Descriptions.Item>
 
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiem ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.congViecChinhDuocGiao ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.soTruongCongTac ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.congViecLamLauNhat ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiem ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.congViecChinhDuocGiao ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.soTruongCongTac ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.congViecLamLauNhat ?? ""}</Descriptions.Item>
               </Descriptions>
 
 
@@ -424,16 +422,16 @@ const TableList: React.FC = () => {
               defaultCollapsed
             >
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Lưởng"}>
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}>{moment(profile?.ngayVaoDangCongSanVietNam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}>{moment(profile?.ngayNhapNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}>{moment(profile?.ngayXuatNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}>{profile?.doiTuongChinhSach ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}>{moment(profile?.ngayThamGiaToChucChinhTriXaHoiDauTien).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}>{profile?.trinhDoGiaoDucPhoThong ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}>{profile?.trinhDoChuyenMon ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}>{profile?.danhHieuNhaNuocPhongTang ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}>{profile?.capBacLoaiQuanHamQuanDoi ?? ""}</Descriptions.Item> */}
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}>{profile?.hocHam ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}>{moment(profile?.ngayVaoDangCongSanVietNam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}>{moment(profile?.ngayNhapNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}>{moment(profile?.ngayXuatNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}>{profile?.doiTuongChinhSach ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}>{moment(profile?.ngayThamGiaToChucChinhTriXaHoiDauTien).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}>{profile?.trinhDoGiaoDucPhoThong ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}>{profile?.trinhDoChuyenMon ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}>{profile?.danhHieuNhaNuocPhongTang ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}>{profile?.capBacLoaiQuanHamQuanDoi ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}>{profile?.hocHam ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}>{profile?.thanhPhanGiaDinh ?? ""}</Descriptions.Item>
               </Descriptions>
 
@@ -453,6 +451,7 @@ const TableList: React.FC = () => {
             stateRank={stateRank}
             sex={sex}
             academicDegrees={academicDegrees}
+            profile={profile}
           />
 
         </PageContainer>

@@ -122,7 +122,6 @@ const Login: React.FC = () => {
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
         localStorage.setItem('access_token', msg?.data?.token || '');
         message.success(defaultLoginSuccessMessage);
-        localStorage.setItem('user', JSON.stringify(msg?.data?.taikhoan));
         await fetchUserInfo(msg?.data?.taikhoan as API.CurrentUser);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');

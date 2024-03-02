@@ -18,7 +18,7 @@ declare namespace API {
     trangThai?: boolean
   };
 
-  
+
 
   type LoginResult = {
     // jwt?: string;
@@ -354,6 +354,39 @@ declare namespace GEN {
     update_at?: Date;
   }
 
+  type CivilServant = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+    heSoLuongCongChuc?: number;
+    trangThai?: boolean;
+  }
+
+  type CivilServantRank = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
+
+  type Officer = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+    heSoLuongVienChuc?: number;
+    trangThai?: boolean;
+  }
+
+  type OfficerRank = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
 
 
 
@@ -501,6 +534,26 @@ declare namespace GEN {
     luongThucNhan: number
   }
 
+  type WorkOld = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    chucDanhDonViDiaDiem: string
+    create_at: string
+    update_at: string
+  }
+
+  type Languages = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    tenNgoaiNgu: string,
+    chungChiDuocCap: string,
+    diemSo: number,
+    create_at: string
+    update_at: string
+  }
 
 
 }

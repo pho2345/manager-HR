@@ -380,3 +380,23 @@ export async function post(subSolder: string, values: object, body: object) {
   }
 }
 
+
+export async function patch(subSolder: string, body: object) {
+  const fetchData = await request<any>(SERVERURL + subSolder, {
+    method: 'patch',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    
+    data: {
+      ...body,
+    },
+  });
+  console.log('fetchData', fetchData);
+  // return {
+  //   total: fetchData?.meta?.pagination?.total,
+  //   success: fetchData.data && true,
+  //   data: fetchData.data
+  // }
+}

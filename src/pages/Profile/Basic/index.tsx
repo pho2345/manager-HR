@@ -37,7 +37,7 @@ import {
 import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import AddNew from './AddNew';
+import AddNew from './FormUpdate';
 import { getOption } from '@/services/utils';
 
 
@@ -287,7 +287,7 @@ const TableList: React.FC = () => {
           loading={loading}
           ghost
           header={{
-            title: 'Thông tin',
+            // title: 'Thông tin',
             breadcrumb: {},
           }}
           extra={[

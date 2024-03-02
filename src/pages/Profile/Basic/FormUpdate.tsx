@@ -14,11 +14,11 @@ import {
   StepsForm,
 } from "@ant-design/pro-components";
 import { FormattedMessage, useModel } from "@umijs/max";
-import { Button, Col, Modal, Row, message } from "antd";
+import { Button, Checkbox, Col, Modal, Row, Space, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 import configText from "@/locales/configText";
 import moment from "moment";
-import { post } from "@/services/ant-design-pro/api";
+import { patch, post } from "@/services/ant-design-pro/api";
 import { useForm } from "antd/lib/form/Form";
 
 const configDefaultText = configText;
@@ -70,6 +70,20 @@ const handleAdd = async (fields: any) => {
 };
 
 
+const handleUpdate = async (fields: any) => {
+  const hide = message.loading('Đang thêm...');
+  try {
+    hide();
+    const add = await patch('/ca-nhan/so-yeu-ly-lich/cap-nhat', { ...fields });
+
+
+    return true;
+  } catch (error: any) {
+    message.success('Thất bại');
+    return false;
+  }
+};
+
 export default (props: propAddNew) => {
   const formRef = useRef<ProFormInstance>();
   const { initialState } = useModel('@@initialState');
@@ -79,9 +93,9 @@ export default (props: propAddNew) => {
 
   const handleSession = (value: any) => {
     const getSessionInfo = sessionStorage.getItem(ID_SAVE_INFO);
-    if(getSessionInfo) {
+    if (getSessionInfo) {
       const parseSessionInfor = JSON.parse(getSessionInfo);
-      if(value?.hovaten) {
+      if (value?.hovaten) {
         sessionStorage.setItem(ID_SAVE_INFO, JSON.stringify(value)); // TODO: CREATE NEW SESSION WHEN CHECK FORM 1
         return;
       }
@@ -99,7 +113,7 @@ export default (props: propAddNew) => {
   }
 
   useEffect(() => {
-    if(formRef.current && props.display){
+    if (formRef.current && props.display) {
       formRef.current.setFieldsValue({
         ...props.profile
       })
@@ -134,13 +148,16 @@ export default (props: propAddNew) => {
               open={props.display}
               footer={submitter}
               destroyOnClose={false}
+              style={{
+                width: '70vh'
+              }}
             >
               {dom}
             </Modal>
           );
         }}
       >
-        <StepsForm.StepForm<{
+        {/* <StepsForm.StepForm<{
           name: string;
         }>
           name="base"
@@ -373,7 +390,7 @@ export default (props: propAddNew) => {
             </Col>
           </Row>
 
-        </StepsForm.StepForm>
+        </StepsForm.StepForm> */}
 
         <StepsForm.StepForm<{
           name: string;
@@ -383,24 +400,31 @@ export default (props: propAddNew) => {
           stepProps={{
           }}
 
-          onFinish={async () => {
-            console.log(formRef.current?.getFieldsValue());
-            await waitTime(2000);
+          onFinish={async (value: object) => {
+            handleSession(value);
             return true;
           }}
 
         >
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect
+              <Space>
+                <ProFormSelect
                 name="ngachNgheNghiep"
                 label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}
                 placeholder={"Ngạch nghề nghiệp"}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" /> },
                 ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                }}
                 options={[]}
               />
+                <Checkbox />
+              </Space>
             </Col>
 
             <Col span={12} className="gutter-row p-0 w-full">
@@ -423,13 +447,19 @@ export default (props: propAddNew) => {
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0 w-full" >
-            <ProFormDatePicker
+              <ProFormDatePicker
                 name="ngayHuongLuongNgachNgheNghiep"
                 label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
                 placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
                 ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
               />
             </Col>
 
@@ -817,7 +847,7 @@ export default (props: propAddNew) => {
               />
             </Col>
 
-        
+
           </Row>
         </StepsForm.StepForm>
 

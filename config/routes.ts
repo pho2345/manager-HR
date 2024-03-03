@@ -51,7 +51,7 @@
     name: 'Quản lý',
     icon: 'table',
     path: '/hr-manager',
-    menuHeaderRender: false,
+    // menuHeaderRender: false,
     routes: [
       { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
     ],
@@ -62,7 +62,7 @@
     name: 'Cấu hình',
     icon: 'setting',
     path: '/config',
-    menuHeaderRender: false,
+    // menuHeaderRender: false,
     routes: [
       { path: '/config/nation', name: 'menu.nation', component: './PageConfig/Nation' },
       { path: '/config/policy-object', name: 'menu.policyObject', component: './PageConfig/PolicyObject' },
@@ -84,10 +84,16 @@
       { path: '/config/civil-servant-rank', name: 'menu.civilServantRank', component: './PageConfig/CivilServantRank' },
       { path: '/config/officer', name: 'menu.officer', component: './PageConfig/Officer' },
       { path: '/config/officer-rank', name: 'menu.officerRank', component: './PageConfig/OfficerRank' },
-      {
-        path: '/config',
-        redirect: '/config/nation',
-      }
+      { path: '/config/organ', name: 'menu.organ', component: './PageConfig/Organ' },
+      { path: '/config/group-rank-communist-party', name: 'menu.groupRankCommunistParty', component: './PageConfig/GroupRankCommunistParty' },
+      { path: '/config/rank-communist-party', name: 'menu.rankCommunistParty', component: './PageConfig/RankCommunistParty' },
+      { path: '/config/group-communist-party', name: 'menu.groupCommunistParty', component: './PageConfig/GroupCommunistParty' },
+      { path: '/config/type-bonus', name: 'menu.typeBonus', component: './PageConfig/TypeBonus' },
+      { path: '/config/job-position', name: 'menu.jobPosition', component: './PageConfig/JobPosition' },
+      // {
+      //   path: '/config',
+      //   redirect: '/config/nation',
+      // }
     ],
     //  access: 'admin'
   },
@@ -97,9 +103,9 @@
     name: 'Thông tin',
     icon: 'home',
     path: '/profile',
-    menuHeaderRender: false,
+    // menuHeaderRender: true,
     routes: [
-      { path: '/profile/nation', name: 'menu.basic', component: './Profile/Basic' },
+      { path: '/profile/basic', name: 'menu.basic', component: './Profile/Basic' },
       { path: '/profile/work-old', name: 'menu.workOld', component: './Profile/WorkOld' },
        { path: '/profile/lang', name: 'menu.lang', component: './Profile/Languages' },
        { path: '/profile/techno', name: 'menu.tech', component: './Profile/Techno' },
@@ -112,6 +118,7 @@
        { path: '/profile/working-abroad', name: 'menu.workingAbroad', component: './Profile/WorkingAbroad' },
        { path: '/profile/know-army', name: 'menu.knowArmy', component: './Profile/KnowArmy' },
        { path: '/profile/bonus', name: 'menu.bonus', component: './Profile/Bonus' },
+       { path: '/profile/discipline', name: 'menu.discipline', component: './Profile/Discipline' },
       {
         path: '/profile',
         redirect: '/profile/nation',
@@ -119,33 +126,6 @@
     ],
     //  access: 'admin'
   },
-
-
-
-  // {
-  //   name: 'Thông tin cá nhân',
-  //   icon: 'home',
-  //   path: '/profile',
-  //   menuHeaderRender: true,
-  //   routes: [
-  //     { path: '/profile/basic', name: 'basic', component: './Profile/Basic' },
-  //     // { path: '/profile/work-old', name: 'workOld', component: './Profile/WorkOld' },
-  //     // { path: '/profile/lange', name: 'cerLang', component: './Profile/WorkOld' },
-    
-  //   ]
-  // },
-  // {
-  //   name: 'Thông tin cá nhân',
-  //   icon: 'home',
-  //   path: '/profile',
-  //   menuHeaderRender: true,
-  //   routes: [
-  //     // { path: '/profile/basic', name: 'basic', component: './Profile/Basic' },
-  //     // { path: '/profile/work-old', name: 'workOld', component: './Profile/WorkOld' },
-  //     // { path: '/profile/lange', name: 'cerLang', component: './Profile/WorkOld' },
-    
-  //   ]
-  // },
 
 
   {

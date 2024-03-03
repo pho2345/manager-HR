@@ -1,6 +1,6 @@
 import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,27 +8,23 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd, handleUpdate, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
 
-
-
-
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/phu-cap-khac';
+    const collection = '/chuc-danh-dang';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
-    const refNameCategory = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -36,43 +32,13 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
-    const handleAdd = async (fields: any) => {
-        const hide = message.loading('Đang thêm...');
-        await post(`${collection}/them`, {}, {
-            ...fields,
-            batDau: moment(fields.batDau).toISOString(),
-            ketThuc: moment(fields.ketThuc).toISOString()
-        });
-        try {
-            hide();
-            message.success('Thêm thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
-    };
-    
-    const handleUpdate = async (fields: any, id: any) => {
-        const hide = message.loading('Đang cập nhật...');
-        try {
-    
-            await patch(`${collection}/${id}/sua`, {
-                ...fields,
-                batDau: moment(fields.batDau).toISOString(),
-                ketThuc: moment(fields.ketThuc).toISOString()
-            })
-            hide();
-    
-            message.success('Cập nhật thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
-    };
+    const add = async (value: any) => {
+        return handleAdd(value, collection);
+    }
+
+    const update = async (value: any) => {
+        return handleUpdate(value, refIdCurrent.current, collection);
+    }
 
 
 
@@ -328,7 +294,7 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.OtherAllowance>[] = [
+    const columns: ProColumns<GEN.Organ>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -336,71 +302,28 @@ const TableList: React.FC = () => {
         },
 
         {
-            title: 'Loại phụ cấp',
-            key: 'loaiPhuCap',
-            dataIndex: 'loaiPhuCap',
+            title: 'Tên chức danh đảng',
+            key: 'name',
+            dataIndex: 'name',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.loaiPhuCap}</>
+                    <>{entity.name}</>
                 );
             },
         },
         {
-            title: 'Hình thức thưởng',
-            key: 'hinhThucThuong',
-            dataIndex: 'hinhThucThuong',
+            title: 'Trạng thái',
+            key: 'status',
+            dataIndex: 'status',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.hinhThucThuong}</>
+                    <Switch disabled checked={entity.status} />
                 );
             },
         },
-        {
-            title: 'Phần trăm hưởng (%)',
-            key: 'phanTramHuongPhuCap',
-            dataIndex: 'phanTramHuongPhuCap',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{entity.phanTramHuongPhuCap}</>
-                );
-            },
-        },
-        {
-            title: 'Giá trị (vnđ)',
-            key: 'giaTri',
-            dataIndex: 'giaTri',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{entity.giaTri}</>
-                );
-            },
-        },
-        {
-            title: "Ngày bắt đầu",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{moment(entity.batDau).format('DD/MM/YYYY')}</>
-                );
-            },
-        },
-        {
-            title: "Ngày kết thúc",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
-                );
-            },
-        },
+
         {
             title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
             dataIndex: 'create_at',
@@ -514,7 +437,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo phụ cấp"}
+                title={"Tạo mới chức danh đảng"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -524,7 +447,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -544,102 +467,24 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={'Loại phụ cấp'}
+                            label={"Tên chức danh đảng"}
                             // width='md'
-                            name='loaiPhuCap'
-                            placeholder={`Loại phụ cấp`}
+                            name='name'
+                            placeholder={`Tên chức danh đảng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Loại phụ cấp'
+                                    message: "Tên chức danh đảng"
                                 },
                             ]} />
                     </Col>
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={'Hình thức thưởng'}
-                            // width='md'
-                            name='hinhThucThuong'
-                            placeholder={`Hình thức thưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức thưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Giá trị (vnđ)'}
-                            // width='md'
-                            name='giaTri'
-                            placeholder={`Giá trị`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Giá trị'
-                                },
-                            ]} />
-                    </Col>
-
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Phần trăm hưởng (%)'}
-                            // width='md'
-                            name='phanTramHuongPhuCap'
-                            placeholder={`Phần trăm hưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Phần trăm hưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
-                            rules={[
-                                { required: true, message: "Ngày bắt đầu" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
-                            rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
-                    </Col>
-
                 </Row>
 
 
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật phụ cấp"}
+                title={"Cập nhật chức danh đảng"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -650,7 +495,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent.current);
+                    const success = await update(values);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -670,95 +515,17 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={'Loại phụ cấp'}
+                            label={"Tên chức danh đảng"}
                             // width='md'
-                            name='loaiPhuCap'
-                            placeholder={`Loại phụ cấp`}
+                            name='name'
+                            placeholder={`Tên chức danh đảng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Loại phụ cấp'
+                                    message: "Tên chức danh đảng"
                                 },
                             ]} />
                     </Col>
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={'Hình thức thưởng'}
-                            // width='md'
-                            name='hinhThucThuong'
-                            placeholder={`Hình thức thưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức thưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Giá trị (vnđ)'}
-                            // width='md'
-                            name='giaTri'
-                            placeholder={`Giá trị`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Giá trị'
-                                },
-                            ]} />
-                    </Col>
-
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Phần trăm hưởng (%)'}
-                            // width='md'
-                            name='phanTramHuongPhuCap'
-                            placeholder={`Phần trăm hưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Phần trăm hưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
-                            rules={[
-                                { required: true, message: "Ngày bắt đầu" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
-                            rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
-                    </Col>
-
                 </Row>
             </ModalForm>
 

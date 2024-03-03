@@ -187,49 +187,36 @@ const TableList: React.FC = () => {
   const [stateRank, setStateRank] = useState<GEN.Option[]>([]);
   const [academicDegrees, setAcademicDegrees] = useState<GEN.Option[]>([]);
   const [militaryRanks, setMilitaryRanks] = useState<GEN.Option[]>([]);
+  const [officer, setOfficer] = useState<GEN.Option[]>([]);
+  const [civilServant, setCivilServant] = useState<GEN.Option[]>([]);
 
 
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
       try {
-        const [
-          getReligion,
-          getSex,
-          getPosition,
-          getGroupBlood,
-          getPolicyObject,
-          getSecondaryEducationLevel,
-          getProfessionalLevel,
-          getStateRank,
-          getAcademicDegrees,
-          getMilitaryRanks,
-          getMembership
-        ] = await Promise.all([
-          getOption('/dan-toc', 'id', 'name'),
-          getOption('/gioi-tinh', 'id', 'name'),
-          getOption('/chuc-vu', 'id', 'name'),
-          getOption('/nhom-mau', 'id', 'name'),
-          getOption('/doi-tuong-chinh-sach', 'id', 'name'),
-          getOption('/trinh-do-giao-duc-pho-thong', 'id', 'name'),
-          getOption('/trinh-do-chuyen-mon', 'id', 'name'),
-          getOption('/danh-hieu-nha-nuoc-phong', 'id', 'name'),
-          getOption('/hoc-ham', 'id', 'name'),
-          getOption('/cap-bac-loai-quan-ham-quan-doi', 'id', 'name'),
-          getOption('/thanh-phan-gia-dinh', 'id', 'name')
-        ]);
-        setReligion(getReligion);
-        setSex(getSex);
-        setPosition(getPosition);
-        setGroupBlood(getGroupBlood);
-        setPolicyObject(getPolicyObject);
-        setSecondaryEducationLevel(getSecondaryEducationLevel);
-        setProfessionalLevel(getProfessionalLevel);
-        setStateRank(getStateRank);
-        setAcademicDegrees(getAcademicDegrees);
-        setMilitaryRanks(getMilitaryRanks);
-        setMembership(getMembership);
         getProfile(setProfile, setLoading);
+
+        const dataQueries = [
+          { query: '/dan-toc', setFunction: setReligion },
+          { query: '/gioi-tinh', setFunction: setSex },
+          { query: '/chuc-vu', setFunction: setPosition },
+          { query: '/nhom-mau', setFunction: setGroupBlood },
+          { query: '/doi-tuong-chinh-sach', setFunction: setPolicyObject },
+          { query: '/trinh-do-giao-duc-pho-thong', setFunction: setSecondaryEducationLevel },
+          { query: '/trinh-do-chuyen-mon', setFunction: setProfessionalLevel },
+          { query: '/danh-hieu-nha-nuoc-phong', setFunction: setStateRank },
+          { query: '/hoc-ham', setFunction: setAcademicDegrees },
+          { query: '/cap-bac-loai-quan-ham-quan-doi', setFunction: setMilitaryRanks },
+          { query: '/thanh-phan-gia-dinh', setFunction: setMembership },
+          { query: '/ngach-cong-chuc', setFunction: setCivilServant },
+          { query: '/ngach-vien-chuc', setFunction: setOfficer },
+        ];
+        
+        for (const { query, setFunction } of dataQueries) {
+          const data = await getOption(query, 'id', 'name');
+          setFunction(data);
+        }
 
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -98,7 +98,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }: a
     //       </Link>,
     //     ]
     //   : [],
-    menuHeaderRender: undefined,
+    menuHeaderRender: false,
   
     childrenRender: (children : any) => {
       if (initialState?.loading) return <PageLoading />;

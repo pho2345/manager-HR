@@ -433,12 +433,64 @@ declare namespace GEN {
     update_at?: Date;
   }
 
+  type GroupRankCommunistParty = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
+  type GroupCommunistParty = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    status?: boolean;
+    update_at?: Date;
+  }
+
+  
+  type JobPosition = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    status?: boolean;
+    update_at?: Date;
+    bacLuong?: number;
+    tienLuong?: number;
+  }
+
+  type TypeBonus = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+    status?: boolean;
+  }
+
+
+  type RankCommunistParty = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+  }
+
+
   type ProfessionalLevel = {
     id?: number;
     name?: string;
     create_at?: Date;
     update_at?: Date;
   }
+
+  type Organ = {
+    id?: number;
+    name?: string;
+    create_at?: Date;
+    update_at?: Date;
+    status?: boolean;
+  }
+
 
   type RankSalary = {
     id?: number;
@@ -670,6 +722,17 @@ declare namespace GEN {
     xepLoaiChuyenMon: string
     xepLoaiThiDua: sring
     hinhThucKhenThuong: string,
+    create_at: string
+    update_at: string
+  }
+    
+  type Discipline = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    hinhThuc: string
+    coQuanQuyetDinh: sring
+    hanhViViPhamChinh: string,
     create_at: string
     update_at: string
   }

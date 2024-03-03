@@ -81,6 +81,7 @@ const TableList: React.FC = () => {
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -478,7 +479,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="age.profile.workOld.modal.create.title" defaultMessage="Tạo mới" />}
+                title={"Tạo mới làm việc cho chế độ cũ"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -559,7 +560,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.PolicyObject.modal.titleUpdate" defaultMessage="Update Nation" />}
+                title={"Cập nhật làm việc cho chế độ cũ"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -587,19 +588,53 @@ const TableList: React.FC = () => {
                     },
                 }}
             >
-                <Row gutter={24} >
+          <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.nation.table.name" defaultMessage="Name" />}
+                            label={"Chức danh, đơn vị, địa điểm"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên dând tộc`}
+                            name='chucDanhDonViDiaDiem'
+                            placeholder={`Chức danh, đơn vị, địa điểm`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.nation.require.name" defaultMessage="Name" />
+                                    message: 'Chức danh, đơn vị, địa điểm'
                                 },
                             ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="batDau"
+                            label={"Ngày bắt đầu"}
+                            placeholder={"Ngày bắt đầu"}
+                            rules={[
+                                { required: true, message: "Ngày bắt đầu" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày kết thúc"}
+                            placeholder={"Ngày kết thúc"}
+                            rules={[
+                                { required: true, message: "Ngày kết thúc" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
                     </Col>
                 </Row>
             </ModalForm>

@@ -1,7 +1,8 @@
-import { Button, Modal } from "antd";
+import { Button, Modal, message } from "antd";
 import { Fragment } from "react";
-import { deletes, get } from "../ant-design-pro/api";
+import { deletes, get, patch, post } from "../ant-design-pro/api";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const handleRemove = async (arrayId: any, collection: string) => {
   const deletePromises = arrayId.map((e: any) => {
@@ -70,4 +71,49 @@ export const getOption = async (collection: string, getValue: string, getLabel: 
   }
 }
 
+
+export const handleAdd = async (fields: any, collection: string, date: boolean = false) => {
+  const hide = message.loading('Đang thêm...');
+  const data = date ? {
+    ...fields,
+    batDau: moment(fields.batDau).toISOString(),
+    ketThuc: moment(fields.ketThuc).toISOString()
+  } : fields;
+  await post(`${collection}/them`, {}, {
+    ...data,
+  });
+  try {
+    hide();
+    message.success('Thêm thành công');
+    return true;
+  } catch (error: any) {
+    hide();
+    message.error(error?.response?.data?.error?.message);
+    return false;
+  }
+};
+
+
+export const handleUpdate = async (fields: any, id: any, collection: string, date: boolean = false) => {
+  const hide = message.loading('Đang cập nhật...');
+  try {
+
+    const data = date ? {
+      ...fields,
+      batDau: moment(fields.batDau).toISOString(),
+      ketThuc: moment(fields.ketThuc).toISOString()
+    } : fields
+    
+      await patch(`${collection}/${id}/sua`, {
+          ...data
+      })
+      hide();
+      message.success('Cập nhật thành công');
+      return true;
+  } catch (error: any) {
+      hide();
+      message.error(error?.response?.data?.error?.message);
+      return false;
+  }
+};
 

@@ -1,4 +1,4 @@
-import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
+import { deletes, get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -23,7 +23,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/phu-cap-khac';
+    const collection = '/ca-nhan/ky-luat';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -35,6 +35,7 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+    const [selectRow, setSelectRow] = useState<[]>([]);
 
     const handleAdd = async (fields: any) => {
         const hide = message.loading('Đang thêm...');
@@ -53,18 +54,17 @@ const TableList: React.FC = () => {
             return false;
         }
     };
-    
+
     const handleUpdate = async (fields: any, id: any) => {
         const hide = message.loading('Đang cập nhật...');
         try {
-    
-            await patch(`${collection}/${id}/sua`, {
+
+            hide();
+            patch(`${collection}/${id}/sua`, {
                 ...fields,
                 batDau: moment(fields.batDau).toISOString(),
                 ketThuc: moment(fields.ketThuc).toISOString()
-            })
-            hide();
-    
+            });
             message.success('Cập nhật thành công');
             return true;
         } catch (error: any) {
@@ -73,6 +73,8 @@ const TableList: React.FC = () => {
             return false;
         }
     };
+
+
 
 
 
@@ -106,10 +108,10 @@ const TableList: React.FC = () => {
                 />
                 <Space>
                     <Button
-                        type='primary'
+                        type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm)}
                         icon={<SearchOutlined />}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -118,7 +120,7 @@ const TableList: React.FC = () => {
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters, confirm)}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -158,14 +160,14 @@ const TableList: React.FC = () => {
         clearFilters();
         setSearchRangeFrom(null);
         setSearchRangeTo(null);
-        setOptionRangeSearch(null);
+        setOptionRangeSearch('days');
         confirm({
             closeDropdown: false,
         });
     };
 
 
-    const getColumnSearchRange = () => ({
+    const getColumnSearchRange = (dataIndex: string) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
             //close
         }: any) => (
@@ -177,8 +179,8 @@ const TableList: React.FC = () => {
             >
                 {
                     showRangeTo && (<>
-                        <Row gutter={24} className='m-0'>
-                            <Col span={24} className='gutter-row p-0' >
+                        <Row gutter={24} className="m-0">
+                            <Col span={24} className="gutter-row p-0" >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -195,8 +197,8 @@ const TableList: React.FC = () => {
                                 />
                             </Col>
                         </Row>
-                        <Row gutter={24} className='m-0'>
-                            <Col span={24} className='gutter-row p-0' >
+                        <Row gutter={24} className="m-0">
+                            <Col span={24} className="gutter-row p-0" >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -220,10 +222,9 @@ const TableList: React.FC = () => {
                     </>
                     )
                 }
-                <Row gutter={24} className='m-0'>
-                    <Col span={24} className='gutter-row p-0' >
+                <Row gutter={24} className="m-0">
+                    <Col span={24} className="gutter-row p-0" >
                         <ProFormSelect
-
                             options={[
                                 {
                                     value: 'days',
@@ -246,6 +247,16 @@ const TableList: React.FC = () => {
                                     label: 'Khoảng'
                                 }
                             ]}
+
+                            onChange={(value) => {
+                                if (value === 'range') {
+                                    setShowRangeTo(true);
+                                }
+                                else {
+                                    setShowRangeTo(false);
+                                }
+                                setOptionRangeSearch(value);
+                            }}
                             fieldProps={{
                                 onChange: (value: any) => {
                                     if (value === 'range') {
@@ -258,12 +269,13 @@ const TableList: React.FC = () => {
                                 },
                                 value: optionRangeSearch
                             }}
+                        
                         />
                     </Col>
                 </Row>
                 <Space>
                     <Button
-                        type='primary'
+                        type="primary"
                         onClick={() => {
                             if (optionRangeSearch !== 'range') {
                                 setSelectedKeys([JSON.stringify([optionRangeSearch])])
@@ -276,7 +288,7 @@ const TableList: React.FC = () => {
 
                         }}
                         icon={<SearchOutlined />}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -285,7 +297,7 @@ const TableList: React.FC = () => {
                     </Button>
                     <Button
                         onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -309,7 +321,7 @@ const TableList: React.FC = () => {
                 const optionValue = convertValue[0];
                 if (optionValue === 'range') {
                     if (convertValue[1] && convertValue[2]) {
-                        if (moment(record.attributes.createdAt).isAfter(convertValue[1]) && moment(record.attributes.createdAt).isBefore(convertValue[2])) {
+                        if (moment(record[dataIndex]).isAfter(convertValue[1]) && moment(record?.[dataIndex]).isBefore(convertValue[2])) {
                             return record
                         }
                     }
@@ -317,79 +329,73 @@ const TableList: React.FC = () => {
                 else {
                     const timeStart = moment().startOf(optionValue).toISOString();
                     const timeEnd = moment().endOf(optionValue).toISOString();
-                    if (moment(record.attributes.createdAt).isAfter(timeStart) && moment(record.attributes.createdAt).isBefore(timeEnd)) {
+                    if (moment(record?.[dataIndex]).isAfter(timeStart) && moment(record?.[dataIndex]).isBefore(timeEnd)) {
                         return record;
                     }
                 }
             }
             return null;
         }
-        ,
     });
 
-
-    const columns: ProColumns<GEN.OtherAllowance>[] = [
+    const columns: ProColumns<GEN.Discipline>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
+        {
+            title: "Cơ quan quyết định",
+            key: 'coQuanQuyetDinh',
+            dataIndex: 'coQuanQuyetDinh',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.coQuanQuyetDinh}</>
+                );
+            },
+            ...getColumnSearchProps('coQuanQuyetDinh')
+        },
 
         {
-            title: 'Loại phụ cấp',
-            key: 'loaiPhuCap',
-            dataIndex: 'loaiPhuCap',
+            title: "Hành vi vi phạm",
+            key: 'hanhViViPhamChinh',
+            dataIndex: 'hanhViViPhamChinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.loaiPhuCap}</>
+                    <> {entity?.hanhViViPhamChinh}</>
                 );
             },
+            ...getColumnSearchProps('hanhViViPhamChinh')
         },
+
         {
-            title: 'Hình thức thưởng',
-            key: 'hinhThucThuong',
-            dataIndex: 'hinhThucThuong',
+            title: "Hình thức",
+            key: 'hinhThuc',
+            dataIndex: 'hinhThuc',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.hinhThucThuong}</>
+                    <> {entity?.hinhThuc}</>
                 );
             },
+            ...getColumnSearchProps('hinhThuc')
         },
+
         {
-            title: 'Phần trăm hưởng (%)',
-            key: 'phanTramHuongPhuCap',
-            dataIndex: 'phanTramHuongPhuCap',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{entity.phanTramHuongPhuCap}</>
-                );
-            },
-        },
-        {
-            title: 'Giá trị (vnđ)',
-            key: 'giaTri',
-            dataIndex: 'giaTri',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{entity.giaTri}</>
-                );
-            },
-        },
-        {
-            title: "Ngày bắt đầu",
+            title: "Ngày quyết định",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
-                ;
                 return (
-                    <>{moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
                 );
             },
+            ...getColumnSearchRange('batDau')
+
         },
+
         {
             title: "Ngày kết thúc",
             key: 'ketThuc',
@@ -400,14 +406,19 @@ const TableList: React.FC = () => {
                     <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
                 );
             },
+            ...getColumnSearchRange('ketThuc')
+
         },
+
+
         {
-            title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at,
-            // ...getColumnSearchProps('name')
+            renderText: (_, text) => moment(text.create_at).format('DD/MM/YYYY'),
+            ...getColumnSearchRange('create_at')
+           
         },
         {
             title: configDefaultText['titleOption'],
@@ -501,7 +512,7 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={false}
+                rowSelection={{}}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -514,7 +525,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo phụ cấp"}
+                title={"Tạo kỷ luật"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -544,68 +555,55 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={'Loại phụ cấp'}
+                            label={"Cơ quan quyết định"}
                             // width='md'
-                            name='loaiPhuCap'
-                            placeholder={`Loại phụ cấp`}
+                            name='coQuanQuyetDinh'
+                            placeholder={`Cơ quan quyết định`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Loại phụ cấp'
+                                    message: 'Cơ quan quyết định'
                                 },
                             ]} />
                     </Col>
+
+
 
                     <Col span={24} >
                         <ProFormText
-                            label={'Hình thức thưởng'}
+                            label={"Hành vi vi phạm"}
                             // width='md'
-                            name='hinhThucThuong'
-                            placeholder={`Hình thức thưởng`}
+                            name='hanhViViPhamChinh'
+                            placeholder={`Hành vi vi phạm`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Hình thức thưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Giá trị (vnđ)'}
-                            // width='md'
-                            name='giaTri'
-                            placeholder={`Giá trị`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Giá trị'
+                                    message: 'Hành vi vi phạm'
                                 },
                             ]} />
                     </Col>
 
 
                     <Col span={24} >
-                        <ProFormDigit
-                            label={'Phần trăm hưởng (%)'}
+                        <ProFormText
+                            label={"Hình thức"}
                             // width='md'
-                            name='phanTramHuongPhuCap'
-                            placeholder={`Phần trăm hưởng`}
+                            name='hinhThuc'
+                            placeholder={`Hình thức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Phần trăm hưởng'
+                                    message: 'Hình thức'
                                 },
                             ]} />
                     </Col>
-
                     <Col span={24} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
+                            label={"Ngày quyết định"}
+                            placeholder={"Ngày quyết định"}
                             rules={[
-                                { required: true, message: "Ngày bắt đầu" }
+                                { required: true, message: "Ngày quyết định" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -632,14 +630,12 @@ const TableList: React.FC = () => {
                             }}
                         />
                     </Col>
-
                 </Row>
-
 
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật phụ cấp"}
+                title={"Cập nhật kỷ luật"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -655,7 +651,7 @@ const TableList: React.FC = () => {
                         handleUpdateModalOpen(false);
                         form.resetFields();
                         if (actionRef.current) {
-                            actionRef.current.reload();
+                            actionRef.current?.reloadAndRest?.();
                         }
                     }
                 }}
@@ -670,68 +666,55 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={'Loại phụ cấp'}
+                            label={"Cơ quan quyết định"}
                             // width='md'
-                            name='loaiPhuCap'
-                            placeholder={`Loại phụ cấp`}
+                            name='coQuanQuyetDinh'
+                            placeholder={`Cơ quan quyết định`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Loại phụ cấp'
+                                    message: 'Cơ quan quyết định'
                                 },
                             ]} />
                     </Col>
+
+
 
                     <Col span={24} >
                         <ProFormText
-                            label={'Hình thức thưởng'}
+                            label={"Hành vi vi phạm"}
                             // width='md'
-                            name='hinhThucThuong'
-                            placeholder={`Hình thức thưởng`}
+                            name='hanhViViPhamChinh'
+                            placeholder={`Hành vi vi phạm`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Hình thức thưởng'
-                                },
-                            ]} />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={'Giá trị (vnđ)'}
-                            // width='md'
-                            name='giaTri'
-                            placeholder={`Giá trị`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Giá trị'
+                                    message: 'Hành vi vi phạm'
                                 },
                             ]} />
                     </Col>
 
 
                     <Col span={24} >
-                        <ProFormDigit
-                            label={'Phần trăm hưởng (%)'}
+                        <ProFormText
+                            label={"Hình thức"}
                             // width='md'
-                            name='phanTramHuongPhuCap'
-                            placeholder={`Phần trăm hưởng`}
+                            name='hinhThuc'
+                            placeholder={`Hình thức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Phần trăm hưởng'
+                                    message: 'Hình thức'
                                 },
                             ]} />
                     </Col>
-
                     <Col span={24} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
+                            label={"Ngày quyết định"}
+                            placeholder={"Ngày quyết định"}
                             rules={[
-                                { required: true, message: "Ngày bắt đầu" }
+                                { required: true, message: "Ngày quyết định" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -758,8 +741,9 @@ const TableList: React.FC = () => {
                             }}
                         />
                     </Col>
-
                 </Row>
+
+
             </ModalForm>
 
         </PageContainer>

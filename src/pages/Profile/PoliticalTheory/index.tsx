@@ -1,4 +1,4 @@
-import { get, patch } from '@/services/ant-design-pro/api';
+import { deletes, get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -18,8 +18,13 @@ import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
-const handleAdd = async (fields: API.RuleListItem) => {
+const handleAdd = async (fields: any) => {
     const hide = message.loading('Đang thêm...');
+    await post('/ca-nhan/ly-luan-chinh-tri/them', {}, {
+        ...fields,
+        batDau: moment(fields.batDau).toISOString(),
+        ketThuc: moment(fields.ketThuc).toISOString()
+    });
     try {
         hide();
         message.success('Thêm thành công');
@@ -31,20 +36,16 @@ const handleAdd = async (fields: API.RuleListItem) => {
     }
 };
 
-
 const handleUpdate = async (fields: any, id: any) => {
     const hide = message.loading('Đang cập nhật...');
     try {
 
-        patch('/trinh-do-giao-duc-pho-thong/sua', {
-            id: id,
-            ...fields,
-            "create_at": "2024-02-01T20:57:33",
-            "update_at": null,
-            "trangThai": true,
-        })
         hide();
-
+        patch(`/ca-nhan/ly-luan-chinh-tri/${id}/sua`, {
+            ...fields,
+            batDau: moment(fields.batDau).toISOString(),
+            ketThuc: moment(fields.ketThuc).toISOString()
+        });
         message.success('Cập nhật thành công');
         return true;
     } catch (error: any) {
@@ -55,53 +56,25 @@ const handleUpdate = async (fields: any, id: any) => {
 };
 
 
-const handleRemove = async (selectedRows: any) => {
-    const hide = message.loading('Đang xóa');
-    if (!selectedRows) return true;
-    try {
-        const deleteRowss = selectedRows.map((e: any) => {
-        })
 
-        await Promise.all(deleteRowss);
-        hide();
-        message.success('Xóa thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
 const TableList: React.FC = () => {
+    const collection = '/ca-nhan/ly-luan-chinh-tri';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refNameCategory = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [openAwg, setOpenAwg] = useState<boolean>(false);
+    const [selectRow, setSelectRow] = useState<[]>([]);
 
 
-    const confirm = (entity: any) => {
-        Modal.confirm({
-            title: configDefaultText['titleConfirm'],
-            icon: <ExclamationCircleOutlined />,
-            content: configDefaultText['textConfirmDelete'],
-            okText: 'Có',
-            cancelText: 'Không',
-            onOk: async () => {
-                await handleRemove(entity);
-                if (actionRef.current) {
-                    actionRef.current?.reloadAndRest?.();
-                }
-            }
-        });
-    };
+
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
@@ -165,8 +138,8 @@ const TableList: React.FC = () => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record.attributes[dataIndex]) {
+                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -355,23 +328,69 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.SecondaryEducationLevel>[] = [
+    const columns: ProColumns<GEN.PoliticalTheory>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />,
-            key: 'name',
-            dataIndex: 'name',
+            title: "Cơ sở đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
             render: (_, entity) => {
+                ;
                 return (
-                    <> {entity?.name}</>
+                    <> {entity?.tenCoSoDaoTao}</>
                 );
             },
-            width: '30vh',
-            ...getColumnSearchProps('name')
+            ...getColumnSearchProps('tenCoSoDaoTao')
+        },
+        {
+            title: "Hình thức đào tạo",
+            key: 'hinhThucDaoTao',
+            dataIndex: 'hinhThucDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucDaoTao}</>
+                );
+            },
+            ...getColumnSearchProps('hinhThucDaoTao')
+        },
+        {
+            title: "Văn bằng được cấp",
+            key: 'vanBangDuocCap',
+            dataIndex: 'vanBangDuocCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.vanBangDuocCap}</>
+                );
+            },
+            ...getColumnSearchProps('vanBangDuocCap')
+        },
+        {
+            title: <FormattedMessage id="page.profile.workOld.dateStart" defaultMessage="Ngày bắt đầu" />,
+            key: 'batDau',
+            dataIndex: 'batDau',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{moment(entity.batDau).format('DD/MM/YYYY')}</>
+                );
+            },
+        },
+        {
+            title: <FormattedMessage id="page.profile.workOld.dateEnd" defaultMessage="Ngày kết thúc" />,
+            key: 'ketThuc',
+            dataIndex: 'ketThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                );
+            },
         },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
@@ -381,8 +400,6 @@ const TableList: React.FC = () => {
             renderText: (_, text) => text?.create_at,
             // ...getColumnSearchProps('name')
         },
-
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -391,18 +408,30 @@ const TableList: React.FC = () => {
             align: 'center',
             render: (_, entity) => {
 
-                return (<EditTwoTone
-                    style={{
-                        fontSize: 20
-                    }}
-                    onClick={async () => {
-                        refIdCurrent.current = entity.id;
-                        handleUpdateModalOpen(true)
-                    }}
-                />
-                )
+                return (
+                    <Tooltip title={configDefaultText['buttonUpdate']}>
+                        <Button
+                            style={{
+                                border: 'none'
+                            }}
+
+                            onClick={async () => {
+                                handleUpdateModalOpen(true);
+                                refIdCurrent.current = entity.id;
+                                const getRecordCurrent = await getCustome(`/ca-nhan/ly-luan-chinh-tri/${entity.id}`);
+                                if (getRecordCurrent.data) {
+                                    handleUpdateModalOpen(true)
+                                    form.setFieldsValue({
+                                        ...getRecordCurrent.data
+                                    })
+                                }
+
+                            }}
+                            icon={<MdOutlineEdit />}
+                        />
+                    </Tooltip>)
             }
-        },
+        }
     ];
 
 
@@ -421,7 +450,7 @@ const TableList: React.FC = () => {
                             return true;
                         },
                         setting: {
-                            checkable: true
+                            checkable: false
                         }
                     }
                 }
@@ -431,7 +460,8 @@ const TableList: React.FC = () => {
                         key='primary'
                         onClick={() => {
                             handleModalOpen(true);
-                        }}>
+                        }}
+                    >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
                 ]}
@@ -448,8 +478,10 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('/trinh-do-giao-duc-pho-thong')}
 
+
+
+                request={async () => get(collection)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -460,21 +492,20 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{
-                }}
+                rowSelection={{}}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-                tableAlertOptionRender={({ selectedRows }: any) => {
-                    return renderTableAlertOption(selectedRows)
+                tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+                    return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
             />
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleCreate" defaultMessage="Create SecondaryEducationLevel" />}
+                title={"Tạo lý luận chính trị"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -504,22 +535,88 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={"Tên cơ sở đào tạo"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='tenCoSoDaoTao'
+                            placeholder={`Tên cơ sở đào tạo`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: 'Tên cơ sở đào tạo'
                                 },
                             ]} />
                     </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Hình thức đào tạo"}
+                            // width='md'
+                            name='hinhThucDaoTao'
+                            placeholder={`Hình thức đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Hình thức đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Văn bằng đào tạo"}
+                            // width='md'
+                            name='vanBangDuocCap'
+                            placeholder={`Văn bằng đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Văn bằng đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="batDau"
+                            label={"Ngày bắt đầu"}
+                            placeholder={"Ngày bắt đầu"}
+                            rules={[
+                                { required: true, message: "Ngày bắt đầu" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày kết thúc"}
+                            placeholder={"Ngày kết thúc"}
+                            rules={[
+                                { required: true, message: "Ngày kết thúc" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
                 </Row>
+
+
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleUpdate" defaultMessage="Update SecondaryEducationLevel" />}
+                title={"Cập nhật lý luận chính trị"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -550,16 +647,80 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={"Tên cơ sở đào tạo"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='tenCoSoDaoTao'
+                            placeholder={`Tên cơ sở đào tạo`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: 'Tên cơ sở đào tạo'
                                 },
                             ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Hình thức đào tạo"}
+                            // width='md'
+                            name='hinhThucDaoTao'
+                            placeholder={`Hình thức đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Hình thức đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Văn bằng đào tạo"}
+                            // width='md'
+                            name='vanBangDuocCap'
+                            placeholder={`Văn bằng đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Văn bằng đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="batDau"
+                            label={"Ngày bắt đầu"}
+                            placeholder={"Ngày bắt đầu"}
+                            rules={[
+                                { required: true, message: "Ngày bắt đầu" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày kết thúc"}
+                            placeholder={"Ngày kết thúc"}
+                            rules={[
+                                { required: true, message: "Ngày kết thúc" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
                     </Col>
                 </Row>
             </ModalForm>

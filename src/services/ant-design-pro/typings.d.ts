@@ -555,5 +555,122 @@ declare namespace GEN {
     update_at: string
   }
 
+  type TechNo = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    chungChiDuocCap: string,
+    create_at: string
+    update_at: string
+  }
 
+  type RelateFamily = {
+    id: number,
+    moiQuanHe: string,
+    hoVaTen: string,
+    namSinh: string,
+    thongTinThanNhan: string,
+    create_at: string,
+    update_at: string
+  }
+
+  
+  type GoOnBussiness = {
+    id: number,
+    donViCongTac: string,
+    chucDanh: string,
+    batDau: string
+    ketThuc: sring
+    loaiSoYeuLyLichChiTiet: sring
+    create_at: string,
+    update_at: string
+  }
+
+  type OtherAllowance = {
+    id: number,
+    phanTramHuongPhuCap: number,
+    loaiPhuCap: string,
+    batDau: string
+    ketThuc: sring
+    hinhThucThuong: sring,
+    giaTri: number,
+    create_at: string,
+    update_at: string
+  }
+
+  type MajorBuz = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    chungChiDuocCap: string,
+    create_at: string
+    update_at: string
+  }
+
+  type MajorBuz = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    chungChiDuocCap: string,
+    create_at: string
+    update_at: string
+  }
+
+  type PoliticalTheory = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    hinhThucDaoTao: string,
+    vanBangDuocCap: string,
+    create_at: string
+    update_at: string
+  }
+
+  type MySalary = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    heSoLuong: string,
+    bacLuong: string,
+    maSo: string,
+    tienLuongTheoViTri: number,
+    create_at: string
+    update_at: string
+  }
+
+
+  
+  type WorkingAbroad = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    toChucDiaChiCongViec: string,
+    create_at: string
+    update_at: string
+  }
+
+  type KnowArmy = {
+    id: number,
+    batDau: string
+    ketThuc: sring
+    tenCoSoDaoTao: string,
+    chungChiDuocCap: string,
+    create_at: string
+    update_at: string
+  }
+
+  
+  type Bonus = {
+    id: number,
+    nam: number,
+    xepLoaiChuyenMon: string
+    xepLoaiThiDua: sring
+    hinhThucKhenThuong: string,
+    create_at: string
+    update_at: string
+  }
 }

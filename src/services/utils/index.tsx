@@ -1,6 +1,38 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { Fragment } from "react";
-import { get } from "../ant-design-pro/api";
+import { deletes, get } from "../ant-design-pro/api";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+
+const handleRemove = async (arrayId: any, collection: string) => {
+  const deletePromises = arrayId.map((e: any) => {
+    return deletes(`${collection}/${e}/xoa`); // Trả về promise từ mỗi lệnh xóa
+  });
+
+  await Promise.all(deletePromises); // Chờ tất cả các promise xóa hoàn thành
+
+  return true;
+};
+
+const confirm = (entity: any, actionRef: any, collection: string) => {
+  Modal.confirm({
+    title: 'Xác nhận',
+    icon: <ExclamationCircleOutlined />,
+    content: "Bạn có chắc?",
+    okText: 'Có',
+    cancelText: 'Không',
+    onOk: async () => {
+      try {
+        const de = await handleRemove(entity, collection);
+        if (de && actionRef.current) {
+          await actionRef.current.reloadAndRest(); // Gọi reloadAndRest sau khi xóa hoàn thành
+        }
+      } catch (error) {
+        // Xử lý lỗi nếu cần thiết
+        console.error('Lỗi xảy ra khi xóa:', error);
+      }
+    }
+  });
+};
 
 export function renderTableAlert(selectedRowKeys: any) {
   return (
@@ -11,12 +43,12 @@ export function renderTableAlert(selectedRowKeys: any) {
 }
 
 
-export function renderTableAlertOption(selectedRows: any) {
+export function renderTableAlertOption(selectedRows: any, selectedRowKeys: any, actionRef: any, collection: string) {
   return (
     <>
       <Fragment>
         <Button onClick={async () => {
-          confirm(selectedRows);
+          confirm(selectedRowKeys, actionRef, collection);
         }}>Xóa</Button>
       </Fragment>
     </>

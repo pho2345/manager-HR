@@ -1,80 +1,5 @@
 import { request } from '@umijs/max';
 import axios from 'axios';
-import moment from 'moment';
-
-
-const dataTest = {
-  "status_code": 200,
-  "message": "THANH_CONG",
-  "data": {
-      "hovaten": "Vien Chuc Test 242024",
-      "gioiTinh": "Nam",
-      "cacTenGoiKhac": "Aniya",
-      "sinhNgay": "2001-12-17T07:51:56",
-      "noiSinh": "6838 Stanton Flats Suite 260",
-      "queQuan": "0999 Emelia Corners Suite 096",
-      "danToc": "Khơ Lơ",
-      "soCCCD": "000100200400",
-      "ngayCapCCCD": "2013-05-09T16:35:34",
-      "soDienThoai": "914611746310",
-      "soBHXH": "8560349374",
-      "soBHYT": "65iovkef",
-      "noiOHienNay": "5465 Floy Squares",
-      "thanhPhanGiaDinh": "Tư sản",
-      "ngheNghiepTruocKhiTuyenDung": "Rerum et sunt.",
-      "ngayDuocTuyenDungLanDau": "2016-06-22T18:07:13",
-      "coQuanToChucDonViTuyenDung": "",
-      "ngayVaoCoQuanHienDangCongTac": "1973-08-16T20:20:13",
-      "ngayVaoDangCongSanVietNam": "1995-02-13T07:40:41",
-      "ngayChinhThuc": "1978-07-08T01:50:45",
-      "ngayThamGiaToChucChinhTriXaHoiDauTien": "2022-04-11T00:31:24",
-      "ngayNhapNgu": "2021-01-20T11:38:19",
-      "ngayXuatNgu": "1998-10-06T21:47:49",
-      "capBacLoaiQuanHamQuanDoi": "Trung sĩ",
-      "doiTuongChinhSach": "Con liệt sĩ",
-      "trinhDoGiaoDucPhoThong": "10/10",
-      "trinhDoChuyenMon": "Thạc sĩ",
-      "hocHam": "Phó giáo sư",
-      "danhHieuNhaNuocPhongTang": "Tỉnh Anh hùng",
-      "chucVuHienTai": "Rodriguez",
-      "ngayBoNhiem": "1988-02-28T10:43:51",
-      "ngayBoNhiemLai": "2018-03-04T14:06:48",
-      "duocQuyHoacChucDanh": "Quo ut et et.",
-      "chucVuKiemNhiem": "Runolfsdottir",
-      "chucVuDangHienTai": "Bauch",
-      "chucVuDangKiemNhiem": "Gusikowski",
-      "congVienChinhDuocGiao": "Sunt consequuntur quisquam.",
-      "soTruongCongTac": "Nemo modi animi.",
-      "congViecLamLauNhat": "Consequatur eaque at ut magni provident.",
-      "tienLuong": 2,
-      "ngachNgheNghiep": "jnxdfgagqrz",
-      "maSoNgachNgheNghiep": "inzqjx",
-      "ngayBoNhiemNgachNgheNghiep": "2004-02-22T15:30:44",
-      "bacLuong": "Bậc 10",
-      "heSoLuongNgachNgheNghiep": 4.38739,
-      "ngayHuongLuongNgachNgheNghiep": "1975-05-05T02:32:02",
-      "phanTramHuongLuongNgachNgheNghiep": 6.35192901,
-      "phuCapThamNienVuotKhungNgachNgheNghiep": 6.59058,
-      "ngayHuongPCTNVKNgachNgheNghiep": "1978-05-04T01:53:07",
-      "phuCapChucVu": 3.91774,
-      "phuCapKiemNhiem": 7.05684,
-      "phuCapKhac": 6.55831,
-      "viTriViecLam": "urkkfxpwb",
-      "maSoViTriViecLam": "589976",
-      "bacLuongTriViecLam": 2,
-      "luongTheoMucTien": 2465.5021581587,
-      "ngayHuongLuongTheoViTriViecLam": "1987-04-10T22:14:31",
-      "phamTramHuongLuong": 7788.9725303231,
-      "phuCapThamNienVuotKhung": 6.70889,
-      "ngayHuongPCTNVK": "1972-12-31T16:39:19",
-      "tinhTrangSucKhoe": "YẾU",
-      "chieuCao": 178.243,
-      "canNang": 113.597,
-      "nhomMau": "AB"
-  },
-  "time_stamp": "2024-02-06T14:56:29.0716076"
-}
-
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<any>(SERVERURL + '/ca-nhan/tai-khoan', {
     method: 'GET',
@@ -400,3 +325,20 @@ export async function patch(subSolder: string, body: object) {
   //   data: fetchData.data
   // }
 }
+
+export async function deletes(subSolder: string) {
+  const fetchData = await request<any>(SERVERURL + subSolder, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    },
+  });
+  return {
+    total: fetchData?.meta?.pagination?.total,
+    success: fetchData.data && true,
+    data: fetchData.data
+  }
+}
+
+

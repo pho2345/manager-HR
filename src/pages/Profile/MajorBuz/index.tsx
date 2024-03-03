@@ -1,4 +1,4 @@
-import { get, patch } from '@/services/ant-design-pro/api';
+import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -18,41 +18,7 @@ import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
-const handleAdd = async (fields: API.RuleListItem) => {
-    const hide = message.loading('Đang thêm...');
-    try {
-        hide();
-        message.success('Thêm thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
-
-const handleUpdate = async (fields: any, id: any) => {
-    const hide = message.loading('Đang cập nhật...');
-    try {
-
-        patch('/trinh-do-giao-duc-pho-thong/sua', {
-            id: id,
-            ...fields,
-            "create_at": "2024-02-01T20:57:33",
-            "update_at": null,
-            "trangThai": true,
-        })
-        hide();
-
-        message.success('Cập nhật thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
 
 const handleRemove = async (selectedRows: any) => {
@@ -60,6 +26,7 @@ const handleRemove = async (selectedRows: any) => {
     if (!selectedRows) return true;
     try {
         const deleteRowss = selectedRows.map((e: any) => {
+
         })
 
         await Promise.all(deleteRowss);
@@ -74,10 +41,12 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 const TableList: React.FC = () => {
+    const collection = '/ca-nhan/nghiep-vu-chuyen-nganh';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refNameCategory = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -86,22 +55,44 @@ const TableList: React.FC = () => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [openAwg, setOpenAwg] = useState<boolean>(false);
 
-
-    const confirm = (entity: any) => {
-        Modal.confirm({
-            title: configDefaultText['titleConfirm'],
-            icon: <ExclamationCircleOutlined />,
-            content: configDefaultText['textConfirmDelete'],
-            okText: 'Có',
-            cancelText: 'Không',
-            onOk: async () => {
-                await handleRemove(entity);
-                if (actionRef.current) {
-                    actionRef.current?.reloadAndRest?.();
-                }
-            }
+    const handleAdd = async (fields: any) => {
+        const hide = message.loading('Đang thêm...');
+        await post(`${collection}/them`, {}, {
+            ...fields,
+            batDau: moment(fields.batDau).toISOString(),
+            ketThuc: moment(fields.ketThuc).toISOString()
         });
+        try {
+            hide();
+            message.success('Thêm thành công');
+            return true;
+        } catch (error: any) {
+            hide();
+            message.error(error?.response?.data?.error?.message);
+            return false;
+        }
     };
+
+    const handleUpdate = async (fields: any, id: any) => {
+        const hide = message.loading('Đang cập nhật...');
+        try {
+
+            hide();
+            patch(`${collection}/${id}/sua`, {
+                ...fields,
+                batDau: moment(fields.batDau).toISOString(),
+                ketThuc: moment(fields.ketThuc).toISOString()
+            })
+            message.success('Cập nhật thành công');
+            return true;
+        } catch (error: any) {
+            hide();
+            message.error(error?.response?.data?.error?.message);
+            return false;
+        }
+    };
+
+
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
@@ -133,10 +124,10 @@ const TableList: React.FC = () => {
                 />
                 <Space>
                     <Button
-                        type="primary"
+                        type='primary'
                         onClick={() => handleSearch(selectedKeys, confirm)}
                         icon={<SearchOutlined />}
-                        size="small"
+                        size='small'
                         style={{
                             width: 90,
                         }}
@@ -145,7 +136,7 @@ const TableList: React.FC = () => {
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters, confirm)}
-                        size="small"
+                        size='small'
                         style={{
                             width: 90,
                         }}
@@ -165,8 +156,8 @@ const TableList: React.FC = () => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record.attributes[dataIndex]) {
+                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -204,8 +195,8 @@ const TableList: React.FC = () => {
             >
                 {
                     showRangeTo && (<>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
+                        <Row gutter={24} className='m-0'>
+                            <Col span={24} className='gutter-row p-0' >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -222,8 +213,8 @@ const TableList: React.FC = () => {
                                 />
                             </Col>
                         </Row>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
+                        <Row gutter={24} className='m-0'>
+                            <Col span={24} className='gutter-row p-0' >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -247,8 +238,8 @@ const TableList: React.FC = () => {
                     </>
                     )
                 }
-                <Row gutter={24} className="m-0">
-                    <Col span={24} className="gutter-row p-0" >
+                <Row gutter={24} className='m-0'>
+                    <Col span={24} className='gutter-row p-0' >
                         <ProFormSelect
 
                             options={[
@@ -290,7 +281,7 @@ const TableList: React.FC = () => {
                 </Row>
                 <Space>
                     <Button
-                        type="primary"
+                        type='primary'
                         onClick={() => {
                             if (optionRangeSearch !== 'range') {
                                 setSelectedKeys([JSON.stringify([optionRangeSearch])])
@@ -303,7 +294,7 @@ const TableList: React.FC = () => {
 
                         }}
                         icon={<SearchOutlined />}
-                        size="small"
+                        size='small'
                         style={{
                             width: 90,
                         }}
@@ -312,7 +303,7 @@ const TableList: React.FC = () => {
                     </Button>
                     <Button
                         onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
-                        size="small"
+                        size='small'
                         style={{
                             width: 90,
                         }}
@@ -355,34 +346,67 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.SecondaryEducationLevel>[] = [
+    const columns: ProColumns<GEN.MajorBuz>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
+
         {
-            title: <FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />,
-            key: 'name',
-            dataIndex: 'name',
+            title: 'Chứng chỉ',
+            key: 'chungChiDuocCap',
+            dataIndex: 'chungChiDuocCap',
             render: (_, entity) => {
+                ;
                 return (
-                    <> {entity?.name}</>
+                    <>{entity.chungChiDuocCap}</>
+                );
+            },
+        },
+        {
+            title: 'Cơ sở đào tạo',
+            key: 'tenCSooDaoTao',
+            dataIndex: 'tenCSooDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{entity.tenCoSoDaoTao}</>
+                );
+            },
+        },
+
+        {
+            title: 'Ngày cấp',
+            key: 'batDau',
+            dataIndex: 'batDau',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{moment(entity.batDau).format('DD/MM/YYYY')}</>
                 );
             },
             width: '30vh',
-            ...getColumnSearchProps('name')
         },
         {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            title: 'Ngày hết hạn',
+            key: 'ketThuc',
+            dataIndex: 'ketThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                );
+            },
+        },
+        {
+            title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
             renderText: (_, text) => text?.create_at,
             // ...getColumnSearchProps('name')
         },
-
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -397,12 +421,18 @@ const TableList: React.FC = () => {
                     }}
                     onClick={async () => {
                         refIdCurrent.current = entity.id;
-                        handleUpdateModalOpen(true)
+                        const getMarjorBuz = await getCustome(`/ca-nhan/nghiep-vu-chuyen-nganh/${entity.id}`);
+                        if (getMarjorBuz.data) {
+                            handleUpdateModalOpen(true)
+                            form.setFieldsValue({
+                                ...getMarjorBuz.data
+                            })
+                        }
                     }}
                 />
                 )
             }
-        },
+        }
     ];
 
 
@@ -421,7 +451,7 @@ const TableList: React.FC = () => {
                             return true;
                         },
                         setting: {
-                            checkable: true
+                            checkable: false
                         }
                     }
                 }
@@ -431,7 +461,8 @@ const TableList: React.FC = () => {
                         key='primary'
                         onClick={() => {
                             handleModalOpen(true);
-                        }}>
+                        }}
+                    >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
                 ]}
@@ -448,8 +479,10 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('/trinh-do-giao-duc-pho-thong')}
 
+
+
+                request={async () => get(collection)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -460,21 +493,20 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{
-                }}
+                rowSelection={false}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-                tableAlertOptionRender={({ selectedRows }: any) => {
-                    return renderTableAlertOption(selectedRows)
+                tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+                    return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
             />
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleCreate" defaultMessage="Create SecondaryEducationLevel" />}
+                title={"Tạo nghiệp vụ chuyên ngành"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -504,22 +536,73 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={'Chứng chỉ'}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='chungChiDuocCap'
+                            placeholder={`Chứng chỉ`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: 'Chứng chỉ'
                                 },
                             ]} />
                     </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={'Cơ sở đào tạo'}
+                            // width='md'
+                            name='tenCoSoDaoTao'
+                            placeholder={`Cơ sở đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Cơ sở đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name='batDau'
+                            label={'Ngày cấp'}
+                            placeholder={'Ngày cấp'}
+                            rules={[
+                                { required: true, message: 'Ngày cấp' }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: '100%'
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name='ketThuc'
+                            label={'Ngày hết hiệu lực'}
+                            placeholder={'Ngày hết hiệu lực'}
+                            rules={[
+                                { required: true, message: 'Ngày hết hiệu lực' }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: '100%'
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
                 </Row>
+
+
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleUpdate" defaultMessage="Update SecondaryEducationLevel" />}
+                title={"Cập nhật nghiệp vụ chuyên ngành"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -550,16 +633,67 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
+                            label={'Chứng chỉ'}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='chungChiDuocCap'
+                            placeholder={`Chứng chỉ`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
+                                    message: 'Chứng chỉ'
                                 },
                             ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={'Cơ sở đào tạo'}
+                            // width='md'
+                            name='tenCoSoDaoTao'
+                            placeholder={`Cơ sở đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Cơ sở đào tạo'
+                                },
+                            ]} />
+                    </Col>
+
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name='batDau'
+                            label={'Ngày cấp'}
+                            placeholder={'Ngày cấp'}
+                            rules={[
+                                { required: true, message: 'Ngày cấp' }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: '100%'
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                            bordered
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name='ketThuc'
+                            label={'Ngày hết hiệu lực'}
+                            placeholder={'Ngày hết hiệu lực'}
+                            rules={[
+                                { required: true, message: 'Ngày hết hiệu lực' }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: '100%'
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                            bordered
+                        />
                     </Col>
                 </Row>
             </ModalForm>

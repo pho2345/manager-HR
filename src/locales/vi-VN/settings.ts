@@ -1,5 +1,6 @@
 import requires from "./requires";
 import modal from "./modal";
+import menu from "./menu";
 
 export default {
   'app.settings.menuMap.basic': 'Basic Settings',
@@ -97,6 +98,7 @@ export default {
   "menu.Cấu hình.menu.civilServantRank": "Bậc công chức",
   ...requires,
   ...modal,
+  ...menu,
 
 
 

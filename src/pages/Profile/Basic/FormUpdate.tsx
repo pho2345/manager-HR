@@ -50,6 +50,11 @@ interface propAddNew {
   academicDegrees?: [] | GEN.Option[];
   militaryRanks?: [] | GEN.Option[];
   membership?: [] | GEN.Option[];
+  officer?: [] | GEN.Option[];
+  civilServant?: [] | GEN.Option[];
+  organ?: [] | GEN.Option[];
+  jobPosition?: [] | GEN.Option[];
+  rankCommunistParty?: [] | GEN.Option[];
   profile: any
 }
 
@@ -89,7 +94,9 @@ export default (props: propAddNew) => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const { religion, sex } = props;
+  console.log('sex', sex)
   const [form] = useForm<ProFormInstance>();
+  const [checkOfficer, setCheckOfficer] = useState<boolean>(false);
 
   const handleSession = (value: any) => {
     const getSessionInfo = sessionStorage.getItem(ID_SAVE_INFO);
@@ -116,7 +123,7 @@ export default (props: propAddNew) => {
     if (formRef.current && props.display) {
       formRef.current.setFieldsValue({
         ...props.profile
-      })
+      });
     }
   }, []);
 
@@ -130,6 +137,7 @@ export default (props: propAddNew) => {
         onCurrentChange={(value: number) => {
         }}
         onFinish={async (value) => {
+          console.log('value', value);
           await waitTime(1000);
           message.success("Thành công");
         }}
@@ -157,7 +165,7 @@ export default (props: propAddNew) => {
           );
         }}
       >
-        {/* <StepsForm.StepForm<{
+        <StepsForm.StepForm<{
           name: string;
         }>
           name="base"
@@ -166,7 +174,9 @@ export default (props: propAddNew) => {
           }}
 
           onFinish={async (value: object) => {
+            console.log('aaa', value);
             handleSession(value);
+            return true
           }}
         >
           <Row gutter={24} className="m-0">
@@ -183,7 +193,7 @@ export default (props: propAddNew) => {
 
             <Col span={12} className="gutter-row p-0">
               <ProFormSelect
-                name="sex"
+                name="gioiTinh"
                 showSearch
 
                 label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
@@ -200,7 +210,7 @@ export default (props: propAddNew) => {
             <Col span={12} className="gutter-row p-0" >
               <ProFormSelect
                 className="w-full"
-                name="religion"
+                name="danToc"
                 label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                 placeholder={"Dân tộc"}
                 showSearch
@@ -219,7 +229,7 @@ export default (props: propAddNew) => {
                   },
                   disabledDate: disabledDate
                 }}
-                name="birthdate"
+                name="sinhNgay"
                 label={configDefaultText["page.listCow.column.birthdate"]}
                 placeholder={configDefaultText["page.listCow.column.birthdate"]}
                 rules={[
@@ -390,7 +400,7 @@ export default (props: propAddNew) => {
             </Col>
           </Row>
 
-        </StepsForm.StepForm> */}
+        </StepsForm.StepForm>
 
         <StepsForm.StepForm<{
           name: string;
@@ -402,29 +412,43 @@ export default (props: propAddNew) => {
 
           onFinish={async (value: object) => {
             handleSession(value);
-            return true;
+            return true
           }}
 
         >
+          
+          <ProFormSwitch
+                  checkedChildren="Công chức"
+                  unCheckedChildren="Viên chức"
+                  label="Loại"
+                  
+                  fieldProps={{
+                    onChange: (e) => {
+                      setCheckOfficer(e)
+                    },
+                    checked: checkOfficer,
+                    
+                  }}
+                />
+                
+
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0" >
-              <Space>
                 <ProFormSelect
-                name="ngachNgheNghiep"
-                label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}
-                placeholder={"Ngạch nghề nghiệp"}
-                rules={[
-                  { required: true, message: <FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" /> },
-                ]}
-                fieldProps={{
-                  style: {
-                    width: "100%"
-                  },
-                }}
-                options={[]}
-              />
-                <Checkbox />
-              </Space>
+                  name="ngachNgheNghiep"
+                  label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}
+                  placeholder={"Ngạch nghề nghiệp"}
+                  rules={[
+                    { required: true, message: <FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" /> },
+                  ]}
+                  fieldProps={{
+                    style: {
+                      width: "100%"
+                    },
+                  }}
+                options={ checkOfficer ? props.civilServant : props.officer}
+                
+                />
             </Col>
 
             <Col span={12} className="gutter-row p-0 w-full">
@@ -441,6 +465,7 @@ export default (props: propAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
                 ]}
+
               />
             </Col>
           </Row>
@@ -503,9 +528,38 @@ export default (props: propAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                 ]}
-                options={[]}
+                options={props.organ}
               />
 
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+           
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="chucVuHienTai"
+                label={"Chức vụ hiện tại"}
+                placeholder={"Chức vụ hiện tại"}
+                rules={[
+                  { required: true, message: "Chức vụ hiện tại" },
+                ]}
+                options={props.position}
+              />
+            </Col>
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="viTriViecLam"
+                label={"Vị trí việc làm"}
+                placeholder={"Vị trí việc làm"}
+                rules={[
+                  { required: true, message: "Vị trí việc làm" },
+                ]}
+                options={props.jobPosition}
+              />
             </Col>
           </Row>
 
@@ -575,6 +629,7 @@ export default (props: propAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
                 ]}
+                options={props.position}
               />
             </Col>
           </Row>
@@ -592,20 +647,21 @@ export default (props: propAddNew) => {
               />
             </Col>
             <Col span={12} className="gutter-row p-0">
-              <ProFormText
+              <ProFormSelect
                 name="chucVuDangHienTai"
                 label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}
                 placeholder={"Chức vụ Đảng hiện tại"}
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
                 ]}
+                options={props.rankCommunistParty}
               />
             </Col>
           </Row>
 
           <Row gutter={24} className="m-0">
             <Col span={12} className="gutter-row p-0">
-              <ProFormText
+              <ProFormSelect
                 className="w-full"
                 name="chucVuDangKiemNhiem"
                 label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}
@@ -613,6 +669,8 @@ export default (props: propAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                 ]}
+                options={props.rankCommunistParty}
+
               />
             </Col>
 
@@ -625,7 +683,7 @@ export default (props: propAddNew) => {
                 rules={[
                   { required: true, message: <FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" /> }
                 ]}
-                options={[]}
+                options={props.jobPosition}
               />
             </Col>
           </Row>
@@ -661,8 +719,32 @@ export default (props: propAddNew) => {
         <StepsForm.StepForm
           name="base2"
           title={"Trình độ, đào tạo"}
-          onFinish={async () => {
+          onFinish={async (value) => {
             await waitTime(2000);
+            let sesstion = JSON.parse(sessionStorage.getItem(ID_SAVE_INFO) as any);
+            const dateAll = {
+              ...sesstion,
+              ...value
+            }
+            const data = {
+              ...dateAll,
+              sinhNgay: moment(dateAll.sinhNgay).toISOString(),
+              ngayBoNhiem: moment(dateAll.ngayBoNhiem).toISOString(),
+              ngayBoNhiemLai: moment(dateAll.ngayBoNhiemLai).toISOString(),
+              ngayBoNhiemNgachNgheNghiep: moment(dateAll.ngayBoNhiemNgachNgheNghiep).toISOString(),
+              ngayCapCCCD: moment(dateAll.ngayCapCCCD).toISOString(),
+              ngayHuongLuongNgachNgheNghiep: moment(dateAll.ngayHuongLuongNgachNgheNghiep).toISOString(),
+              ngayHuongPCTNVKNgachNgheNghiep: moment(dateAll.ngayHuongPCTNVKNgachNgheNghiep).toISOString(),
+              ngayNhapNgu: moment(dateAll.ngayNhapNgu).toISOString(),
+              ngayThamGiaToChucChinhTriXaHoiDauTien: moment(dateAll.ngayThamGiaToChucChinhTriXaHoiDauTien).toISOString(),
+              ngayVaoCoQuanHienDangCongTac: moment(dateAll.ngayVaoCoQuanHienDangCongTac).toISOString(),
+              ngayVaoDangCongSanVietNam: moment(dateAll.ngayVaoDangCongSanVietNam).toISOString(),
+              ngayXuatNgu: moment(dateAll.ngayXuatNgu).toISOString(),
+              capBacLoaiQuanHamQuanDoi: 1,
+              thanhPhanGiaDinh: 3
+            }
+           
+            await patch("/ca-nhan/so-yeu-ly-lich/cap-nhat", data);
             return true;
           }}
           className="w-full"
@@ -712,7 +794,7 @@ export default (props: propAddNew) => {
                   },
                   disabledDate: disabledDate
                 }}
-                name="ngayVaoDangCongSanVietNam"
+                name="ngayXuatNgu"
                 label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}
                 placeholder={"Ngày xuất ngũ"}
                 rules={[
@@ -817,7 +899,7 @@ export default (props: propAddNew) => {
               />
             </Col>
 
-            <Col span={12} className="gutter-row p-0 w-full" >
+            {/* <Col span={12} className="gutter-row p-0 w-full" >
               <ProFormSelect
                 className="w-full"
                 name="capBacLoaiQuanHamQuanDoi"
@@ -829,7 +911,7 @@ export default (props: propAddNew) => {
                   { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
                 ]}
               />
-            </Col>
+            </Col> */}
           </Row>
 
           <Row gutter={24} className="m-0">

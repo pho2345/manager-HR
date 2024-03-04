@@ -189,6 +189,9 @@ const TableList: React.FC = () => {
   const [militaryRanks, setMilitaryRanks] = useState<GEN.Option[]>([]);
   const [officer, setOfficer] = useState<GEN.Option[]>([]);
   const [civilServant, setCivilServant] = useState<GEN.Option[]>([]);
+  const [organ, setOrgan] = useState<GEN.Option[]>([]);
+  const [jobPosition, setJobPosition] = useState<GEN.Option[]>([]);
+  const [rankCommunistParty, setRankCommunistParty] = useState<GEN.Option[]>([]);
 
 
   const params = useParams();
@@ -209,8 +212,11 @@ const TableList: React.FC = () => {
           { query: '/hoc-ham', setFunction: setAcademicDegrees },
           { query: '/cap-bac-loai-quan-ham-quan-doi', setFunction: setMilitaryRanks },
           { query: '/thanh-phan-gia-dinh', setFunction: setMembership },
-          { query: '/ngach-cong-chuc', setFunction: setCivilServant },
-          { query: '/ngach-vien-chuc', setFunction: setOfficer },
+          { query: '/bac-ngach/ngach-cong-chuc', setFunction: setCivilServant },
+          { query: '/bac-ngach/ngach-vien-chuc', setFunction: setOfficer },
+          { query: '/coquan-tochuc-donvi', setFunction: setOrgan },
+          { query: '/vi-tri-viec-lam', setFunction: setJobPosition },
+          { query: '/chuc-danh-dang', setFunction: setRankCommunistParty },
         ];
         
         for (const { query, setFunction } of dataQueries) {
@@ -263,6 +269,9 @@ const TableList: React.FC = () => {
   //   setFileList(updatedFileList);
   // };
 
+
+  //
+  
   return (
     !params.id ? (
       <div
@@ -320,6 +329,7 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.chieuCao ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.canNang ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.nhomMau ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Tình trạng sức khỏe"}>{profile?.tinhTrangSucKhoe ?? ""}</Descriptions.Item>
 
               </Descriptions>
             </ProCard>
@@ -336,15 +346,19 @@ const TableList: React.FC = () => {
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.maSoNgachNgheNghiep ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{profile?.ngayBoNhiemNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngayBoNhiemNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.heSoLuongNgachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.ngayHuongLuongNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongLuongNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.phanTramHuongLuongNgachNgheNghiep ?? 0} %</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongPCTNVKNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
               </Descriptions>
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Chức vụ"}>
+              <Descriptions.Item label={"Chức vụ hiện tại"}>{profile?.chucVuHienTai ?? ""}</Descriptions.Item>
+                
+              <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{moment(profile?.ngayDuocTuyenDungLanDau).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+              <Descriptions.Item label={"Ngày chính thức"}>{moment(profile?.ngayChinhThuc).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
                 <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.coQuanToChucDonViTuyenDung ?? ""}</Descriptions.Item>
@@ -378,7 +392,6 @@ const TableList: React.FC = () => {
             >
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Lương"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.salary" defaultMessage="Tiền lương" />}>{profile?.tienLuong ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalary" defaultMessage="Bậc lương" />}>{profile?.chucVuKiemNhiem ?? ""}</Descriptions.Item>
 
                 <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePosition" defaultMessage="Phụ cấp chức vụ" />}>{profile?.phuCapChucVu ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceChargePosition" defaultMessage="Phụ cấp kiêm nhiệm" />}>{profile?.phuCapKiemNhiem ?? ""}</Descriptions.Item>
@@ -390,7 +403,7 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryWorkSpace" defaultMessage="Ngày hưởng lương" />}>{moment(profile?.ngayHuongLuongTheoViTriViecLam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
                 <Descriptions.Item label={<FormattedMessage id="page.profile.percentSalaryWorkSpace" defaultMessage="Phần trăm hưởng lương" />}>{profile?.phamTramHuongLuong ?? ""}%</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}>{profile?.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.dadteGetSalaryAllowancePass" defaultMessage="Ngày hưởng phụ cấp vượt khung" />}>{moment(profile?.ngayHuongPCTNVK).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
               </Descriptions>
 
@@ -439,6 +452,11 @@ const TableList: React.FC = () => {
             sex={sex}
             academicDegrees={academicDegrees}
             profile={profile}
+            civilServant={civilServant}
+            officer={officer}
+            organ={organ}
+            jobPosition={jobPosition}
+            rankCommunistParty={rankCommunistParty}
           />
 
         </PageContainer>

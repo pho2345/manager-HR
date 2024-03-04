@@ -119,6 +119,7 @@ const Login: React.FC = () => {
     try {
       const msg = await login({ ...values, type })
       if (msg.status_code === 200) {
+        console.log('msg', msg);
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
         localStorage.setItem('access_token', msg?.data?.token || '');
         message.success(defaultLoginSuccessMessage);

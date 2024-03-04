@@ -318,12 +318,7 @@ export async function patch(subSolder: string, body: object) {
       ...body,
     },
   });
-  console.log('fetchData', fetchData);
-  // return {
-  //   total: fetchData?.meta?.pagination?.total,
-  //   success: fetchData.data && true,
-  //   data: fetchData.data
-  // }
+  return fetchData
 }
 
 export async function deletes(subSolder: string) {

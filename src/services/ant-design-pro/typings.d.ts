@@ -292,8 +292,9 @@ declare namespace API {
   type Nation = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
+    trangThai?: boolean;
   };
 
   type NationList = {
@@ -314,11 +315,12 @@ declare namespace GEN {
 
 
 
-  type militaryRanks = {
+  type MilitaryRanks = {
     id?: number;
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type Account = {
@@ -335,15 +337,17 @@ declare namespace GEN {
   type Position = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
+    trangThai: boolean
   }
 
   type PolicyObject = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
+    trangThai?: boolean;
   }
 
 
@@ -352,6 +356,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type CivilServant = {
@@ -394,6 +399,7 @@ declare namespace GEN {
     id?: number;
     name?: string;
     create_at?: Date;
+    trangThai?: boolean;
     update_at?: Date;
   }
 
@@ -402,6 +408,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type MemberFamily = {
@@ -409,6 +416,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type HealthStatus = {
@@ -417,6 +425,7 @@ declare namespace GEN {
     create_at?: Date;
     update_at?: Date;
     title?: string;
+    trangThai?: boolean;
   }
 
   type Religion = {
@@ -424,6 +433,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type SecondaryEducationLevel = {
@@ -431,6 +441,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type GroupRankCommunistParty = {
@@ -481,6 +492,8 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
+
   }
 
   type Organ = {
@@ -497,6 +510,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type GroupBlood = {
@@ -504,6 +518,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type Employee = {

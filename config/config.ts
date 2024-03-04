@@ -7,13 +7,14 @@ import routes from './routes';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const { REACT_APP_ENV = 'dev', SERVERURL, ID_SAVE_INFO } = process.env;
+const { REACT_APP_ENV = 'dev', SERVERURL, ID_SAVE_INFO, FORMAT_DATE } = process.env;
 
 export default defineConfig({
 
   define: {
     SERVERURL: SERVERURL,
-    ID_SAVE_INFO: ID_SAVE_INFO
+    ID_SAVE_INFO: ID_SAVE_INFO,
+    FORMAT_DATE: FORMAT_DATE
   },
 
   hash: true,

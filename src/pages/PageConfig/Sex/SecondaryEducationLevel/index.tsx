@@ -1,6 +1,6 @@
-import { get } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { get, patch } from '@/services/ant-design-pro/api';
+import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,13 +8,13 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
+import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleUpdate, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -32,19 +32,27 @@ const handleAdd = async (fields: API.RuleListItem) => {
 };
 
 
-// const handleUpdate = async (fields: any, id: any) => {
-//     const hide = message.loading('Đang cập nhật...');
-//     try {
-//         hide();
+const handleUpdate = async (fields: any, id: any) => {
+    const hide = message.loading('Đang cập nhật...');
+    try {
 
-//         message.success('Cập nhật thành công');
-//         return true;
-//     } catch (error: any) {
-//         hide();
-//         message.error(error?.response?.data?.error?.message);
-//         return false;
-//     }
-// };
+        patch('/trinh-do-giao-duc-pho-thong/sua', {
+            id: id,
+            ...fields,
+            "create_at": "2024-02-01T20:57:33",
+            "update_at": null,
+            "trangThai": true,
+        })
+        hide();
+
+        message.success('Cập nhật thành công');
+        return true;
+    } catch (error: any) {
+        hide();
+        message.error(error?.response?.data?.error?.message);
+        return false;
+    }
+};
 
 
 const handleRemove = async (selectedRows: any) => {
@@ -66,22 +74,18 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 const TableList: React.FC = () => {
-    const collection = "/bac-ngach/ngach-cong-chuc";
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    const [openWgs, setOpenWgs] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const refIdCateogry = useRef<any>();
+    const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+    const [openAwg, setOpenAwg] = useState<boolean>(false);
 
-    const update  = (value: any) => {
-        return handleUpdate(value, 1, collection);
-    }
 
     const confirm = (entity: any) => {
         Modal.confirm({
@@ -98,8 +102,6 @@ const TableList: React.FC = () => {
             }
         });
     };
-
-
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
@@ -353,14 +355,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.CivilServant>[] = [
+    const columns: ProColumns<GEN.SecondaryEducationLevel>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.CivilServant.table.name" defaultMessage="Name" />,
+            title: <FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -370,23 +372,6 @@ const TableList: React.FC = () => {
             },
             width: '30vh',
             ...getColumnSearchProps('name')
-        },
-
-        {
-            title: <FormattedMessage id="page.CivilServant.table.numberSalary" defaultMessage="Hệ số lương" />,
-            key: 'numberSalary',
-            dataIndex: 'numberSalary',
-            renderText: (_, entity) => entity.heSoLuongCongChuc,
-            width: '30vh',
-            ...getColumnSearchProps('numberSalary')
-        },
-        {
-            title: <FormattedMessage id="page.CivilServant.table.status" defaultMessage="Trạng thái" />,
-            key: 'status',
-            dataIndex: 'status',
-            render: (_, entity) => <Switch disabled checked={entity?.trangThai} />,
-            width: '30vh',
-            ...getColumnSearchProps('status')
         },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
@@ -398,72 +383,24 @@ const TableList: React.FC = () => {
         },
 
 
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
             valueType: 'textarea',
             key: 'option',
             align: 'center',
-            render: (_, entity: any) => {
+            render: (_, entity) => {
 
-                // const menu = (
-                //     <Menu>
-                //         <Menu.Item key="1"
-                //             onClick={() => {
-                //                 handleUpdateModalOpen(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 form.setFieldsValue({
-                //                     code: entity?.attributes?.code,
-                //                     name: entity?.attributes?.name
-                //                 })
-                //             }}
-                //         >{configDefaultText['buttonUpdate']}</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenWgs(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng tiêu chuẩn</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenAwg(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng trung bình</Menu.Item>
-
-
-
-                //     </Menu>
-                // );
-                // return (
-                //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-                //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-                //             {configDefaultText['handle']}
-                //         </a>
-                //     </Dropdown>
-                // );
-
-                return (
-                    <Tooltip title={configDefaultText['buttonUpdate']}>
-                        <Button
-                            style={{
-                                border: 'none'
-                            }}
-
-                            onClick={async () => {
-                                handleUpdateModalOpen(true);
-                                // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-                                form.setFieldsValue({
-                                })
-                            }}
-                            icon={<MdOutlineEdit />}
-                        />
-                    </Tooltip>)
+                return (<EditTwoTone
+                    style={{
+                        fontSize: 20
+                    }}
+                    onClick={async () => {
+                        refIdCurrent.current = entity.id;
+                        handleUpdateModalOpen(true)
+                    }}
+                />
+                )
             }
         },
     ];
@@ -511,7 +448,8 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get(collection)}
+                request={async () => get('/trinh-do-giao-duc-pho-thong')}
+
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -536,7 +474,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.CivilServant.modal.titleCreate" defaultMessage="Create CivilServant" />}
+                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleCreate" defaultMessage="Create SecondaryEducationLevel" />}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -566,37 +504,22 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.CivilServant.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.CivilServant.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
                                 },
                             ]} />
-                    </Col>
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={"Hệ số lương"}
-                            // width='md'
-                            name='heSoLuongCongChuc'
-                            placeholder={`Hệ số lương`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Hệ số lương"
-                                },
-                            ]}
-                            fieldProps={{ precision: 1 }}
-                        />
                     </Col>
                 </Row>
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.CivilServant.modal.titleUpdate" defaultMessage="Update CivilServant" />}
+                title={<FormattedMessage id="page.SecondaryEducationLevel.modal.titleUpdate" defaultMessage="Update SecondaryEducationLevel" />}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -607,7 +530,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await update(values);
+                    const success = await handleUpdate(values as any, refIdCurrent.current);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -627,31 +550,16 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.CivilServant.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.SecondaryEducationLevel.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.CivilServant.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.SecondaryEducationLevel.require.name" defaultMessage="Name" />
                                 },
                             ]} />
-                    </Col>
-                    <Col span={24} >
-                        <ProFormDigit
-                            label={"Hệ số lương"}
-                            // width='md'
-                            name='heSoLuongCongChuc'
-                            placeholder={`Hệ số lương`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Hệ số lương"
-                                },
-                            ]}
-                            fieldProps={{ precision: 1 }}
-                        />
                     </Col>
                 </Row>
             </ModalForm>

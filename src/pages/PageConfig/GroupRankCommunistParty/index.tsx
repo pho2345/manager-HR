@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleUpdate, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -33,50 +33,14 @@ const TableList: React.FC = () => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
     const add = async (value: any) => {
-        return handleAdd(value, collection);
+        return handleAdd2(value, collection);
     }
 
     const update = async (value: any) => {
-        return handleUpdate(value, refIdCurrent.current, collection);
+        return handleUpdate2(value, refIdCurrent.current, collection);
     }
 
-    // const handleAdd = async (fields: any) => {
-    //     const hide = message.loading('Đang thêm...');
-    //     await post(`${collection}/them`, {}, {
-    //         ...fields,
-    //         batDau: moment(fields.batDau).toISOString(),
-    //         ketThuc: moment(fields.ketThuc).toISOString()
-    //     });
-    //     try {
-    //         hide();
-    //         message.success('Thêm thành công');
-    //         return true;
-    //     } catch (error: any) {
-    //         hide();
-    //         message.error(error?.response?.data?.error?.message);
-    //         return false;
-    //     }
-    // };
-
-    // const handleUpdate = async (fields: any, id: any) => {
-    //     const hide = message.loading('Đang cập nhật...');
-    //     try {
-
-    //         await patch(`${collection}/${id}/sua`, {
-    //             ...fields,
-    //             batDau: moment(fields.batDau).toISOString(),
-    //             ketThuc: moment(fields.ketThuc).toISOString()
-    //         })
-    //         hide();
-
-    //         message.success('Cập nhật thành công');
-    //         return true;
-    //     } catch (error: any) {
-    //         hide();
-    //         message.error(error?.response?.data?.error?.message);
-    //         return false;
-    //     }
-    // };
+    
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -331,7 +295,7 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.Organ>[] = [
+    const columns: ProColumns<GEN.GroupRankCommunistParty>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -356,7 +320,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <Switch disabled checked={entity.status} />
+                    <Switch disabled checked={entity.trangThai} />
                 );
             },
         },
@@ -461,7 +425,7 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={false}
+                rowSelection={{}}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);

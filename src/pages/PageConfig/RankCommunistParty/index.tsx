@@ -1,6 +1,6 @@
 import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleUpdate, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -33,11 +33,11 @@ const TableList: React.FC = () => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
     const add = async (value: any) => {
-        return handleAdd(value, collection);
+        return handleAdd2(value, collection);
     }
 
     const update = async (value: any) => {
-        return handleUpdate(value, refIdCurrent.current, collection);
+        return handleUpdate2(value, refIdCurrent.current, collection);
     }
 
 
@@ -314,12 +314,12 @@ const TableList: React.FC = () => {
         },
         {
             title: 'Trạng thái',
-            key: 'status',
-            dataIndex: 'status',
+            key: 'trangThai',
+            dataIndex: 'trangThai',
             render: (_, entity) => {
                 ;
                 return (
-                    <Switch disabled checked={entity.status} />
+                    <Switch disabled checked={entity.trangThai} />
                 );
             },
         },
@@ -424,7 +424,7 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={false}
+                rowSelection={{}}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -478,6 +478,15 @@ const TableList: React.FC = () => {
                                 },
                             ]} />
                     </Col>
+
+                    <Col span={24} >
+                        <ProFormSwitch
+                            label={"Trạng thái"}
+                            // width='md'
+                            name='trangThai'
+                            placeholder={`Trạng thái`}
+                           />
+                    </Col>
                 </Row>
 
 
@@ -525,6 +534,15 @@ const TableList: React.FC = () => {
                                     message: "Tên chức danh đảng"
                                 },
                             ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormSwitch
+                            label={"Trạng thái"}
+                            // width='md'
+                            name='trangThai'
+                            placeholder={`Trạng thái`}
+                           />
                     </Col>
                 </Row>
             </ModalForm>

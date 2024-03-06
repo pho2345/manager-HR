@@ -1,6 +1,6 @@
-import { get } from '@/services/ant-design-pro/api';
+import { get, getCustome } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -69,10 +69,8 @@ const TableList: React.FC = () => {
     const collection = "/bac-ngach/ngach-vien-chuc";
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    const [openWgs, setOpenWgs] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const refIdCateogry = useRef<any>();
-    const refNameCategory = useRef<any>();
+    const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -402,47 +400,6 @@ const TableList: React.FC = () => {
             align: 'center',
             render: (_, entity: any) => {
 
-                // const menu = (
-                //     <Menu>
-                //         <Menu.Item key="1"
-                //             onClick={() => {
-                //                 handleUpdateModalOpen(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 form.setFieldsValue({
-                //                     code: entity?.attributes?.code,
-                //                     name: entity?.attributes?.name
-                //                 })
-                //             }}
-                //         >{configDefaultText['buttonUpdate']}</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenWgs(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng tiêu chuẩn</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenAwg(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng trung bình</Menu.Item>
-
-
-
-                //     </Menu>
-                // );
-                // return (
-                //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-                //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-                //             {configDefaultText['handle']}
-                //         </a>
-                //     </Dropdown>
-                // );
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -452,20 +409,32 @@ const TableList: React.FC = () => {
 
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
-                                // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-                                form.setFieldsValue({
-                                })
+                                refIdCurrent.current = entity.id;
+                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
+                                if (getRecordCurrent.data) {
+                                    handleUpdateModalOpen(true)
+                                    form.setFieldsValue({
+                                        ...getRecordCurrent.data
+                                    })
+                                }
+
                             }}
                             icon={<MdOutlineEdit />}
                         />
                     </Tooltip>)
-            }
-        },
+        }
+    }
     ];
 
 
 
+    async function add(value: any) {
+        return await handleAdd2(value, collection);
+    }
 
+    async function update(value: any) {
+        return await handleUpdate2(value, refIdCurrent.current, collection);
+    }
 
     return (
         <PageContainer>
@@ -524,8 +493,8 @@ const TableList: React.FC = () => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-                tableAlertOptionRender={({ selectedRows }: any) => {
-                    return renderTableAlertOption(selectedRows)
+                tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+                    return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
             />
 
@@ -541,7 +510,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -572,6 +541,20 @@ const TableList: React.FC = () => {
                                 },
                             ]} />
                     </Col>
+
+                    <Col span={24} >
+                        <ProFormDigit
+                            label={"Hệ số lương"}
+                            // width='md'
+                            name='heSo'
+                            placeholder={`Hệ số lương`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Hệ số lương"
+                                },
+                            ]} />
+                    </Col>
                 </Row>
             </ModalForm>
 
@@ -587,7 +570,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCateogry);
+                    const success = await update(values);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -615,6 +598,20 @@ const TableList: React.FC = () => {
                                 {
                                     required: true,
                                     message: <FormattedMessage id="page.Officer.require.name" defaultMessage="Name" />
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDigit
+                            label={"Hệ số lương"}
+                            // width='md'
+                            name='heSo'
+                            placeholder={`Hệ số lương`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Hệ số lương"
                                 },
                             ]} />
                     </Col>

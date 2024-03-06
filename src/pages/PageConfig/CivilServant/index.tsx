@@ -1,4 +1,4 @@
-import { get } from '@/services/ant-design-pro/api';
+import { get, getCustome } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -14,56 +14,11 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleUpdate, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
-const handleAdd = async (fields: API.RuleListItem) => {
-    const hide = message.loading('Đang thêm...');
-    try {
-        hide();
-        message.success('Thêm thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
-
-// const handleUpdate = async (fields: any, id: any) => {
-//     const hide = message.loading('Đang cập nhật...');
-//     try {
-//         hide();
-
-//         message.success('Cập nhật thành công');
-//         return true;
-//     } catch (error: any) {
-//         hide();
-//         message.error(error?.response?.data?.error?.message);
-//         return false;
-//     }
-// };
-
-
-const handleRemove = async (selectedRows: any) => {
-    const hide = message.loading('Đang xóa');
-    if (!selectedRows) return true;
-    try {
-        const deleteRowss = selectedRows.map((e: any) => {
-        })
-
-        await Promise.all(deleteRowss);
-        hide();
-        message.success('Xóa thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
 const TableList: React.FC = () => {
     const collection = "/bac-ngach/ngach-cong-chuc";
@@ -71,7 +26,7 @@ const TableList: React.FC = () => {
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const [openWgs, setOpenWgs] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const refIdCateogry = useRef<any>();
+    const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -80,24 +35,13 @@ const TableList: React.FC = () => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
     const update  = (value: any) => {
-        return handleUpdate(value, 1, collection);
+        return handleUpdate2(value, refIdCurrent.current, collection);
     }
 
-    const confirm = (entity: any) => {
-        Modal.confirm({
-            title: configDefaultText['titleConfirm'],
-            icon: <ExclamationCircleOutlined />,
-            content: configDefaultText['textConfirmDelete'],
-            okText: 'Có',
-            cancelText: 'Không',
-            onOk: async () => {
-                await handleRemove(entity);
-                if (actionRef.current) {
-                    actionRef.current?.reloadAndRest?.();
-                }
-            }
-        });
-    };
+    async function add(value: any) {
+        return await handleAdd2(value, collection);
+    }
+
 
 
 
@@ -111,6 +55,7 @@ const TableList: React.FC = () => {
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -406,48 +351,6 @@ const TableList: React.FC = () => {
             key: 'option',
             align: 'center',
             render: (_, entity: any) => {
-
-                // const menu = (
-                //     <Menu>
-                //         <Menu.Item key="1"
-                //             onClick={() => {
-                //                 handleUpdateModalOpen(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 form.setFieldsValue({
-                //                     code: entity?.attributes?.code,
-                //                     name: entity?.attributes?.name
-                //                 })
-                //             }}
-                //         >{configDefaultText['buttonUpdate']}</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenWgs(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng tiêu chuẩn</Menu.Item>
-
-                //         <Menu.Item key="2"
-                //             onClick={() => {
-                //                 setOpenAwg(true);
-                //                 refIdCateogry.current = entity.id;
-                //                 refNameCategory.current = entity.attributes.name;
-                //             }}
-                //         >Tăng trọng trung bình</Menu.Item>
-
-
-
-                //     </Menu>
-                // );
-                // return (
-                //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-                //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-                //             {configDefaultText['handle']}
-                //         </a>
-                //     </Dropdown>
-                // );
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -457,9 +360,15 @@ const TableList: React.FC = () => {
 
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
-                                // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-                                form.setFieldsValue({
-                                })
+                                refIdCurrent.current = entity.id;
+                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
+                                if (getRecordCurrent.data) {
+                                    handleUpdateModalOpen(true)
+                                    form.setFieldsValue({
+                                        ...getRecordCurrent.data
+                                    })
+                                }
+
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -529,8 +438,8 @@ const TableList: React.FC = () => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-                tableAlertOptionRender={({ selectedRows }: any) => {
-                    return renderTableAlertOption(selectedRows)
+                tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+                    return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
             />
 
@@ -546,7 +455,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();

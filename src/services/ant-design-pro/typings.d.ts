@@ -390,6 +390,8 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
+
   }
 
 
@@ -449,13 +451,15 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
+    trangThai?: boolean;
   }
 
   type GroupCommunistParty = {
     id?: number;
     name?: string;
     create_at?: Date;
-    status?: boolean;
+    trangThai?: boolean;
+
     update_at?: Date;
   }
 
@@ -464,7 +468,7 @@ declare namespace GEN {
     id?: number;
     name?: string;
     create_at?: Date;
-    status?: boolean;
+    trangThai?: boolean;
     update_at?: Date;
     bacLuong?: number;
     tienLuong?: number;
@@ -475,7 +479,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
-    status?: boolean;
+    trangThai?: boolean;
   }
 
 
@@ -501,7 +505,7 @@ declare namespace GEN {
     name?: string;
     create_at?: Date;
     update_at?: Date;
-    status?: boolean;
+    trangThai?: boolean;
   }
 
 

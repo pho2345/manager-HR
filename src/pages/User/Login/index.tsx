@@ -118,12 +118,12 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       const msg = await login({ ...values, type })
-      if (msg.status_code === 200) {
+      if (msg) {
         console.log('msg', msg);
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
-        localStorage.setItem('access_token', msg?.data?.token || '');
+        localStorage.setItem('access_token', msg?.token || '');
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo(msg?.data?.taikhoan as API.CurrentUser);
+        await fetchUserInfo(msg?.taikhoan as API.CurrentUser);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;

@@ -25,12 +25,8 @@ declare namespace API {
     // status?: string;
     // type?: string;
     // currentAuthority?: string;
-    status_code?: number;
-    message?: string;
-    data?: {
       taikhoan?: object,
       token?: string
-    }
   };
 
   type PageParams = {

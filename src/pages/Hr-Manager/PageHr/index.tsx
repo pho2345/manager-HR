@@ -19,7 +19,8 @@ import {
 
 } from '@ant-design/pro-components';
 import {
-  Image, UploadFile, UploadProps
+  Dropdown,
+  Image, Menu, UploadFile, UploadProps
 } from 'antd';
 
 import configText from '@/locales/configText';
@@ -27,26 +28,17 @@ const configDefaultText = configText;
 
 
 import {
+  FormattedMessage,
   useParams
 } from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import AddNew from './AddNew';
-import { getOption } from '@/services/utils';
+import { getOption, handleAdd2 } from '@/services/utils';
+import { MdOutlineEdit } from 'react-icons/md';
 
 
-const handleAdd = async (fields: any) => {
-  const hide = message.loading('Đang thêm...');
-  try {
-    hide();
-    message.success('Thêm thành công');
-    return true;
-  } catch (error: any) {
-    message.error(error?.response?.data?.error?.message);
-    return false;
-  }
-};
 
 
 const handleUpdate = async (fields: any, id: any) => {
@@ -62,7 +54,7 @@ const handleUpdate = async (fields: any, id: any) => {
           formdata.append('ref', 'api::cow.cow');
           formdata.append('refId', id.current);
           formdata.append('field', 'photos');
-         
+
         }
         else {
           photoCowCustom.push(e.uid)
@@ -78,7 +70,7 @@ const handleUpdate = async (fields: any, id: any) => {
       })
     }
     fields.photos = photoCowCustom
-   
+
     hide();
     message.success('Cập nhật thành công');
     return true;
@@ -138,6 +130,7 @@ const TableList: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
 
+  const collection = '/nhan-vien';
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
@@ -460,7 +453,7 @@ const TableList: React.FC = () => {
       ...getColumnSearchProps('code'),
       render: (_, entity) => {
         return (
-          <>{entity?.ho_va_ten}</>
+          <>{entity?.hoVaTen}</>
         );
       },
     },
@@ -649,75 +642,61 @@ const TableList: React.FC = () => {
     //   ...getColumnSearchRange('birthdate')
     // },
 
-    // {
-    //   title: configDefaultText['titleOption'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'option',
-    //   align: 'center',
-    //   render: (_, entity: any) => {
-    //     return (
-    //       <Tooltip title={configDefaultText['buttonUpdate']}>
-    //         <Button
+    {
+      title: configDefaultText['titleOption'],
+      dataIndex: 'atrributes',
+      valueType: 'textarea',
+      key: 'option',
+      align: 'center',
+      render: (_, entity: any) => {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1"
+              onClick={() => {
+                handleUpdateModalOpen(true);
+                // refIdCateogry.current = entity.id;
+                form.setFieldsValue({
+                  code: entity?.attributes?.code,
+                  name: entity?.attributes?.name
+                })
+              }}
+            >{configDefaultText['buttonUpdate']}</Menu.Item>
 
-    //           style={{
-    //             border: 'none'
-    //           }}
+            <Menu.Item key="2"
+              onClick={() => {
+                // setOpenWgs(true);
+                // refIdCateogry.current = entity.id;
+                // refNameCategory.current = entity.attributes.name;
+              }}
+            >Tăng trọng tiêu chuẩn</Menu.Item>
 
-    //           onClick={async () => {
-    //             handleUpdateModalOpen(true);
-    //             refIdCow.current = entity.id;
-    //             const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-    //             const photos = cow.photos;
-    //             if (photos) {
-    //               const photoCow = photos.map((e: any) => {
-    //                 return { uid: e.id, status: 'done', url: SERVERURL + e.url };
-    //               });
-    //               setFileList(photoCow);
+            <Menu.Item key="2"
+              onClick={() => {
+                // setOpenAwg(true);
+                // refIdCateogry.current = entity.id;
+                // refNameCategory.current = entity.attributes.name;
+              }}
+            >Tăng trọng trung bình</Menu.Item>
 
-    //               form.setFieldsValue({
-    //                 ...cow,
-    //                 category: cow.category?.id,
-    //                 farm: cow.farm?.id,
-    //                 upload: photoCow,
-    //                 group_cow: {
-    //                   label: cow?.group_cow?.name,
-    //                   value: cow?.group_cow?.id
-    //                 }
 
-    //               })
-    //             }
-    //             else {
-    //               form.setFieldsValue({
-    //                 ...cow,
-    //                 category: cow.category?.id,
-    //                 farm: cow.farm?.id,
-    //                 group_cow: {
-    //                   label: cow?.group_cow?.name,
-    //                   value: cow?.group_cow?.id
-    //                 }
-    //               })
-    //             }
-    //           }}
 
-    //           icon={
-    //             <MdOutlineEdit />
-    //           }
-    //         />
-    //       </Tooltip>
-    //     );
-    //   },
-    // },
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
+              {configDefaultText['handle']}
+            </a>
+          </Dropdown>
+        );
+      },
+    },
 
   ];
 
   // const disabledDate = (current: any) => {
   //   return current && current > moment();
   // };
-
-  const onCloseModalAdd = (params: boolean) => {
-    setVisible(params);
-  }
 
 
   // const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
@@ -734,6 +713,10 @@ const TableList: React.FC = () => {
   //   const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
   //   setFileList(updatedFileList);
   // };
+
+  const add  = (fields: any) => {
+    return handleAdd2(fields, `${collection}/them` )
+  }
 
   return (
     !params.id ? (
@@ -802,7 +785,78 @@ const TableList: React.FC = () => {
 
         />
 
-        <AddNew display={visible} onChangeDisplay={onCloseModalAdd} religion={religion} sex={sex} />
+        <ModalForm
+          form={form}
+          title={<FormattedMessage id="page.hr.modal.addNew.title" defaultMessage="Tạo CBVC" />}
+          width={window.innerWidth * 0.3}
+          open={visible}
+
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+              setVisible(false);
+            },
+          }}
+          onFinish={async (value) => {
+            const success = await add(value as API.RuleListItem);
+            if (success) {
+              setVisible(false);
+              form.resetFields();
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }
+          }}
+
+          submitter={{
+            searchConfig: {
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
+            },
+          }}
+        >
+          <Row gutter={24} >
+            <Col span={24} >
+              <ProFormText
+                label={<FormattedMessage id="page.hr.modal.addNew.name" defaultMessage="Tên" />}
+                // width='md'
+                name='hoVaTen'
+                placeholder={`Họ và tên`}
+                rules={[
+                  {
+                    required: true,
+                    message: <FormattedMessage id="page.hr.modal.addNew.require.name" defaultMessage="Vui lòng nhập tên" />
+                  },
+                ]} />
+
+              <ProFormText
+                label={<FormattedMessage id="page.hr.modal.addNew.passport" defaultMessage="CCCD/CMND" />}
+                // width='md'
+                name='soCCCD'
+                placeholder={`CCCD/CMND`}
+                rules={[
+                  {
+                    required: true,
+                    message: <FormattedMessage id="page.hr.modal.addNew.require.passport" defaultMessage="CCCD/CMND" />
+                  },
+                ]} />
+
+              <ProFormText
+                label={<FormattedMessage id="page.hr.modal.addNew.email" defaultMessage="Email" />}
+                // width='md'
+                name='email'
+                placeholder={`Email`}
+                rules={[
+                  {
+                    required: true,
+                    message: <FormattedMessage id="page.HealthStatus.require.email" defaultMessage="Vui lòng nhập email" />
+                  },
+                ]} />
+
+
+            </Col>
+          </Row>
+        </ModalForm>
 
         {/* <ModalForm
 
@@ -1040,7 +1094,7 @@ const TableList: React.FC = () => {
           column={2}
           layout='horizontal'
           size='middle'
-          
+
           columns={[
             {
               title: () => {

@@ -1,6 +1,6 @@
 import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormSlider } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -9,12 +9,12 @@ import {
 } from '@ant-design/pro-components';
 
 import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -32,43 +32,36 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const handleAdd = async (fields: any) => {
-        const hide = message.loading('Đang thêm...');
-        await post(`${collection}/them`, {}, {
-            ...fields,
-            batDau: moment(fields.batDau).toISOString(),
-            ketThuc: moment(fields.ketThuc).toISOString()
-        });
-        try {
-            hide();
-            message.success('Thêm thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+    const add = async (fields: any) => {
+        return handleAdd2(fields, collection, true);
     };
 
-    const handleUpdate = async (fields: any, id: any) => {
-        const hide = message.loading('Đang cập nhật...');
-        try {
 
-            await patch(`${collection}/${id}/sua`, {
-                ...fields,
-                batDau: moment(fields.batDau).toISOString(),
-                ketThuc: moment(fields.ketThuc).toISOString()
-            })
-            hide();
-
-            message.success('Cập nhật thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+    const update = async (fields: any) => {
+        fields.tenCoSoDaoTao = fields.IdTenCoSoDaoTao
+        return handleUpdate2(fields, refIdCurrent.current, collection, true)
     };
+
+    const [organ, setOrgan] = useState<GEN.Option[]>([]);
+
+    useEffect(() => {
+        const getValues = async () => {
+            try {
+                const dataQueries = [
+                    { query: '/coquan-tochuc-donvi', setFunction: setOrgan },
+                ];
+
+                for (const { query, setFunction } of dataQueries) {
+                    const data = await getOption(query, 'id', 'name');
+                    setFunction(data);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        getValues();
+    }, []);
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
@@ -357,7 +350,7 @@ const TableList: React.FC = () => {
             key: 'chungChiDuocCap',
             dataIndex: 'chungChiDuocCap',
             renderText: (_, entity) => entity.chungChiDuocCap
-        },{
+        }, {
             title: "Điểm số",
             key: 'diemSo',
             dataIndex: 'diemSo',
@@ -426,7 +419,7 @@ const TableList: React.FC = () => {
                     </Tooltip>)
             }
         }
-       
+
     ];
 
     return (
@@ -506,7 +499,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -553,7 +546,7 @@ const TableList: React.FC = () => {
                     </Col>
 
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Tên cở sở đào tạo"}
                             // width='md'
                             name='tenCoSoDaoTao'
@@ -563,7 +556,9 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Tên cở sở đào tạo'
                                 },
-                            ]} />
+                            ]}
+
+                            options={organ} />
                     </Col>
                     <Col span={24} >
                         <ProFormDigit
@@ -630,7 +625,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent);
+                    const success = await update(values as any);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -650,16 +645,94 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.nation.table.name" defaultMessage="Name" />}
+                            label={"Tên chứng chỉ"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên dând tộc`}
+                            name='tenNgoaiNgu'
+                            placeholder={`Tên chứng chỉ`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.nation.require.name" defaultMessage="Name" />
+                                    message: 'Tên chứng chỉ'
                                 },
                             ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Chứng chỉ được cấp"}
+                            // width='md'
+                            name='chungChiDuocCap'
+                            placeholder={`Chứng chỉ được cấp`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Chứng chỉ được cấp'
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormSelect
+                            label={"Tên cở sở đào tạo"}
+                            // width='md'
+                            name='IdTenCoSoDaoTao'
+                            placeholder={`Tên cở sở đào tạo`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Tên cở sở đào tạo'
+                                },
+                            ]}
+
+                            options={organ} />
+                    </Col>
+                    <Col span={24} >
+                        <ProFormDigit
+                            label={"Điểm số"}
+                            // width='md'
+                            name='diemSo'
+                            placeholder={`Điểm số`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Điểm số'
+                                },
+                            ]} />
+                    </Col>
+
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="batDau"
+                            label={"Ngày cấp"}
+                            placeholder={"Ngày cấp"}
+                            rules={[
+                                { required: true, message: "Ngày cấp" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày hết hạn"}
+                            placeholder={"Ngày hết hạn"}
+                            rules={[
+                                { required: true, message: "Ngày hết hạn" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
                     </Col>
                 </Row>
             </ModalForm>

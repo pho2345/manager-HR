@@ -15,15 +15,6 @@ const handleRemove2 = async (arrayId: any, collection: string) => {
   return true;
 };
 
-const handleRemove = async (arrayId: any, collection: string) => {
-  const deletePromises = arrayId.map((e: any) => {
-    return deletes(`${collection}/${e}/xoa`); // Trả về promise từ mỗi lệnh xóa
-  });
-
-  await Promise.all(deletePromises); // Chờ tất cả các promise xóa hoàn thành
-
-  return true;
-};
 
 const confirm = (entity: any, actionRef: any, collection: string) => {
   Modal.confirm({
@@ -92,7 +83,7 @@ export const handleAdd = async (fields: any, collection: string, date: boolean =
       batDau: moment(fields.batDau).toISOString(),
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields;
-    const add = await post(`${collection}/them`, {}, {
+    const add = await post(`${collection}`, {}, {
       ...data,
     });
     if (add) {
@@ -137,6 +128,7 @@ export const handleAdd2 = async (fields: any, collection: string, date: boolean 
 };
 
 
+
 export const handleUpdate = async (fields: any, id: any, collection: string, date: boolean = false) => {
   const hide = message.loading('Đang cập nhật...');
   try {
@@ -147,7 +139,7 @@ export const handleUpdate = async (fields: any, id: any, collection: string, dat
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields
 
-   const update = await patch(`${collection}/${id}/sua`, {
+   const update = await patch(`${collection}/${id}`, {
       ...data
     })
     if(update) {

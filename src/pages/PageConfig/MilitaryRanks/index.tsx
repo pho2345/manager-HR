@@ -471,14 +471,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.MilitaryRanks.table.name" defaultMessage="Name" />}
+                            label={`Tên cấp bậc`}
                             // width='md'
                             name='name'
                             placeholder={`Tên cấp bậc`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.MilitaryRanks.require.name" defaultMessage="Name" />
+                                    message: `Tên cấp bậc`
                                 },
                             ]} />
                     </Col>

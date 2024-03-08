@@ -9,13 +9,14 @@ import {
 } from '@ant-design/pro-components';
 
 import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -35,41 +36,38 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
+    const [typeBonus, setTypeBonus] = useState<GEN.Option[]>([]);
 
-    const handleAdd = async (fields: any) => {
-        const hide = message.loading('Đang thêm...');
-        await post(`${collection}/them`, {}, {
-            ...fields,
-        });
-        try {
-            hide();
-            message.success('Thêm thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+    useEffect(() => {
+        const getValues = async () => {
+            try {
+                const dataQueries = [
+                    { query: '/hinh-thuc-khen-thuong', setFunction: setTypeBonus },
+                ];
+
+                for (const { query, setFunction } of dataQueries) {
+                    const data = await getOption(query, 'id', 'name');
+                    setFunction(data);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        getValues();
+    }, [])
+
+    const add = async (fields: any) => {
+        return handleAdd2(fields, collection)
     };
-    
-    const handleUpdate = async (fields: any, id: any) => {
-        const hide = message.loading('Đang cập nhật...');
-        try {
-    
-            hide();
-            patch(`${collection}/${id}/sua`, {
-                ...fields
-            });
-            message.success('Cập nhật thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+
+    const update = async (fields: any) => {
+        fields.xepLoaiChuyenMon = fields.xepLoaiChuyenMonEnum;
+        fields.xepLoaiThiDua = fields.xepLoaiThiDuaEnum;
+        fields.hinhThucKhenThuong = fields.IdHinhThucKhenThuong;
+        return handleUpdate2(fields, refIdCurrent.current, collection)
     };
-    
+
 
 
 
@@ -383,8 +381,8 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('nam')
         },
-        
-    
+
+
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
@@ -418,7 +416,7 @@ const TableList: React.FC = () => {
                                         ...getRecordCurrent.data
                                     })
                                 }
-                               
+
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -508,7 +506,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -527,7 +525,7 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Xếp loại chuyên môn"}
                             // width='md'
                             name='xepLoaiChuyenMon'
@@ -537,13 +535,16 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Xếp loại chuyên môn'
                                 },
-                            ]} />
+                            ]}
+                            options={XEP_LOAI_CHUYEN_MON}
+
+                        />
                     </Col>
 
 
 
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Xếp loại thi đua"}
                             // width='md'
                             name='xepLoaiThiDua'
@@ -553,12 +554,14 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Xếp loại thi đua'
                                 },
-                            ]} />
+                            ]}
+                            options={XEP_LOAI_THI_DUA}
+                        />
                     </Col>
 
 
                     <Col span={24}>
-                        <ProFormText
+                        <ProFormSelect
                             label={"Hình thức khen thưởng"}
                             // width='md'
                             name='hinhThucKhenThuong'
@@ -568,7 +571,9 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Hình thức khen thưởng'
                                 },
-                            ]} />
+                            ]}
+                            options={typeBonus}
+                        />
                     </Col>
 
                 </Row>
@@ -577,7 +582,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật làm việc ở nước ngoài"}
+                title={"Cập nhật khen thưởng"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -588,7 +593,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent.current);
+                    const success = await update(values as any);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -607,49 +612,57 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Xếp loại chuyên môn"}
                             // width='md'
-                            name='xepLoaiChuyenMon'
+                            name='xepLoaiChuyenMonEnum'
                             placeholder={`Xếp loại chuyên môn`}
                             rules={[
                                 {
                                     required: true,
                                     message: 'Xếp loại chuyên môn'
                                 },
-                            ]} />
+                            ]}
+                            options={XEP_LOAI_CHUYEN_MON}
+
+                        />
                     </Col>
 
 
 
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Xếp loại thi đua"}
                             // width='md'
-                            name='xepLoaiThiDua'
+                            name='xepLoaiThiDuaEnum'
                             placeholder={`Xếp loại thi đua`}
                             rules={[
                                 {
                                     required: true,
                                     message: 'Xếp loại thi đua'
                                 },
-                            ]} />
+                            ]}
+                            options={XEP_LOAI_THI_DUA}
+                        />
                     </Col>
 
 
-                    <Col span={24} >
-                        <ProFormText
+                    <Col span={24}>
+                        <ProFormSelect
                             label={"Hình thức khen thưởng"}
                             // width='md'
-                            name='hinhThucKhenThuong'
+                            name='IdHinhThucKhenThuong'
                             placeholder={`Hình thức khen thưởng`}
                             rules={[
                                 {
                                     required: true,
                                     message: 'Hình thức khen thưởng'
                                 },
-                            ]} />
+                            ]}
+                            options={typeBonus}
+                        />
                     </Col>
+
                 </Row>
 
 

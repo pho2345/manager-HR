@@ -36,7 +36,7 @@ const handleUpdate = async (fields: any, id: any) => {
     const hide = message.loading('Đang cập nhật...');
     try {
 
-        patch('/trinh-do-giao-duc-pho-thong/sua', {
+        patch('/trinh-do-giao-duc-pho-thong', {
             id: id,
             ...fields,
             "create_at": "2024-02-01T20:57:33",

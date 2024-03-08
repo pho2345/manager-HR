@@ -62,7 +62,7 @@ const handleAdd = async (fields: any) => {
   const hide = message.loading('Đang thêm...');
   try {
     hide();
-    const add = await post('/nhan-vien/them', {}, { ...fields });
+    const add = await post('/nhan-vien', {}, { ...fields });
     if (add) {
       message.success('Thêm thành công');
     }

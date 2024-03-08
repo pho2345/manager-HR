@@ -466,8 +466,11 @@ declare namespace GEN {
     create_at?: Date;
     trangThai?: boolean;
     update_at?: Date;
-    bacLuong?: number;
     tienLuong?: number;
+    bacLuong: {
+      id: number,
+      name: string
+  },
   }
 
   type TypeBonus = {
@@ -523,7 +526,7 @@ declare namespace GEN {
 
   type Employee = {
     id: number,
-    ho_va_ten: string,
+    hoVaTen: string,
     sinhNgay: Date,
     chucVuHienTai: string,
     trinhDoChuyenMon: string,
@@ -635,11 +638,10 @@ declare namespace GEN {
   type RelateFamily = {
     id: number,
     moiQuanHe: string,
-    hoVaTen: string,
     namSinh: string,
     thongTinThanNhan: string,
     create_at: string,
-    update_at: string
+    update_at: string,
   }
 
   
@@ -739,6 +741,22 @@ declare namespace GEN {
     hinhThucKhenThuong: string,
     create_at: string
     update_at: string
+    
+
+  }
+
+  type AdminBonus = {
+    id: number,
+    nam: number,
+    xepLoaiChuyenMon: string
+    xepLoaiThiDua: sring
+    hinhThucKhenThuong: string, 
+    create_at: string
+    update_at: string,
+    sinhNgay: string
+    soCCCD: string, 
+    hovaten: string,
+     
   }
     
   type Discipline = {

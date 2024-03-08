@@ -9,51 +9,18 @@ import {
 } from '@ant-design/pro-components';
 
 import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
-const handleAdd = async (fields: any) => {
-    const hide = message.loading('Đang thêm...');
-    await post('/ca-nhan/ly-luan-chinh-tri/them', {}, {
-        ...fields,
-        batDau: moment(fields.batDau).toISOString(),
-        ketThuc: moment(fields.ketThuc).toISOString()
-    });
-    try {
-        hide();
-        message.success('Thêm thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
-const handleUpdate = async (fields: any, id: any) => {
-    const hide = message.loading('Đang cập nhật...');
-    try {
 
-        hide();
-        patch(`/ca-nhan/ly-luan-chinh-tri/${id}/sua`, {
-            ...fields,
-            batDau: moment(fields.batDau).toISOString(),
-            ketThuc: moment(fields.ketThuc).toISOString()
-        });
-        message.success('Cập nhật thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
+
 
 
 
@@ -71,10 +38,38 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
 
 
+    const [organ, setOrgan] = useState<GEN.Option[]>([]);
 
+    useEffect(() => {
+        const getValues = async () => {
+            try {
+                const dataQueries = [
+                    { query: '/coquan-tochuc-donvi', setFunction: setOrgan },
+                ];
+
+                for (const { query, setFunction } of dataQueries) {
+                    const data = await getOption(query, 'id', 'name');
+                    setFunction(data);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        getValues();
+    }, []);
+
+
+    const add = async (fields: any) => {
+        return handleAdd2(fields, collection, true)
+    };
+
+    const update = async (fields: any) => {
+        fields.tenCoSoDaoTao = fields.IdTenCoSoDaoTao;
+        return handleUpdate2(fields, refIdCurrent.current, collection, true)
+    };
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
@@ -515,7 +510,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -534,7 +529,7 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Tên cơ sở đào tạo"}
                             // width='md'
                             name='tenCoSoDaoTao'
@@ -544,7 +539,9 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Tên cơ sở đào tạo'
                                 },
-                            ]} />
+                            ]} 
+                            options={organ}
+                            />
                     </Col>
 
                     <Col span={24} >
@@ -627,7 +624,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent.current);
+                    const success = await update(values as any);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -645,19 +642,6 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Tên cơ sở đào tạo"}
-                            // width='md'
-                            name='tenCoSoDaoTao'
-                            placeholder={`Tên cơ sở đào tạo`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Tên cơ sở đào tạo'
-                                },
-                            ]} />
-                    </Col>
 
                     <Col span={24} >
                         <ProFormText
@@ -674,17 +658,19 @@ const TableList: React.FC = () => {
                     </Col>
 
                     <Col span={24} >
-                        <ProFormText
-                            label={"Văn bằng đào tạo"}
+                    <ProFormSelect
+                            label={"Tên cơ sở đào tạo"}
                             // width='md'
-                            name='vanBangDuocCap'
-                            placeholder={`Văn bằng đào tạo`}
+                            name='IdTenCoSoDaoTao'
+                            placeholder={`Tên cơ sở đào tạo`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Văn bằng đào tạo'
+                                    message: 'Tên cơ sở đào tạo'
                                 },
-                            ]} />
+                            ]} 
+                            options={organ}
+                            />
                     </Col>
 
 

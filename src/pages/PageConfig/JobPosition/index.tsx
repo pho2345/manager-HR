@@ -319,7 +319,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.bacLuong}</>
+                    <>{entity?.bacLuong?.name}</>
                 );
             },
         },

@@ -119,26 +119,6 @@ const handleAdd = async (fields: any) => {
 // };
 
 
-const handleRemove = async (selectedRows: any) => {
-
-  const hide = message.loading('Đang xóa...');
-  if (!selectedRows) return true;
-  try {
-    const deleteRowss = selectedRows.map((e: any) => {
-      // return customAPIDelete(e.id, 'cows');
-    });
-
-    await Promise.all(deleteRowss);
-    hide();
-    message.success('Xóa thành công');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.error?.message);
-    return false;
-  }
-};
-
 
 
 const getProfile = async (setProfile: any, setLoading: any) => {
@@ -160,7 +140,6 @@ const getProfile = async (setProfile: any, setLoading: any) => {
 
 
 const TableList: React.FC = () => {
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const refIdCow = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
@@ -205,7 +184,6 @@ const TableList: React.FC = () => {
     const getValues = async () => {
       try {
         getProfile(setProfile, setLoading);
-
         const dataQueries = [
           { query: '/dan-toc', setFunction: setReligion },
           { query: '/gioi-tinh', setFunction: setSex },
@@ -577,7 +555,12 @@ const TableList: React.FC = () => {
 
                     label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
                     placeholder={"Giới tính"}
-                    options={sex}
+                    options={[
+                      {
+                        label: 'Nam',
+                        value: 'NAM'
+                      }
+                    ]}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
                     ]}
@@ -694,6 +677,27 @@ const TableList: React.FC = () => {
                     ]}
                   />
                 </Col>
+              </Row>
+
+              <Row gutter={24} className="m-0">
+              <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="healthInsurance"
+                    label={"Tình trạng sức khỏe"}
+                    placeholder={"Tình trạng sức khỏe"}
+                    rules={[
+                      { required: true, message: "Tình trạng sức khỏe" }
+                    ]}
+                    options={[
+                      {
+                        label: "TỐT",
+                        value: 'TOT'
+                      }
+                    ]}
+                  />
+                </Col>
+                
               </Row>
 
               <Row gutter={24} className="m-0">
@@ -926,18 +930,7 @@ const TableList: React.FC = () => {
                     options={position}
                   />
                 </Col>
-                <Col span={12} className="gutter-row p-0">
-                  <ProFormSelect
-                    className="w-full"
-                    name="viTriViecLam"
-                    label={"Vị trí việc làm"}
-                    placeholder={"Vị trí việc làm"}
-                    rules={[
-                      { required: true, message: "Vị trí việc làm" },
-                    ]}
-                    options={jobPosition}
-                  />
-                </Col>
+               
               </Row>
 
               <Row gutter={24} className="m-0">
@@ -1150,8 +1143,7 @@ const TableList: React.FC = () => {
                   ngayVaoCoQuanHienDangCongTac: moment(dateAll.ngayVaoCoQuanHienDangCongTac).toISOString(),
                   ngayVaoDangCongSanVietNam: moment(dateAll.ngayVaoDangCongSanVietNam).toISOString(),
                   ngayXuatNgu: moment(dateAll.ngayXuatNgu).toISOString(),
-                  capBacLoaiQuanHamQuanDoi: 1,
-                  thanhPhanGiaDinh: 3
+                  ngayHuongLuongTheoViTriViecLam: moment(dateAll.ngayHuongLuongTheoViTriViecLam).toISOString()
                 }
 
                 await patch("/ca-nhan/so-yeu-ly-lich", data);

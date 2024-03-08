@@ -54,6 +54,7 @@
     // menuHeaderRender: false,
     routes: [
       { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
+      { path: '/hr-manager/bonus', name: 'Khen thưởng', component: './Hr-Manager/Bonus' },
     ],
     // access: 'admin'
 
@@ -67,7 +68,7 @@
       { path: '/config/nation', name: 'menu.nation', component: './PageConfig/Nation' },
       { path: '/config/policy-object', name: 'menu.policyObject', component: './PageConfig/PolicyObject' },
       { path: '/config/state-rank', name: 'menu.stateRank', component: './PageConfig/StateRank' },
-      { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },
+      // { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },
       {
         path: '/config/academic-degrees', name: 'menu.academicDegrees', component: './PageConfig/AcademicDegrees',
       },

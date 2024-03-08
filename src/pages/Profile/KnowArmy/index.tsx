@@ -9,12 +9,12 @@ import {
 } from '@ant-design/pro-components';
 
 import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -37,42 +37,38 @@ const TableList: React.FC = () => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [selectRow, setSelectRow] = useState<[]>([]);
 
-    const handleAdd = async (fields: any) => {
-        const hide = message.loading('Đang thêm...');
-        await post(`${collection}/them`, {}, {
-            ...fields,
-            batDau: moment(fields.batDau).toISOString(),
-            ketThuc: moment(fields.ketThuc).toISOString()
-        });
-        try {
-            hide();
-            message.success('Thêm thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+    const [organ, setOrgan] = useState<GEN.Option[]>([]);
+
+    useEffect(() => {
+        const getValues = async () => {
+            try {
+                const dataQueries = [
+                    { query: '/coquan-tochuc-donvi', setFunction: setOrgan },
+                ];
+
+                for (const { query, setFunction } of dataQueries) {
+                    const data = await getOption(query, 'id', 'name');
+                    setFunction(data);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        getValues();
+    }, []);
+
+
+    const add = async (fields: any) => {
+        return handleAdd2(fields, collection, true)
     };
 
-    const handleUpdate = async (fields: any, id: any) => {
-        const hide = message.loading('Đang cập nhật...');
-        try {
-
-            hide();
-            patch(`${collection}/${id}/sua`, {
-                ...fields,
-                batDau: moment(fields.batDau).toISOString(),
-                ketThuc: moment(fields.ketThuc).toISOString()
-            });
-            message.success('Cập nhật thành công');
-            return true;
-        } catch (error: any) {
-            hide();
-            message.error(error?.response?.data?.error?.message);
-            return false;
-        }
+    const update = async (fields: any) => {
+        fields.tenCoSoDaoTao = fields.IdTenCoSoDaoTao;
+        return handleUpdate2(fields, refIdCurrent.current, collection, true)
     };
+
+
 
 
 
@@ -507,7 +503,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -526,7 +522,7 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Cơ sở đào tạo"}
                             // width='md'
                             name='tenCoSoDaoTao'
@@ -536,7 +532,9 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: 'Cơ sở đào tạo'
                                 },
-                            ]} />
+                            ]} 
+                            options={organ}
+                            />
                     </Col>
 
                     <Col span={24} >
@@ -605,7 +603,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent.current);
+                    const success = await update(values as any);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -624,17 +622,19 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Cơ sở đào tạo"}
                             // width='md'
-                            name='tenCoSoDaoTao'
+                            name='IdTenCoSoDaoTao'
                             placeholder={`Cơ sở đào tạo`}
                             rules={[
                                 {
                                     required: true,
                                     message: 'Cơ sở đào tạo'
                                 },
-                            ]} />
+                            ]} 
+                            options={organ}
+                            />
                     </Col>
 
                     <Col span={24} >

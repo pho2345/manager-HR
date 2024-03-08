@@ -38,7 +38,7 @@ const TableList: React.FC = () => {
 
     const handleAdd = async (fields: any) => {
         const hide = message.loading('Đang thêm...');
-        await post(`${collection}/them`, {}, {
+        await post(`${collection}`, {}, {
             ...fields,
             batDau: moment(fields.batDau).toISOString(),
             ketThuc: moment(fields.ketThuc).toISOString()
@@ -58,7 +58,7 @@ const TableList: React.FC = () => {
         const hide = message.loading('Đang cập nhật...');
         try {
     
-            await patch(`${collection}/${id}/sua`, {
+            await patch(`${collection}/${id}`, {
                 ...fields,
                 batDau: moment(fields.batDau).toISOString(),
                 ketThuc: moment(fields.ketThuc).toISOString()

@@ -186,7 +186,7 @@ const TableList: React.FC = () => {
         getProfile(setProfile, setLoading);
         const dataQueries = [
           { query: '/dan-toc', setFunction: setReligion },
-          { query: '/gioi-tinh', setFunction: setSex },
+          // { query: '/gioi-tinh', setFunction: setSex },
           { query: '/chuc-vu', setFunction: setPosition },
           { query: '/nhom-mau', setFunction: setGroupBlood },
           { query: '/doi-tuong-chinh-sach', setFunction: setPolicyObject },

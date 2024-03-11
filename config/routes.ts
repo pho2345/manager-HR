@@ -73,7 +73,7 @@
         path: '/config/academic-degrees', name: 'menu.academicDegrees', component: './PageConfig/AcademicDegrees',
       },
       { path: '/config/member-family', name: 'menu.memberFamily', component: './PageConfig/MemberFamily' },
-      { path: '/config/health-status', name: 'menu.healthStatus', component: './PageConfig/HealthStatus' },
+      // { path: '/config/health-status', name: 'menu.healthStatus', component: './PageConfig/HealthStatus' },
       { path: '/config/religion', name: 'menu.religion', component: './PageConfig/Religion' },
       { path: '/config/secondary-education-level', name: 'menu.secondaryEducationLevel', component: './PageConfig/SecondaryEducationLevel' },
       { path: '/config/professional-level', name: 'menu.professionalLevel', component: './PageConfig/ProfessionalLevel' },

@@ -519,7 +519,7 @@ const TableList: React.FC = () => {
                         <ProFormText
                             label={<FormattedMessage id="page.ProfessionalLevel.table.name" defaultMessage="Name" />}
                             name='name'
-                            placeholder={`Tên dân tộc`}
+                            placeholder={`Tên trình dộ chuyên môn`}
                             rules={[
                                 {
                                     required: true,

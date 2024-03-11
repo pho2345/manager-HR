@@ -521,7 +521,7 @@ const TableList: React.FC = () => {
                         <ProFormText
                             label={<FormattedMessage id="page.RankSalary.table.name" defaultMessage="Name" />}
                             name='name'
-                            placeholder={`Tên dân tộc`}
+                            placeholder={`Tên bậc lương`}
                             rules={[
                                 {
                                     required: true,

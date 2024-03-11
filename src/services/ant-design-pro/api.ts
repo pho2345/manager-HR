@@ -305,6 +305,25 @@ export async function post(subSolder: string, values: object, body: object) {
   }
 }
 
+export async function post2(subSolder: string, values: object, body: []) {
+  const fetchData = await request<any>(SERVERURL + subSolder, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    params: {
+      ...values,
+    },
+    data: body,
+  });
+  return {
+    total: fetchData?.meta?.pagination?.total,
+    success: fetchData.data && true,
+    data: fetchData.data
+  }
+}
+
 
 export async function patch(subSolder: string, body: object) {
   const fetchData = await request<any>(SERVERURL + subSolder, {

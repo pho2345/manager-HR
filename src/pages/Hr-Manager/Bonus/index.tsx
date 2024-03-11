@@ -1,6 +1,6 @@
-import { deletes, get, getCustome, patch, post } from '@/services/ant-design-pro/api';
+import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
 import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -14,9 +14,10 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import AddBonus from './AddBonus';
+import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -464,8 +465,6 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
-
-
                 ]}
                 toolbar={{
                     settings: [
@@ -520,7 +519,7 @@ const TableList: React.FC = () => {
             <ModalForm
                 form={form}
                 title={"Tạo khen thưởng"}
-                width={window.innerWidth * 0.3}
+                // width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
                     destroyOnClose: true,
@@ -529,15 +528,28 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await add(value as API.RuleListItem);
-                    if (success) {
-                        handleModalOpen(false);
-                        form.resetFields();
-                        if (actionRef.current) {
-                            actionRef.current.reload();
+                    if (value.attributes && value.attributes.length !== 0) {
+                        const newData = value.attributes.map((e: any) => {
+                            const { nam, ...other } = e;
+                            return {
+                                ...other,
+                                nam: moment(nam).toISOString()
+                            }
+                        });
+
+                        const success = await post2('/nhan-vien/khen-thuong', {}, newData);
+                        if (success) {
+                            handleModalOpen(false);
+                            form.resetFields();
+                            if (actionRef.current) {
+                                actionRef.current.reload();
+                            }
                         }
                     }
+
                 }}
+
+
 
                 submitter={{
                     searchConfig: {
@@ -546,54 +558,83 @@ const TableList: React.FC = () => {
                     },
                 }}
             >
-                <Row gutter={24} >
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Xếp loại chuyên môn"}
-                            // width='md'
-                            name='xepLoaiChuyenMon'
-                            placeholder={`Xếp loại chuyên môn`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Xếp loại chuyên môn'
-                                },
-                            ]} />
-                    </Col>
 
+                <ProFormList
+                    name="attributes"
+                    creatorButtonProps={{
+                        creatorButtonText: 'Thêm một khen thưởng',
+                    }}
+                    min={1}
+                    copyIconProps={false}
+                    itemRender={({ listDom, action }, { index }) => (
+                        <ProCard
+                            bordered
+                            style={{ marginBlockEnd: 8 }}
+                            title={`Khen thưởng${index + 1}`}
+                            extra={action}
+                            bodyStyle={{ paddingBlockEnd: 0 }}
+                        >
+                            {listDom}
+                        </ProCard>
+                    )}
 
+                >
 
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Xếp loại thi đua"}
-                            // width='md'
-                            name='xepLoaiThiDua'
-                            placeholder={`Xếp loại thi đua`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Xếp loại thi đua'
-                                },
-                            ]} />
-                    </Col>
+                    <Row gutter={24} >
+                        <Col span={8} >
+                            <ProFormSelect name="hinhThucKhenThuong" key="hinhThucKhenThuong" label="Hình thức khen thưởng" request={() => getOption('/hinh-thuc-khen-thuong', 'id', 'name')} />
 
+                        </Col>
 
-                    <Col span={24}>
-                        <ProFormText
-                            label={"Hình thức khen thưởng"}
-                            // width='md'
-                            name='hinhThucKhenThuong'
-                            placeholder={`Hình thức khen thưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức khen thưởng'
-                                },
-                            ]} />
-                    </Col>
+                        <Col span={8} >
+                            <ProFormSelect name="xepLoaiChuyenMon" key="xepLoaiChuyenMon" label="Xếp loại chuyên môn" options={XEP_LOAI_CHUYEN_MON} />
 
-                </Row>
+                        </Col>
 
+                        <Col span={8} >
+                            <ProFormSelect name="xepLoaiThiDua" key="xepLoaiThiDua" label="Xếp loại thi đua" options={XEP_LOAI_THI_DUA} />
+
+                        </Col>
+                    </Row>
+
+                    <Row gutter={24} >
+                        <Col span={16} >
+                            <ProFormSelect fieldProps={{
+                                mode: 'multiple'
+                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Nhân viên" request={async () => {
+                                const nv = await get('/nhan-vien/so-yeu-ly-lich');
+                                let dataOptions = [] as any;
+                                if (nv) {
+                                    nv.data?.map(e => {
+                                        dataOptions.push({
+                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
+                                            value: `${e.id}`
+                                        });
+                                    })
+                                }
+                                return dataOptions
+                            }} />
+                        </Col>
+                        <Col span={8} >
+                            <ProFormDatePicker
+                                fieldProps={{
+                                    style: {
+                                        width: "100%"
+                                    },
+                                    // disabledDate: disabledDate\
+
+                                }}
+                                name="nam"
+                                label="Năm khen thưởng"
+                                placeholder="Năm khen thưởng"
+                                rules={[
+                                    { required: true, message: "Năm khen thưởng" },
+                                ]}
+
+                            />
+                        </Col>
+                    </Row>
+                </ProFormList>
 
             </ModalForm>
 
@@ -672,11 +713,7 @@ const TableList: React.FC = () => {
                             ]} />
                     </Col>
                 </Row>
-
-
             </ModalForm>
-
-            <AddBonus />
 
         </PageContainer>
     );

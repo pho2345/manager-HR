@@ -1,10 +1,13 @@
+import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
 import {
+    ProCard,
     ProForm,
     ProFormDependency,
     ProFormList,
+    ProFormSelect,
     ProFormText,
 } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 
 const Demo = () => {
     return (
@@ -20,75 +23,66 @@ const Demo = () => {
                 itemContainerRender={(doms) => {
                     return <ProForm.Group>{doms}</ProForm.Group>;
                 }}
-               
+                creatorButtonProps={{
+                    position: 'top',
+                    creatorButtonText: 'ab',
+                }}
 
                 alwaysShowItemLabel
+                copyIconProps={{
+                    tooltipText: '复制此项到末尾',
+                }}
+                deleteIconProps={{
+                    tooltipText: '不需要这行了',
+                }}
 
             >
-                {(f, index, action) => {
-                    console.log(f, index, action);
-                    return (
-                        <>
-                            <ProFormText
-                                initialValue={index}
-                                name="rowKey"
-                                label={`第 ${index} 配置`}
-                            />
-                            <ProFormText name="name" key="name" label="姓名" />
-                            {/* <ProFormDependency key="remark" name={['name']}>
-                                {({ name }) => {
-                                    if (!name) {
-                                        return (
-                                            <span
-                                                style={{
-                                                    lineHeight: '92px',
-                                                }}
-                                            >
-                                                输入姓名展示
-                                            </span>
-                                        );
-                                    }
-                                    return <ProFormText name="remark" label="昵称详情" />;
-                                }}
-                            </ProFormDependency> */}
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'flex-end',
-                                    gap: '8px',
-                                    height: 60,
-                                }}
-                            >
-                                {/* <Button
-                                    type="primary"
-                                    key="SET"
-                                    onClick={() => {
-                                        action.setCurrentRowData({
-                                            name: 'New Name' + index,
-                                            remark: 'New Remark' + index,
-                                        });
-                                    }}
-                                >
-                                    设置此项
-                                </Button>
+                <ProFormList
+                    name="attributes"
+                    creatorButtonProps={{
+                        creatorButtonText: 'Thêm một khen thưởng',
+                    }}
+                    min={1}
+                    copyIconProps={false}
+                    itemRender={({ listDom, action }, { index }) => (
+                        <ProCard
+                            bordered
+                            style={{ marginBlockEnd: 8 }}
+                            title={`Khen thưởng${index + 1}`}
+                            extra={action}
+                            bodyStyle={{ paddingBlockEnd: 0 }}
+                        >
+                            {listDom}
+                        </ProCard>
+                    )}
 
-                                <Button
-                                    type="dashed"
-                                    key="clear"
-                                    title='Thêm'
-                                    onClick={() => {
-                                        action.setCurrentRowData({
-                                            name: undefined,
-                                            remark: undefined,
-                                        });
-                                    }}
-                                >
-                                    清空此项
-                                </Button> */}
-                            </div>
-                        </>
-                    );
-                }}
+                >
+
+                    <Row gutter={24} >
+                        <Col span={8} >
+                            <ProFormSelect name="hinhThucKhenThuong" key="hinhThucKhenThuong" label="Hình thức khen thưởng" />
+
+                        </Col>
+
+                        <Col span={8} >
+                            <ProFormSelect name="xepLoaiChuyenMon" key="xepLoaiChuyenMon" label="Xếp loại chuyên môn" options={XEP_LOAI_CHUYEN_MON} />
+
+                        </Col>
+
+                        <Col span={8} >
+                            <ProFormSelect name="xepLoaiThiDua" key="xepLoaiThiDua" label="Xếp loại thi đua" options={XEP_LOAI_THI_DUA} />
+
+                        </Col>
+                    </Row>
+
+                    <Row gutter={24} >
+                        <Col span={16} >
+                            <ProFormSelect name="xepLoaiThiDua" key="xepLoaiThiDua" label="Xếp loại thi đua" options={XEP_LOAI_THI_DUA} />
+                        </Col>
+
+                    </Row>
+
+                </ProFormList>
             </ProFormList>
         </ProForm>
     );

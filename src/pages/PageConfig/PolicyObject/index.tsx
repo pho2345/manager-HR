@@ -474,7 +474,7 @@ const TableList: React.FC = () => {
                             label={<FormattedMessage id="page.PolicyObject.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
-                            placeholder={`Tên dân tộc`}
+                            placeholder={`Tên đối tượng chính sách`}
                             rules={[
                                 {
                                     required: true,
@@ -521,7 +521,7 @@ const TableList: React.FC = () => {
                         <ProFormText
                             label={<FormattedMessage id="page.PolicyObject.table.name" defaultMessage="Name" />}
                             name='name'
-                            placeholder={`Tên dân tộc`}
+                            placeholder={`Tên đối tượng chính sách`}
                             rules={[
                                 {
                                     required: true,

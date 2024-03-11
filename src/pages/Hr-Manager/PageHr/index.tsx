@@ -117,7 +117,6 @@ const TableList: React.FC = () => {
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
   const [religion, setReligion] = useState<GEN.Option[]>([]);
-  const [sex, setSex] = useState<GEN.Option[]>([]);
   const [membership, setMembership] = useState<GEN.Option[]>([]);
 
 
@@ -135,9 +134,7 @@ const TableList: React.FC = () => {
   useEffect(() => {
     const getValues = async () => {
       const getReligion = await getOption('/dan-toc', 'id', 'name');
-      const getSex = await getOption('/gioi-tinh', 'id', 'name');
       setReligion(getReligion);
-      setSex(getSex);
     };
     getValues();
   }, []);

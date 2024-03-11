@@ -54,7 +54,8 @@
     // menuHeaderRender: false,
     routes: [
       { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
-      { path: '/hr-manager/bonus', name: 'Khen thưởng', component: './Hr-Manager/Bonus' },
+      { path: '/hr-manager/bonus', name: 'bonus', component: './Hr-Manager/Bonus' },
+      { path: '/hr-manager/discipline', name: 'discipline', component: './Hr-Manager/Discipline' },
     ],
     // access: 'admin'
 

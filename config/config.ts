@@ -37,7 +37,7 @@ export default defineConfig({
 
   initialState: {},
 
-  title: 'Aleplay',
+  title: 'HR',
   layout: {
     locale: true,
     ...defaultSettings,

@@ -16,7 +16,6 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import AddBonus from './AddBonus';
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
 const configDefaultText = configText;
 
@@ -25,7 +24,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/khen-thuong';
+    const collection = '/nhan-vien/khen-thuong';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -430,7 +429,7 @@ const TableList: React.FC = () => {
 
 
     async function add(value: any) {
-        return await handleAdd2(value, collection);
+
     }
 
     async function update(value: any) {
@@ -528,14 +527,18 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    if (value.attributes && value.attributes.length !== 0) {
-                        const newData = value.attributes.map((e: any) => {
-                            const { nam, ...other } = e;
+                    if (value.khenThuong && value.khenThuong.length !== 0) {
+                        const newData = value.khenThuong.map((e: any) => {
+                            const { nam, danhSachMaHoSo, ...other } = e;
                             return {
-                                ...other,
-                                nam: moment(nam).toISOString()
+                                khenThuong: {
+                                    ...other,
+                                    nam: moment(nam).toISOString()
+                                },
+                                danhSachMaHoSo
                             }
                         });
+
 
                         const success = await post2('/nhan-vien/khen-thuong', {}, newData);
                         if (success) {
@@ -560,7 +563,7 @@ const TableList: React.FC = () => {
             >
 
                 <ProFormList
-                    name="attributes"
+                    name="khenThuong"
                     creatorButtonProps={{
                         creatorButtonText: 'Thêm một khen thưởng',
                     }}

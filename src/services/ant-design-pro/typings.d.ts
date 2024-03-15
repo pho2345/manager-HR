@@ -25,8 +25,10 @@ declare namespace API {
     // status?: string;
     // type?: string;
     // currentAuthority?: string;
+    data: {
       taikhoan?: object,
       token?: string
+    }
   };
 
   type PageParams = {
@@ -459,7 +461,7 @@ declare namespace GEN {
     update_at?: Date;
   }
 
-  
+
   type JobPosition = {
     id?: number;
     name?: string;
@@ -470,7 +472,7 @@ declare namespace GEN {
     bacLuong: {
       id: number,
       name: string
-  },
+    },
   }
 
   type TypeBonus = {
@@ -537,71 +539,220 @@ declare namespace GEN {
   }
 
   type Profile = {
-    hovaten: string,
-    gioiTinh: string,
-    cacTenGoiKhac: string,
-    sinhNgay: Date,
-    noiSinh: string,
-    queQuan: string,
-    danToc: string,
-    soCCCD: string,
-    ngayCapCCCD: string,
-    soDienThoai: string,
-    soBHXH: string,
-    soBHYT: string,
-    noiOHienNay: string,
-    thanhPhanGiaDinh: string,
-    ngheNghiepTruocKhiTuyenDung: string,
-    ngayDuocTuyenDungLanDau: string,
-    coQuanToChucDonViTuyenDung: string,
-    ngayVaoCoQuanHienDangCongTac: string,
-    ngayVaoDangCongSanVietNam: string,
-    ngayChinhThuc: string,
-    ngayThamGiaToChucChinhTriXaHoiDauTien: string,
-    ngayNhapNgu: string,
-    ngayXuatNgu: string
-    capBacLoaiQuanHamQuanDoi: string,
-    doiTuongChinhSach: string,
-    trinhDoGiaoDucPhoThong: string,
-    trinhDoChuyenMon: string,
-    hocHam: string,
-    danhHieuNhaNuocPhongTang: string,
-    chucVuHienTai: string,
-    ngayBoNhiem: string,
-    ngayBoNhiemLai: string,
-    duocQuyHoacChucDanh: string,
-    chucVuKiemNhiem: string,
-    chucVuDangHienTai: string,
-    chucVuDangKiemNhiem: string,
-    congViecChinhDuocGiao: string,
-    soTruongCongTac: string,
-    congViecLamLauNhat: string,
-    tienLuong: number,
-    ngachNgheNghiep: string,
-    maSoNgachNgheNghiep: string,
-    ngayBoNhiemNgachNgheNghiep: string,
-    bacLuong: string,
-    heSoLuongNgachNgheNghiep: number,
-    ngayHuongLuongNgachNgheNghiep: string,
-    phanTramHuongLuongNgachNgheNghiep: number,
-    phuCapThamNienVuotKhungNgachNgheNghiep: number,
-    ngayHuongPCTNVKNgachNgheNghiep: string,
-    phuCapChucVu: number,
-    phuCapKiemNhiem: number,
-    phuCapKhac: number,
-    viTriViecLam: string,
-    maSoViTriViecLam: string,
-    bacLuongTriViecLam: number,
-    luongTheoMucTien: number,
-    ngayHuongLuongTheoViTriViecLam: string,
-    phamTramHuongLuong: number,
-    phuCapThamNienVuotKhung: number,
-    ngayHuongPCTNVK: string,
-    tinhTrangSucKhoe: string,
-    chieuCao: number,
-    canNang: number,
-    nhomMau: string,
-    luongThucNhan: number
+    "create_at": string,
+    "update_at": string,
+    "trangThai": boolean,
+    "id": string,
+    "hoVaTen": string,
+    "gioiTinh": "NAM" | "NU",
+    "cacTenGoiKhac": string,
+    "sinhNgay": string,
+    "noiSinh": string,
+    "queQuan": string,
+    "danToc": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "tonGiao": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "soCCCD": string,
+    "ngayCapCCCD": string,
+    "soDienThoai": string,
+    "soBHXH": string,
+    "soBHYT": string,
+    "noiOHienNay": string,
+    "thanhPhanGiaDinh": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "thongTinTuyenDung": {
+      "trangThai": boolean,
+      "id": string,
+      "ngheNghiepTruocKhiTuyenDung": string,
+      "ngayDuocTuyenDungLanDau": string,
+      "coQuanToChucDonViTuyenDung": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string,
+        "boCoQuan": {
+          "trangThai": boolean,
+          "id": number,
+          "name": string
+        }
+      },
+      "ngayVaoCoQuanHienDangCongTac": string,
+      "ngayVaoDangCongSanVietNam": string,
+      "ngayChinhThuc": string,
+      "ngayThamGiaToChucChinhTriXaHoiDauTien": string,
+      "congViecChinhDuocGiao": string,
+      "soTruongCongTac": string,
+      "congViecLamLauNhat": string
+    },
+    "quanSu": {
+      "trangThai": boolean,
+      "id": string,
+      "ngayNhapNgu": string,
+      "ngayXuatNgu": string,
+      "capBacLoaiQuanHamQuanDoi": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      }
+    },
+    "doiTuongChinhSach": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "hocVan": {
+      "trangThai": boolean,
+      "id": string,
+      "trinhDoGiaoDucPhoThong": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      },
+      "trinhDoChuyenMon": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      },
+      "hocHam": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      },
+      "danhHieuNhaNuocPhongTang": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      }
+    },
+    "chucVuHienTai": {
+      "trangThai": boolean,
+      "id": string,
+      "chucVu": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      },
+      "ngayBoNhiem": string,
+      "ngayBoNhiemLai": string,
+      "duocQuyHoacChucDanh": string
+    },
+    "chucVuKiemNhiem": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "chucVuDangHienTai": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "chucVuDangKiemNhiem": {
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "tienLuong": number,
+    "ngach": {
+      "trangThai": boolean,
+      "id": string,
+      "ngachCongChuc": {
+        "trangThai": boolean,
+        "id": string,
+        "name": string,
+        "heSoLuongCongChuc": {
+          "trangThai": boolean,
+          "id": number,
+          "nhomLoaiCongChuc": {
+           
+            "trangThai": boolean,
+            "id": number,
+            "name": string
+          },
+          "bacLuong": {
+          
+            "trangThai": boolean,
+            "id": number,
+            "name": string
+          },
+          "heSo": number
+        }
+      },
+      "ngachVienChuc": {
+        "trangThai": boolean,
+        "id": string,
+        "name": string,
+        "heSoLuongVienChuc": {
+          "create_at": string,
+          "update_at": string,
+          "trangThai": boolean,
+          "id": number,
+          "nhomLoaiVienChuc": {
+            "create_at": string,
+            "update_at": string,
+            "trangThai": boolean,
+            "id": number,
+            "name": string
+          },
+          "bacLuong": {
+            "create_at": string,
+            "update_at": string,
+            "trangThai": boolean,
+            "id": number,
+            "name": string
+          },
+          "heSo": number
+        }
+      },
+      "ngayBoNhiemNgach": string,
+      "ngayHuongLuongNgach": string,
+      "phanTramHuongLuongNgach": number,
+      "phuCapThamNienVuotKhungNgach": number,
+      "ngayHuongPCTNVKNgach": string
+    },
+    "phuCapChucVu": number,
+    "phuCapKiemNhiem": number,
+    "phuCapKhac": number,
+    "viecLam": {
+      "trangThai": boolean,
+      "id": string,
+      "viTriViecLam": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string,
+        "bacLuong": {
+          "trangThai": boolean,
+          "id": number,
+          "name": string
+        },
+        "tienLuong": number
+      },
+      "ngayHuongLuongTheoViTriViecLam": string,
+      "phamTramHuongLuong": number,
+      "phuCapThamNienVuotKhung": number,
+      "ngayHuongPCTNVK": string
+    },
+    "sucKhoe": {
+      "trangThai": boolean,
+      "id": string,
+      "tinhTrangSucKhoe": "YEU",
+      "chieuCao": number,
+      "canNang": number,
+      "nhomMau": {
+        "trangThai": boolean,
+        "id": number,
+        "name": string
+      }
+    },
+    "pheDuyet": "CHUA_PHE_DUYET"
   }
 
   type WorkOld = {
@@ -644,7 +795,7 @@ declare namespace GEN {
     update_at: string,
   }
 
-  
+
   type GoOnBussiness = {
     id: number,
     donViCongTac: string,
@@ -712,7 +863,7 @@ declare namespace GEN {
   }
 
 
-  
+
   type WorkingAbroad = {
     id: number,
     batDau: string
@@ -732,7 +883,7 @@ declare namespace GEN {
     update_at: string
   }
 
-  
+
   type Bonus = {
     id: number,
     nam: number,
@@ -741,7 +892,7 @@ declare namespace GEN {
     hinhThucKhenThuong: string,
     create_at: string
     update_at: string
-    
+
 
   }
 
@@ -750,15 +901,15 @@ declare namespace GEN {
     nam: number,
     xepLoaiChuyenMon: string
     xepLoaiThiDua: sring
-    hinhThucKhenThuong: string, 
+    hinhThucKhenThuong: string,
     create_at: string
     update_at: string,
     sinhNgay: string
-    soCCCD: string, 
+    soCCCD: string,
     hovaten: string,
-     
+
   }
-    
+
   type Discipline = {
     id: number,
     batDau: string

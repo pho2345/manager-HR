@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { deletes, get, patch, post } from "../ant-design-pro/api";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { request } from "@umijs/max";
 
 
 const handleRemove2 = async (arrayId: any, collection: string) => {
@@ -72,6 +73,8 @@ export const getOption = async (collection: string, getValue: string, getLabel: 
     return [];
   }
 }
+
+
 
 
 export const handleAdd = async (fields: any, collection: string, date: boolean = false) => {
@@ -181,4 +184,23 @@ export const handleUpdate2 = async (fields: any, id: any, collection: string, da
     return false;
   }
 };
+
+export async function getProvine() {
+  const fetchData = await request<any>('https://vapi.vnappmob.com/api/province/', {
+    method: 'GET',
+  });
+
+  if(fetchData) {
+    console.log(fetchData);
+    const data = fetchData?.results?.map((e: any) => {
+      return {
+        value: e.province_id,
+        label: e.province_name
+      }
+    })
+
+    return data;
+  }
+
+}
 

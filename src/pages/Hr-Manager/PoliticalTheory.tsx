@@ -1,5 +1,5 @@
 import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
-import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
@@ -24,7 +24,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/nhan-vien/ky-luat';
+    const collection = '/nhan-vien/ly-luan-chinh-tri';
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -290,23 +290,23 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.AdminDiscipline>[] = [
+    const columns: ProColumns<GEN.AdminPoliticalTheory>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: "Nhân viên",
-            key: 'xepLoaiChuyenMon',
-            dataIndex: 'xepLoaiChuyenMon',
+            title: "Cán bộ",
+            key: 'hovaten',
+            dataIndex: 'hovaten',
             render: (_, entity) => {
                 ;
                 return (
                     <> {entity?.hovaten}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
+            ...getColumnSearchProps('hovaten')
         },
         {
             title: "Số CMND/CCCD",
@@ -332,46 +332,33 @@ const TableList: React.FC = () => {
             },
         },
         {
-            title: "Cơ quan quyết định",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
+            title: "Văn bằng",
+            key: 'vanBangDuocCap',
+            dataIndex: 'vanBangDuocCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.coQuanQuyetDinh}</>
+                    <> {entity?.vanBangDuocCap}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
+
         {
-            title: "Hành vi vi phạm",
-            key: 'hanhViViPhamChinh',
-            dataIndex: 'hanhViViPhamChinh',
+            title: "Cơ sở đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hanhViViPhamChinh}</>
+                    <> {entity?.tenCoSoDaoTao}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiThiDua')
         },
 
-        {
-            title: "Hình thức kỷ luật",
-            key: 'hinhThuc',
-            dataIndex: 'hinhThuc',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.hinhThuc}</>
-                );
-            },
-            ...getColumnSearchProps('hinhThucKhenThuong')
-        },
 
         {
-            title: "Ngày quyết định",
+            title: "Ngày cấp",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
@@ -382,7 +369,7 @@ const TableList: React.FC = () => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -528,7 +515,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo Kỷ luật"}
+                title={"Tạo lý luận chính trị"}
                 // width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -538,13 +525,12 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    if (value.kyLuat && value.kyLuat.length !== 0) {
-                        const newData = value.kyLuat.map((e: any) => {
-                            const { nam, danhSachMaHoSo, ketThuc, batDau, ...other } = e;
+                    if (value.lyLuanChinhTri && value.lyLuanChinhTri.length !== 0) {
+                        const newData = value.lyLuanChinhTri.map((e: any) => {
+                            const { danhSachMaHoSo, ketThuc, batDau, ...other } = e;
                             return {
-                                kyLuat: {
+                                lyLuanChinhTri: {
                                     ...other,
-                                    nam: moment(nam).toISOString(),
                                     ketThuc: moment(ketThuc).toISOString(),
                                     batDau: moment(batDau).toISOString(),
                                 },
@@ -576,9 +562,9 @@ const TableList: React.FC = () => {
             >
 
                 <ProFormList
-                    name="kyLuat"
+                    name="lyLuanChinhTri"
                     creatorButtonProps={{
-                        creatorButtonText: 'Thêm một kỷ luật',
+                        creatorButtonText: 'Thêm một lý luận chính trị',
                     }}
                     min={1}
                     copyIconProps={false}
@@ -586,7 +572,7 @@ const TableList: React.FC = () => {
                         <ProCard
                             bordered
                             style={{ marginBlockEnd: 8 }}
-                            title={`Kỷ luật ${index + 1}`}
+                            title={`Lý luận chính trị ${index + 1}`}
                             extra={action}
                             bodyStyle={{ paddingBlockEnd: 0 }}
                         >
@@ -597,25 +583,24 @@ const TableList: React.FC = () => {
                 >
 
                     <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormSelect name="coQuanQuyetDinh" key="coQuanQuyetDinh" label="Cơ quan quyết định" request={() => getOption('/coquan-tochuc-donvi', 'id', 'name')} />
+                        <Col span={12} >
+                            <ProFormText name="vanBangDuocCap" key="vanBangDuocCap" label="Văn bằng" placeholder={'Văn bằng'} />
                         </Col>
-                        <Col span={8} >
-                            <ProFormText name="hinhThuc" key="hinhThuc" label="Hình thức kỷ luật" placeholder={"Hình thức"} />
-                        </Col>
-                        <Col span={8} >
-                            <ProFormText name="hanhViViPhamChinh" key="hanhViViPhamChinh" label="Hành vi vi phạm"  placeholder={"Hành vi"}/>
-                        </Col>
-                    </Row>
 
+                        <Col span={12} >
+                            <ProFormText name="hinhThucDaoTao" key="hinhThucDaoTao" label="Hình thức đào tạo" placeholder={'Hình thức đào tạo'} />
+                        </Col>
+
+
+                    </Row>
                     <Row gutter={24} >
                         <Col span={8} >
                             <ProFormDatePicker
                                 name="batDau"
-                                label={"Ngày quyết định"}
-                                placeholder={"Ngày quyết định"}
+                                label={"Ngày cấp"}
+                                placeholder={"Ngày cấp"}
                                 rules={[
-                                    { required: true, message: "Ngày quyết định" }
+                                    { required: true, message: "Ngày cấp" }
                                 ]}
                                 fieldProps={{
                                     style: {
@@ -628,10 +613,10 @@ const TableList: React.FC = () => {
                         <Col span={8} >
                             <ProFormDatePicker
                                 name="ketThuc"
-                                label={"Ngày kết thúc"}
-                                placeholder={"Ngày kết thúc"}
+                                label={"Ngày hết hạn"}
+                                placeholder={"Ngày hết hạn"}
                                 rules={[
-                                    { required: true, message: "Ngày kết thúc" }
+                                    { required: true, message: "Ngày hết hạn" }
                                 ]}
                                 fieldProps={{
                                     style: {
@@ -642,13 +627,17 @@ const TableList: React.FC = () => {
                             />
                         </Col>
 
+                        <Col span={8} >
+                            <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption('/coquan-tochuc-donvi', 'id', 'name')} />
+                        </Col>
+
                     </Row>
 
                     <Row gutter={24} >
                         <Col span={16} >
                             <ProFormSelect fieldProps={{
                                 mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Nhân viên" request={async () => {
+                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Cán bộ" request={async () => {
                                 const nv = await get('/nhan-vien/so-yeu-ly-lich');
                                 let dataOptions = [] as any;
                                 if (nv) {
@@ -662,26 +651,10 @@ const TableList: React.FC = () => {
                                 return dataOptions
                             }} />
                         </Col>
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate\
-
-                                }}
-                                name="nam"
-                                label="Năm Kỷ luật"
-                                placeholder="Năm Kỷ luật"
-                                rules={[
-                                    { required: true, message: "Năm Kỷ luật" },
-                                ]}
-
-                            />
-                        </Col>
                     </Row>
                 </ProFormList>
+
+                
 
             </ModalForm>
 
@@ -714,21 +687,21 @@ const TableList: React.FC = () => {
                     },
                 }}
             >
-               <Row gutter={24} >
+                <Row gutter={24} >
                     <Col span={24} >
                         <ProFormSelect
-                            label={"Cơ quan quyết định"}
+                            label={"Đơn vị công tác"}
                             // width='md'
                             name='IdCoQuanQuyetDinh'
-                            placeholder={`Cơ quan quyết định`}
+                            placeholder={`Đơn vị công tác`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Cơ quan quyết định'
+                                    message: 'Đơn vị công tác'
                                 },
                             ]}
                             showSearch
-                            // options={organ}
+                        // options={organ}
                         />
                     </Col>
 

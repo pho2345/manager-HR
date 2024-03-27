@@ -56,6 +56,13 @@
       { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
       { path: '/hr-manager/bonus', name: 'bonus', component: './Hr-Manager/Bonus' },
       { path: '/hr-manager/discipline', name: 'discipline', component: './Hr-Manager/Discipline' },
+      { path: '/hr-manager/go-on-buss', name: 'goOnBuss', component: './Hr-Manager/GoOnBuss' },
+      { path: '/hr-manager/cer-lang', name: 'cerLang', component: './Hr-Manager/CerLang' },
+      { path: '/hr-manager/cer-tech', name: 'cerTech', component: './Hr-Manager/CerTech' },
+      { path: '/hr-manager/professional', name: 'professionalKnowledge', component: './Hr-Manager/ProfessionalKnowledge' },
+      { path: '/hr-manager/politicalTheory', name: 'politicalTheory', component: './Hr-Manager/PoliticalTheory' },
+      { path: '/hr-manager/working-abroad', name: 'workingAbroad', component: './Hr-Manager/WorkingAbroad' },
+      { path: '/hr-manager/army', name: 'army', component: './Hr-Manager/Army' },
     ],
     // access: 'admin'
 
@@ -121,6 +128,7 @@
        { path: '/profile/know-army', name: 'menu.knowArmy', component: './Profile/KnowArmy' },
        { path: '/profile/bonus', name: 'menu.bonus', component: './Profile/Bonus' },
        { path: '/profile/discipline', name: 'menu.discipline', component: './Profile/Discipline' },
+       { path: '/profile/professional-knowledge', name: 'menu.professionalKnowledge', component: './Profile/ProfessionalKnowledge' },
       {
         path: '/profile',
         redirect: '/profile/nation',

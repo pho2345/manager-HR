@@ -11,6 +11,7 @@ export default {
 'menu.Thông tin.menu.knowArmy': 'Kiến thức an ninh quốc phòng',
 'menu.Thông tin.menu.bonus': 'Khen thưởng',
 'menu.Thông tin.menu.discipline': 'Kỷ luật',
+'menu.Thông tin.menu.professionalKnowledge': 'Nghiệp vụ chuyên ngành',
 'menu.Cấu hình.menu.organ': 'Cơ quan, đơn vị, tổ chức',
 'menu.Cấu hình.menu.groupRankCommunistParty': 'Cấp nhóm chức danh đảng',
 'menu.Cấu hình.menu.rankCommunistParty': 'Chức danh đảng',
@@ -18,5 +19,14 @@ export default {
 'menu.Cấu hình.menu.groupCommunistParty': 'Nhóm chức danh đảng',
 
 'menu.Cấu hình.menu.jobPosition': 'Vị trí việc làm',
+'menu.Quản lý.bonus': 'Khen thưởng',
+'menu.Quản lý.discipline': 'Kỷ luật',
+'menu.Quản lý.goOnBuss': 'Quá trình công tác',
+'menu.Quản lý.cerLang': 'Chứng chỉ ngoại ngữ',
+'menu.Quản lý.cerTech': 'Chứng chỉ tin học',
+'menu.Quản lý.professionalKnowledge': 'Nghiệp vụ chuyên ngành',
+'menu.Quản lý.politicalTheory': 'Lý luận chính trị',
+'menu.Quản lý.workingAbroad': 'Làm việc ở nước ngoài',
+'menu.Quản lý.army': 'Kiến thức an ninh quốc phòng',
 
 }

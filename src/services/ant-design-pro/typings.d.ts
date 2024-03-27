@@ -306,6 +306,23 @@ declare namespace API {
 
 declare namespace GEN {
 
+
+  type ProfessionalKnowledge = {
+    "create_at": string,
+    "update_at": string,
+    "id": number,
+    "batDau": string,
+    "ketThuc": string,
+    "tenCoSoDaoTao": {
+
+      "trangThai": boolean,
+      "id": number,
+      "name": string
+    },
+    "chungChiDuocCap": string,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN"
+  }
+
   type Option = {
     value?: string;
     label?: string;
@@ -672,13 +689,13 @@ declare namespace GEN {
           "trangThai": boolean,
           "id": number,
           "nhomLoaiCongChuc": {
-           
+
             "trangThai": boolean,
             "id": number,
             "name": string
           },
           "bacLuong": {
-          
+
             "trangThai": boolean,
             "id": number,
             "name": string
@@ -907,7 +924,130 @@ declare namespace GEN {
     sinhNgay: string
     soCCCD: string,
     hovaten: string,
+  }
 
+  type AdminDiscipline = {
+    id: number,
+    nam: number,
+    coQuanQuyetDinh: string
+    hanhViViPhamChinh: sring
+    IdCoQuanQuyetDinh: string,
+    hinhThuc: string,
+    batDau: string,
+    ketThuc: string,
+    create_at: string
+    update_at: string,
+    sinhNgay: string
+    soCCCD: string,
+    hovaten: string,
+  }
+
+  type AdminGoOnBuss = {
+    id: number,
+    donViCongTac: string
+    IdDonViCongTac: number,
+    batDau: string,
+    ketThuc: string,
+    create_at: string
+    update_at: string,
+    sinhNgay: string
+    soCCCD: string,
+    hovaten: string,
+  }
+
+  type AdminCerLang = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "tenCoSoDaoTao": string,
+    "IdTenCoSoDaoTao": number,
+    "tenNgoaiNgu": string,
+    "chungChiDuocCap": string,
+    "diemSo": number,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string
+  }
+
+  type AdminCerTech = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "tenCoSoDaoTao": string,
+    "IdTenCoSoDaoTao": number,
+    "tenTinHoc": string,
+    "chungChiDuocCap": string,
+    "diemSo": number,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string
+  }
+
+  type AdminProfessionalKnowledge = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "tenCoSoDaoTao": string,
+    "IdTenCoSoDaoTao": number,
+    "chungChiDuocCap": string,
+    "diemSo": number,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string
+  }
+
+  type AdminPoliticalTheory = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "tenCoSoDaoTao": string,
+    "IdTenCoSoDaoTao": number,
+    "hinhThucDaoTao": string,
+    "vanBangDuocCap": string,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string,
+  }
+
+
+  type AdminWorkingAbroad = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "toChucDiaChiCongViec": string,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string,
+  }
+
+  type AdminArmy = {
+    "id": number,
+    "maSyll": string,
+    "batDau": string,
+    hovaten: string,
+    'soCCCD': string,
+    "ketThuc": string,
+    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    "create_at": string,
+    "update_at": string,
+    "tenCoSoDaoTao": string,
+    "IdTenCoSoDaoTao": number,
+    "chungChiDuocCap": string,
   }
 
   type Discipline = {

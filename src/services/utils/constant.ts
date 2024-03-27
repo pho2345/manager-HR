@@ -12,3 +12,21 @@ export const XEP_LOAI_THI_DUA = [
     {label: 'Trung bình',value: 'TRUNG_BINH'},
 ]
 
+export const TRANG_THAI = [
+    {label: 'CHỜ XÁC NHẬN',value: 'CHO_XAC_NHAN'},
+    {label: 'ĐÃ XÁC NHÂN',value: 'XAC_NHAN'},
+    {label: 'TỪ CHỐI',value: 'TU_CHOI'},
+    {label: 'QUÁ HẠN',value: 'QUA_HAN'},
+]
+
+export const mapTrangThai = (value: string) => {
+    let map;
+    TRANG_THAI.forEach(item => {
+        if(item.value === 'CHO_XAC_NHAN') {
+            map = item.label;
+            return;
+        }
+    })
+    return map
+}
+

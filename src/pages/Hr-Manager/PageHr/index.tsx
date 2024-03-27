@@ -712,7 +712,7 @@ const TableList: React.FC = () => {
   // };
 
   const add  = (fields: any) => {
-    return handleAdd2(fields, `${collection}/them` )
+    return handleAdd2(fields, `${collection}/tai-khoan` )
   }
 
   return (

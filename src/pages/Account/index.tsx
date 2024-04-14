@@ -66,7 +66,7 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 
-const collection = '/nhan-vien/tai-khoan';
+const collection = `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`;
 const TableList: React.FC = () => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);

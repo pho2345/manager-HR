@@ -22,7 +22,7 @@ const configDefaultText = configText;
 
 const TableList: React.FC = () => {
 
-    const collection = '/trinh-do-giao-duc-pho-thong'
+    const collection = `${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();

@@ -1,7 +1,7 @@
 import { request } from '@umijs/max';
 import axios from 'axios';
 export async function currentUser(options?: { [key: string]: any }) {
-  const data = await request<any>(SERVERURL + '/ca-nhan/tai-khoan', {
+  const data = await request<any>(SERVER_URL_ACCOUNT + '/ca-nhan/tai-khoan', {
     method: 'GET',
     ...(options || {}),
     headers: {
@@ -25,7 +25,7 @@ export async function outLogin() {
 }
 
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(SERVERURL + '/dang-nhap', {
+  return request<API.LoginResult>(SERVER_URL_ACCOUNT + '/dang-nhap', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -251,8 +251,8 @@ export async function customAPIDowload(
 // }
 
 
-export async function get(collection: string) {
-  const fetchData = await request<API.List>(SERVERURL + collection, {
+export async function get(url: string) {
+  const fetchData = await request<API.List>(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -284,8 +284,8 @@ export async function getCustome(collection: string) {
   }
 }
 
-export async function post(subSolder: string, values: object, body: object) {
-  const fetchData = await request<any>(SERVERURL + subSolder, {
+export async function post(url: string, values: object, body: object) {
+  const fetchData = await request<any>(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

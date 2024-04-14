@@ -20,7 +20,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/vi-tri-viec-lam';
+    const collection = `${SERVER_URL_CONFIG}/vi-tri-viec-lam`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();

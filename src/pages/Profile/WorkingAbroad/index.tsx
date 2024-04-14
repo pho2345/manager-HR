@@ -23,7 +23,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/lam-viec-o-nuoc-ngoai';
+    const collection = `${SERVER_URL_PROFILE_DETAIL}/ca-nhan/lam-viec-o-nuoc-ngoai`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();

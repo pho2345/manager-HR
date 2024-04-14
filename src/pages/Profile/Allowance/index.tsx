@@ -23,7 +23,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/phu-cap-khac';
+    const collection = `${SERVER_URL_PROFILE_DETAIL}/ca-nhan/phu-cap-khac`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();

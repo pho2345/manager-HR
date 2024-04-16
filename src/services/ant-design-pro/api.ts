@@ -10,6 +10,8 @@ export async function currentUser(options?: { [key: string]: any }) {
     },
   });
 
+  console.log('data', data);
+
   if(data?.data){
     return data.data as API.CurrentUser
   }
@@ -252,7 +254,7 @@ export async function customAPIDowload(
 
 
 export async function get(url: string) {
-  const fetchData = await request<API.List>(url, {
+  const fetchData = await request<any>(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -262,14 +264,14 @@ export async function get(url: string) {
 
 
   return {
-    total: fetchData?.data && fetchData?.data?.length,
-    success: fetchData.data && true,
-    data: fetchData.data
+    total: fetchData && fetchData?.length,
+    success: fetchData && true,
+    data: fetchData
   }
 }
 
-export async function getCustome(collection: string) {
-  const fetchData = await request<any>(SERVERURL + collection, {
+export async function getCustome(url: string) {
+  const fetchData = await request<any>(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -278,9 +280,9 @@ export async function getCustome(collection: string) {
   });
 
   return {
-    total: fetchData?.data && fetchData?.data?.length,
-    success: fetchData.data && true,
-    data: fetchData.data
+    total: fetchData && fetchData?.length,
+    success: fetchData && true,
+    data: fetchData
   }
 }
 
@@ -326,7 +328,7 @@ export async function post2(subSolder: string, values: object, body: []) {
 
 
 export async function patch(subSolder: string, body: object) {
-  const fetchData = await request<any>(SERVERURL + subSolder, {
+  const fetchData = await request<any>(subSolder, {
     method: 'patch',
     headers: {
       'Content-Type': 'application/json',

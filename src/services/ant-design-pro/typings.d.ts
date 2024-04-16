@@ -555,221 +555,136 @@ declare namespace GEN {
     trang_thai: boolean
   }
 
+  interface ThongTinTuyenDung {
+    ngheNghiepTruocKhiTuyenDung: string;
+    ngayDuocTuyenDungLanDau: string;
+    ngayVaoCoQuanHienDangCongTac: string;
+    ngayVaoDangCongSanVietNam: string;
+    ngayChinhThuc: string;
+    ngayThamGiaToChucChinhTriXaHoiDauTien: string;
+    congViecChinhDuocGiao: string;
+    soTruongCongTac: string;
+    congViecLamLauNhat: string;
+}
+
+interface QuanSu {
+    ngayNhapNgu: string;
+    ngayXuatNgu: string;
+    capBacLoaiQuanHamQuanDoi: number;
+    capBacLoaiQuanHamQuanDoiName: string;
+}
+
+interface HocVan {
+    trinhDoGiaoDucPhoThong: number;
+    trinhDoGiaoDucPhoThongName: string;
+    trinhDoChuyenMon: number;
+    trinhDoChuyenMonName: string;
+    hocHam: number;
+    hocHamName: string;
+    danhHieuNhaNuocPhongTang: number;
+    danhHieuNhaNuocPhongTangName: string;
+}
+
+interface ChucVu {
+    chucVuHienTaiId: number;
+    chucVuHienTaiName: string;
+    ngayBoNhiem: string;
+    ngayBoNhiemLai: string;
+    duocQuyHoacChucDanh: string;
+    phuCapChucVu: number;
+    coQuanToChucDonViTuyenDungId: number;
+    coQuanToChucDonViTuyenDungName: string;
+    hoSoId: string;
+}
+
+interface ChucVuKiemNhiem {
+    chucVuKiemNhiemId: number;
+    chucVuKiemNhiemName: string;
+    ngayBoNhiem: string;
+    phuCapKiemNhiem: number;
+    phuCapKhac: number;
+    hoSoId: string;
+}
+
+interface Ngach {
+    ngachId: string;
+    ngachName: string;
+    heSoLuongId: number;
+    nhomId: number;
+    nhomName: string;
+    loaiId: number;
+    loaiLoai: string;
+    loaiName: string;
+    bacLuongId: number;
+    bacLuongName: string;
+    heSo: number;
+    ngayBoNhiemNgach: string;
+    ngayHuongLuongNgach: string;
+    phanTramHuongLuongNgach: number;
+    phuCapThamNienVuotKhungNgach: number;
+    ngayHuongPCTNVKNgach: string;
+}
+
+interface ViecLam {
+    viTriViecLamId: number;
+    viTriViecLamName: string;
+    bacLuongId: number;
+    bacLuongName: string;
+    tienLuong: number;
+    ngayHuongLuongViTriViecLam: string;
+    phamTramHuongLuong: number;
+    phuCapThamNienVuotKhung: number;
+    ngayHuongPCTNVK: string;
+}
+
+interface SucKhoe {
+    tinhTrangSucKhoe: string;
+    chieuCao: number;
+    canNang: number;
+    nhomMau: number;
+    nhomMauName: string;
+}
+
+
   type Profile = {
-    "create_at": string,
-    "update_at": string,
-    "trangThai": boolean,
-    "id": string,
-    "hoVaTen": string,
-    "gioiTinh": "NAM" | "NU",
-    "cacTenGoiKhac": string,
-    "sinhNgay": string,
-    "noiSinh": string,
-    "queQuan": string,
-    "danToc": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "tonGiao": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "soCCCD": string,
-    "ngayCapCCCD": string,
-    "soDienThoai": string,
-    "soBHXH": string,
-    "soBHYT": string,
-    "noiOHienNay": string,
-    "thanhPhanGiaDinh": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "thongTinTuyenDung": {
-      "trangThai": boolean,
-      "id": string,
-      "ngheNghiepTruocKhiTuyenDung": string,
-      "ngayDuocTuyenDungLanDau": string,
-      "coQuanToChucDonViTuyenDung": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string,
-        "boCoQuan": {
-          "trangThai": boolean,
-          "id": number,
-          "name": string
-        }
-      },
-      "ngayVaoCoQuanHienDangCongTac": string,
-      "ngayVaoDangCongSanVietNam": string,
-      "ngayChinhThuc": string,
-      "ngayThamGiaToChucChinhTriXaHoiDauTien": string,
-      "congViecChinhDuocGiao": string,
-      "soTruongCongTac": string,
-      "congViecLamLauNhat": string
-    },
-    "quanSu": {
-      "trangThai": boolean,
-      "id": string,
-      "ngayNhapNgu": string,
-      "ngayXuatNgu": string,
-      "capBacLoaiQuanHamQuanDoi": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      }
-    },
-    "doiTuongChinhSach": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "hocVan": {
-      "trangThai": boolean,
-      "id": string,
-      "trinhDoGiaoDucPhoThong": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      },
-      "trinhDoChuyenMon": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      },
-      "hocHam": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      },
-      "danhHieuNhaNuocPhongTang": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      }
-    },
-    "chucVuHienTai": {
-      "trangThai": boolean,
-      "id": string,
-      "chucVu": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      },
-      "ngayBoNhiem": string,
-      "ngayBoNhiemLai": string,
-      "duocQuyHoacChucDanh": string
-    },
-    "chucVuKiemNhiem": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "chucVuDangHienTai": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "chucVuDangKiemNhiem": {
-      "trangThai": boolean,
-      "id": number,
-      "name": string
-    },
-    "tienLuong": number,
-    "ngach": {
-      "trangThai": boolean,
-      "id": string,
-      "ngachCongChuc": {
-        "trangThai": boolean,
-        "id": string,
-        "name": string,
-        "heSoLuongCongChuc": {
-          "trangThai": boolean,
-          "id": number,
-          "nhomLoaiCongChuc": {
-
-            "trangThai": boolean,
-            "id": number,
-            "name": string
-          },
-          "bacLuong": {
-
-            "trangThai": boolean,
-            "id": number,
-            "name": string
-          },
-          "heSo": number
-        }
-      },
-      "ngachVienChuc": {
-        "trangThai": boolean,
-        "id": string,
-        "name": string,
-        "heSoLuongVienChuc": {
-          "create_at": string,
-          "update_at": string,
-          "trangThai": boolean,
-          "id": number,
-          "nhomLoaiVienChuc": {
-            "create_at": string,
-            "update_at": string,
-            "trangThai": boolean,
-            "id": number,
-            "name": string
-          },
-          "bacLuong": {
-            "create_at": string,
-            "update_at": string,
-            "trangThai": boolean,
-            "id": number,
-            "name": string
-          },
-          "heSo": number
-        }
-      },
-      "ngayBoNhiemNgach": string,
-      "ngayHuongLuongNgach": string,
-      "phanTramHuongLuongNgach": number,
-      "phuCapThamNienVuotKhungNgach": number,
-      "ngayHuongPCTNVKNgach": string
-    },
-    "phuCapChucVu": number,
-    "phuCapKiemNhiem": number,
-    "phuCapKhac": number,
-    "viecLam": {
-      "trangThai": boolean,
-      "id": string,
-      "viTriViecLam": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string,
-        "bacLuong": {
-          "trangThai": boolean,
-          "id": number,
-          "name": string
-        },
-        "tienLuong": number
-      },
-      "ngayHuongLuongTheoViTriViecLam": string,
-      "phamTramHuongLuong": number,
-      "phuCapThamNienVuotKhung": number,
-      "ngayHuongPCTNVK": string
-    },
-    "sucKhoe": {
-      "trangThai": boolean,
-      "id": string,
-      "tinhTrangSucKhoe": "YEU",
-      "chieuCao": number,
-      "canNang": number,
-      "nhomMau": {
-        "trangThai": boolean,
-        "id": number,
-        "name": string
-      }
-    },
-    "pheDuyet": "CHUA_PHE_DUYET"
+    id: string;
+    hoVaTen: string;
+    gioiTinh: string;
+    cacTenGoiKhac: string;
+    sinhNgay: string;
+    noiSinh: string;
+    queQuan: string;
+    danToc: number;
+    danTocName: string;
+    tonGiao: number;
+    tonGiaoName: string;
+    soCCCD: string;
+    ngayCapCCCD: string;
+    soDienThoai: string;
+    soBHXH: string;
+    soBHYT: string;
+    noiOHienNay: string;
+    thanhPhanGiaDinh: number;
+    thanhPhanGiaDinhName: string;
+    thongTinTuyenDung: ThongTinTuyenDung;
+    quanSu: QuanSu;
+    doiTuongChinhSach: number;
+    doiTuongChinhSachName: string;
+    hocVan: HocVan;
+    chucVu: ChucVu;
+    chucVuKiemNhiem: ChucVuKiemNhiem;
+    chucVuDangHienTai: number;
+    chucVuDangHienTaiName: string;
+    chucVuDangKiemNhiem: number;
+    chucVuDangKiemNhiemName: string;
+    tienLuong: number;
+    ngach: Ngach;
+    viecLam: ViecLam;
+    sucKhoe: SucKhoe;
+    taiKhoan: number;
+    pheDuyet: string;
+    create_at: string;
+    update_at: string;
   }
 
   type WorkOld = {
@@ -811,6 +726,24 @@ declare namespace GEN {
     create_at: string,
     update_at: string,
   }
+
+  type TypeOfPublicServant = {
+    id: number,
+    loai: string,
+    name: string,
+    create_at: string,
+    update_at: string,
+  }
+
+  type CivilServantGroup = {
+    id: number,
+    name: string,
+    loaiVienChucId: number,
+    loaiVienChucLoai: string,
+    create_at: string,
+    update_at: string,
+  }
+
 
 
   type GoOnBussiness = {

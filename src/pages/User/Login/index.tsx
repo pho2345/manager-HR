@@ -104,6 +104,7 @@ const Login: React.FC = () => {
 
 
   const fetchUserInfo = async (currentUser: API.CurrentUser) => {
+    console.log('currentUser', currentUser)
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       flushSync(() => {
@@ -118,13 +119,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       const msg = await login({ ...values, type })
-      console.log(msg);
+      
+      // await fetchUserInfo(msg);
       if (msg) {
-        console.log('msg', msg);
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
         localStorage.setItem('access_token', msg?.data?.token || '');
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo(msg?.data.taikhoan as API.CurrentUser);
+        await fetchUserInfo(msg?.data as API.CurrentUser);
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;

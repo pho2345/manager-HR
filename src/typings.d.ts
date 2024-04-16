@@ -24,3 +24,4 @@ declare const ID_SAVE_INFO: string
 declare const FORMAT_DATE: string
 declare const SERVER_URL_CONFIG: string
 declare const SERVER_URL_PROFILE_DETAIL: string
+declare const SERVER_URL_PROFILE: string

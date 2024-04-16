@@ -133,7 +133,7 @@ const TableList: React.FC = () => {
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
-      const getReligion = await getOption('/dan-toc', 'id', 'name');
+      const getReligion = await getOption(`${SERVER_URL_CONFIG}/dan-toc`, 'id', 'name');
       setReligion(getReligion);
     };
     getValues();

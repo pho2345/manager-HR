@@ -1,6 +1,6 @@
-import { deletes, get, getCustome, patch, post } from '@/services/ant-design-pro/api';
-import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
+import { get, getCustome } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,67 +8,31 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Button, Col, Form, Input, Row, Space, Switch, Tooltip } from 'antd';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
 
-
-
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_PROFILE_DETAIL}/ca-nhan/khen-thuong`;
+
+    const collection = `${SERVER_URL_CONFIG}/loai-cong-chuc`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
-    const refNameCategory = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [typeBonus, setTypeBonus] = useState<GEN.Option[]>([]);
-
-    useEffect(() => {
-        const getValues = async () => {
-            try {
-                const dataQueries = [
-                    { query: `${SERVER_URL_CONFIG}/hinh-thuc-khen-thuong`, setFunction: setTypeBonus },
-                ];
-
-                for (const { query, setFunction } of dataQueries) {
-                    const data = await getOption(query, 'id', 'name');
-                    setFunction(data);
-                }
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        getValues();
-    }, [])
-
-    const add = async (fields: any) => {
-        return handleAdd2(fields, collection)
-    };
-
-    const update = async (fields: any) => {
-        fields.xepLoaiChuyenMon = fields.xepLoaiChuyenMonEnum;
-        fields.xepLoaiThiDua = fields.xepLoaiThiDuaEnum;
-        fields.hinhThucKhenThuong = fields.IdHinhThucKhenThuong;
-        return handleUpdate2(fields, refIdCurrent.current, collection)
-    };
-
-
 
 
 
@@ -134,8 +98,8 @@ const TableList: React.FC = () => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -161,7 +125,7 @@ const TableList: React.FC = () => {
     };
 
 
-    const getColumnSearchRange = () => ({
+    const getColumnSearchRange = (dataIndex: string) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
             //close
         }: any) => (
@@ -305,7 +269,7 @@ const TableList: React.FC = () => {
                 const optionValue = convertValue[0];
                 if (optionValue === 'range') {
                     if (convertValue[1] && convertValue[2]) {
-                        if (moment(record.attributes.createdAt).isAfter(convertValue[1]) && moment(record.attributes.createdAt).isBefore(convertValue[2])) {
+                        if (moment(record[dataIndex]).isAfter(convertValue[1]) && moment(record[dataIndex]).isBefore(convertValue[2])) {
                             return record
                         }
                     }
@@ -313,7 +277,7 @@ const TableList: React.FC = () => {
                 else {
                     const timeStart = moment().startOf(optionValue).toISOString();
                     const timeEnd = moment().endOf(optionValue).toISOString();
-                    if (moment(record.attributes.createdAt).isAfter(timeStart) && moment(record.attributes.createdAt).isBefore(timeEnd)) {
+                    if (moment(record[dataIndex]).isAfter(timeStart) && moment(record[dataIndex]).isBefore(timeEnd)) {
                         return record;
                     }
                 }
@@ -324,73 +288,46 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.Bonus>[] = [
+    const columns: ProColumns<GEN.TypeOfPublicServant>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: "Xếp loại chuyên môn",
-            key: 'xepLoaiChuyenMon',
-            dataIndex: 'xepLoaiChuyenMon',
+            title: "Tên loại công chức",
+            key: 'name',
+            dataIndex: 'name',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.xepLoaiChuyenMon}</>
+                    <> {entity?.name}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
+            width: '30vh',
+            ...getColumnSearchProps('name')
         },
-
         {
-            title: "Xếp loại thi đua",
-            key: 'xepLoaiThiDua',
-            dataIndex: 'xepLoaiThiDua',
+            title: "Bậc",
+            key: 'loai',
+            dataIndex: 'loai',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.xepLoaiThiDua}</>
+                    <> {entity?.loai}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiThiDua')
+            width: '30vh',
+            ...getColumnSearchProps('loai')
         },
-
-        {
-            title: "Hình thức khen thưởng",
-            key: 'hinhThucKhenThuong',
-            dataIndex: 'hinhThucKhenThuong',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.hinhThucKhenThuong}</>
-                );
-            },
-            ...getColumnSearchProps('hinhThucKhenThuong')
-        },
-
-        {
-            title: "Năm khen thưởng",
-            key: 'nam',
-            dataIndex: 'nam',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.nam}</>
-                );
-            },
-            ...getColumnSearchProps('nam')
-        },
-
-
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
-            // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at,
-            // ...getColumnSearchProps('name')
+            renderText: (_, text) => moment(text.create_at).format(FORMAT_DATE),
+            ...getColumnSearchRange('create_at')
         },
+
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -428,6 +365,14 @@ const TableList: React.FC = () => {
 
 
 
+
+    async function add(value: any) {
+        return await handleAdd(value, collection);
+    }
+
+    async function update(value: any) {
+        return await handleUpdate2(value, refIdCurrent.current, collection);
+    }
 
     return (
         <PageContainer>
@@ -479,6 +424,7 @@ const TableList: React.FC = () => {
                         prev_page: configDefaultText['prePage'],
                     },
                     showTotal: (total, range) => {
+
                         return `${range[range.length - 1]} / Tổng số: ${total}`
                     }
                 }}
@@ -496,7 +442,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo khen thưởng"}
+                title={"Tạo mới loại công chức"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -506,7 +452,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await add(value as API.RuleListItem);
+                    const success = await add(value)
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -525,64 +471,39 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormSelect
-                            label={"Xếp loại chuyên môn"}
+                        <ProFormText
+                            label={"Tên loại công chức"}
                             // width='md'
-                            name='xepLoaiChuyenMon'
-                            placeholder={`Xếp loại chuyên môn`}
+                            name='name'
+                            placeholder={`Tên loại công chức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Xếp loại chuyên môn'
+                                    message: <FormattedMessage id="page.nation.require.name" defaultMessage="Name" />
                                 },
-                            ]}
-                            options={XEP_LOAI_CHUYEN_MON}
-
-                        />
+                            ]} />
                     </Col>
-
-
 
                     <Col span={24} >
-                        <ProFormSelect
-                            label={"Xếp loại thi đua"}
+                        <ProFormText
+                            label={"Bậc"}
                             // width='md'
-                            name='xepLoaiThiDua'
-                            placeholder={`Xếp loại thi đua`}
+                            name='loai'
+                            placeholder={`Bậc`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Xếp loại thi đua'
+                                    message: "Bậc"
                                 },
-                            ]}
-                            options={XEP_LOAI_THI_DUA}
-                        />
+                            ]} />
                     </Col>
-
-
-                    <Col span={24}>
-                        <ProFormSelect
-                            label={"Hình thức khen thưởng"}
-                            // width='md'
-                            name='hinhThucKhenThuong'
-                            placeholder={`Hình thức khen thưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức khen thưởng'
-                                },
-                            ]}
-                            options={typeBonus}
-                        />
-                    </Col>
-
                 </Row>
 
 
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật khen thưởng"}
+                title={"Cập nhật loại công chức"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -593,12 +514,12 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await update(values as any);
+                    const success = await update(values);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
                         if (actionRef.current) {
-                            actionRef.current?.reloadAndRest?.();
+                            actionRef.current.reload();
                         }
                     }
                 }}
@@ -612,60 +533,32 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={24} >
-                        <ProFormSelect
-                            label={"Xếp loại chuyên môn"}
-                            // width='md'
-                            name='xepLoaiChuyenMonEnum'
-                            placeholder={`Xếp loại chuyên môn`}
+                        <ProFormText
+                            label={"Tên loại công chức"}
+                            name='name'
+                            placeholder={`Tên loại công chức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Xếp loại chuyên môn'
+                                    message: "Tên loại công chức"
                                 },
-                            ]}
-                            options={XEP_LOAI_CHUYEN_MON}
+                            ]} />
 
-                        />
                     </Col>
-
-
-
                     <Col span={24} >
-                        <ProFormSelect
-                            label={"Xếp loại thi đua"}
-                            // width='md'
-                            name='xepLoaiThiDuaEnum'
-                            placeholder={`Xếp loại thi đua`}
+                        <ProFormText
+                            label={"Bậc"}
+                            name='loai'
+                            placeholder={`Bậc`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Xếp loại thi đua'
+                                    message: "Bậc"
                                 },
-                            ]}
-                            options={XEP_LOAI_THI_DUA}
-                        />
+                            ]} />
+
                     </Col>
-
-
-                    <Col span={24}>
-                        <ProFormSelect
-                            label={"Hình thức khen thưởng"}
-                            // width='md'
-                            name='IdHinhThucKhenThuong'
-                            placeholder={`Hình thức khen thưởng`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức khen thưởng'
-                                },
-                            ]}
-                            options={typeBonus}
-                        />
-                    </Col>
-
                 </Row>
-
-
             </ModalForm>
 
         </PageContainer>

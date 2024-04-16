@@ -17,6 +17,11 @@ export default {
 'menu.Cấu hình.menu.rankCommunistParty': 'Chức danh đảng',
 'menu.Cấu hình.menu.typeBonus': 'Hình thức khen thưởng',
 'menu.Cấu hình.menu.groupCommunistParty': 'Nhóm chức danh đảng',
+'menu.Cấu hình.menu.relationship': 'Mối quan hệ',
+'menu.Cấu hình.menu.allowanceType': 'Loại phụ cấp',
+'menu.Cấu hình.menu.typeOfPublicServant': 'Loại công chức',
+'menu.Cấu hình.menu.civilServantGroup': 'Nhóm viên chức',
+
 
 'menu.Cấu hình.menu.jobPosition': 'Vị trí việc làm',
 'menu.Quản lý.bonus': 'Khen thưởng',

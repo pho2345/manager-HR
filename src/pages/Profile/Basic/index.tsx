@@ -124,7 +124,7 @@ const handleAdd = async (fields: any) => {
 const getProfile = async (setProfile: any, setLoading: any) => {
   setLoading(true);
   try {
-    const profile = await getCustome('/ca-nhan/so-yeu-ly-lich');
+    const profile = await getCustome(`${SERVER_URL_PROFILE}/ca-nhan/ho-so`);
     if (profile.success) {
       setProfile(profile.data)
     }
@@ -321,9 +321,9 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}>{profile?.soBHXH ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}>{profile?.soBHYT ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}>{profile?.noiOHienNay ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.sucKhoe.chieuCao ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.sucKhoe.canNang ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.sucKhoe.nhomMau ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.sucKhoe?.chieuCao ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.sucKhoe?.canNang ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.sucKhoe?.nhomMau ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Tình trạng sức khỏe"}>{profile?.sucKhoe.tinhTrangSucKhoe ?? ""}</Descriptions.Item>
               </Descriptions>
             </ProCard>
@@ -338,37 +338,37 @@ const TableList: React.FC = () => {
             >
 
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.maSoNgachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngayBoNhiemNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.heSoLuongNgachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongLuongNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.phanTramHuongLuongNgachNgheNghiep ?? 0} %</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.phuCapThamNienVuotKhungNgachNgheNghiep ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngayHuongPCTNVKNgachNgheNghiep).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.ngach?.ngachId ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngach?.ngachName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngach?.ngayBoNhiemNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.ngach?.heSo ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongLuongNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.ngach?.phanTramHuongLuongNgach ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.ngach?.phuCapThamNienVuotKhungNgach ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongPCTNVKNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
               </Descriptions>
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Chức vụ"}>
-                <Descriptions.Item label={"Chức vụ hiện tại"}>{profile?.chucVuHienTai ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Chức vụ hiện tại"}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{moment(profile?.thongTinTuyenDung.ngayDuocTuyenDungLanDau).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày chính thức"}>{moment(profile?.thongTinTuyenDung.ngayChinhThuc).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{moment(profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày chính thức"}>{moment(profile?.thongTinTuyenDung?.ngayChinhThuc).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.thongTinTuyenDung.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.thongTinTuyenDung.coQuanToChucDonViTuyenDung.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}>{moment(profile?.thongTinTuyenDung.ngayVaoCoQuanHienDangCongTac).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.chucVu?.coQuanToChucDonViTuyenDungName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}>{moment(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.chucVuHienTai.ngayBoNhiem).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.chucVuHienTai.ngayBoNhiemLai).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.chucVu.ngayBoNhiemLai).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.chucVuHienTai.duocQuyHoacChucDanh ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.chucVuKiemNhiemName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.chucVu?.duocQuyHoacChucDanh ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTai.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiem.name ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTaiName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiemName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.thongTinTuyenDung?.congViecChinhDuocGiao ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.thongTinTuyenDung.soTruongCongTac ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.thongTinTuyenDung.congViecLamLauNhat ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.thongTinTuyenDung?.soTruongCongTac ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.thongTinTuyenDung?.congViecLamLauNhat ?? ""}</Descriptions.Item>
               </Descriptions>
 
 
@@ -387,24 +387,24 @@ const TableList: React.FC = () => {
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Lương"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.salary" defaultMessage="Tiền lương" />}>{profile?.tienLuong ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePosition" defaultMessage="Phụ cấp chức vụ" />}>{profile?.phuCapChucVu ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceChargePosition" defaultMessage="Phụ cấp kiêm nhiệm" />}>{profile?.phuCapKiemNhiem ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePosition" defaultMessage="Phụ cấp chức vụ" />}>{profile?.chucVu.phuCapChucVu ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceChargePosition" defaultMessage="Phụ cấp kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.phuCapKiemNhiem ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceOther" defaultMessage="Phụ cấp khác" />}>{profile?.phuCapKhac ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceOther" defaultMessage="Phụ cấp khác" />}>{profile?.chucVuKiemNhiem?.phuCapKhac ?? ""}</Descriptions.Item>
 
 
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.salaryMoney" defaultMessage="Lương" />}>{profile?.luongTheoMucTien ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryWorkSpace" defaultMessage="Ngày hưởng lương" />}>{moment(profile?.viecLam.ngayHuongLuongTheoViTriViecLam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryWorkSpace" defaultMessage="Ngày hưởng lương" />}>{moment(profile?.viecLam?.ngayHuongLuongViTriViecLam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
 
-                <Descriptions.Item label={<FormattedMessage id="page.profile.percentSalaryWorkSpace" defaultMessage="Phần trăm hưởng lương" />}>{profile?.viecLam.phamTramHuongLuong ?? ""}%</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}>{profile?.viecLam.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dadteGetSalaryAllowancePass" defaultMessage="Ngày hưởng phụ cấp vượt khung" />}>{moment(profile?.viecLam.ngayHuongPCTNVK).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentSalaryWorkSpace" defaultMessage="Phần trăm hưởng lương" />}>{profile?.viecLam?.phamTramHuongLuong ?? ""}%</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}>{profile?.viecLam?.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dadteGetSalaryAllowancePass" defaultMessage="Ngày hưởng phụ cấp vượt khung" />}>{moment(profile?.viecLam?.ngayHuongPCTNVK).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
               </Descriptions>
 
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Việc làm"}>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.workplace" defaultMessage="Vị trí việc làm" />}>{profile?.viecLam?.viTriViecLam.name ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.workplace" defaultMessage="Vị trí việc làm" />}>{profile?.viecLam?.viTriViecLamName ?? ""}</Descriptions.Item>
                 {/* <Descriptions.Item label={<FormattedMessage id="page.profile.codeWorkplace" defaultMessage="Mã số vị trí việc làm" />}>{profile?.maSoViTriViecLam ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalaryWorkSpace" defaultMessage="Bậc lương trí việc làm" />}>{profile?.viecLam?.viTriViecLam?.bacLuong.name ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalaryWorkSpace" defaultMessage="Bậc lương trí việc làm" />}>{profile?.viecLam?.bacLuongName ?? ""}</Descriptions.Item>
               </Descriptions>
 
             </ProCard>
@@ -421,12 +421,12 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}>{moment(profile?.quanSu.ngayXuatNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}>{profile?.doiTuongChinhSach ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}>{moment(profile?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}>{profile?.hocVan?.trinhDoGiaoDucPhoThong?.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}>{profile?.hocVan?.trinhDoChuyenMon?.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}>{profile?.hocVan.danhHieuNhaNuocPhongTang.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}>{profile?.quanSu.capBacLoaiQuanHamQuanDoi.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}>{profile?.hocVan.hocHam.name ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}>{profile?.thanhPhanGiaDinh.name ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}>{profile?.hocVan?.trinhDoGiaoDucPhoThongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}>{profile?.hocVan?.trinhDoChuyenMonName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}>{profile?.hocVan?.danhHieuNhaNuocPhongTangName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}>{profile?.quanSu?.capBacLoaiQuanHamQuanDoiName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}>{profile?.hocVan?.hocHamName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}>{profile?.thanhPhanGiaDinhName ?? ""}</Descriptions.Item>
               </Descriptions>
 
             </ProCard>
@@ -484,7 +484,7 @@ const TableList: React.FC = () => {
                   style={{
                     width: '70vh'
                   }}
-                  
+
                 >
                   {dom}
                 </Modal>
@@ -494,13 +494,13 @@ const TableList: React.FC = () => {
             <StepsForm.StepForm<{
               name: string;
             }>
-              
+
               name="base"
               title="Thông tin chung"
               stepProps={{
               }}
 
-              
+
               onFinish={async (value: object) => {
                 handleSession(value);
                 return true
@@ -546,7 +546,7 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                     placeholder={"Dân tộc"}
                     showSearch
-                    request={() => getOption('/dan-toc', 'id', 'name')} 
+                    request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc`, 'id', 'name')}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
                     ]}
@@ -652,7 +652,7 @@ const TableList: React.FC = () => {
               </Row>
 
               <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
+                <Col span={12} className="gutter-row p-0">
                   <ProFormSelect
                     className="w-full"
                     name="healthInsurance"
@@ -669,7 +669,7 @@ const TableList: React.FC = () => {
                     ]}
                   />
                 </Col>
-                
+
               </Row>
 
               <Row gutter={24} className="m-0">
@@ -750,7 +750,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
                     ]}
-                    request={() => getOption('/nhom-mau', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -802,7 +802,7 @@ const TableList: React.FC = () => {
                       },
                     }}
                     options={checkOfficer ? civilServant : officer}
-                    request={() => checkOfficer ? getOption('/bac-ngach/ngach-vien-chuc', 'id', 'name') :  getOption('/bac-ngach/ngach-cong-chuc', 'id', 'name')}
+                    request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/bac-ngach/ngach-vien-chuc`, 'id', 'name') : getOption(`${SERVER_URL_CONFIG}/bac-ngach/ngach-cong-chuc`, 'id', 'name')}
 
                   />
                 </Col>
@@ -884,7 +884,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                     ]}
-                    request={() => getOption('/coquan-tochuc-donvi', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi`, 'id', 'name')}
                     options={organ}
                   />
 
@@ -901,14 +901,14 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Chức vụ hiện tại" },
                     ]}
-                    request={() => getOption('/chuc-vu', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu`, 'id', 'name')}
                   />
                 </Col>
-               
+
               </Row>
 
               <Row gutter={24} className="m-0">
-             
+
                 <Col span={12} className="gutter-row p-0">
                   <ProFormSelect
                     className="w-full"
@@ -918,7 +918,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Vị trí việc làm" },
                     ]}
-                    request={() => getOption('/vi-tri-viec-lam', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/vi-tri-viec-lam`, 'id', 'name')}
                   />
                 </Col>
 
@@ -1006,7 +1006,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
                     ]}
-                    request={() => getOption('/chuc-vu', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1031,7 +1031,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
                     ]}
-                    request={() => getOption('/chuc-danh-dang', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1046,7 +1046,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                     ]}
-                    request={() => getOption('/chuc-danh-dang', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang`, 'id', 'name')}
 
                   />
                 </Col>
@@ -1060,7 +1060,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" /> }
                     ]}
-                    // options={jobPosition}
+                  // options={jobPosition}
                   />
                 </Col>
               </Row>
@@ -1212,7 +1212,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
                       // { required: true, message: "Dân tộc" }
                     ]}
-                    request={() => getOption('/doi-tuong-chinh-sach', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach`, 'id', 'name')}
                   />
                 </Col>
 
@@ -1227,7 +1227,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
                     ]}
-                    request={() => getOption('/trinh-do-giao-duc-pho-thong', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1245,7 +1245,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
                     ]}
 
-                    request={() => getOption('/trinh-do-chuyen-mon', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon`, 'id', 'name')}
                   />
                 </Col>
 
@@ -1260,7 +1260,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
                     ]}
-                    request={() => getOption('/danh-hieu-nha-nuoc-phong', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1272,7 +1272,7 @@ const TableList: React.FC = () => {
                     name="hocHam"
                     label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
                     placeholder={"Học hàm"}
-                    request={() => getOption('/hoc-ham', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham`, 'id', 'name')}
                     showSearch
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
@@ -1304,7 +1304,7 @@ const TableList: React.FC = () => {
                     placeholder={"Thành phần gia đình"}
                     options={membership}
                     showSearch
-                    request={() => getOption('/thanh-phan-gia-dinh', 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh`, 'id', 'name')}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
                     ]}

@@ -573,7 +573,7 @@ const TableList: React.FC = () => {
 
                     <Row gutter={24} >
                         <Col span={8} >
-                            <ProFormSelect name="donViCongTac" key="donViCongTac" label="Đơn vị công tác" request={() => getOption('/coquan-tochuc-donvi', 'id', 'name')} />
+                            <ProFormSelect name="donViCongTac" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi`, 'id', 'name')} />
                         </Col>
                        
                         <Col span={8} >

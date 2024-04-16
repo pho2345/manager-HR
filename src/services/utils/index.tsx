@@ -60,12 +60,12 @@ export function renderTableAlertOption(selectedRows: any, selectedRowKeys: any, 
 }
 
 
-export const getOption = async (collection: string, getValue: string, getLabel: string): Promise<GEN.Option[]> => {
+export const getOption = async (url: string, getValue: string, getLabel: string): Promise<GEN.Option[]> => {
   try {
-    const { data } = await get(collection);
+    const { data }: any = await get(url);
     if (data) {
       return data
-        .filter(e => e[getValue] && e[getLabel])
+        .filter((e: any) => e[getValue] && e[getLabel])
         .map(({ [getLabel]: label, [getValue]: value }) => ({ label, value }));
     }
     return [];
@@ -86,7 +86,7 @@ export const handleAdd = async (fields: any, collection: string, date: boolean =
       batDau: moment(fields.batDau).toISOString(),
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields;
-    const add = await post(`${collection}`, {}, {
+    const add = await post(`${collection}`, { key: 'value' } as Record<string, unknown>, {
       ...data,
     });
     if (add) {
@@ -111,7 +111,7 @@ export const handleAdd2 = async (fields: any, collection: string, date: boolean 
       batDau: moment(fields.batDau).toISOString(),
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields;
-    const add = await post(`${collection}`, {}, {
+    const add = await post(`${collection}`, {} as Record<string, any>, {
       ...data,
     });
     if (add) {

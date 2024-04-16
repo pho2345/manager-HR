@@ -41,7 +41,7 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 const TableList: React.FC = () => {
-    const collection = '/ca-nhan/nghiep-vu-chuyen-nganh';
+    const collection = `${SERVER_URL_PROFILE_DETAIL}/ca-nhan/nghiep-vu-chuyen-nganh`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -59,7 +59,7 @@ const TableList: React.FC = () => {
         const getValues = async () => {
             try {
                 const dataQueries = [
-                    { query: '/coquan-tochuc-donvi', setFunction: setOrgan },
+                    { query: `${SERVER_URL_CONFIG}/coquan-tochuc-donvi`, setFunction: setOrgan },
                 ];
 
                 for (const { query, setFunction } of dataQueries) {

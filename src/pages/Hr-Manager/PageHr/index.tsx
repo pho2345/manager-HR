@@ -37,49 +37,11 @@ import moment from 'moment';
 import AddNew from './AddNew';
 import { getOption, handleAdd2 } from '@/services/utils';
 import { MdOutlineEdit } from 'react-icons/md';
+import AddBonus from '@/reuse/bonus/AddBonus';
 
 
 
 
-const handleUpdate = async (fields: any, id: any) => {
-  const hide = message.loading('Đang cập nhật...');
-  try {
-    let uploadImages: any[] = [];
-    let photoCowCustom: any[] = [];
-    if (fields?.photos && fields.photos.length !== 0) {
-      fields?.photos.map((e: any) => {
-        if (e.originFileObj) {
-          let formdata = new FormData();
-          formdata.append('files', e?.originFileObj);
-          formdata.append('ref', 'api::cow.cow');
-          formdata.append('refId', id.current);
-          formdata.append('field', 'photos');
-
-        }
-        else {
-          photoCowCustom.push(e.uid)
-        }
-        return null;
-      });
-    }
-
-    let photoCow = await Promise.all(uploadImages);
-    if (photoCow.length !== 0) {
-      photoCow.map((e) => {
-        photoCowCustom.push(e[0].id)
-      })
-    }
-    fields.photos = photoCowCustom
-
-    hide();
-    message.success('Cập nhật thành công');
-    return true;
-  } catch (error: any) {
-    hide();
-    message.error(error?.response?.data?.error?.message);
-    return false;
-  }
-};
 
 
 const handleRemove = async (selectedRows: any) => {
@@ -104,10 +66,11 @@ const handleRemove = async (selectedRows: any) => {
 
 
 const TableList: React.FC = () => {
+  const collection = `${SERVER_URL_PROFILE}/nhan-vien/ho-so`;
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const refIdCow = useRef<any>();
+  const refId = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
   const searchInput = useRef(null);
@@ -120,7 +83,7 @@ const TableList: React.FC = () => {
   const [membership, setMembership] = useState<GEN.Option[]>([]);
 
 
-
+  const [openBus, setOpenBus] = useState<boolean>(false);
 
 
   const [visible, setVisible] = useState(false);
@@ -129,7 +92,6 @@ const TableList: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
 
-  const collection = '/nhan-vien';
   const params = useParams();
   useEffect(() => {
     const getValues = async () => {
@@ -454,26 +416,34 @@ const TableList: React.FC = () => {
         );
       },
     },
+    {
+      title: 'CCCD/CMND',
+      dataIndex: 'soCCCD',
+      render: (_, text) => text.soCCCD ?? "",
+    },
 
     {
       title: 'Dân tộc',
       dataIndex: 'danToc',
-      // valueType: 'textarea',
-      // key: 'name',
-      // ...getColumnSearchProps('name'),
-
       render: (_, text) => "",
+    },
+    {
+      title: 'Quê quán',
+      key: 'queQuan',
+      // dataIndex: 'gioiTinh',
+      render: (_, entity) => {
+        return (
+          <>{entity?.queQuan}</>
+        );
+      },
     },
 
     {
       title: 'Giới tính',
       key: 'gioiTinh',
       // dataIndex: 'gioiTinh',
-      render: (_, entity) => ""
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
+      render: (_, entity) => entity.gioiTinh ?? ""
+      
     },
     {
       title: 'Ngày sinh',
@@ -481,7 +451,7 @@ const TableList: React.FC = () => {
       // dataIndex: 'gioiTinh',
       render: (_, entity) => {
         return (
-          <></>
+          <>{entity.sinhNgay ? moment(entity.sinhNgay).format(FORMAT_DATE) : ''}</>
         );
       },
       // filters: farm,
@@ -495,7 +465,7 @@ const TableList: React.FC = () => {
       // dataIndex: 'gioiTinh',
       render: (_, entity) => {
         return (
-          <></>
+          <>{entity.chucVuDangHienTaiName}</>
         );
       },
       // filters: farm,
@@ -503,141 +473,9 @@ const TableList: React.FC = () => {
       //   return record?.farm?.id === value;
       // },
     },
-    {
-      title: 'Trình độ chuyên môn',
-      key: 'trinhDoChuyenMon',
-      // dataIndex: 'gioiTinh',
-      render: (_, entity) => {
-        return (
-          <>{entity?.trinhDoChuyenMon}</>
-        );
-      },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
-    },
-    {
-      title: 'Ngạch',
-      key: 'ngachNgheNghiep',
-      // dataIndex: 'gioiTinh',
-      render: (_, entity) => {
-        return (
-          <>{entity.ngachNgheNghiep}</>
-        );
-      },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
-    },
-    // {
-    //   title: configDefaultText['page.listCow.column.firstWeight'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'firstWeight',
-    //   width: '10vh',
-    //   renderText: (_, text: any) => text?.firstWeight,
-    // },
-    // {
-    //   title: configDefaultText['page.listCow.column.photos'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'photos',
-    //   render: (_, text: any) => {
-    //     return (
-    //       <Avatar.Group
-    //         maxCount={2}
-    //         maxPopoverTrigger='click'
-    //         size='large'
-    //         maxStyle={{ color: '#f56a00', backgroundColor: '#fde3cf', cursor: 'pointer' }}
-    //       >
-
-    //         {text?.photos && text?.photos?.length !== 0 ? text?.photos?.map((e: any, index: any) => {
-    //           return (
-    //             <Avatar
-    //               key={index}
-    //               src={
-    //                 SERVERURL +
-    //                 e?.url
-    //               }
-    //             />
-    //           );
-    //         }) : (<Avatar
-    //           key={'defaultImage'}
-    //           src={
-    //             'https://aleger-server.process.vn/uploads/cow_Icon2_e7fd247cac.png'
-    //           }
-    //         />)
-    //         }
-
-    //       </Avatar.Group>
-    //     );
-    //   },
-    // },
-
-    // {
-    //   title: configDefaultText['page.listCow.column.sex'],
-    //   dataIndex: 'sex',
-    //   valueType: 'textarea',
-    //   width: '10vh',
-    //   key: 'sex',
-    //   renderText: (_, text: any) => {
-    //     if (text?.sex === 'male') {
-    //       return 'Đực';
-    //     }
-    //     return 'Cái';
-    //   },
-    //   filters: [
-    //     {
-    //       text: 'Đực',
-    //       value: 'male'
-    //     },
-    //     {
-    //       text: 'Cái',
-    //       value: 'female'
-    //     },
-    //   ],
-    //   onFilter: true
-    // },
-
-    // {
-    //   title: configDefaultText['page.listCow.column.category'],
-    //   dataIndex: 'category',
-    //   valueType: 'textarea',
-    //   key: 'category',
-    //   renderText: (_, text: any) => text?.category?.name,
-    //   filters: category,
-    //   onFilter: (value, record) => {
-    //     return record.category.id === value;
-
-    //   }
-    // },
-    // {
-    //   title: configDefaultText['page.listCow.column.age'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'age',
-    //   renderText: (_, text: any) => {
-    //     let age = Math.floor(moment(moment()).diff(text?.birthdate, 'days') / 7);
-    //     if (age === 0) {
-    //       return `0`;
-    //     }
-    //     let confiAge = `${age / 4 >= 1 ? `${Math.floor(age / 4)}Th` : ''} ${age % 4 !== 0 ? (age % 4) + 'T' : ''}`;
-    //     return confiAge;
-    //   }
-    // },
-
-    // {
-    //   title: configDefaultText['page.listCow.column.birthdate'],
-    //   dataIndex: 'atrributes',
-    //   valueType: 'textarea',
-    //   key: 'birthdate',
-    //   renderText: (_, text: any) => {
-    //     return moment(text?.birthdate).format('DD/MM/YYYY');
-    //   },
-    //   ...getColumnSearchRange('birthdate')
-    // },
+    
+   
+    
 
     {
       title: configDefaultText['titleOption'],
@@ -664,8 +502,10 @@ const TableList: React.FC = () => {
                 // setOpenWgs(true);
                 // refIdCateogry.current = entity.id;
                 // refNameCategory.current = entity.attributes.name;
+                setOpenBus(true);
+                refId.current =  entity.id
               }}
-            >Tăng trọng tiêu chuẩn</Menu.Item>
+            >Khen thưởng</Menu.Item>
 
             <Menu.Item key="2"
               onClick={() => {
@@ -712,7 +552,7 @@ const TableList: React.FC = () => {
   // };
 
   const add  = (fields: any) => {
-    return handleAdd2(fields, `${collection}/tai-khoan` )
+    return handleAdd2(fields, `${collection}` )
   }
 
   return (
@@ -739,18 +579,18 @@ const TableList: React.FC = () => {
             ]
           }}
 
-          toolbar={{
-            settings: [{
-              key: 'reload',
-              tooltip: configDefaultText['reload'],
-              icon: <ReloadOutlined></ReloadOutlined>,
-              onClick: () => {
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }]
-          }}
+          // toolbar={{
+          //   settings: [{
+          //     key: 'reload',
+          //     tooltip: configDefaultText['reload'],
+          //     icon: <ReloadOutlined></ReloadOutlined>,
+          //     onClick: () => {
+          //       if (actionRef.current) {
+          //         actionRef.current.reload();
+          //       }
+          //     }
+          //   }]
+          // }}
 
           pagination={{
             pageSize: 10,
@@ -763,7 +603,7 @@ const TableList: React.FC = () => {
             }
           }}
 
-          request={async () => get('/nhan-vien/so-yeu-ly-lich')}
+          request={async () => get(collection)}
           columns={columns}
           rowSelection={{
             // onChange: (_, selectedRows: any) => {
@@ -854,6 +694,8 @@ const TableList: React.FC = () => {
             </Col>
           </Row>
         </ModalForm>
+
+        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current}/>
 
         {/* <ModalForm
 

@@ -8,13 +8,13 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import { Button, Col, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd2,  handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -319,7 +319,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity?.bacLuong?.name}</>
+                    <>{entity?.bacLuongName}</>
                 );
             },
         },
@@ -500,11 +500,12 @@ const TableList: React.FC = () => {
                     </Col>
 
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Bậc lương"}
                             // width='md'
                             name='bacLuong'
                             placeholder={`Bậc lương`}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,
@@ -576,11 +577,12 @@ const TableList: React.FC = () => {
                     </Col>
 
                     <Col span={24} >
-                        <ProFormText
+                        <ProFormSelect
                             label={"Bậc lương"}
                             // width='md'
-                            name='bacLuong'
+                            name='bacLuongId'
                             placeholder={`Bậc lương`}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,

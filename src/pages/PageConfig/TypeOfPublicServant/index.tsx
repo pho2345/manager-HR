@@ -295,7 +295,7 @@ const TableList: React.FC = () => {
             valueType: 'indexBorder',
         },
         {
-            title: "Tên loại công chức",
+            title: "Tên loại viên chức",
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -442,7 +442,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo mới loại công chức"}
+                title={"Tạo mới loại viên chức"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -472,10 +472,10 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={"Tên loại công chức"}
+                            label={"Tên loại viên chức"}
                             // width='md'
                             name='name'
-                            placeholder={`Tên loại công chức`}
+                            placeholder={`Tên loại viên chức`}
                             rules={[
                                 {
                                     required: true,
@@ -503,7 +503,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật loại công chức"}
+                title={"Cập nhật loại viên chức"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -534,13 +534,13 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={"Tên loại công chức"}
+                            label={"Tên loại viên chức"}
                             name='name'
-                            placeholder={`Tên loại công chức`}
+                            placeholder={`Tên loại viên chức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Tên loại công chức"
+                                    message: "Tên loại viên chức"
                                 },
                             ]} />
 

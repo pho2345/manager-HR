@@ -22,7 +22,7 @@ const configDefaultText = configText;
 
 const TableList: React.FC = () => {
 
-    const collection = `${SERVER_URL_CONFIG}/nhom-vien-chuc`;
+    const collection = `${SERVER_URL_CONFIG}/nhom-cong-chuc`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -295,7 +295,7 @@ const TableList: React.FC = () => {
             valueType: 'indexBorder',
         },
         {
-            title: "Tên nhóm viên chức",
+            title: "Tên nhóm công chức",
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -314,7 +314,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.loaiVienChucLoai}</>
+                    <> {entity?.loaiCongChucLoai}</>
                 );
             },
             width: '30vh',
@@ -441,7 +441,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={"Tạo mới nhóm viên chức"}
+                title={"Tạo mới nhóm công chức"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -471,10 +471,10 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={"Tên nhóm viên chức"}
+                            label={"Tên nhóm công chức"}
                             // width='md'
                             name='name'
-                            placeholder={`Tên nhóm viên chức`}
+                            placeholder={`Tên nhóm công chức`}
                             rules={[
                                 {
                                     required: true,
@@ -502,7 +502,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={"Cập nhật nhóm viên chức"}
+                title={"Cập nhật nhóm công chức"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -533,13 +533,13 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={"Tên nhóm viên chức"}
+                            label={"Tên nhóm công chức"}
                             name='name'
-                            placeholder={`Tên nhóm viên chức`}
+                            placeholder={`Tên nhóm công chức`}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Tên nhóm viên chức"
+                                    message: "Tên nhóm công chức"
                                 },
                             ]} />
 

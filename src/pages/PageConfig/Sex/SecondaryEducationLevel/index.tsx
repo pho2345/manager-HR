@@ -448,7 +448,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get('/trinh-do-giao-duc-pho-thong')}
+                request={async () => get(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong`)}
 
                 pagination={{
                     locale: {
@@ -467,8 +467,8 @@ const TableList: React.FC = () => {
                     return renderTableAlert(selectedRowKeys);
                 }}
 
-                tableAlertOptionRender={({ selectedRows }: any) => {
-                    return renderTableAlertOption(selectedRows)
+                tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+                    return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, )
                 }}
             />
 

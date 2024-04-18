@@ -20,7 +20,11 @@ export default {
 'menu.Cấu hình.menu.relationship': 'Mối quan hệ',
 'menu.Cấu hình.menu.allowanceType': 'Loại phụ cấp',
 'menu.Cấu hình.menu.typeOfPublicServant': 'Loại công chức',
-'menu.Cấu hình.menu.civilServantGroup': 'Nhóm viên chức',
+'menu.Cấu hình.menu.civilServantGroup': 'Nhóm công chức',
+'menu.Cấu hình.menu.numberSalaryCivilServant': 'Hệ số lương công chức',
+'menu.Cấu hình.menu.typeOfOfficials': 'Loại viên chức',
+'menu.Cấu hình.menu.groupOfOfficials': 'Nhóm viên chức',
+'menu.Cấu hình.menu.numberSalaryOfficials': 'Hệ số lương viên chức',
 
 
 'menu.Cấu hình.menu.jobPosition': 'Vị trí việc làm',

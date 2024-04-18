@@ -78,9 +78,9 @@ export const getOption = async (url: string, getValue: string, getLabel: string)
 
 
 export const handleAdd = async (fields: any, collection: string, date: boolean = false) => {
-
+  const hide = message.loading('Đang thêm...');
   try {
-    const hide = message.loading('Đang thêm...');
+    
     const data = date ? {
       ...fields,
       batDau: moment(fields.batDau).toISOString(),
@@ -97,6 +97,7 @@ export const handleAdd = async (fields: any, collection: string, date: boolean =
 
     return true;
   } catch (error: any) {
+    hide();
     message.error("Thêm thất bại");
     return false;
   }
@@ -124,7 +125,6 @@ export const handleAdd2 = async (fields: any, collection: string, date: boolean 
     return true;
   } catch (error: any) {
     hide();
-
     message.error("Thêm thất bại");
     return false;
   }

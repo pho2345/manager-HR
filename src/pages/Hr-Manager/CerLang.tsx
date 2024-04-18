@@ -24,7 +24,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = '/nhan-vien/ngoai-ngu';
+    const collection = `${SERVER_URL_CONFIG}/nhan-vien/ngoai-ngu`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -656,7 +656,7 @@ const TableList: React.FC = () => {
                             <ProFormSelect fieldProps={{
                                 mode: 'multiple'
                             }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Cán bộ" request={async () => {
-                                const nv = await get('/nhan-vien/so-yeu-ly-lich');
+                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
                                 let dataOptions = [] as any;
                                 if (nv) {
                                     nv.data?.map(e => {

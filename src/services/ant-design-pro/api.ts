@@ -343,7 +343,7 @@ export async function patch(subSolder: string, body: object) {
 }
 
 export async function deletes(subSolder: string) {
-  const fetchData = await request<any>(SERVERURL + subSolder, {
+  const fetchData = await request<any>(subSolder, {
     method: 'delete',
     headers: {
       'Content-Type': 'application/json',

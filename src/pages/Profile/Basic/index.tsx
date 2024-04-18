@@ -159,7 +159,7 @@ const TableList: React.FC = () => {
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const [religion, setReligion] = useState<GEN.Option[]>([]);
+  const [religion, setReligion] = useState<GEN.Option[]>([]); name
   const [sex, setSex] = useState<GEN.Option[]>([]);
   const [membership, setMembership] = useState<GEN.Option[]>([]);
   const [position, setPosition] = useState<GEN.Option[]>([]);
@@ -168,14 +168,10 @@ const TableList: React.FC = () => {
   const [secondaryEducationLevel, setSecondaryEducationLevel] = useState<GEN.Option[]>([]);
   const [professionalLevel, setProfessionalLevel] = useState<GEN.Option[]>([]);
   const [stateRank, setStateRank] = useState<GEN.Option[]>([]);
-  const [academicDegrees, setAcademicDegrees] = useState<GEN.Option[]>([]);
-  const [militaryRanks, setMilitaryRanks] = useState<GEN.Option[]>([]);
   const [officer, setOfficer] = useState<GEN.Option[]>([]);
   const [civilServant, setCivilServant] = useState<GEN.Option[]>([]);
   const [organ, setOrgan] = useState<GEN.Option[]>([]);
-  const [jobPosition, setJobPosition] = useState<GEN.Option[]>([]);
-  const [rankCommunistParty, setRankCommunistParty] = useState<GEN.Option[]>([]);
-  const [checkOfficer, setCheckOfficer] = useState<boolean>(false);
+  const [checkOfficer, setCheckOfficer] = useState<boolean>(true);
 
   const formRef = useRef<ProFormInstance>();
 
@@ -184,6 +180,11 @@ const TableList: React.FC = () => {
     const getValues = async () => {
       try {
         getProfile(setProfile, setLoading);
+        const getofficer = await getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc`, 'ma', 'name');
+        const getcivilServant = await getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name');
+
+        setOfficer(getofficer);
+        setCivilServant(getcivilServant)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -310,25 +311,67 @@ const TableList: React.FC = () => {
               <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>{profile?.hoVaTen ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>{profile?.cacTenGoiKhac ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{moment(profile?.sinhNgay).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{moment(profile?.sinhNgay).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{profile?.gioiTinh ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>{profile?.soCCCD ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{moment(profile?.ngayCapCCCD).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danToc ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{moment(profile?.ngayCapCCCD).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danTocName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={`Tôn giáo`}>{profile?.tonGiaoName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}>{profile?.noiSinh ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}>{profile?.queQuan ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}>{profile?.soDienThoai ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}>{profile?.soBHXH ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}>{profile?.soBHYT ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}>{profile?.noiOHienNay ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={`Thành phần gia đình xuất thân`}>{profile?.thanhPhanGiaDinhName ?? ""}</Descriptions.Item>
+
                 <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.sucKhoe?.chieuCao ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.sucKhoe?.canNang ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.sucKhoe?.nhomMau ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Tình trạng sức khỏe"}>{profile?.sucKhoe.tinhTrangSucKhoe ?? ""}</Descriptions.Item>
               </Descriptions>
             </ProCard>
+            <ProCard title={"Nghề nghiệp trước"} type="inner" headerBordered
+              collapsible
+              defaultCollapsed
+              bodyStyle={{
+                fontWeight: 'bolder'
+              }}>
+              <Descriptions column={3} style={{ marginBlockEnd: 0 }} >
+                <Descriptions.Item label={"Nghề nghiệp trước khi được tuyển dụng"}>{profile?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{moment(profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Cơ quan, tổ chức, đơn vị tuyển dụng"}>{""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày vào cơ quan hiện đang công tác"}>{profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày vào Đảng Cộng sản Việt Nam"}>{moment(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày chính thức"}>{moment(profile?.thongTinTuyenDung?.ngayChinhThuc).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+              </Descriptions>
+            </ProCard>
+
+
+            <ProCard title={"Học vấn"} type="inner" headerBordered
+              collapsible
+              defaultCollapsed
+              bodyStyle={{
+                fontWeight: 'bolder'
+              }}>
+              <Descriptions column={3} style={{ marginBlockEnd: 0 }} title={"Thông tin nhập ngũ"}>
+                <Descriptions.Item label={"Ngày nhập ngũ"}>{moment(profile?.quanSu.ngayNhapNgu).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày xuất ngũ"}>{moment(profile?.quanSu.ngayXuatNgu).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Quân hàm cao nhất"}>{profile?.quanSu.capBacLoaiQuanHamQuanDoiName ?? ""}</Descriptions.Item>
+              </Descriptions>
+
+              <Descriptions column={3} style={{ marginBlockEnd: 0 }} title={"Học vấn"}>
+                <Descriptions.Item label={"Đối tượng chính sách"}>{profile?.doiTuongChinhSachName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Trình độ giáo dục phổ thông"}>{profile?.hocVan.trinhDoGiaoDucPhoThongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Trình độ chuyên môn cao nhất"}>{profile?.hocVan.trinhDoChuyenMonName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Học hàm"}>{profile?.hocVan.hocHamName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Danh hiệu nhà nước phong tặng"}>{profile?.hocVan.danhHieuNhaNuocPhongTangName ?? ""}</Descriptions.Item>
+              </Descriptions>
+            </ProCard>
+
+
             <ProCard
-              title={<FormattedMessage id="page.profile.card.tilte.job" defaultMessage="Biên chế, chức vụ, Ngạch, Bậc" />}
+              title={<FormattedMessage id="page.profile.card.tilte.job" defaultMessage="Chức vụ" />}
               headerBordered
               collapsible
               defaultCollapsed
@@ -337,98 +380,70 @@ const TableList: React.FC = () => {
               }}
             >
 
-              <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.ngach?.ngachId ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngach?.ngachName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngach?.ngayBoNhiemNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.ngach?.heSo ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongLuongNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.ngach?.phanTramHuongLuongNgach ?? 0} %</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.ngach?.phuCapThamNienVuotKhungNgach ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongPCTNVKNgach).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-
-              </Descriptions>
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Chức vụ"}>
                 <Descriptions.Item label={"Chức vụ hiện tại"}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{moment(profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày chính thức"}>{moment(profile?.thongTinTuyenDung?.ngayChinhThuc).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}>{profile?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}>{profile?.chucVu?.coQuanToChucDonViTuyenDungName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}>{moment(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.).format('DD/MM/YYYY') ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.chucVu.ngayBoNhiemLai).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.chucVuKiemNhiemName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{moment(profile?.chucVu.ngayBoNhiem).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{moment(profile?.chucVu.ngayBoNhiemLai).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.chucVu?.duocQuyHoacChucDanh ?? ""}</Descriptions.Item>
-
+                <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.chucVuKiemNhiemName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTaiName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}>{profile?.chucVuDangKiemNhiemName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}>{profile?.thongTinTuyenDung?.congViecChinhDuocGiao ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính được giao" />}>{profile?.thongTinTuyenDung?.congViecChinhDuocGiao ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.thongTinTuyenDung?.soTruongCongTac ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.thongTinTuyenDung?.congViecLamLauNhat ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.tienLuong ?? ""}</Descriptions.Item>
               </Descriptions>
 
-
-
-
-            </ProCard>
-
-            <ProCard
-              title="Lương, phụ cấp"
-              bordered
-              headerBordered
-              collapsible
-              defaultCollapsed
-
-            >
-              <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Lương"}>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.salary" defaultMessage="Tiền lương" />}>{profile?.tienLuong ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePosition" defaultMessage="Phụ cấp chức vụ" />}>{profile?.chucVu.phuCapChucVu ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceChargePosition" defaultMessage="Phụ cấp kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.phuCapKiemNhiem ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowanceOther" defaultMessage="Phụ cấp khác" />}>{profile?.chucVuKiemNhiem?.phuCapKhac ?? ""}</Descriptions.Item>
-
-
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.salaryMoney" defaultMessage="Lương" />}>{profile?.luongTheoMucTien ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryWorkSpace" defaultMessage="Ngày hưởng lương" />}>{moment(profile?.viecLam?.ngayHuongLuongViTriViecLam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-
-                <Descriptions.Item label={<FormattedMessage id="page.profile.percentSalaryWorkSpace" defaultMessage="Phần trăm hưởng lương" />}>{profile?.viecLam?.phamTramHuongLuong ?? ""}%</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePass" defaultMessage="Phụ cấp vượt khung" />}>{profile?.viecLam?.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dadteGetSalaryAllowancePass" defaultMessage="Ngày hưởng phụ cấp vượt khung" />}>{moment(profile?.viecLam?.ngayHuongPCTNVK).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
+              <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngach?.ngachName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.ngach?.ngachId ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngach?.ngayBoNhiemNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Bậc lương ngạch nghề nghiệp" />}>{profile?.ngach?.bacLuongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.ngach?.heSo ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongLuongNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.ngach?.phanTramHuongLuongNgach ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.ngach?.phuCapThamNienVuotKhungNgach ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongPCTNVKNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
               </Descriptions>
 
-              <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Việc làm"}>
+              <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Vị trí việc làm"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.workplace" defaultMessage="Vị trí việc làm" />}>{profile?.viecLam?.viTriViecLamName ?? ""}</Descriptions.Item>
-                {/* <Descriptions.Item label={<FormattedMessage id="page.profile.codeWorkplace" defaultMessage="Mã số vị trí việc làm" />}>{profile?.maSoViTriViecLam ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.rankSalaryWorkSpace" defaultMessage="Bậc lương trí việc làm" />}>{profile?.viecLam?.bacLuongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Mã số"}>{profile?.viecLam.viTriViecLamId ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Bậc lương"}>{profile?.viecLam.bacLuongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Lương theo mức tiền"}>{profile?.viecLam.tienLuong ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày hưởng"}>{moment(profile?.viecLam.ngayHuongLuongViTriViecLam).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Phần trăm hưởng"}>{profile?.viecLam.ngayHuongLuongViTriViecLam ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={"Phụ cấp thâm niên vượt khung"}>{profile?.viecLam.phuCapThamNienVuotKhung ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={"Ngày hưởng PCTNVK"}>{moment(profile?.viecLam.ngayHuongPCTNVK).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+
+
+                <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.ngach?.ngachId ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{moment(profile?.ngach?.ngayBoNhiemNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Bậc lương ngạch nghề nghiệp" />}>{profile?.ngach?.bacLuongName ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.ngach?.heSo ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongLuongNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.percentGetSalaryQuotaCareer" defaultMessage="Phần trăm hưởng lương ngạch nghề nghiệp" />}>{profile?.ngach?.phanTramHuongLuongNgach ?? 0} %</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.allowancePassQuotaCareer" defaultMessage="Phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.ngach?.phuCapThamNienVuotKhungNgach ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{moment(profile?.ngach?.ngayHuongPCTNVKNgach).format(FORMAT_DATE) ?? ""}</Descriptions.Item>
               </Descriptions>
 
+
             </ProCard>
+
             <ProCard
               bordered
-              title="Thông tin khác"
+              title="Sức khỏe"
               headerBordered
               collapsible
               defaultCollapsed
             >
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Lưởng"}>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}>{moment(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}>{moment(profile?.quanSu.ngayNhapNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}>{moment(profile?.quanSu.ngayXuatNgu).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}>{profile?.doiTuongChinhSach ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}>{moment(profile?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien).format('DD/MM/YYYY') ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}>{profile?.hocVan?.trinhDoGiaoDucPhoThongName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}>{profile?.hocVan?.trinhDoChuyenMonName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}>{profile?.hocVan?.danhHieuNhaNuocPhongTangName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}>{profile?.quanSu?.capBacLoaiQuanHamQuanDoiName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}>{profile?.hocVan?.hocHamName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}>{profile?.thanhPhanGiaDinhName ?? ""}</Descriptions.Item>
-              </Descriptions>
+                <Descriptions.Item label={'Tình trạng sức khoẻ'}>{profile?.sucKhoe.tinhTrangSucKhoe}</Descriptions.Item>
+                <Descriptions.Item label={'Chiều cao (cm)'}>{profile?.sucKhoe.chieuCao ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={'Cân nặng (kg)'}>{profile?.sucKhoe.canNang ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={'Nhóm máu'}>{profile?.sucKhoe.nhomMauName ?? ""}</Descriptions.Item>
 
+              </Descriptions>
             </ProCard>
           </div>
 
@@ -484,7 +499,6 @@ const TableList: React.FC = () => {
                   style={{
                     width: '70vh'
                   }}
-
                 >
                   {dom}
                 </Modal>
@@ -509,7 +523,7 @@ const TableList: React.FC = () => {
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0" >
                   <ProFormText
-                    name="hovaten"
+                    name="hoVaTen"
                     label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}
                     placeholder={configDefaultText["page.listCow.column.name"]}
                     rules={[
@@ -801,15 +815,17 @@ const TableList: React.FC = () => {
                         width: "100%"
                       },
                     }}
-                    options={checkOfficer ? civilServant : officer}
-                    request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/bac-ngach/ngach-vien-chuc`, 'id', 'name') : getOption(`${SERVER_URL_CONFIG}/bac-ngach/ngach-cong-chuc`, 'id', 'name')}
+                    showSearch
+                    options={!checkOfficer ? officer : civilServant}
+                  
+                    // request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc`, 'ma', 'name') : getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name')}
 
                   />
                 </Col>
 
                 <Col span={12} className="gutter-row p-0 w-full">
                   <ProFormDatePicker
-                    name="ngayBoNhiemNgachNgheNghiep"
+                    name="ngayBoNhiemNgach"
                     label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}
                     placeholder={"Ngày bổ nhiệm ngạch"}
                     fieldProps={{
@@ -829,7 +845,7 @@ const TableList: React.FC = () => {
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0 w-full" >
                   <ProFormDatePicker
-                    name="ngayHuongLuongNgachNgheNghiep"
+                    name="ngayHuongLuongNgach"
                     label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
                     placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
                     rules={[
@@ -1105,6 +1121,68 @@ const TableList: React.FC = () => {
                 }
                 const data = {
                   ...dateAll,
+                  thongTinTuyenDung: {
+                    ngheNghiepTruocKhiTuyenDung: dateAll.ngheNghiepTruocKhiTuyenDung,
+                    ngayDuocTuyenDungLanDau: moment(dateAll.ngayDuocTuyenDungLanDau).toISOString(),
+                    ngayVaoCoQuanHienDangCongTac: moment(dateAll.ngayVaoCoQuanHienDangCongTac).toISOString(),
+                    ngayVaoDangCongSanVietNam: moment(dateAll.ngayVaoDangCongSanVietNam).toISOString(),
+                    ngayChinhThuc: moment(dateAll.ngayChinhThuc).toISOString(),
+                    ngayThamGiaToChucChinhTriXaHoiDauTien: moment(dateAll.ngayThamGiaToChucChinhTriXaHoiDauTien).toISOString(),
+                    congViecChinhDuocGiao: dateAll.congViecChinhDuocGiao,
+                    soTruongCongTac: dateAll.soTruongCongTac,
+                    congViecLamLauNhat: dateAll.congViecLamLauNhat,
+                  },
+                  quanSu: {
+                    ngayNhapNgu: moment(dateAll.ngayNhapNgu).toISOString(),
+                    ngayXuatNgu: moment(dateAll.ngayXuatNgu).toISOString(),
+                    capBacLoaiQuanHamQuanDoi: dateAll.capBacLoaiQuanHamQuanDoi,
+                  },
+                  hocVan: {
+                    trinhDoGiaoDucPhoThong: dateAll.trinhDoGiaoDucPhoThong,
+                    trinhDoChuyenMon: dateAll.trinhDoChuyenMon,
+                    hocHam: dateAll.hocHam,
+                    danhHieuNhaNuocPhongTang: dateAll.danhHieuNhaNuocPhongTang,
+                  },
+                  chucVu: {
+                    chucVuHienTaiId: dateAll.chucVuHienTai,
+                    ngayBoNhiem: moment(dateAll.ngayBoNhiem).toISOString(),
+                    ngayBoNhiemLai: moment(dateAll.ngayBoNhiemLai).toISOString(),
+                    duocQuyHoacChucDanh: dateAll.duocQuyHoacChucDanh,
+                    phuCapChucVu: dateAll.phuCapChucVu,
+                    coQuanToChucDonViTuyenDungId: dateAll.coQuanToChucDonViTuyenDung,
+                  },
+
+                  chucVuKiemNhiem: {
+                    chucVuKiemNhiemId: dateAll.chucVuDangKiemNhiem,
+                    ngayBoNhiem: moment(dateAll.ngayBoNhiem).toISOString(),
+                    phuCapKiemNhiem: dateAll.phuCapKiemNhiem,
+                    phuCapKhac: dateAll.phuCapKhac,
+                  },
+                  ngach: {
+                    ngachId: dateAll.ngachNgheNghiep,
+                    ngayBoNhiemNgach: moment(dateAll.ngayBoNhiemNgach).toISOString(),
+                    ngayHuongLuongNgach: moment(dateAll.ngayHuongLuongNgach).toISOString(),
+                    phanTramHuongLuongNgach: dateAll.phanTramHuongLuongNgach,
+                    phuCapThamNienVuotKhungNgach: dateAll.phuCapThamNienVuotKhungNgach,
+                    ngayHuongPCTNVKNgach: moment(dateAll.ngayHuongPCTNVKNgach).toISOString(),
+                  },
+                  viecLam: {
+                    viTriViecLamId: dateAll.viTriViecLam,
+                    ngayHuongLuongViTriViecLam: moment(dateAll.ngayHuongLuongViTriViecLam).toISOString(),
+                    phamTramHuongLuong: dateAll.phamTramHuongLuong,
+                    phuCapThamNienVuotKhung: dateAll.phuCapThamNienVuotKhung,
+                    ngayHuongPCTNVK: moment(dateAll.ngayHuongPCTNVK).toISOString(),
+                  },
+                  sucKhoe: {
+                    tinhTrangSucKhoe: dateAll.tinhTrangSucKhoe,
+                    chieuCao: dateAll.chieuCao,
+                    canNang: dateAll.canNang,
+                    nhomMau: dateAll.nhomMau,
+                  },
+
+                  
+
+
                   sinhNgay: moment(dateAll.sinhNgay).toISOString(),
                   ngayBoNhiem: moment(dateAll.ngayBoNhiem).toISOString(),
                   ngayBoNhiemLai: moment(dateAll.ngayBoNhiemLai).toISOString(),

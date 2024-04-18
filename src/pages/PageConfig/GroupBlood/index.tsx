@@ -22,7 +22,7 @@ const configDefaultText = configText;
 
 const TableList: React.FC = () => {
 
-    const collection = '/nhom-mau'
+    const collection = `${SERVER_URL_CONFIG}/nhom-mau`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -531,12 +531,7 @@ const TableList: React.FC = () => {
                         <ProFormSwitch
                             label={"Trạng thái"}
                             name='trangThai'
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Trạng thái"
-                                },
-                            ]} />
+                            />
                     </Col>
                 </Row>
             </ModalForm>

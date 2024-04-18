@@ -486,10 +486,8 @@ declare namespace GEN {
     trangThai?: boolean;
     update_at?: Date;
     tienLuong?: number;
-    bacLuong: {
-      id: number,
-      name: string
-    },
+    bacLuongId: number,
+    bacLuongName: string,
   }
 
   type TypeBonus = {
@@ -546,9 +544,12 @@ declare namespace GEN {
   type Employee = {
     id: number,
     hoVaTen: string,
-    sinhNgay: Date,
-    chucVuHienTai: string,
-    trinhDoChuyenMon: string,
+    danTocName: string,
+    gioiTinh: string,
+    soCCCD: string,
+    sinhNgay: string,
+    chucVuDangHienTaiName: string,
+    queQuan: string,
     ngachNgheNghiep: string,
     create_at: Date,
     update_at: Date,
@@ -565,16 +566,16 @@ declare namespace GEN {
     congViecChinhDuocGiao: string;
     soTruongCongTac: string;
     congViecLamLauNhat: string;
-}
+  }
 
-interface QuanSu {
+  interface QuanSu {
     ngayNhapNgu: string;
     ngayXuatNgu: string;
     capBacLoaiQuanHamQuanDoi: number;
     capBacLoaiQuanHamQuanDoiName: string;
-}
+  }
 
-interface HocVan {
+  interface HocVan {
     trinhDoGiaoDucPhoThong: number;
     trinhDoGiaoDucPhoThongName: string;
     trinhDoChuyenMon: number;
@@ -583,9 +584,9 @@ interface HocVan {
     hocHamName: string;
     danhHieuNhaNuocPhongTang: number;
     danhHieuNhaNuocPhongTangName: string;
-}
+  }
 
-interface ChucVu {
+  interface ChucVu {
     chucVuHienTaiId: number;
     chucVuHienTaiName: string;
     ngayBoNhiem: string;
@@ -595,18 +596,18 @@ interface ChucVu {
     coQuanToChucDonViTuyenDungId: number;
     coQuanToChucDonViTuyenDungName: string;
     hoSoId: string;
-}
+  }
 
-interface ChucVuKiemNhiem {
+  interface ChucVuKiemNhiem {
     chucVuKiemNhiemId: number;
     chucVuKiemNhiemName: string;
     ngayBoNhiem: string;
     phuCapKiemNhiem: number;
     phuCapKhac: number;
     hoSoId: string;
-}
+  }
 
-interface Ngach {
+  interface Ngach {
     ngachId: string;
     ngachName: string;
     heSoLuongId: number;
@@ -623,9 +624,9 @@ interface Ngach {
     phanTramHuongLuongNgach: number;
     phuCapThamNienVuotKhungNgach: number;
     ngayHuongPCTNVKNgach: string;
-}
+  }
 
-interface ViecLam {
+  interface ViecLam {
     viTriViecLamId: number;
     viTriViecLamName: string;
     bacLuongId: number;
@@ -635,15 +636,15 @@ interface ViecLam {
     phamTramHuongLuong: number;
     phuCapThamNienVuotKhung: number;
     ngayHuongPCTNVK: string;
-}
+  }
 
-interface SucKhoe {
+  interface SucKhoe {
     tinhTrangSucKhoe: string;
     chieuCao: number;
     canNang: number;
     nhomMau: number;
     nhomMauName: string;
-}
+  }
 
 
   type Profile = {
@@ -735,15 +736,30 @@ interface SucKhoe {
     update_at: string,
   }
 
+  type NumberSalaryCivilServant = {
+    "id": number,
+    "heSo": number,
+    "bacLuongId": number,
+    "bacLuongName": string,
+    "nhomCongChucId": number,
+    "nhomCongChucName": string,
+  }
+
   type CivilServantGroup = {
     id: number,
     name: string,
-    loaiVienChucId: number,
-    loaiVienChucLoai: string,
+    loaiCongChucId: number,
+    loaiCongChucLoai: string,
     create_at: string,
     update_at: string,
   }
 
+
+  type TypeOfOfficials = {
+    id: number,
+    name: string,
+    loai: string,
+  }
 
 
   type GoOnBussiness = {
@@ -755,6 +771,23 @@ interface SucKhoe {
     loaiSoYeuLyLichChiTiet: sring
     create_at: string,
     update_at: string
+  }
+
+  type GroupOfOfficials = {
+    id: number,
+    "name": string,
+    "loaiVienChucId": number,
+    "loaiVienChucLoai": string,
+    "create_at": string,
+  }
+
+  type NumberSalaryOfficials = {
+    "id": number,
+    "heSo": number,
+    "bacLuongId": number,
+    "bacLuongName": string,
+    "nhomVienChucId": number,
+    "nhomVienChucName": string,
   }
 
   type OtherAllowance = {
@@ -993,4 +1026,12 @@ interface SucKhoe {
     create_at: string
     update_at: string
   }
+
+  type AddBonus = {
+    actionRef: any;
+    createModalOpen: boolean;
+    handleModalOpen: function;
+    id: string;
+  }
 }
+

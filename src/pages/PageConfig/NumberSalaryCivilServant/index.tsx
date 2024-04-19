@@ -358,7 +358,7 @@ const TableList: React.FC = () => {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         nhom: getRecordCurrent.data.nhomCongChucId,
-                                        bacLuong: getRecordCurrent.data.bacLuongName,
+                                        bacLuong: getRecordCurrent.data.bacLuongId,
                                         heSo: getRecordCurrent.data.heSo,
                                     })
                                 }
@@ -426,7 +426,7 @@ const TableList: React.FC = () => {
 
 
 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -485,7 +485,7 @@ const TableList: React.FC = () => {
                             // width='md'
                             name='bacLuong'
                             placeholder={`Bậc lương`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong?page=0&size=100`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,
@@ -514,7 +514,7 @@ const TableList: React.FC = () => {
                             // width='md'
                             name='nhom'
                             placeholder={`Nhóm công chức`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/nhom-cong-chuc`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/nhom-cong-chuc?page=0&size=100`, 'id', 'name')}
                         />
                     </Col>
                 </Row>
@@ -558,7 +558,7 @@ const TableList: React.FC = () => {
                             // width='md'
                             name='bacLuong'
                             placeholder={`Bậc lương`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong?page=0&size=100`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,
@@ -587,7 +587,7 @@ const TableList: React.FC = () => {
                             // width='md'
                             name='nhom'
                             placeholder={`Nhóm công chức`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/nhom-cong-chuc`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/nhom-cong-chuc?page=0&size=100`, 'id', 'name')}
                         />
                     </Col>
                 </Row>

@@ -416,7 +416,7 @@ const TableList: React.FC = () => {
 
 
 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -488,7 +488,7 @@ const TableList: React.FC = () => {
                             label={"Loại"}
                             // width='md'
                             name='loai'
-                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-vien-chuc`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-vien-chuc?page=0&size=100`, 'id', 'name')}
                             placeholder={`Loại`}
                             rules={[
                                 {
@@ -549,7 +549,7 @@ const TableList: React.FC = () => {
                             label={"Loại"}
                             // width='md'
                             name='loai'
-                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-vien-chuc`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-vien-chuc?page=0&size=100`, 'id', 'name')}
                             placeholder={`Loại`}
                             rules={[
                                 {

@@ -59,7 +59,7 @@ const TableList: React.FC = () => {
         const getValues = async () => {
             try {
                 const dataQueries = [
-                    { query: `${SERVER_URL_CONFIG}/coquan-tochuc-donvi`, setFunction: setOrgan },
+                    { query: `${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, setFunction: setOrgan },
                 ];
 
                 for (const { query, setFunction } of dataQueries) {

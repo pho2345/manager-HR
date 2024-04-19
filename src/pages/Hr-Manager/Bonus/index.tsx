@@ -16,7 +16,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
+import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXepLoaiChuyenMon, mapXepLoaiThiDua } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -320,17 +320,7 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('xepLoaiChuyenMon')
         },
-        {
-            title: "Ngày sinh",
-            key: 'sinhNgay',
-            dataIndex: 'sinhNgay',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
-                );
-            },
-        },
+       
         {
             title: "Xếp loại chuyên môn",
             key: 'xepLoaiChuyenMon',
@@ -338,7 +328,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.xepLoaiChuyenMon}</>
+                    <> {mapXepLoaiChuyenMon(entity?.xepLoaiChuyenMon)}</>
                 );
             },
             ...getColumnSearchProps('xepLoaiChuyenMon')
@@ -351,7 +341,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.xepLoaiThiDua}</>
+                    <> {mapXepLoaiThiDua(entity?.xepLoaiThiDua)}</>
                 );
             },
             ...getColumnSearchProps('xepLoaiThiDua')
@@ -364,7 +354,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hinhThucKhenThuong}</>
+                    <> {entity?.hinhThucKhenThuongName}</>
                 );
             },
             ...getColumnSearchProps('hinhThucKhenThuong')

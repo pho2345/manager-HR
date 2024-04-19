@@ -306,17 +306,17 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('name')
         },
-        {
-            title: "Trạng thái",
-            key: 'trangThai',
-            dataIndex: 'trangThai',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-        },
+        // {
+        //     title: "Trạng thái",
+        //     key: 'trangThai',
+        //     dataIndex: 'trangThai',
+        //     render: (_, entity) => {
+        //         ;
+        //         return (
+        //             <Switch disabled checked={entity.trangThai} />
+        //         );
+        //     },
+        // },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
@@ -414,7 +414,7 @@ const TableList: React.FC = () => {
 
 
                 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -527,7 +527,7 @@ const TableList: React.FC = () => {
                                 },
                             ]} />
 
-                        <ProFormSwitch
+                        {/* <ProFormSwitch
                             label={"Trạng thái"}
                             name='trangThai'
                             rules={[
@@ -535,7 +535,7 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: "Trạng thái"
                                 },
-                            ]} />
+                            ]} /> */}
                     </Col>
                 </Row>
             </ModalForm>

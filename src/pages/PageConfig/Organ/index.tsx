@@ -311,17 +311,17 @@ const update = async (value: any) => {
                 );
             },
         },
-        {
-            title: 'Trạng thái',
-            key: 'status',
-            dataIndex: 'status',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-        },
+        // {
+        //     title: 'Trạng thái',
+        //     key: 'status',
+        //     dataIndex: 'status',
+        //     render: (_, entity) => {
+        //         ;
+        //         return (
+        //             <Switch disabled checked={entity.trangThai} />
+        //         );
+        //     },
+        // },
 
         {
             title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
@@ -413,7 +413,7 @@ const update = async (value: any) => {
 
 
 
-                request={async () => get(collection)}
+                request={async () =>  get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],

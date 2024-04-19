@@ -3,21 +3,12 @@ import {
   getCustome,
   patch,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
 import {
-  ActionType,
-  ProColumns,
-  ProDescriptionsItemProps,
   ProFormDatePicker,
-  ProFormDigit,
   ProFormSelect,
-  ProFormTextArea,
-  ProFormUploadButton,
-  ModalForm,
   PageContainer,
   ProDescriptions,
   ProFormText,
-  ProTable,
   ProCard,
   StepsForm,
   ProFormSwitch,
@@ -180,8 +171,8 @@ const TableList: React.FC = () => {
     const getValues = async () => {
       try {
         getProfile(setProfile, setLoading);
-        const getofficer = await getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc`, 'ma', 'name');
-        const getcivilServant = await getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name');
+        const getofficer = await getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc?page=0&size=100`, 'ma', 'name');
+        const getcivilServant = await getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc?page=0&size=100`, 'ma', 'name');
 
         setOfficer(getofficer);
         setCivilServant(getcivilServant)
@@ -446,27 +437,6 @@ const TableList: React.FC = () => {
               </Descriptions>
             </ProCard>
           </div>
-
-
-          {/* <AddNew display={visible} onChangeDisplay={onCloseModalAdd}
-            religion={religion}
-            groupBlood={groupBlood}
-            membership={membership}
-            militaryRanks={militaryRanks}
-            policyObject={policyObject}
-            position={position}
-            professionalLevel={professionalLevel}
-            secondaryEducationLevel={secondaryEducationLevel}
-            stateRank={stateRank}
-            sex={sex}
-            academicDegrees={academicDegrees}
-            profile={profile}
-            civilServant={civilServant}
-            officer={officer}
-            organ={organ}
-            jobPosition={jobPosition}
-            rankCommunistParty={rankCommunistParty}
-          /> */}
 
 
           <StepsForm<{
@@ -764,7 +734,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -818,7 +788,7 @@ const TableList: React.FC = () => {
                     showSearch
                     options={!checkOfficer ? officer : civilServant}
                   
-                    // request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc`, 'ma', 'name') : getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name')}
+                    // request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc?page=0&size=100`, 'ma', 'name') : getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name')}
 
                   />
                 </Col>
@@ -900,7 +870,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
                     options={organ}
                   />
 
@@ -917,7 +887,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Chức vụ hiện tại" },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -934,7 +904,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Vị trí việc làm" },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/vi-tri-viec-lam`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -1022,7 +992,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1047,7 +1017,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -1062,7 +1032,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
 
                   />
                 </Col>
@@ -1323,7 +1293,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
                     ]}
 
-                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon`, 'id', 'name')}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 

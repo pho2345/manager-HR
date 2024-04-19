@@ -312,17 +312,17 @@ const TableList: React.FC = () => {
                 );
             },
         },
-        {
-            title: 'Trạng thái',
-            key: 'trangThai',
-            dataIndex: 'trangThai',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-        },
+        // {
+        //     title: 'Trạng thái',
+        //     key: 'trangThai',
+        //     dataIndex: 'trangThai',
+        //     render: (_, entity) => {
+        //         ;
+        //         return (
+        //             <Switch disabled checked={entity.trangThai} />
+        //         );
+        //     },
+        // },
 
         {
             title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
@@ -413,7 +413,7 @@ const TableList: React.FC = () => {
 
 
 
-                request={async () => get(collection)}
+                request={async () =>  get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -479,14 +479,14 @@ const TableList: React.FC = () => {
                             ]} />
                     </Col>
 
-                    <Col span={24} >
+                    {/* <Col span={24} >
                         <ProFormSwitch
                             label={"Trạng thái"}
                             // width='md'
                             name='trangThai'
                             placeholder={`Trạng thái`}
                            />
-                    </Col>
+                    </Col> */}
                 </Row>
 
 
@@ -536,14 +536,14 @@ const TableList: React.FC = () => {
                             ]} />
                     </Col>
 
-                    <Col span={24} >
+                    {/* <Col span={24} >
                         <ProFormSwitch
                             label={"Trạng thái"}
                             // width='md'
                             name='trangThai'
                             placeholder={`Trạng thái`}
                            />
-                    </Col>
+                    </Col> */}
                 </Row>
             </ModalForm>
 

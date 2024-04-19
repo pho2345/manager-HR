@@ -1,4 +1,3 @@
-import { get } from '@/services/ant-design-pro/api';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -14,22 +13,12 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { renderTableAlert, renderTableAlertOption } from '@/services/utils';
-import { FormattedMessage } from '@umijs/max';
+import { handleAdd, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { FormattedMessage, request } from '@umijs/max';
+import { getCustome, post } from '@/services/ant-design-pro/api';
 const configDefaultText = configText;
 
-const handleAdd = async (fields: API.RuleListItem) => {
-    const hide = message.loading('Đang thêm...');
-    try {
-        hide();
-        message.success('Thêm thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
+
 
 
 const handleUpdate = async (fields: any, id: any) => {
@@ -66,21 +55,39 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 
+export async function get(url: string) {
+    const fetchData = await request<any>(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+    });
+
+    return {
+        total: fetchData && fetchData?.data.length,
+        success: fetchData && true,
+        data: fetchData.data
+    }
+}
+
+
+
 const collection = `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`;
 const TableList: React.FC = () => {
+    const [search, setSearch] = useState<string>(``);
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    const [openWgs, setOpenWgs] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const refIdCateogry = useRef<any>();
-    const refNameCategory = useRef<any>();
+    const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [openAwg, setOpenAwg] = useState<boolean>(false);
+    const [user, setUser] = useState<GEN.Account[]>([]);
+
 
 
     const confirm = (entity: any) => {
@@ -350,6 +357,9 @@ const TableList: React.FC = () => {
         ,
     });
 
+   const add = async (data: any) => {
+    return await handleAdd(data, collection);
+   }
 
     const columns: ProColumns<GEN.Account>[] = [
         {
@@ -363,19 +373,11 @@ const TableList: React.FC = () => {
             dataIndex: 'name',
             render: (_, entity) => {
                 return (
-                    <> {entity?.hoVaten}</>
+                    <> {entity?.hoVaTen}</>
                 );
             },
             width: '30vh',
             ...getColumnSearchProps('name')
-        },
-        {
-            title: <FormattedMessage id="page.Account.table.numberIdentify" defaultMessage="Số CMND/CCCD" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => text?.soCCCD,
-            // ...getColumnSearchProps('name')
         },
 
         {
@@ -401,87 +403,21 @@ const TableList: React.FC = () => {
             title: <FormattedMessage id="page.Account.table.role" defaultMessage="Quyền" />,
             dataIndex: 'atrributes',
             valueType: 'textarea',
-            renderText: (_, text) => text?.username,
+            renderText: (_, text) => text?.role,
             // ...getColumnSearchProps('name')
         },
 
-
-        {
-            key: 'username',
-            title: <FormattedMessage id="page.Account.table.status" defaultMessage="Trạng thái" />,
-            dataIndex: 'atrributes',
-            valueType: 'textarea',
-            render: (_, text) => <Switch checked={text.trangThai} disabled/>,
-            // ...getColumnSearchProps('name')
-        },
 
         // {
-        //     title: <FormattedMessage id="page.Account.table.email" defaultMessage="Email" />,
+        //     key: 'username',
+        //     title: <FormattedMessage id="page.Account.table.status" defaultMessage="Trạng thái" />,
         //     dataIndex: 'atrributes',
         //     valueType: 'textarea',
-        //     key: 'option',
-        //     align: 'center',
-        //     render: (_, entity: any) => {
-
-        //         // const menu = (
-        //         //     <Menu>
-        //         //         <Menu.Item key="1"
-        //         //             onClick={() => {
-        //         //                 handleUpdateModalOpen(true);
-        //         //                 refIdCateogry.current = entity.id;
-        //         //                 form.setFieldsValue({
-        //         //                     code: entity?.attributes?.code,
-        //         //                     name: entity?.attributes?.name
-        //         //                 })
-        //         //             }}
-        //         //         >{configDefaultText['buttonUpdate']}</Menu.Item>
-
-        //         //         <Menu.Item key="2"
-        //         //             onClick={() => {
-        //         //                 setOpenWgs(true);
-        //         //                 refIdCateogry.current = entity.id;
-        //         //                 refNameCategory.current = entity.attributes.name;
-        //         //             }}
-        //         //         >Tăng trọng tiêu chuẩn</Menu.Item>
-
-        //         //         <Menu.Item key="2"
-        //         //             onClick={() => {
-        //         //                 setOpenAwg(true);
-        //         //                 refIdCateogry.current = entity.id;
-        //         //                 refNameCategory.current = entity.attributes.name;
-        //         //             }}
-        //         //         >Tăng trọng trung bình</Menu.Item>
-
-
-
-        //         //     </Menu>
-        //         // );
-        //         // return (
-        //         //     <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
-        //         //         <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()} >
-        //         //             {configDefaultText['handle']}
-        //         //         </a>
-        //         //     </Dropdown>
-        //         // );
-
-        //         return (
-        //             <Tooltip title={configDefaultText['buttonUpdate']}>
-        //                 <Button
-        //                     style={{
-        //                         border: 'none'
-        //                     }}
-
-        //                     onClick={async () => {
-        //                         handleUpdateModalOpen(true);
-        //                         // const cow = await customAPIGetOne(entity.id, 'cows/find', {});
-        //                         form.setFieldsValue({
-        //                         })
-        //                     }}
-        //                     icon={<MdOutlineEdit />}
-        //                 />
-        //             </Tooltip>)
-        //     }
+        //     render: (_, text) => <Switch checked={text.trangThai} disabled />,
+        //     // ...getColumnSearchProps('name')
         // },
+     
+       
     ];
 
 
@@ -492,6 +428,7 @@ const TableList: React.FC = () => {
         <PageContainer>
             <ProTable
                 actionRef={actionRef}
+
                 rowKey='id'
                 search={false}
                 options={
@@ -524,10 +461,27 @@ const TableList: React.FC = () => {
                                 actionRef.current.reload();
                             }
                         }
-                    }]
+                    }],
+
+                    search: {
+                        onSearch: async (value: string, e) => {
+                            actionRef.current?.reload();
+                            setSearch(value);
+                            // const data = await get(`${collection}/tim-kiem${value !== '' ? `?q=${value}` : ''}`);
+                            
+                            // setUser(data?.data);
+                        },
+                        placeholder: "Tìm kiếm",
+                    },
                 }}
 
-                request={async () => get(collection)} //TODO: lấy tinh-trang-suc-khoe
+                dataSource={user}
+
+                request={async () => {
+                    const data = await get(`${collection}${search !== '' ? `/tim-kiem?q=${search}` : ''}`);
+                    setUser(data?.data);
+                    return data;
+                }} //TODO: lấy tinh-trang-suc-khoe
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -538,8 +492,7 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{
-                }}
+                rowSelection={false}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -552,7 +505,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.HealthStatus.modal.titleCreate" defaultMessage="Create HealthStatus" />}
+                title={"Tạo mới tài khoản"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -562,7 +515,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await handleAdd(value as API.RuleListItem);
+                    const success = await add(value as API.RuleListItem);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -582,14 +535,41 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.HealthStatus.table.name" defaultMessage="Name" />}
+                            label={"Họ tên"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='hoVaTen'
+                            placeholder={`Họ tên`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.HealthStatus.require.name" defaultMessage="Name" />
+                                    message: "Họ tên"
+                                },
+                            ]} />
+                    </Col>
+                    <Col span={24} >
+                        <ProFormText
+                            label={"CCCD/CMND"}
+                            // width='md'
+                            name='soCCCD'
+                            placeholder={`CCCD/CMND`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "CCCD/CMND"
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Email"}
+                            // width='md'
+                            name='email'
+                            placeholder={`Email`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Email"
                                 },
                             ]} />
                     </Col>
@@ -597,7 +577,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.HealthStatus.modal.titleUpdate" defaultMessage="Update HealthStatus" />}
+                title={"Cập nhật tài khoản"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -608,7 +588,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCateogry);
+                    const success = await handleUpdate(values as any, refIdCurrent.current);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -628,14 +608,41 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.HealthStatus.table.name" defaultMessage="Name" />}
+                            label={"Họ tên"}
                             // width='md'
-                            name='name'
-                            placeholder={`Tên đối tượng`}
+                            name='hoVaTen'
+                            placeholder={`Họ tên`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.HealthStatus.require.name" defaultMessage="Name" />
+                                    message: "Họ tên"
+                                },
+                            ]} />
+                    </Col>
+                    <Col span={24} >
+                        <ProFormText
+                            label={"CCCD/CMND"}
+                            // width='md'
+                            name='soCCCD'
+                            placeholder={`CCCD/CMND`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "CCCD/CMND"
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={"Email"}
+                            // width='md'
+                            name='email'
+                            placeholder={`Email`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Email"
                                 },
                             ]} />
                     </Col>

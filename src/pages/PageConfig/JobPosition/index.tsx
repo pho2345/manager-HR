@@ -336,18 +336,6 @@ const TableList: React.FC = () => {
             },
         },
         {
-            title: 'Trạng thái',
-            key: 'trangThai',
-            dataIndex: 'trangThai',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-        },
-
-        {
             title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
@@ -377,7 +365,9 @@ const TableList: React.FC = () => {
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        name: getRecordCurrent.data.name,
+                                        bacLuong: getRecordCurrent.data.bacLuongId,
+                                        tienLuong: getRecordCurrent.data.tienLuong
                                     })
                                 }
 
@@ -433,7 +423,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get(collection)}
+                request={async () =>  get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -505,7 +495,7 @@ const TableList: React.FC = () => {
                             // width='md'
                             name='bacLuong'
                             placeholder={`Bậc lương`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong?page=0&size=100`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,
@@ -580,9 +570,9 @@ const TableList: React.FC = () => {
                         <ProFormSelect
                             label={"Bậc lương"}
                             // width='md'
-                            name='bacLuongId'
+                            name='bacLuong'
                             placeholder={`Bậc lương`}
-                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong`, 'id', 'name')}
+                            request={() => getOption(`${SERVER_URL_CONFIG}/bac-luong?page=0&size=100`, 'id', 'name')}
                             rules={[
                                 {
                                     required: true,

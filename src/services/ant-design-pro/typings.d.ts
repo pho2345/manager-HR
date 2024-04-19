@@ -308,19 +308,19 @@ declare namespace GEN {
 
 
   type ProfessionalKnowledge = {
-    "create_at": string,
-    "update_at": string,
-    "id": number,
-    "batDau": string,
-    "ketThuc": string,
-    "tenCoSoDaoTao": {
+    create_at: string,
+    update_at: string,
+    id: number,
+    batDau: string,
+    ketThuc: string,
+    tenCoSoDaoTao: {
 
-      "trangThai": boolean,
-      "id": number,
-      "name": string
+      trangThai: boolean,
+      id: number,
+      name: string
     },
-    "chungChiDuocCap": string,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN"
+    chungChiDuocCap: string,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN
   }
 
   type Option = {
@@ -340,12 +340,12 @@ declare namespace GEN {
 
   type Account = {
     id: number,
-    hoVaten: string,
+    hoVaTen: string,
     soCCCD: string,
     username: string,
     email: string,
     maSoYeuLyLich: string,
-    role: "ADMIN" | "EMPLOYEE",
+    role: 'ADMIN' | 'EMPLOYEE',
     trangThai: boolean
   }
 
@@ -375,12 +375,19 @@ declare namespace GEN {
   }
 
   type CivilServant = {
-    id?: number;
-    name?: string;
-    create_at?: Date;
-    update_at?: Date;
-    heSoLuongCongChuc?: number;
-    trangThai?: boolean;
+    ma: string,
+    name: string,
+    heSoLuongCongChucId: number,
+    nhomCongChucId: number,
+    nhomCongChucName: string,
+    loaiCongChucId: number,
+    loaiCongChucLoai: string,
+    loaiCongChucName: string,
+    bacLuongId: number,
+    bacLuongName: string,
+    heSo: number
+
+
   }
 
   type CivilServantRank = {
@@ -392,12 +399,17 @@ declare namespace GEN {
 
 
   type Officer = {
-    id?: number;
-    name?: string;
-    create_at?: Date;
-    update_at?: Date;
-    heSoLuongVienChuc?: number;
-    trangThai?: boolean;
+    ma: string,
+    name: string,
+    heSoLuongVienChucId: number,
+    nhomVienChucId: number,
+    nhomVienChucName: string,
+    loaiVienChucId: number,
+    loaiVienChucLoai:string,
+    loaiVienChucName:string,
+    bacLuongId: number,
+    bacLuongName: string,
+    heSo: number
   }
 
   type OfficerRank = {
@@ -737,12 +749,12 @@ declare namespace GEN {
   }
 
   type NumberSalaryCivilServant = {
-    "id": number,
-    "heSo": number,
-    "bacLuongId": number,
-    "bacLuongName": string,
-    "nhomCongChucId": number,
-    "nhomCongChucName": string,
+    id: number,
+    heSo: number,
+    bacLuongId: number,
+    bacLuongName: string,
+    nhomCongChucId: number,
+    nhomCongChucName: string,
   }
 
   type CivilServantGroup = {
@@ -775,19 +787,19 @@ declare namespace GEN {
 
   type GroupOfOfficials = {
     id: number,
-    "name": string,
-    "loaiVienChucId": number,
-    "loaiVienChucLoai": string,
-    "create_at": string,
+    name: string,
+    loaiVienChucId: number,
+    loaiVienChucLoai: string,
+    create_at: string,
   }
 
   type NumberSalaryOfficials = {
-    "id": number,
-    "heSo": number,
-    "bacLuongId": number,
-    "bacLuongName": string,
-    "nhomVienChucId": number,
-    "nhomVienChucName": string,
+    id: number,
+    heSo: number,
+    bacLuongId: number,
+    bacLuongName: string,
+    nhomVienChucId: number,
+    nhomVienChucName: string,
   }
 
   type OtherAllowance = {
@@ -884,12 +896,16 @@ declare namespace GEN {
     nam: number,
     xepLoaiChuyenMon: string
     xepLoaiThiDua: sring
-    hinhThucKhenThuong: string,
-    create_at: string
-    update_at: string,
+    hinhThucKhenThuongName: string,
+    hinhThucKhenThuongId: string,
+    nam: string,
     sinhNgay: string
     soCCCD: string,
+    hoSoId: string,
+    lyDo: string,
     hovaten: string,
+    xacNhan: "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    xepLoaiChuyenMon: "LOAI_A" | "LOAI_B" | "LOAI_C" | "LOAI_D",
   }
 
   type AdminDiscipline = {
@@ -922,98 +938,98 @@ declare namespace GEN {
   }
 
   type AdminCerLang = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "tenCoSoDaoTao": string,
-    "IdTenCoSoDaoTao": number,
-    "tenNgoaiNgu": string,
-    "chungChiDuocCap": string,
-    "diemSo": number,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string
+    ketThuc: string,
+    tenCoSoDaoTao: string,
+    IdTenCoSoDaoTao: number,
+    tenNgoaiNgu: string,
+    chungChiDuocCap: string,
+    diemSo: number,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string
   }
 
   type AdminCerTech = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "tenCoSoDaoTao": string,
-    "IdTenCoSoDaoTao": number,
-    "tenTinHoc": string,
-    "chungChiDuocCap": string,
-    "diemSo": number,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string
+    ketThuc: string,
+    tenCoSoDaoTao: string,
+    IdTenCoSoDaoTao: number,
+    tenTinHoc: string,
+    chungChiDuocCap: string,
+    diemSo: number,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string
   }
 
   type AdminProfessionalKnowledge = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "tenCoSoDaoTao": string,
-    "IdTenCoSoDaoTao": number,
-    "chungChiDuocCap": string,
-    "diemSo": number,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string
+    ketThuc: string,
+    tenCoSoDaoTao: string,
+    IdTenCoSoDaoTao: number,
+    chungChiDuocCap: string,
+    diemSo: number,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string
   }
 
   type AdminPoliticalTheory = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "tenCoSoDaoTao": string,
-    "IdTenCoSoDaoTao": number,
-    "hinhThucDaoTao": string,
-    "vanBangDuocCap": string,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string,
+    ketThuc: string,
+    tenCoSoDaoTao: string,
+    IdTenCoSoDaoTao: number,
+    hinhThucDaoTao: string,
+    vanBangDuocCap: string,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string,
   }
 
 
   type AdminWorkingAbroad = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "toChucDiaChiCongViec": string,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string,
+    ketThuc: string,
+    toChucDiaChiCongViec: string,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string,
   }
 
   type AdminArmy = {
-    "id": number,
-    "maSyll": string,
-    "batDau": string,
+    id: number,
+    maSyll: string,
+    batDau: string,
     hovaten: string,
     'soCCCD': string,
-    "ketThuc": string,
-    "xacNhan": "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
-    "create_at": string,
-    "update_at": string,
-    "tenCoSoDaoTao": string,
-    "IdTenCoSoDaoTao": number,
-    "chungChiDuocCap": string,
+    ketThuc: string,
+    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    create_at: string,
+    update_at: string,
+    tenCoSoDaoTao: string,
+    IdTenCoSoDaoTao: number,
+    chungChiDuocCap: string,
   }
 
   type Discipline = {
@@ -1033,5 +1049,91 @@ declare namespace GEN {
     handleModalOpen: function;
     id: string;
   }
+
+
+
+  type ThongTinCanBo = {
+    hoVaTen: string;
+    gioiTinh: 'NAM' | 'NU';
+    cacTenGoiKhac?: string;
+    sinhNgay: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    noiSinh: string;
+    queQuan: string;
+    danToc: number;
+    tonGiao: number;
+    soCCCD: string;
+    ngayCapCCCD: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    soDienThoai: string;
+    soBHXH: string;
+    soBHYT: string;
+    noiOHienNay: string;
+    thanhPhanGiaDinh: number;
+    thongTinTuyenDung: {
+      ngheNghiepTruocKhiTuyenDung: string;
+      ngayDuocTuyenDungLanDau: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayVaoCoQuanHienDangCongTac: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayVaoDangCongSanVietNam: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayChinhThuc: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayThamGiaToChucChinhTriXaHoiDauTien: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      congViecChinhDuocGiao: string;
+      soTruongCongTac: string;
+      congViecLamLauNhat: string;
+    };
+    quanSu: {
+      ngayNhapNgu: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayXuatNgu: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      capBacLoaiQuanHamQuanDoi: number;
+    };
+    doiTuongChinhSach: number;
+    hocVan: {
+      trinhDoGiaoDucPhoThong: number;
+      trinhDoChuyenMon: number;
+      hocHam: number;
+      danhHieuNhaNuocPhongTang: number;
+    };
+    chucVu: {
+      chucVuHienTaiId: number;
+      ngayBoNhiem: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayBoNhiemLai: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      duocQuyHoacChucDanh: string;
+      phuCapChucVu: number;
+      coQuanToChucDonViTuyenDungId: number;
+    };
+    chucVuKiemNhiem: {
+      chucVuKiemNhiemId: number;
+      ngayBoNhiem: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      phuCapKiemNhiem: number;
+      phuCapKhac: number;
+    };
+    chucVuDangHienTai: number;
+    chucVuDangKiemNhiem: number;
+    tienLuong: number;
+    ngach: {
+      ngachId: string;
+      ngayBoNhiemNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayHuongLuongNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      phanTramHuongLuongNgach: number;
+      phuCapThamNienVuotKhungNgach: number;
+      ngayHuongPCTNVKNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    };
+    phuCapChucVu: number;
+    phuCapKiemNhiem: number;
+    phuCapKhac: number;
+    viecLam: {
+      viTriViecLamId: number;
+      ngayHuongLuongViTriViecLam: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      phamTramHuongLuong: number;
+      phuCapThamNienVuotKhung: number;
+      ngayHuongPCTNVK: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    };
+    sucKhoe: {
+      tinhTrangSucKhoe: 'TOT' | 'BINH_THUONG' | 'YEU';
+      chieuCao: number;
+      canNang: number;
+      nhomMau: number;
+    };
+    pheDuyet: string;
+  }
+  
 }
 

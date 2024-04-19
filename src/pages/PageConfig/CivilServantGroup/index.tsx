@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 const configDefaultText = configText;
 
@@ -349,7 +349,8 @@ const TableList: React.FC = () => {
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        name: getRecordCurrent.data.name,
+                                        loai: getRecordCurrent.data.loaiCongChucId
                                     })
                                 }
 
@@ -416,7 +417,7 @@ const TableList: React.FC = () => {
 
 
 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -484,15 +485,16 @@ const TableList: React.FC = () => {
                     </Col>
 
                     <Col span={24} >
-                        <ProFormText
-                            label={"Bậc"}
+                        <ProFormSelect
+                            label={"Loại"}
                             // width='md'
-                            name='loaiVienChucLoai'
-                            placeholder={`Bậc`}
+                            name='loai'
+                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-cong-chuc?page=0&size=100`, 'id', 'name')}
+                            placeholder={`Loại`}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Bậc"
+                                    message: "Loại"
                                 },
                             ]} />
                     </Col>
@@ -545,17 +547,18 @@ const TableList: React.FC = () => {
 
                     </Col>
                     <Col span={24} >
-                        <ProFormText
-                            label={"Bậc"}
-                            name='loaiVienChucLoai'
-                            placeholder={`Bậc`}
+                        <ProFormSelect
+                            label={"Loại"}
+                            // width='md'
+                            name='loai'
+                            request={() => getOption(`${SERVER_URL_CONFIG}/loai-cong-chuc?page=0&size=100`, 'id', 'name')}
+                            placeholder={`Loại`}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Bậc"
+                                    message: "Loại"
                                 },
                             ]} />
-
                     </Col>
                 </Row>
             </ModalForm>

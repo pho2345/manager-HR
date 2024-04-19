@@ -74,6 +74,7 @@ export default {
   'menu.Cấu hình.menu.nation': 'Dân tộc',
   'menu.Cấu hình': 'Cấu hình',
   'menu.Quản lý.Quản lý CBCCVC': 'Quản lý CBCCVC',
+  'menu.Quản lý.Document': 'Hồ sơ',
   'menu.Quản lý': 'Quản lý',
   'menu.Cấu hình.menu.policyObject': 'Đối tượng chính sách',
   'menu.Cấu hình.menu.stateRank': 'Danh hiệu nhà nước phong tặng',

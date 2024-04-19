@@ -36,7 +36,7 @@ const TableList: React.FC = () => {
 
 
 
-    const handleSearch = (selectedKeys: any, confirm: any) => {
+    const handleSearch = (_: any, confirm: any) => {
         confirm();
 
     };
@@ -307,18 +307,18 @@ const TableList: React.FC = () => {
             width: '30vh',
             ...getColumnSearchProps('name')
         },
-        {
-            title: "Trạng thái",
-            key: 'trangThai',
-            dataIndex: 'trangThai',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-            width: '30vh',
-        },
+        // {
+        //     title: "Trạng thái",
+        //     key: 'trangThai',
+        //     dataIndex: 'trangThai',
+        //     render: (_, entity) => {
+        //         ;
+        //         return (
+        //             <Switch disabled checked={entity.trangThai} />
+        //         );
+        //     },
+        //     width: '30vh',
+        // },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
@@ -416,7 +416,7 @@ const TableList: React.FC = () => {
 
 
                 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -441,7 +441,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.MilitaryRanks.modal.titleCreate" defaultMessage="Create Nation" />}
+                title={"Tạo mới"}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -488,7 +488,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.MilitaryRanks.modal.titleUpdate" defaultMessage="Update Nation" />}
+                title={"Cập nhật"}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -529,7 +529,7 @@ const TableList: React.FC = () => {
                                 },
                             ]} />
 
-                        <ProFormSwitch
+                        {/* <ProFormSwitch
                             label={"Trạng thái"}
                             name='trangThai'
                             rules={[
@@ -537,7 +537,7 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: "Trạng thái"
                                 },
-                            ]} />
+                            ]} /> */}
                     </Col>
                 </Row>
             </ModalForm>

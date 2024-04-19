@@ -14,17 +14,36 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import e from 'express';
 const configDefaultText = configText;
 
+const getOption2 = async (url: string, setNumberSalary: Function): Promise<GEN.Option[]> => {
+    try {
+        const { data }: any = await get(url);
+        setNumberSalary(data);
+        if (data) {
+            return data
+                .map((e: any) => {
+                    return {
+                        value: e?.id,
+                        label: `${e?.nhomCongChucName} - ${e?.bacLuongName} - ${e?.heSo}`,
+                    };
 
+                });
+        }
+        return [];
+    } catch (error) {
+        return [];
+    }
+}
 
 const TableList: React.FC = () => {
     const collection = `${SERVER_URL_CONFIG}/ngach-cong-chuc`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
-    const [openWgs, setOpenWgs] = useState<boolean>(false);
+    const [numberSalary, setNumberSalary] = useState<[]>([]);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
@@ -34,7 +53,7 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
-    const update  = (value: any) => {
+    const update = (value: any) => {
         return handleUpdate2(value, refIdCurrent.current, collection);
     }
 
@@ -42,13 +61,10 @@ const TableList: React.FC = () => {
         return await handleAdd2(value, collection);
     }
 
-
-
-
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-
     };
+
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
         confirm({
@@ -321,25 +337,34 @@ const TableList: React.FC = () => {
             title: <FormattedMessage id="page.CivilServant.table.numberSalary" defaultMessage="Hệ số lương" />,
             key: 'numberSalary',
             dataIndex: 'numberSalary',
-            renderText: (_, entity) => entity.heSoLuongCongChuc,
+            renderText: (_, entity) => entity.heSo,
             width: '30vh',
             ...getColumnSearchProps('numberSalary')
         },
         {
-            title: <FormattedMessage id="page.CivilServant.table.status" defaultMessage="Trạng thái" />,
-            key: 'status',
-            dataIndex: 'status',
-            render: (_, entity) => <Switch disabled checked={entity?.trangThai} />,
+            title: "Bậc lương",
+            key: 'bacLuongName',
+            dataIndex: 'bacLuongName',
+            render: (_, entity) => entity.bacLuongName,
             width: '30vh',
-            ...getColumnSearchProps('status')
+            ...getColumnSearchProps('bacLuongName')
         },
         {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => text?.create_at,
-            // ...getColumnSearchProps('name')
+            title: "Loại công chức",
+            key: 'loaiCongChucName',
+            dataIndex: 'loaiCongChucName',
+            render: (_, entity) => entity.loaiCongChucName,
+            width: '30vh',
+            ...getColumnSearchProps('loaiCongChucName')
+        },
+
+        {
+            title: "Nhóm công chức",
+            key: 'nhomCongChucName',
+            dataIndex: 'nhomCongChucName',
+            render: (_, entity) => entity.nhomCongChucName,
+            width: '30vh',
+            ...getColumnSearchProps('nhomCongChucName')
         },
 
 
@@ -360,12 +385,16 @@ const TableList: React.FC = () => {
 
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
-                                refIdCurrent.current = entity.id;
-                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
+                                refIdCurrent.current = entity.ma;
+                                const getRecordCurrent = await getCustome(`${collection}/${entity.ma}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ma: getRecordCurrent.data.ma,
+                                        name: getRecordCurrent.data.name,
+                                        heSoLuong: getRecordCurrent.data.heSoLuongCongChucId,
+                                            nhomCongChuc: getRecordCurrent.data.nhomCongChucName,
+                                            bacLuong: getRecordCurrent.data?.bacLuongName
                                     })
                                 }
 
@@ -385,7 +414,7 @@ const TableList: React.FC = () => {
         <PageContainer>
             <ProTable
                 actionRef={actionRef}
-                rowKey='id'
+                rowKey='ma'
                 search={false}
                 options={
                     {
@@ -420,7 +449,7 @@ const TableList: React.FC = () => {
                     }]
                 }}
 
-                request={async () => get(collection)}
+                request={async () => get(`${collection}?page=0&size=100`)}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -455,7 +484,12 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (value) => {
-                    const success = await add(value as API.RuleListItem);
+                    const data = {
+                        ma: value.ma,
+                        name: value.name,
+                        heSoLuong: value.heSoLuong,
+                    }
+                    const success = await add(data);
                     if (success) {
                         handleModalOpen(false);
                         form.resetFields();
@@ -475,30 +509,72 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.CivilServant.table.name" defaultMessage="Name" />}
+                            label={'Mã'}
+                            // width='md'
+                            name='ma'
+                            placeholder={`Mã`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Mã"
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={24} >
+                        <ProFormText
+                            label={<FormattedMessage id="page.Officer.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.CivilServant.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.Officer.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
+
                     <Col span={24} >
-                        <ProFormDigit
+                        <ProFormSelect
                             label={"Hệ số lương"}
-                            // width='md'
-                            name='heSoLuongCongChuc'
+                            name='heSoLuong'
                             placeholder={`Hệ số lương`}
+                            request={() => getOption2(`${SERVER_URL_CONFIG}/he-so-luong-cong-chuc?page=0&size=100`, setNumberSalary)}
                             rules={[
                                 {
                                     required: true,
                                     message: "Hệ số lương"
                                 },
                             ]}
-                            fieldProps={{ precision: 1 }}
+                            onChange={(e) => {
+                                const findNumber: any = numberSalary.find((item: any) => item.id === e);
+                                form.setFieldsValue({
+                                    nhomCongChuc: findNumber?.nhomCongChucName,
+                                    bacLuong: findNumber?.bacLuongName
+                                })
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={12} >
+                        <ProFormText
+                            disabled
+                            label={"Nhóm công chức"}
+                            // width='md'
+                            name='nhomCongChuc'
+                            placeholder={`Nhóm công chức`}
+
+                        />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormText
+                            disabled
+                            label={"Bậc lương"}
+                            // width='md'
+                            name='bacLuong'
+                            placeholder={`Bậc lương`}
+
                         />
                     </Col>
                 </Row>
@@ -516,7 +592,12 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await update(values);
+                    const data = {
+                        ma: values.ma,
+                        name: values.name,
+                        heSoLuong: values.heSoLuong,
+                    }
+                    const success = await update(data);
                     if (success) {
                         handleUpdateModalOpen(false);
                         form.resetFields();
@@ -536,30 +617,72 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.CivilServant.table.name" defaultMessage="Name" />}
+                            label={'Mã'}
+                            // width='md'
+                            name='ma'
+                            placeholder={`Mã`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Mã"
+                                },
+                            ]} />
+                    </Col>
+                    <Col span={24} >
+                        <ProFormText
+                            label={<FormattedMessage id="page.Officer.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên đối tượng`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.CivilServant.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.Officer.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
+
+
                     <Col span={24} >
-                        <ProFormDigit
+                        <ProFormSelect
                             label={"Hệ số lương"}
-                            // width='md'
-                            name='heSoLuongCongChuc'
+                            name='heSoLuong'
                             placeholder={`Hệ số lương`}
+                            request={() => getOption2(`${SERVER_URL_CONFIG}/he-so-luong-cong-chuc?page=0&size=100`, setNumberSalary)}
                             rules={[
                                 {
                                     required: true,
                                     message: "Hệ số lương"
                                 },
                             ]}
-                            fieldProps={{ precision: 1 }}
+                            onChange={(e) => {
+                                const findNumber: any = numberSalary.find((item: any) => item.id === e);
+                                form.setFieldsValue({
+                                    nhomCongChuc: findNumber?.nhomCongChucName,
+                                    bacLuong: findNumber?.bacLuongName
+                                })
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={12} >
+                        <ProFormText
+                            disabled
+                            label={"Nhóm công chức"}
+                            // width='md'
+                            name='nhomCongChuc'
+                            placeholder={`Nhóm công chức`}
+
+                        />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormText
+                            disabled
+                            label={"Bậc lương"}
+                            // width='md'
+                            name='bacLuong'
+                            placeholder={`Bậc lương`}
+
                         />
                     </Col>
                 </Row>

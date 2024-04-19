@@ -5,12 +5,34 @@ export const XEP_LOAI_CHUYEN_MON = [
     {label: 'Không hoàn thành nhiệm vụ',value: 'LOAI_D'},
 ]
 
+export const mapXepLoaiChuyenMon = (value: string) => {
+    let map;
+    XEP_LOAI_CHUYEN_MON.forEach(item => {
+        if(item.value === value) {
+            map = item.label;
+            return;
+        }
+    })
+    return map
+}
+
 export const XEP_LOAI_THI_DUA = [
     {label: 'Xuất sắc',value: 'XUAT_SAC'},
     {label: 'Tốt',value: 'TOT'},
     {label: 'Khá',value: 'KHA'},
     {label: 'Trung bình',value: 'TRUNG_BINH'},
 ]
+
+export const mapXepLoaiThiDua = (value: string) => {
+    let map;
+    XEP_LOAI_THI_DUA.forEach(item => {
+        if(item.value === value) {
+            map = item.label;
+            return;
+        }
+    })
+    return map
+}
 
 export const TRANG_THAI = [
     {label: 'CHỜ XÁC NHẬN',value: 'CHO_XAC_NHAN'},

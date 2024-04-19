@@ -101,6 +101,22 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                         ]} />
                 </Col>
             </Row>
+
+            <Row gutter={24} >
+                <Col span={12} >
+                <ProFormText
+                        label={"Năm"}
+                        // width='md'
+                        name='nam'
+                        placeholder={`Năm`}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Năm"
+                            },
+                        ]} />
+                </Col>
+            </Row>
         </ModalForm>
     )
 }

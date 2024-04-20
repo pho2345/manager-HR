@@ -507,16 +507,6 @@ const TableList: React.FC = () => {
               }}
             >Khen thưởng</Menu.Item>
 
-            <Menu.Item key="2"
-              onClick={() => {
-                // setOpenAwg(true);
-                // refIdCateogry.current = entity.id;
-                // refNameCategory.current = entity.attributes.name;
-              }}
-            >Tăng trọng trung bình</Menu.Item>
-
-
-
           </Menu>
         );
         return (

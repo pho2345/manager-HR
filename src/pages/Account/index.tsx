@@ -16,6 +16,7 @@ import configText from '@/locales/configText';
 import { handleAdd, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage, request } from '@umijs/max';
 import { getCustome, post } from '@/services/ant-design-pro/api';
+import e from 'express';
 const configDefaultText = configText;
 
 
@@ -55,13 +56,14 @@ const handleRemove = async (selectedRows: any) => {
 };
 
 
-export async function get(url: string) {
+async function get(url: string, params = {}) {
     const fetchData = await request<any>(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
+        params: params
     });
 
     return {
@@ -73,9 +75,10 @@ export async function get(url: string) {
 
 
 
-const collection = `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`;
 const TableList: React.FC = () => {
+    const collection = `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`;
     const [search, setSearch] = useState<string>(``);
+    const [searchRole, setSearchRole] = useState<'ADMIN' | 'EMPLOYEE' | '' | null>(null);
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -357,9 +360,9 @@ const TableList: React.FC = () => {
         ,
     });
 
-   const add = async (data: any) => {
-    return await handleAdd(data, collection);
-   }
+    const add = async (data: any) => {
+        return await handleAdd(data, collection);
+    }
 
     const columns: ProColumns<GEN.Account>[] = [
         {
@@ -377,7 +380,7 @@ const TableList: React.FC = () => {
                 );
             },
             width: '30vh',
-            ...getColumnSearchProps('name')
+            // ...getColumnSearchProps('name')
         },
 
         {
@@ -399,12 +402,91 @@ const TableList: React.FC = () => {
         },
 
         {
-            key: 'username',
+            key: 'role',
             title: <FormattedMessage id="page.Account.table.role" defaultMessage="Quyền" />,
-            dataIndex: 'atrributes',
+            dataIndex: 'role',
             valueType: 'textarea',
             renderText: (_, text) => text?.role,
             // ...getColumnSearchProps('name')
+            // onFilter: (e, record) => {
+            //     // setSearchRole(e)
+            //     console.log('e', e)
+            //     return true
+            // },
+
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={[
+                                    {
+                                        value: 'ADMIN',
+                                        label: 'ADMIN'
+                                    },
+                                    {
+                                        value: 'EMPLOYEE',
+                                        label: 'EMPLOYEE'
+                                    },
+
+                                ]}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchRole(value)
+                                    },
+                                    value: searchRole
+                                }}
+                                placeholder={'Chọn quyền'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchRole(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchRole  ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
+
         },
 
 
@@ -416,8 +498,8 @@ const TableList: React.FC = () => {
         //     render: (_, text) => <Switch checked={text.trangThai} disabled />,
         //     // ...getColumnSearchProps('name')
         // },
-     
-       
+
+
     ];
 
 
@@ -465,21 +547,21 @@ const TableList: React.FC = () => {
 
                     search: {
                         onSearch: async (value: string, e) => {
-                            actionRef.current?.reload();
                             setSearch(value);
-                            // const data = await get(`${collection}/tim-kiem${value !== '' ? `?q=${value}` : ''}`);
-                            
-                            // setUser(data?.data);
+                            actionRef.current?.reload();
                         },
                         placeholder: "Tìm kiếm",
                     },
                 }}
 
-                dataSource={user}
+                // dataSource={user}
 
                 request={async () => {
-                    const data = await get(`${collection}${search !== '' ? `/tim-kiem?q=${search}` : ''}`);
-                    setUser(data?.data);
+                    const data = await get(`${collection}`, {
+                        username: search,
+                        role: searchRole
+                    });
+                    // setUser(data?.data);
                     return data;
                 }} //TODO: lấy tinh-trang-suc-khoe
                 pagination={{

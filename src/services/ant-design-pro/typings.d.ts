@@ -565,7 +565,8 @@ declare namespace GEN {
     ngachNgheNghiep: string,
     create_at: Date,
     update_at: Date,
-    trang_thai: boolean
+    trang_thai: boolean,
+    pheDuyet: 'CHO_PHE_DUYET' | 'DA_PHE_DUYET' | 'TU_CHOI',
   }
 
   interface ThongTinTuyenDung {

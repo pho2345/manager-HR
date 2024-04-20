@@ -79,7 +79,6 @@ export default function UpdateForm({ visible, setVisible, handleSession, id, act
             }}
             onFinish={async (value) => {
                 await waitTime(1000);
-                return true;
                 }}
             formProps={{
                 validateMessages: {
@@ -879,7 +878,6 @@ export default function UpdateForm({ visible, setVisible, handleSession, id, act
                     }
 
                     updateProfile(data)
-                    return true;
                 }}
                 className="w-full"
             >

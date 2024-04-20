@@ -63,7 +63,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 
     const redirect = urlParams.get('redirect');
 
-    console.log('vao day')
 
     if (window.location.pathname !== '/user/login' && !redirect) {
       history.replace({

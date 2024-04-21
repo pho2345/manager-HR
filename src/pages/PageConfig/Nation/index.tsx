@@ -8,20 +8,31 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input,  Row, Space, Switch, Tooltip } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Col, Form, Input, Row, Space, Switch, Tooltip } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
 import { handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { runConsumer } from '@/pages/kafka/comsumer';
 const configDefaultText = configText;
+import { Kafka, logLevel } from 'kafkajs';
+import MyComponent from '@/pages/kafka/producer';
+// import { runProducer } from '@/pages/kafka/producer';
+
 
 
 
 const TableList: React.FC = () => {
 
+    useEffect(() => {
+        const run = async () => {
+            await runConsumer();
+        }
+        run()
+    }, []);
     const collection = `${SERVER_URL_CONFIG}/dan-toc`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -323,7 +334,7 @@ const TableList: React.FC = () => {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             key: 'create_at',
-            renderText: (_, text) => moment(text.create_at).format(FORMAT_DATE),
+            render: (_, text) => "",
             ...getColumnSearchRange('create_at')
         },
 
@@ -352,7 +363,6 @@ const TableList: React.FC = () => {
                                         ...getRecordCurrent.data
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -415,15 +425,18 @@ const TableList: React.FC = () => {
 
 
 
-                
-                request={async () => get(`${collection}?page=0&size=100`)}
+
+                request={async () => {
+                    return await get(`${collection}?page=0&size=100`)
+
+                }}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
                         prev_page: configDefaultText['prePage'],
                     },
                     showTotal: (total, range) => {
-                        
+
                         return `${range[range.length - 1]} / Tổng số: ${total}`
                     }
                 }}

@@ -40,3 +40,5 @@ screenshot
 .gitpod.yml
 *.yaml
 build
+/kafka
+*.tgz

@@ -1,8 +1,10 @@
 import {
+  getCustome,
   // get,
   patch,
+  put,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, HolderOutlined, PhoneOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, SoundTwoTone } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -20,6 +22,7 @@ import {
   StepsForm,
   ProFormInstance,
   ProFormSwitch,
+  ProCard,
 
 } from '@ant-design/pro-components';
 import {
@@ -44,7 +47,8 @@ import { getOption, getProvine, handleAdd2 } from '@/services/utils';
 import { MdOutlineEdit } from 'react-icons/md';
 import AddBonus from '@/reuse/bonus/AddBonus';
 import UpdateForm from './UpdateForm';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { TINH_TRANG_SUC_KHOE, XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { negate } from 'lodash';
 
 
 
@@ -94,24 +98,24 @@ async function get(url: string, params = {}) {
 
 const TableList: React.FC = () => {
   const collection = `${SERVER_URL_PROFILE}/nhan-vien/ho-so`;
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refId = useRef<any>();
   const [currentRow, setCurrentRow] = useState<any>();
-  const [form] = Form.useForm<any>();
+  const [form] = Form.useForm();
   const searchInput = useRef(null);
   const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
   const [selectedRow, setSelectedRow] = useState<[]>([]);
-
+  const [info, setInfo] = useState<GEN.ThongTinCanBo>();
   const [religion, setReligion] = useState<GEN.Option[]>([]);
   const [membership, setMembership] = useState<GEN.Option[]>([]);
 
   const formRef = useRef<ProFormInstance>();
-  const [openBus, setOpenBus] = useState<boolean>(false);
+  const formRef2 = useRef<ProFormInstance>();
+  const formRef3 = useRef<ProFormInstance>();
 
 
   const [openApproval, setOpenApproval] = useState<boolean>(false);
@@ -125,7 +129,6 @@ const TableList: React.FC = () => {
   const [checkOfficer, setCheckOfficer] = useState<boolean>(true);
 
 
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const [document, setDocument] = useState<[]>([]);
 
@@ -134,7 +137,7 @@ const TableList: React.FC = () => {
   const [searchDanTocId, setSearchDanTocId] = useState<string | null>(null);
   const [searchChucVuHienTaiId, setSearchChucVuHienTaiId] = useState<string | null>(``);
   const [searchCoQuanToChucDonViId, setSearchCoQuanToChucDonViId] = useState<string>(``);
-  const [pheDuyet, setPheDuyet] = useState<"CHO_PHE_DUYET" | "DA_PHE_DUYET" | "TU_CHOI" | null>(null);
+  const [searchPheDuyet, setSearchPheDuyet] = useState<"CHO_PHE_DUYET" | "DA_PHE_DUYET" | "TU_CHOI" | null>(null);
 
 
   const params = useParams();
@@ -468,6 +471,25 @@ const TableList: React.FC = () => {
       sessionStorage.setItem(ID_SAVE_INFO, JSON.stringify(value));
     }
   }
+
+  const handleApproval = async (value: any) => {
+    const update = await put(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/phe-duyet`, selectedRow, {
+      pheDuyet: value.trangThai
+    });
+    if (update) {
+      message.success("Phê duyệt thành công");
+      setOpenApproval(false);
+      if (actionRef.current) {
+        actionRef.current?.reload?.();
+      }
+    }
+  }
+
+
+
+
+
+
 
 
   const columns: ProColumns<GEN.Employee>[] = [
@@ -851,28 +873,70 @@ const TableList: React.FC = () => {
           <>{mapXacNhan(entity.pheDuyet)}</>
         );
       },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+        //close
+      }: any) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Row gutter={24} className="m-0">
+            <Col span={24} className="gutter-row p-0" >
+              <ProFormSelect
+                options={XAC_NHAN}
+                fieldProps={{
+                  onChange: (value: any) => {
+                    setSearchPheDuyet(value)
+                  },
+                  value: searchPheDuyet
+                }}
+                showSearch
+                placeholder={'Chọn trạng thái'}
+              />
+            </Col>
+          </Row>
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => {
+                confirm()
+                actionRef.current?.reload();
+
+              }}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Tìm kiếm
+            </Button>
+            <Button
+              onClick={() => {
+                setSearchPheDuyet(null);
+                actionRef.current?.reload();
+              }}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Làm mới
+            </Button>
+
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: boolean) => (
+        <SearchOutlined
+          style={{
+            color: searchPheDuyet ? '#1890ff' : undefined,
+          }}
+        />
+      ),
     },
-    {
-      title: 'Chức vụ hiện tại',
-      key: 'chucVuHienTai',
-      // dataIndex: 'gioiTinh',
-      render: (_, entity) => {
-        return (
-          <>{entity.chucVuDangHienTaiName}</>
-        );
-      },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
-    },
-
-
-
 
     {
       title: configDefaultText['titleOption'],
@@ -884,11 +948,25 @@ const TableList: React.FC = () => {
         const menu = (
           <Menu>
             <Menu.Item key="2"
-              onClick={() => {
+              onClick={async () => {
                 // setOpenWgs(true);
                 // refIdCateogry.current = entity.id;
                 // refNameCategory.current = entity.attributes.name;
-                setUpdate(true);
+                // setUpdate(true);
+                // const getInfo = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
+                // setInfo(getInfo.data);
+                // formRef.current?.setFieldsValue({
+                //   hoVaTen: 'bac',
+                //   soCCCD: 'bac',
+                // })
+
+                const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
+
+                setInfo(profile.data);
+                setUpdate(true)
+                form.setFieldsValue({
+                  hoVaTen: 'abc'
+                })
                 refId.current = entity.id
               }}
             >Cập nhật</Menu.Item>
@@ -910,6 +988,15 @@ const TableList: React.FC = () => {
     return current && current > moment();
   };
 
+  const disabledBirthdate = (current: any) => {
+    // Lấy ngày hiện tại
+    const today = moment();
+    // Trừ đi 18 năm từ ngày hiện tại
+    const eighteenYearsAgo = today.subtract(18, 'years');
+    // Trả về true nếu current là ngày sau eighteenYearsAgo
+    return current && current > eighteenYearsAgo;
+  };
+
   useEffect(() => {
     const getValues = async () => {
       try {
@@ -925,20 +1012,6 @@ const TableList: React.FC = () => {
     getValues();
   }, []);
 
-  // const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-  //   if (fileList.length > 5) {
-  //     const maxImages = newFileList.slice(0, 5);
-  //     setFileList(maxImages);
-  //   }
-  //   else {
-  //     setFileList(newFileList);
-  //   }
-  // }
-
-  // const handleRemoveImage = (file: any) => {
-  //   const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
-  //   setFileList(updatedFileList);
-  // };
 
   const add = (fields: any) => {
     return handleAdd2(fields, `${collection}`)
@@ -977,16 +1050,16 @@ const TableList: React.FC = () => {
                 <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>,
 
-              
-                selectedRow.length > 0 && (<Button
-                  type='dashed'
-                  key='primary'
-                  onClick={() => {
-                    setOpenApproval(true);
-                  }}
-                >
-                   Phê duyệt
-                </Button>) 
+
+              selectedRow.length > 0 && (<Button
+                type='dashed'
+                key='primary'
+                onClick={() => {
+                  setOpenApproval(true);
+                }}
+              >
+                Phê duyệt
+              </Button>)
               ,
             ]
           }}
@@ -1026,9 +1099,8 @@ const TableList: React.FC = () => {
               danTocId: searchDanTocId,
               chucVuHienTaiId: searchChucVuHienTaiId,
               coQuanToChucDonViId: searchCoQuanToChucDonViId,
-              pheDuyet: pheDuyet
+              pheDuyet: searchPheDuyet
             });
-            console.log('data', data)
             setDocument(data?.data);
             return data;
           }}
@@ -1036,7 +1108,7 @@ const TableList: React.FC = () => {
           columns={columns}
           rowSelection={{
             onChange: (selectedRowKeys: any, selectedRows: any) => {
-              const id = selectedRowKeys.map((e: any) => ({id: e}));
+              const id = selectedRowKeys.map((e: any) => ({ id: e }));
               setSelectedRow(id);
             },
           }}
@@ -1049,7 +1121,6 @@ const TableList: React.FC = () => {
           tableAlertOptionRender={({ selectedRows }: any) => {
             return renderTableAlertOption(selectedRows)
           }}
-
         />
 
         <ModalForm
@@ -1139,14 +1210,7 @@ const TableList: React.FC = () => {
             },
           }}
           onFinish={async (value) => {
-            const success = await add(value as API.RuleListItem);
-            if (success) {
-              setOpenApproval(false);
-              form.resetFields();
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
+            await handleApproval(value as API.RuleListItem);
           }}
 
           submitter={{
@@ -1166,15 +1230,15 @@ const TableList: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message:  "Vui lòng chọn trạng thái"
+                    message: "Vui lòng chọn trạng thái"
                   },
-                ]} 
+                ]}
                 fieldProps={{
                   value: statusApproval
                 }}
                 options={XAC_NHAN}
                 onChange={(e) => setStatusApproval(e)}
-                />
+              />
 
 
             </Col>
@@ -1188,10 +1252,15 @@ const TableList: React.FC = () => {
         <StepsForm<{
           name: string;
         }>
-          formRef={formRef}
+          // onFormChange={(name: string, info) => {
+          //   console.log('info', info)
+          // }}
+
           onCurrentChange={(value: number) => {
-            // onUpdateModel()
-            console.log(value)
+
+            if (value === 1) {
+              formRef.current?.setFieldValue("ngheNghiepTruocKhiTuyenDung", 'abc');
+            }
           }}
           onFinish={async (value) => {
 
@@ -1242,11 +1311,11 @@ const TableList: React.FC = () => {
               },
               chucVu: {
                 chucVuHienTaiId: dateAll.chucVuHienTai,
-                ngayBoNhiem: moment(dateAll.ngayBoNhiem).toISOString(),
+                ngayBoNhiem: moment(dateAll.ngayBoNhiemChucVu).toISOString(),
                 ngayBoNhiemLai: moment(dateAll.ngayBoNhiemLai).toISOString(),
                 duocQuyHoacChucDanh: dateAll.duocQuyHoacChucDanh,
                 phuCapChucVu: dateAll?.phuCapChucVu || 0,
-                coQuanToChucDonViTuyenDungId: dateAll.coQuanToChucDonViTuyenDung,
+                coQuanToChucDonViTuyenDungId: dateAll.coQuanToChucDonViTuyenDungId,
               },
 
               chucVuKiemNhiem: {
@@ -1304,12 +1373,10 @@ const TableList: React.FC = () => {
                 open={update}
                 footer={submitter}
                 destroyOnClose={true}
-                style={{
-                  width: '70vh'
-                }}
                 onOk={() => {
                   console.log('dd')
                 }}
+
               >
                 {dom}
               </Modal>
@@ -1319,13 +1386,32 @@ const TableList: React.FC = () => {
           <StepsForm.StepForm<{
             name: string;
           }>
-
             name="base"
             title="Thông tin chung"
             stepProps={{
             }}
+            formRef={form as any}
 
-
+            initialValues={{
+              hoVaTen: info?.hoVaTen,
+              gioiTinh: info?.gioiTinh || null,
+              danToc: info?.danToc || null,
+              tonGiao: info?.tonGiao || null,
+              sinhNgay: info?.sinhNgay ? moment(info?.sinhNgay) : null,
+              soCCCD: info?.soCCCD ?? null,
+              soDienThoai: info?.soDienThoai ?? null,
+              soBHXH: info?.soBHXH ?? null,
+              soBHYT: info?.soBHYT ?? null,
+              noiOHienNay: info?.noiOHienNay ?? null,
+              queQuan: info?.queQuan ?? null,
+              cacTenGoiKhac: info?.cacTenGoiKhac ?? null,
+              noiSinh: info?.noiSinh ?? null,
+              tinhTrangSucKhoe: info?.sucKhoe?.tinhTrangSucKhoe ?? null,
+              chieuCao: info?.sucKhoe?.chieuCao ?? null,
+              nhomMau: info?.sucKhoe?.nhomMau ?? null,
+              ngayCapCCCD: info?.ngayCapCCCD ? moment(info?.ngayCapCCCD) : null,
+              canNang: info?.sucKhoe?.canNang ?? null,
+            }}
             onFinish={async (value: object) => {
               handleSession(value);
               return true
@@ -1384,7 +1470,7 @@ const TableList: React.FC = () => {
                     style: {
                       width: "100%"
                     },
-                    disabledDate: disabledDate
+                    disabledDate: disabledBirthdate
                   }}
                   name="sinhNgay"
                   label={configDefaultText["page.listCow.column.birthdate"]}
@@ -1411,7 +1497,50 @@ const TableList: React.FC = () => {
                 />
               </Col>
 
+              <Col span={12} className="gutter-row p-0">
+                <ProFormText
+                  className="w-full"
+                  name="cacTenGoiKhac"
+                  label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}
+                  placeholder={"Tên gọi khác"}
+                  rules={[
+                    { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
+                  ]}
+                />
+              </Col>
 
+
+
+            </Row>
+
+            <Row gutter={24} className="m-0">
+              <Col span={12} className="gutter-row p-0">
+                <ProFormText
+                  className="w-full"
+                  name="soCCCD"
+                  label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}
+                  placeholder={"CMND/CCCD"}
+                  rules={[
+                    { required: true, message: <FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" /> }
+                  ]}
+                />
+              </Col>
+              <Col span={12} className="gutter-row p-0">
+                <ProFormDatePicker
+                  fieldProps={{
+                    style: {
+                      width: "100%"
+                    },
+                    disabledDate: disabledDate
+                  }}
+                  name="ngayCapCCCD"
+                  label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}
+                  placeholder={"Ngày cấp CCCD/CMND"}
+                  rules={[
+                    { required: true, message: <FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" /> },
+                  ]}
+                />
+              </Col>
             </Row>
 
             <Row gutter={24} className="m-0">
@@ -1445,10 +1574,10 @@ const TableList: React.FC = () => {
                 <ProFormText
                   className="w-full"
                   name="soBHYT"
-                  label={<FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" />}
+                  label={"Số BHYT"}
                   placeholder={"Số BHYT"}
                   rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.healthInsurance" defaultMessage="Số BHYT" /> },
+                    { required: true, message: "Số BHYT" },
                   ]}
                 />
               </Col>
@@ -1494,67 +1623,19 @@ const TableList: React.FC = () => {
               </Col>
             </Row>
 
+
             <Row gutter={24} className="m-0">
+
               <Col span={12} className="gutter-row p-0">
                 <ProFormSelect
                   className="w-full"
-                  name="healthInsurance"
+                  name="tinhTrangSucKhoe"
                   label={"Tình trạng sức khỏe"}
                   placeholder={"Tình trạng sức khỏe"}
                   rules={[
                     { required: true, message: "Tình trạng sức khỏe" }
                   ]}
-                  options={[
-                    {
-                      label: "TỐT",
-                      value: 'TOT'
-                    }
-                  ]}
-                />
-              </Col>
-
-            </Row>
-
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="soCCCD"
-                  label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}
-                  placeholder={"CMND/CCCD"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" /> }
-                  ]}
-                />
-              </Col>
-              <Col span={12} className="gutter-row p-0">
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayCapCCCD"
-                  label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}
-                  placeholder={"Ngày cấp CCCD/CMND"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" /> },
-                  ]}
-                />
-              </Col>
-            </Row>
-
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="cacTenGoiKhac"
-                  label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}
-                  placeholder={"Tên gọi khác"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
-                  ]}
+                  options={TINH_TRANG_SUC_KHOE}
                 />
               </Col>
 
@@ -1576,10 +1657,10 @@ const TableList: React.FC = () => {
                 <ProFormText
                   className="w-full"
                   name="canNang"
-                  label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
+                  label={"Cân nặng"}
                   placeholder={"Cân nặng"}
                   rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
+                    { required: true, message: "Cân nặng" }
                   ]}
                 />
               </Col>
@@ -1604,393 +1685,570 @@ const TableList: React.FC = () => {
             name: string;
           }>
             name="base1"
-            title="Biên chế, chức vụ, Ngạch, Bậc"
+            title="Ngạch, Bậc"
             stepProps={{
             }}
-
+            formRef={formRef2}
             onFinish={async (value: object) => {
               handleSession(value);
               return true
             }}
 
+            initialValues={{
+              ngachNgheNghiep: info?.ngach?.ngachId,
+              ngayBoNhiemNgach: info?.ngach?.ngayBoNhiemNgach ? moment(info?.ngach?.ngayBoNhiemNgach) : null,
+              ngayHuongLuongNgach: info?.ngach?.ngayHuongLuongNgach ? moment(info?.ngach?.ngayHuongLuongNgach) : null,
+              phanTramHuongLuongNgach: info?.ngach?.phanTramHuongLuongNgach,
+              phuCapThamNienVuotKhungNgach: info?.ngach?.phuCapThamNienVuotKhungNgach,
+              ngayHuongPCTNVKNgachNgheNghiep: info?.ngach?.ngayHuongPCTNVKNgach ? moment(info?.ngach?.ngayHuongPCTNVKNgach) : null,
+              // coQuanToChucDonViTuyenDung: info?.thongTinTuyenDung?.coQuanToChucDonViTuyenDungId,
+              // phuCapChucVu: info?.,
+              phuCapKhac: info?.phuCapKhac,
+              ngayBoNhiem: info?.chucVu?.ngayBoNhiem ? moment(info?.chucVu?.ngayBoNhiem) : null,
+
+              // duocQuyHoacChucDanh: info?.thongTinTuyenDung?.duocQuyHoacChucDanh,
+
+              //thong-tin-tuyen-dung
+              ngheNghiepTruocKhiTuyenDung: info?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? null,
+              congViecChinhDuocGiao: info?.thongTinTuyenDung?.congViecChinhDuocGiao ?? null,
+              ngayVaoCoQuanHienDangCongTac: info?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac ? moment(info?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac) : null,
+              ngayVaoDangCongSanVietNam: info?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam ? moment(info?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam) : null,
+              soTruongCongTac: info?.thongTinTuyenDung?.soTruongCongTac ?? null,
+              congViecLamLauNhat: info?.thongTinTuyenDung?.congViecLamLauNhat ?? null,
+
+
+
+
+              //
+             
+
+            }}
+
           >
 
-            <ProFormSwitch
-              checkedChildren="Công chức"
-              unCheckedChildren="Viên chức"
-              label="Loại"
-
-              fieldProps={{
-                onChange: (e) => {
-                  setCheckOfficer(e)
-                },
-                checked: checkOfficer,
-
-              }}
-            />
 
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormSelect
-                  name="ngachNgheNghiep"
-                  label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}
-                  placeholder={"Ngạch nghề nghiệp"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" /> },
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                  }}
-                  showSearch
-                  options={!checkOfficer ? officer : civilServant}
 
-                // request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc?page=0&size=100`, 'ma', 'name') : getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name')}
+            <ProCard title={"Ngạch, Bậc"} type="inner" bordered>
+              <ProFormSwitch
+                checkedChildren="Công chức"
+                unCheckedChildren="Viên chức"
+                label="Loại"
 
-                />
-              </Col>
+                fieldProps={{
+                  onChange: (e) => {
+                    setCheckOfficer(e)
+                  },
+                  checked: checkOfficer,
 
-              <Col span={12} className="gutter-row p-0 w-full">
-                <ProFormDatePicker
-                  name="ngayBoNhiemNgach"
-                  label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}
-                  placeholder={"Ngày bổ nhiệm ngạch"}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
-                  ]}
+                }}
+              />
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormSelect
+                    name="ngachNgheNghiep"
+                    label={"Ngạch, bậc nghề nghiệp"}
+                    placeholder={"Ngạch, bậc nghề nghiệp"}
+                    rules={[
+                      { required: true, message: "Ngạch, bậc nghề nghiệp", }
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                    }}
+                    showSearch
+                    options={!checkOfficer ? officer : civilServant}
+                  // request={() => checkOfficer ? getOption(`${SERVER_URL_CONFIG}/ngach-vien-chuc?page=0&size=100`, 'ma', 'name') : getOption(`${SERVER_URL_CONFIG}/ngach-cong-chuc`, 'ma', 'name')}
+                  />
+                </Col>
 
-                />
-              </Col>
-            </Row>
+                <Col span={12} className="gutter-row p-0 w-full">
+                  <ProFormDatePicker
+                    name="ngayBoNhiemNgach"
+                    label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}
+                    placeholder={"Ngày bổ nhiệm ngạch"}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
+                    ]}
+                  />
+                </Col>
+              </Row>
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormDatePicker
-                  name="ngayHuongLuongNgach"
-                  label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
-                  placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                />
-              </Col>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    name="ngayHuongLuongNgach"
+                    label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
+                    placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayHuongPCTNVKNgachNgheNghiep"
-                  label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}
-                  placeholder={"Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" /> },
-                  ]}
-                />
-              </Col>
-            </Row>
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDigit
+                    name="phanTramHuongLuongNgach"
+                    label={"Phần trăm hưởng lương ngạch"}
+                    placeholder={"Phần trăm hưởng lương ngạch"}
+                    rules={[
+                      { required: true, message: "Phần trăm hưởng lương ngạch" }
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      max: 100,
+                      min: 0
+                    }}
+                  />
+                </Col>
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormText
-                  className="w-full"
-                  name="ngheNghiepTruocKhiTuyenDung"
-                  label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}
-                  placeholder={"Nghề nghiệp trước khi tuyển dụng"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" /> },
-                  ]}
-                />
-              </Col>
+              </Row>
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  className="w-full"
-                  name="coQuanToChucDonViTuyenDung"
-                  label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}
-                  placeholder={"Cơ quan, đơn vị tuyển dụng"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
-                />
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDigit
+                    name="phuCapThamNienVuotKhungNgach"
+                    label={"Phụ cấp thâm niên vượt khung ngạch"}
+                    placeholder={"Phụ cấp thâm niên vượt khung ngạch"}
+                    rules={[
+                      { required: true, message: "Phụ cấp thâm niên vượt khung ngạch" }
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                    }}
+                  />
+                </Col>
 
-              </Col>
-            </Row>
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayHuongPCTNVKNgachNgheNghiep"
+                    label={"Ngày hưởng PCTNVK ngạch nghề nghiệp"}
+                    placeholder={"Ngày hưởng PCTNVK ngạch nghề nghiệp"}
+                    rules={[
+                      { required: true, message: "Ngày hưởng PCTNVK ngạch nghề nghiệp" },
+                    ]}
+                  />
+                </Col>
+              </Row>
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  className="w-full"
-                  name="chucVuHienTai"
-                  label={"Chức vụ hiện tại"}
-                  placeholder={"Chức vụ hiện tại"}
-                  rules={[
-                    { required: true, message: "Chức vụ hiện tại" },
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
-                />
-              </Col>
+            </ProCard>
 
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDigit
-                  className="w-full"
-                  name="tienLuong"
-                  label={"Tiền lương"}
-                  placeholder={"Tiền lương"}
-                  rules={[
-                    { required: true, message: "Tiền lương" },
-                  ]}
-                />
-              </Col>
-            </Row>
+            <ProCard title={"Thông tin tuyển dụng"} type="inner" bordered>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormText
+                    className="w-full"
+                    name="ngheNghiepTruocKhiTuyenDung"
+                    label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}
+                    placeholder={"Nghề nghiệp trước khi tuyển dụng"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" /> },
+                    ]}
+                  />
+                </Col>
 
-
-            <Row gutter={24} className="m-0">
-
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDigit
-                  className="w-full"
-                  name="phuCapChucVu"
-                  label={"Phụ cấp chức vụ"}
-                  placeholder={"Phụ cấp chức vụ"}
-                  rules={[
-                    { required: true, message: "Phụ cấp chức vụ" },
-                  ]}
-                />
-              </Col>
-
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDigit
-                  className="w-full"
-                  name="phuCapKiemNhiem"
-                  label={"Phụ cấp kiêm nhiệm"}
-                  placeholder={"Phụ cấp kiêm nhiệm"}
-                  rules={[
-                    { required: true, message: "Phụ cấp kiêm nhiệm" },
-                  ]}
-                />
-              </Col>
-            </Row>
-
-            <Row gutter={24} className="m-0">
-
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDigit
-                  className="w-full"
-                  name="phuCapKhac"
-                  label={"Phụ cấp khác"}
-                  placeholder={"Phụ cấp khác"}
-                  rules={[
-                    { required: true, message: "Phụ cấp khác" },
-                  ]}
-                />
-              </Col>
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormText
+                    className="w-full"
+                    name="congViecChinhDuocGiao"
+                    label={"Công việc chính được giao"}
+                    placeholder={"Công việc chính được giao"}
+                    rules={[
+                      { required: true, message: "Công việc chính được giao" }
+                    ]}
+                  // options={jobPosition}
+                  />
+                </Col>
+              </Row>
 
 
-            </Row>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDatePicker
+                    className="w-full"
+                    name="ngayVaoCoQuanHienDangCongTac"
+                    label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
+                    placeholder={"Ngày vào cơ quan công tác"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
+              </Row>
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormText
+                    className="w-full"
+                    name="soTruongCongTac"
+                    label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
+                    placeholder={"Sở trường công tác"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" /> }
+                    ]}
+                  />
+                </Col>
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormText
+                    className="w-full"
+                    name="congViecLamLauNhat"
+                    label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}
+                    placeholder={"Công việc lâu nhất"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" /> }
+                    ]}
+                  />
+                </Col>
+              </Row>
+            </ProCard>
 
 
-            <Row gutter={24} className="m-0">
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  className="w-full"
-                  name="viTriViecLam"
-                  label={"Vị trí việc làm"}
-                  placeholder={"Vị trí việc làm"}
-                  rules={[
-                    { required: true, message: "Vị trí việc làm" },
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
-                />
-              </Col>
 
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDatePicker
-                  className="w-full"
-                  name="ngayHuongLuongTheoViTriViecLam"
-                  label={"Ngày hưởng lương"}
-                  placeholder={"Ngày hưởng lương"}
-                  rules={[
-                    { required: true, message: "Ngày hưởng lương" },
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDatePicker
-                  className="w-full"
-                  name="ngayVaoCoQuanHienDangCongTac"
-                  label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
-                  placeholder={"Ngày vào cơ quan công tác"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                />
-              </Col>
+          </StepsForm.StepForm>
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormDatePicker
-                  className="w-full"
-                  name="ngayBoNhiem"
-                  label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}
-                  placeholder={"Ngày bổ nhiệm"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" /> },
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                />
-              </Col>
-            </Row>
+          <StepsForm.StepForm
+            name="position"
+            title={"Chức vụ"}
+            onFinish={async (value) => {
+              // await waitTime(2000);
+              handleSession(value);
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0" >
-                <ProFormDatePicker
-                  className="w-full"
-                  name="ngayBoNhiemLai"
-                  label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}
-                  placeholder={"Ngày bổ nhiệm lại"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" /> },
-                  ]}
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                />
-              </Col>
+              return true;
+            }}
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  className="w-full"
-                  name="chucVuKiemNhiem"
-                  label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}
-                  placeholder={"Chức vụ kiêm nhiệm"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
-                />
-              </Col>
-            </Row>
+            initialValues={{
+              chucVuDangHienTai: info?.chucVuDangHienTai,
+              chucVuDangKiemNhiem: info?.chucVuDangKiemNhiem,
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="duocQuyHoacChucDanh"
-                  label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}
-                  placeholder={"Được quy hoạch chức danh"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" /> }
-                  ]}
-                />
-              </Col>
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  name="chucVuDangHienTai"
-                  label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}
-                  placeholder={"Chức vụ Đảng hiện tại"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
-                />
-              </Col>
-            </Row>
+              //chuc-vu
+              chucVuHienTai: info?.chucVu?.chucVuHienTaiId,
+              coQuanToChucDonViTuyenDungId: info?.chucVu?.coQuanToChucDonViTuyenDungId,
+              ngayBoNhiemChucVu: info?.chucVu?.ngayBoNhiem ? moment(info?.chucVu?.ngayBoNhiem) : null,
+              ngayBoNhiemLai: info?.chucVu?.ngayBoNhiemLai ? moment(info?.chucVu?.ngayBoNhiemLai) : null,
+              duocQuyHoacChucDanh: info?.chucVu?.duocQuyHoacChucDanh,
+              phuCapChucVu: info?.chucVu?.phuCapChucVu,
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormSelect
-                  className="w-full"
-                  name="chucVuDangKiemNhiem"
-                  label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}
-                  placeholder={"Chức vụ Đảng kiêm nhiệm"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+              //chuc-vu-kiem-nhiem
+              chucVuKiemNhiem: info?.chucVuKiemNhiem?.chucVuKiemNhiemId,
+              ngayBoNhiemChucVuKiemNhiem: info?.chucVuKiemNhiem?.ngayBoNhiem ? moment(info?.chucVuKiemNhiem?.ngayBoNhiem) : null,
+              phuCapKiemNhiem: info?.chucVuKiemNhiem?.phuCapKiemNhiem,
 
-                />
-              </Col>
+              //vi-tri-viec-lam
+              viTriViecLam: info?.viecLam?.viTriViecLamId,
+              ngayHuongLuongViTriViecLam: info?.viecLam?.ngayHuongLuongViTriViecLam ? moment(info?.viecLam?.ngayHuongLuongViTriViecLam) : null,
+              ngayHuongPCTNVK: info?.viecLam?.ngayHuongPCTNVK ? moment(info?.viecLam?.ngayHuongPCTNVK) : null,
+              phuCapThamNienVuotKhung: info?.viecLam?.phuCapThamNienVuotKhung,
+              phamTramHuongLuong: info?.viecLam?.phamTramHuongLuong,
+              tienLuong: info?.tienLuong,
+            }}
+            className="w-full"
+          >
+            <ProCard title="Chức vụ" type="inner" bordered>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="chucVuHienTai"
+                    label={"Chức vụ hiện tại"}
+                    placeholder={"Chức vụ hiện tại"}
+                    rules={[
+                      { required: true, message: "Chức vụ hiện tại" },
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="congViecChinhDuocGiao"
-                  label={<FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" />}
-                  placeholder={"Công việc chính"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.mainJob" defaultMessage="Công việc chính" /> }
-                  ]}
-                // options={jobPosition}
-                />
-              </Col>
-            </Row>
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="coQuanToChucDonViTuyenDungId"
+                    label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}
+                    placeholder={"Cơ quan, đơn vị tuyển dụng"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+                  />
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="soTruongCongTac"
-                  label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
-                  placeholder={"Sở trường công tác"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" /> }
-                  ]}
-                />
-              </Col>
+                </Col>
+              </Row>
 
-              <Col span={12} className="gutter-row p-0">
-                <ProFormText
-                  className="w-full"
-                  name="congViecLamLauNhat"
-                  label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}
-                  placeholder={"Công việc lâu nhất"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" /> }
-                  ]}
-                />
-              </Col>
-            </Row>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormDatePicker
+                    className="w-full"
+                    name="ngayBoNhiemChucVu"
+                    label={"Ngày bổ nhiệm chức vụ"}
+                    placeholder={"Ngày bổ nhiệm chức vụ"}
+                    rules={[
+                      { required: true, message: "Ngày bổ nhiệm chức vụ" },
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDatePicker
+                    className="w-full"
+                    name="ngayBoNhiemLai"
+                    label={"Ngày bổ nhiệm lại chức vụ"}
+                    placeholder={"Ngày bổ nhiệm lại chức vụ"}
+                    rules={[
+                      { required: true, message:"Ngày bổ nhiệm lại chức vụ" },
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDigit
+                    className="w-full"
+                    name="phuCapChucVu"
+                    label={"Phụ cấp chức vụ (vnđ)"}
+                    placeholder={"Phụ cấp chức vụ (vnđ)"}
+                    rules={[
+                      { required: true, message: "Phụ cấp chức vụ" },
+                    ]}
+                    fieldProps={{
+                      min: 0
+                    }}
+                  />
+                </Col>
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDigit
+                    className="w-full"
+                    name="phuCapKhac"
+                    label={"Phụ cấp khác (vnđ)"}
+                    placeholder={"Phụ cấp khác (vnđ)"}
+                    rules={[
+                      { required: true, message: "Phụ cấp khác" },
+                    ]}
+                    fieldProps={{
+                      min: 0
+                    }}
+                  />
+                </Col>
+              </Row>
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormText
+                    className="w-full"
+                    name="duocQuyHoacChucDanh"
+                    label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}
+                    placeholder={"Được quy hoạch chức danh"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" /> }
+                    ]}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDigit
+                    className="w-full"
+                    name="tienLuong"
+                    label={"Tiền lương (vnđ)"}
+                    placeholder={"Tiền lương (vnđ)"}
+                    rules={[
+                      { required: true, message: "Tiền lương (vnđ)" },
+                    ]}
+                    fieldProps={{
+                      min: 0
+                    }}
+                  />
+                </Col>
+              </Row>
+
+            </ProCard>
+
+
+            <ProCard title="Chức vụ kiêm nhiệm" type="inner" bordered>
+              <Row gutter={24} className="m-0">
+
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="chucVuKiemNhiem"
+                    label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}
+                    placeholder={"Chức vụ kiêm nhiệm"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormDatePicker
+                    className="w-full"
+                    name="ngayBoNhiemChucVuKiemNhiem"
+                    label={"Ngày bổ nhiệm chức vụ kiêm nhiệm"}
+                    placeholder={"Ngày bổ nhiệm chức vụ kiêm nhiệm"}
+                    rules={[
+                      { required: true, message: "Ngày bổ nhiệm chức vụ kiêm nhiệm" },
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
+
+
+              </Row>
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDigit
+                    className="w-full"
+                    name="phuCapKiemNhiem"
+                    label={"Phụ cấp kiêm nhiệm (vnđ)"}
+                    placeholder={"Phụ cấp kiêm nhiệm (vnđ)"}
+                    rules={[
+                      { required: true, message: "Phụ cấp kiêm nhiệm (vnđ)" },
+                    ]}
+                    fieldProps={{
+                      min: 0
+                    }}
+                  />
+                </Col>
+              </Row>
+            </ProCard>
+
+
+            <ProCard title="Vị trí việc làm" type="inner" bordered className='m-2' style={{
+              marginTop: 20
+            }}>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="viTriViecLam"
+                    label={"Vị trí việc làm"}
+                    placeholder={"Vị trí việc làm"}
+                    rules={[
+                      { required: true, message: "Vị trí việc làm" },
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayHuongLuongViTriViecLam"
+                    label={"Ngày hưởng lương vị trí việc làm"}
+                    placeholder={"Ngày hưởng lương vị trí việc làm"}
+                    rules={[
+                      { required: true, message: "Ngày hưởng lương vị trí việc làm" },
+                    ]}
+                  />
+                </Col>
+
+              </Row>
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormDigit
+                    className="w-full"
+                    name="phuCapThamNienVuotKhung"
+                    label={"Phụ cấp thâm niên vượt khung (%)"}
+                    placeholder={"Phụ cấp thâm niên vượt khung (%)"}
+                    rules={[
+                      { required: true, message: "Phụ cấp thâm niên vượt khung", }
+                    ]}
+                    fieldProps={{
+                      min: 0,
+                      max: 100
+                    }}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDigit
+                    className="w-full"
+                    name="phamTramHuongLuong"
+                    label={"Phần trăm hưởng lương (%)"}
+                    placeholder={"Phần trăm hưởng lương (%)"}
+                    rules={[
+                      { required: true, message: "Phần trăm hưởng lương (%)", }
+                    ]}
+                    fieldProps={{
+                      min: 0,
+                      max: 100
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={24} className="m-0">
+
+
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayHuongPCTNVK"
+                    label={"Ngày hưởng phụ cấp thâm niên vượt khung"}
+                    placeholder={"Ngày hưởng phụ cấp thâm niên vượt khung"}
+                    rules={[
+                      { required: true, message: "Ngày hưởng phụ cấp thâm niên vượt khung" },
+                    ]}
+                  />
+                </Col>
+              </Row>
+            </ProCard>
 
           </StepsForm.StepForm>
 
@@ -2004,191 +2262,231 @@ const TableList: React.FC = () => {
               return true;
             }}
             className="w-full"
+            initialValues={{
+              ngayNhapNgu: info?.quanSu.ngayNhapNgu ? moment(info?.quanSu.ngayNhapNgu ) : null,
+              ngayXuatNgu: info?.quanSu.ngayXuatNgu? moment(info?.quanSu.ngayXuatNgu) : null,
+              ngayThamGiaToChucChinhTriXaHoiDauTien: info?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien ? moment(info?.thongTinTuyenDung.ngayThamGiaToChucChinhTriXaHoiDauTien) : null,
+
+              //dang
+              chucVuDangHienTai: info?.chucVuDangHienTai ?? null,
+              chucVuDangKiemNhiem: info?.chucVuDangKiemNhiem ?? null,
+
+              //hoc-van
+              doiTuongChinhSach: info?.doiTuongChinhSach ?? null,
+              trinhDoGiaoDucPhoThong: info?.hocVan?.trinhDoGiaoDucPhoThong ?? null,
+              trinhDoChuyenMonCaoNhat: info?.hocVan?.trinhDoChuyenMon ?? null,
+              danhHieuNhaNuocPhongTang: info?.hocVan?.danhHieuNhaNuocPhongTang ?? null,
+              hocHam: info?.hocVan?.hocHam ?? null,
+              capBacLoaiQuanHamQuanDoi: info?.quanSu?.capBacLoaiQuanHamQuanDoi ?? null,
+            }}
           >
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayVaoDangCongSanVietNam"
-                  label={<FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" />}
-                  placeholder={"Ngày vào Đảng"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateJoinCommunistParty" defaultMessage="Ngày vào Đảng" /> },
-                  ]}
-                />
-              </Col>
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayNhapNgu"
-                  label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}
-                  placeholder={"Ngày nhập ngũ"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" /> },
-                  ]}
-                />
-              </Col>
-            </Row>
+            <ProCard title="Quân sự" type="inner" bordered style={{
+              marginTop: 20
+            }}>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayNhapNgu"
+                    label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}
+                    placeholder={"Ngày nhập ngũ"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" /> },
+                    ]}
+                  />
+                </Col>
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayXuatNgu"
+                    label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}
+                    placeholder={"Ngày xuất ngũ"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" /> },
+                    ]}
+                  />
+                </Col>
+              </Row>
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayXuatNgu"
-                  label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}
-                  placeholder={"Ngày xuất ngũ"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" /> },
-                  ]}
-                />
-              </Col>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormDatePicker
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                    name="ngayThamGiaToChucChinhTriXaHoiDauTien"
+                    label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}
+                    placeholder={"Ngày tham gia tổ chức chính trị - xã hội đầu tiên"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" /> },
+                    ]}
+                  />
+                </Col>
 
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormDatePicker
-                  fieldProps={{
-                    style: {
-                      width: "100%"
-                    },
-                    disabledDate: disabledDate
-                  }}
-                  name="ngayThamGiaToChucChinhTriXaHoiDauTien"
-                  label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}
-                  placeholder={"Ngày tham gia tổ chức chính trị - xã hội đầu tiên"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" /> },
-                  ]}
-                />
-              </Col>
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="capBacLoaiQuanHamQuanDoi"
+                    label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}
+                    placeholder={"Cấp bậc quân hàm"}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
 
-            </Row>
+                  />
+                </Col>
+              </Row>
+            </ProCard>
 
-            <Row gutter={24} className="m-0">
+            <ProCard title="Đảng" type="inner" bordered>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    name="chucVuDangHienTai"
+                    label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}
+                    placeholder={"Chức vụ Đảng hiện tại"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
 
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="doiTuongChinhSach"
-                  label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}
-                  placeholder={"Đối tượng chính sách"}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
-                    // { required: true, message: "Dân tộc" }
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach`, 'id', 'name')}
-                />
-              </Col>
+                <Col span={12} className="gutter-row p-0">
+                  <ProFormSelect
+                    className="w-full"
+                    name="chucVuDangKiemNhiem"
+                    label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}
+                    placeholder={"Chức vụ Đảng kiêm nhiệm"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
 
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="trinhDoGiaoDucPhoThong"
-                  label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}
-                  placeholder={"Trình độ giáo dục phổ thông"}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong`, 'id', 'name')}
-                />
-              </Col>
-            </Row>
+                  />
+                </Col>
+              </Row>
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="trinhDoChuyenMon"
-                  label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}
-                  placeholder={"Trình độ chuyên môn"}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
-                  ]}
+            </ProCard>
 
-                  request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
-                />
-              </Col>
+            <ProCard title="Học vấn" type="inner" bordered style={{
+              marginTop: 20
+            }}>
 
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="danhHieuNhaNuocPhongTang"
-                  label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}
-                  placeholder={"Danh hiệu nhà nước"}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong`, 'id', 'name')}
-                />
-              </Col>
-            </Row>
+              <Row gutter={24} className="m-0">
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="hocHam"
-                  label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
-                  placeholder={"Học hàm"}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham`, 'id', 'name')}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
-                  ]}
-                />
-              </Col>
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="doiTuongChinhSach"
+                    label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}
+                    placeholder={"Đối tượng chính sách"}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
+                      // { required: true, message: "Dân tộc" }
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
+                  />
+                </Col>
 
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="capBacLoaiQuanHamQuanDoi"
-                  label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}
-                  placeholder={"Cấp bậc quân hàm"}
-                  showSearch
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
-                  ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi`, 'id', 'name')}
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="trinhDoGiaoDucPhoThong"
+                    label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}
+                    placeholder={"Trình độ giáo dục phổ thông"}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
+              </Row>
 
-                />
-              </Col>
-            </Row>
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="trinhDoChuyenMon"
+                    label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}
+                    placeholder={"Trình độ chuyên môn"}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
+                    ]}
 
-            <Row gutter={24} className="m-0">
-              <Col span={12} className="gutter-row p-0 w-full" >
-                <ProFormSelect
-                  className="w-full"
-                  name="thanhPhanGiaDinh"
-                  label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}
-                  placeholder={"Thành phần gia đình"}
-                  showSearch
-                  request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh`, 'id', 'name')}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
-                  ]}
-                />
-              </Col>
+                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="danhHieuNhaNuocPhongTang"
+                    label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}
+                    placeholder={"Danh hiệu nhà nước"}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
+                    ]}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
+                  />
+                </Col>
+              </Row>
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="hocHam"
+                    label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
+                    placeholder={"Học hàm"}
+                    request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
+                    showSearch
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
+                    ]}
+                  />
+                </Col>
+
+                <Col span={12} className="gutter-row p-0 w-full" >
+                  <ProFormSelect
+                    className="w-full"
+                    name="thanhPhanGiaDinh"
+                    label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}
+                    placeholder={"Thành phần gia đình"}
+                    showSearch
+                    request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
+                    ]}
+                  />
+                </Col>
+              </Row>
+              
+            </ProCard>
 
 
-            </Row>
+
+
           </StepsForm.StepForm>
 
         </StepsForm>

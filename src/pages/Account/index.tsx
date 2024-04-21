@@ -482,7 +482,7 @@ const TableList: React.FC = () => {
             filterIcon: (filtered: boolean) => (
                 <SearchOutlined
                     style={{
-                        color: searchRole  ? '#1890ff' : undefined,
+                        color: searchRole ? '#1890ff' : undefined,
                     }}
                 />
             ),
@@ -557,7 +557,7 @@ const TableList: React.FC = () => {
                 // dataSource={user}
 
                 request={async () => {
-                    const data = await get(`${collection}`, {
+                    const data = await get(`${collection}?page=0&size=200`, {
                         username: search,
                         role: searchRole
                     });

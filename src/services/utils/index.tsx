@@ -194,7 +194,7 @@ export async function getProvine() {
     console.log(fetchData);
     const data = fetchData?.results?.map((e: any) => {
       return {
-        value: e.province_id,
+        value: e.province_name,
         label: e.province_name
       }
     })

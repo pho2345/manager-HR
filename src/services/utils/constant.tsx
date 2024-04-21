@@ -18,6 +18,14 @@ export const mapXepLoaiChuyenMon = (value: string) => {
     return map
 }
 
+export const TINH_TRANG_SUC_KHOE = [
+    {label: 'Yếu',value: 'YEU'},
+    {label: 'Trung bình',value: 'TRUNG_BINH'},
+    {label: 'Khỏe',value: 'KHOE'},
+    {label: 'Tốt',value: 'TOT'},
+]
+
+
 export const XEP_LOAI_THI_DUA = [
     {label: 'Xuất sắc',value: 'XUAT_SAC'},
     {label: 'Tốt',value: 'TOT'},

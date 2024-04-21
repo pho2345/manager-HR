@@ -542,7 +542,7 @@ const TableList: React.FC = () => {
   // };
 
   const add  = (fields: any) => {
-    return handleAdd2(fields, `${collection}` )
+    return handleAdd2(fields, `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan` )
   }
 
   return (

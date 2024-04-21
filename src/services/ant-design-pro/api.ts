@@ -8,6 +8,7 @@ export async function currentUser(options?: { [key: string]: any }) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
+    
   });
 
   console.log('data', data);
@@ -355,6 +356,20 @@ export async function deletes(subSolder: string) {
     success: fetchData.data && true,
     data: fetchData.data
   }
+}
+
+export async function put(subSolder: string, body: object, params  : object = {}) {
+  const fetchData = await request<any>(subSolder, {
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    },
+    
+    data: body,
+    params: params
+  });
+  return fetchData
 }
 
 

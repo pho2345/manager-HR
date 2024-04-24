@@ -14,7 +14,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
 import { handleAdd, renderTableAlert, renderTableAlertOption } from '@/services/utils';
-import { FormattedMessage, request } from '@umijs/max';
+import { FormattedMessage, request, useModel } from '@umijs/max';
 import { getCustome, post } from '@/services/ant-design-pro/api';
 import e from 'express';
 const configDefaultText = configText;
@@ -89,8 +89,7 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [user, setUser] = useState<GEN.Account[]>([]);
-
+    const { initialState, setInitialState } = useModel('@@initialState');
 
 
     const confirm = (entity: any) => {
@@ -111,7 +110,6 @@ const TableList: React.FC = () => {
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-
     };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
@@ -553,8 +551,6 @@ const TableList: React.FC = () => {
                         placeholder: "Tìm kiếm",
                     },
                 }}
-
-                // dataSource={user}
 
                 request={async () => {
                     const data = await get(`${collection}?page=0&size=200`, {

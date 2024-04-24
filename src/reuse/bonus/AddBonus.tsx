@@ -1,19 +1,28 @@
+import { get } from "@/services/ant-design-pro/api";
 import { getOption, handleAdd } from "@/services/utils";
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from "@/services/utils/constant";
-import { ModalForm, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row } from "antd";
+import moment from "moment";
+import { useState } from "react";
 
-export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id }: GEN.AddBonus) {
-    const collection = `${SERVER_URL_CONFIG}/khen-thuong/${id}`;
+export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id }: GEN.BonusAddNewProps) {
+    const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
+    const collection = `${SERVER_URL_CONFIG}/khen-thuong/${id ?? idEmploy}`;
+
     async function add(value: any) {
-        return await handleAdd(value, collection);
+        const data = {
+            ...value,
+            nam: moment(value.nam).toISOString(),
+        }
+        return await handleAdd(data, collection);
     }
     return (
         <ModalForm
             form={form}
             title={"Tạo mới khen thưởng"}
-          
+
             open={createModalOpen}
             modalProps={{
                 destroyOnClose: true,
@@ -104,7 +113,7 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
 
             <Row gutter={24} >
                 <Col span={12} >
-                <ProFormText
+                    <ProFormDatePicker
                         label={"Năm"}
                         // width='md'
                         name='nam'
@@ -114,8 +123,52 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                                 required: true,
                                 message: "Năm"
                             },
-                        ]} />
+                        ]} 
+                        fieldProps={{
+                            style: {
+                                width: "100%"
+                            },
+                        }}
+                        
+                        />
                 </Col>
+
+                {!id && (
+                    <Col span={12} >
+                        <ProFormSelect
+                            label={"CBVC"}
+                            // width='md'
+                            name=''
+                            placeholder={`CBVC`}
+                            rules={[
+                                {
+                                    required: true,
+                                
+                                },
+                            ]}
+                            onChange={(value: string) => {
+                                setIdEmploy(value);
+                            }}
+
+                            fieldProps={{
+                                value: idEmploy,
+                            }}
+                            showSearch
+                            request={async () => {
+                                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
+                                const dataOptions = data.data.map((item: any) => {
+                                    return {
+                                        label: `${item.hoVaTen} - ${item.soCCCD}`,
+                                        value: item.id
+                                    }
+                                })
+                                return dataOptions;
+                            }}
+
+
+                        />
+                    </Col>
+                )}
             </Row>
         </ModalForm>
     )

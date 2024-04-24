@@ -23,7 +23,14 @@ export const TINH_TRANG_SUC_KHOE = [
     {label: 'Trung bình',value: 'TRUNG_BINH'},
     {label: 'Khỏe',value: 'KHOE'},
     {label: 'Tốt',value: 'TOT'},
-]
+];
+
+export const mapTinhTrangSucKhoe = (value?: string) => {
+    if(value === 'YEU')  return <Tag color="red">Yếu</Tag>;
+    if(value === 'TRUNG_BINH')  return <Tag color="orange">Trung bình</Tag>;
+    if(value === 'KHOE')  return <Tag color="blue">Khỏe</Tag>;
+    if(value === 'TOT')  return <Tag color="green">Tốt</Tag>;
+}
 
 
 export const XEP_LOAI_THI_DUA = [
@@ -39,23 +46,20 @@ export const XAC_NHAN = [
     {label: 'Từ chối', value: 'TU_CHOI'},
 ]
 
-export const mapXacNhan = (value: string) => {
-   
+export const mapXacNhan = (value?: GEN.XACNHAN) => {
+    if(!value) return  "";
     if(value === 'CHO_PHE_DUYET') return <Tag color="blue">Chờ phê duyệt</Tag>;
     if(value === 'DA_PHE_DUYET') return <Tag color="green">Đã phê duyệt</Tag>;
     if(value === 'TU_CHOI') return <Tag color="red">Từ chối</Tag>
+    
   
 }   
 
 export const mapXepLoaiThiDua = (value: string) => {
-    let map;
-    XEP_LOAI_THI_DUA.forEach(item => {
-        if(item.value === value) {
-            map = item.label;
-            return;
-        }
-    })
-    return map
+    if(value === 'XUAT_SAC') return <Tag color="green">Xuất sắc</Tag>;
+    if(value === 'TOT') return <Tag color="blue">Tốt</Tag>;
+    if(value === 'KHA') return <Tag color="orange">Khá</Tag>;
+    if(value === 'TRUNG_BINH') return <Tag color="red">Trung bình</Tag>
 }
 
 export const TRANG_THAI = [

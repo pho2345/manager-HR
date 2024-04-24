@@ -38,6 +38,10 @@ import AddNew from './AddNew';
 import { getOption, handleAdd2 } from '@/services/utils';
 import { MdOutlineEdit } from 'react-icons/md';
 import AddBonus from '@/reuse/bonus/AddBonus';
+import AddDiscipline from '@/reuse/discipline/AddDiscipline';
+import AddGOB from '@/reuse/go-on-business/AddGOB';
+import AddCerLang from '@/reuse/languages/AddLanguages';
+import AddCerTech from '@/reuse/techs/AddCerTech';
 
 
 
@@ -71,6 +75,8 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refId = useRef<any>();
+  const refName = useRef<string>();
+  const refSoCMND = useRef<string>();
   const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
   const searchInput = useRef(null);
@@ -84,12 +90,13 @@ const TableList: React.FC = () => {
 
 
   const [openBus, setOpenBus] = useState<boolean>(false);
+  const [openDiscipline, setOpenDiscipline] = useState<boolean>(false);
+  const [openGOB, setOpenGOB] = useState<boolean>(false);
+  const [openCerLang, setOpenCerLang] = useState<boolean>(false);
+  const [openCerTech, setOpenCerTech] = useState<boolean>(false);
 
 
   const [visible, setVisible] = useState(false);
-
-
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
 
   const params = useParams();
@@ -443,7 +450,7 @@ const TableList: React.FC = () => {
       key: 'gioiTinh',
       // dataIndex: 'gioiTinh',
       render: (_, entity) => entity.gioiTinh ?? ""
-      
+
     },
     {
       title: 'Ngày sinh',
@@ -473,9 +480,6 @@ const TableList: React.FC = () => {
       //   return record?.farm?.id === value;
       // },
     },
-    
-   
-    
 
     {
       title: configDefaultText['titleOption'],
@@ -483,31 +487,60 @@ const TableList: React.FC = () => {
       valueType: 'textarea',
       key: 'option',
       align: 'center',
-      render: (_, entity: any) => {
+      render: (_, entity) => {
         const menu = (
           <Menu>
-            <Menu.Item key="1"
-              onClick={() => {
-                handleUpdateModalOpen(true);
-                // refIdCateogry.current = entity.id;
-                form.setFieldsValue({
-                  code: entity?.attributes?.code,
-                  name: entity?.attributes?.name
-                })
-              }}
-            >{configDefaultText['buttonUpdate']}</Menu.Item>
 
             <Menu.Item key="2"
               onClick={() => {
-                // setOpenWgs(true);
-                // refIdCateogry.current = entity.id;
-                // refNameCategory.current = entity.attributes.name;
                 setOpenBus(true);
-                refId.current =  entity.id
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
               }}
             >Khen thưởng</Menu.Item>
 
+            <Menu.Item key="3"
+              onClick={() => {
+                setOpenDiscipline(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Kỷ luật</Menu.Item>
+
+            <Menu.Item key="4"
+              onClick={() => {
+                setOpenGOB(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Quá trình công tác</Menu.Item>
+
+            <Menu.Item key="5"
+              onClick={() => {
+                setOpenCerLang(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Ngoại ngữ</Menu.Item>
+
+            <Menu.Item key="6"
+              onClick={() => {
+                setOpenCerTech(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Tin học</Menu.Item>
+
           </Menu>
+
+
+
+
         );
         return (
           <Dropdown overlay={menu} trigger={['click']} placement='bottom'>
@@ -521,28 +554,9 @@ const TableList: React.FC = () => {
 
   ];
 
-  // const disabledDate = (current: any) => {
-  //   return current && current > moment();
-  // };
 
-
-  // const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-  //   if (fileList.length > 5) {
-  //     const maxImages = newFileList.slice(0, 5);
-  //     setFileList(maxImages);
-  //   }
-  //   else {
-  //     setFileList(newFileList);
-  //   }
-  // }
-
-  // const handleRemoveImage = (file: any) => {
-  //   const updatedFileList = fileList.filter((f: any) => f.uid !== file.uid);
-  //   setFileList(updatedFileList);
-  // };
-
-  const add  = (fields: any) => {
-    return handleAdd2(fields, `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan` )
+  const add = (fields: any) => {
+    return handleAdd2(fields, `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`)
   }
 
   return (
@@ -569,18 +583,6 @@ const TableList: React.FC = () => {
             ]
           }}
 
-          // toolbar={{
-          //   settings: [{
-          //     key: 'reload',
-          //     tooltip: configDefaultText['reload'],
-          //     icon: <ReloadOutlined></ReloadOutlined>,
-          //     onClick: () => {
-          //       if (actionRef.current) {
-          //         actionRef.current.reload();
-          //       }
-          //     }
-          //   }]
-          // }}
 
           pagination={{
             pageSize: 10,
@@ -685,209 +687,13 @@ const TableList: React.FC = () => {
           </Row>
         </ModalForm>
 
-        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current}/>
-
-        {/* <ModalForm
-
-          title='Cập nhật'
-          open={updateModalOpen}
-          form={form}
-          autoFocusFirstInput
-          modalProps={{
-            destroyOnClose: true,
-            onCancel: () => {
-              handleUpdateModalOpen(false);
-              refIdPicture.current = null;
-              setFileList([]);
-
-            },
-          }}
-
-          submitTimeout={2000}
-          onFinish={async (values) => {
-            const success = await handleUpdate(values as any, refIdCow as any);
+        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} />
+        <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} />
+        <AddGOB actionRef={actionRef} open={openGOB} handleOpen={setOpenGOB} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
 
 
-            if (success) {
-              handleUpdateModalOpen(false);
-              form.resetFields();
-              if (actionRef.current) {
-                setFileList([]);
-                actionRef.current.reload();
-                refIdPicture.current = null;
-              }
-            }
-            return true;
-          }}
-
-          submitter={{
-            searchConfig: {
-              resetText: configDefaultText['buttonClose'],
-              submitText: configDefaultText['buttonUpdate'],
-            },
-          }}
-        >
-
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormText
-                className='w-full'
-                name='name'
-                label={configDefaultText['page.listCow.column.name']}
-                placeholder={configDefaultText['page.listCow.column.name']}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.name'] },
-                ]}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-
-              <ProFormDigit
-                min={1}
-                className='w-full'
-
-                name='firstWeight'
-                label={configDefaultText['page.listCow.column.firstWeight']}
-                placeholder={configDefaultText['page.listCow.column.firstWeight']}
-                rules={[
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={category}
-                label={configDefaultText['page.listCow.column.category']}
-                placeholder={configDefaultText['page.listCow.column.category']}
-                className='w-full'
-                name='category'
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.category'] },
-                ]}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormSelect
-                className='w-full'
-                name='sex'
-
-                label={configDefaultText['page.listCow.column.sex']}
-                placeholder={configDefaultText['page.listCow.column.sex']}
-                options={[
-                  {
-                    label: 'Đực',
-                    value: 'male',
-                  },
-                  {
-                    label: 'Cái',
-                    value: 'female',
-                  },
-                ]}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.sex'] }
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-          <Row gutter={24} className="m-0">
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormSelect options={farm} className='w-full' name='farm'
-                label={configDefaultText['page.listCow.column.farm']}
-                placeholder={configDefaultText['page.listCow.column.farm']}
-                rules={[
-                  {
-                    required: true, message: configDefaultText['page.listCow.required.farm'
-                    ]
-                  },
-                ]}
-                fieldProps={{
-                  onChange: async (value: any) => {
-                    const groupCow = await getGroupFarm(value);
-                    setGroupCow(groupCow);
-                    form.setFieldValue('group_cow', []);
-                  }
-                }}
-              />
-            </Col>
-
-            <Col span={12} className="gutter-row p-0">
-              <ProFormSelect className='w-full'
-                options={groupCow?.length ? groupCow : null}
-                label={configDefaultText['page.listCow.column.group_cow']}
-                placeholder={configDefaultText['page.listCow.column.group_cow']}
-                name={`group_cow`}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.group_cow'] },
-                ]}
-              />
-            </Col>
-          </Row>
-
-
-
-          <Row gutter={24} className="m-0">
-
-            <Col span={12} className="gutter-row p-0" >
-              <ProFormDatePicker className='w-full' name='birthdate'
-                fieldProps={{
-                  style: {
-                    width: '100%'
-                  },
-                  disabledDate: disabledDate
-                }}
-                label={configDefaultText['page.listCow.column.birthdate']}
-                placeholder={configDefaultText['page.listCow.column.birthdate']}
-                rules={[
-                  { required: true, message: configDefaultText['page.listCow.required.birthdate'] },
-
-                ]}
-              />
-            </Col>
-
-
-          </Row>
-
-          <ProFormUploadButton
-            name="photos"
-            title={configDefaultText['page.listCow.column.upload']}
-            label={configDefaultText['page.listCow.column.upload']}
-            fileList={fileList}
-            onChange={handleChange}
-            max={5}
-            fieldProps={{
-              name: 'file',
-              listType: 'picture-card',
-              onRemove: handleRemoveImage, // Pass the handleRemove function as the onRemove callback
-              accept: 'image/*',
-              multiple: true,
-              beforeUpload: (file: any, fileSize) => {
-                if (fileList.length > 5) {
-                  return false;
-                }
-                else {
-                  return true;
-                }
-              },
-            }}
-          />
-
-          <ProFormTextArea
-            label={configDefaultText['page.listCow.column.description']}
-            placeholder={configDefaultText['page.listCow.column.description']}
-            name='description'
-            rules={[
-              { required: true, message: configDefaultText['page.listCow.required.description'] }
-            ]}
-          />
-
-        </ModalForm> */}
 
 
         <Drawer

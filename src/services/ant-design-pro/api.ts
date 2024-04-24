@@ -1,4 +1,4 @@
-import { request } from '@umijs/max';
+import { request, useParams } from '@umijs/max';
 import axios from 'axios';
 export async function currentUser(options?: { [key: string]: any }) {
   const data = await request<any>(SERVER_URL_ACCOUNT + '/ca-nhan/tai-khoan', {
@@ -254,13 +254,15 @@ export async function customAPIDowload(
 // }
 
 
-export async function get(url: string) {
+export async function get(url: string, params = {}) {
+  console.log('params', params)
   const fetchData = await request<any>(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
+    params: params
   });
 
 

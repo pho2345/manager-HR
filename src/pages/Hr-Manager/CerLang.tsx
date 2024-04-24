@@ -1,6 +1,6 @@
 import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -16,7 +16,8 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
+import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
+import AddCerLang from '@/reuse/languages/AddLanguages';
 const configDefaultText = configText;
 
 
@@ -24,7 +25,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_CONFIG}/nhan-vien/ngoai-ngu`;
+    const collection = `${SERVER_URL_CONFIG}/ngoai-ngu`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -36,6 +37,10 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [selectRow, setSelectRow] = useState<[]>([]);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [cerLang, setCerLang] = useState<GEN.AdminCerLang[]>([]);
+
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -297,16 +302,16 @@ const TableList: React.FC = () => {
             valueType: 'indexBorder',
         },
         {
-            title: "Cán bộ",
-            key: 'hovaten',
-            dataIndex: 'hovaten',
+            title: "CBVC",
+            key: 'hoVaTen',
+            dataIndex: 'hoVaTen',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hovaten}</>
+                    <> {entity?.hoVaTen}</>
                 );
             },
-            ...getColumnSearchProps('hovaten')
+            ...getColumnSearchProps('hoVaTen')
         },
         {
             title: "Số CMND/CCCD",
@@ -318,18 +323,7 @@ const TableList: React.FC = () => {
                     <> {entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
-        },
-        {
-            title: "Ngày sinh",
-            key: 'sinhNgay',
-            dataIndex: 'sinhNgay',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
-                );
-            },
+            ...getColumnSearchProps('soCCCD')
         },
         {
             title: "Ngoại ngữ",
@@ -354,7 +348,7 @@ const TableList: React.FC = () => {
                     <> {entity?.chungChiDuocCap}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
+            ...getColumnSearchProps('chungChiDuocCap')
         },
 
         {
@@ -364,10 +358,10 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTao}</>
+                    <> {entity?.tenCoSoDaoTaoName}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
+            ...getColumnSearchProps('tenCoSoDaoTaoName')
         },
 
 
@@ -377,7 +371,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> {entity.batDau ? moment(entity.batDau).format(FORMAT_DATE) : ''}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -389,7 +383,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                    <>{entity.ketThuc ? moment(entity.ketThuc).format(FORMAT_DATE) : ''}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -403,6 +397,80 @@ const TableList: React.FC = () => {
             key: 'create_at',
             renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
             ...getColumnSearchRange('create_at')
+        },
+        {
+            title: "Trạng thái",
+            key: 'xacNhan',
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)} </>
+                );
+            },
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={XAC_NHAN}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchPheDuyet(value)
+                                    },
+                                    value: searchPheDuyet
+                                }}
+                                showSearch
+                                placeholder={'Chọn trạng thái'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchPheDuyet(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchPheDuyet ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
         },
         {
             title: configDefaultText['titleOption'],
@@ -440,10 +508,6 @@ const TableList: React.FC = () => {
 
 
 
-    async function add(value: any) {
-
-    }
-
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection);
     }
@@ -456,16 +520,7 @@ const TableList: React.FC = () => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-                options={
-                    {
-                        reload: () => {
-                            return true;
-                        },
-                        setting: {
-                            checkable: false
-                        }
-                    }
-                }
+
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -477,22 +532,47 @@ const TableList: React.FC = () => {
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
                 ]}
+                
                 toolbar={{
-                    settings: [
-                        {
-                            key: 'reload',
-                            tooltip: configDefaultText['reload'],
-                            icon: <ReloadOutlined />,
-                            onClick: () => {
-                                if (actionRef.current) {
-                                    actionRef.current.reload();
+                    filter: (
+                        <LightFilter>
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                                {
+                                    label: 'Ngày tạo',
+                                    value: 'createAt'
+                                },
+                                {
+                                    label: 'Ngày cập nhật',
+                                    value: 'updateAt'
                                 }
-                            }
-                        },
-                    ],
+                            ]}
+                                fieldProps={{
+                                    value: sort
+                                }}
+                                onChange={(e) => {
+                                    setSort(e);
+                                    actionRef?.current?.reload();
+                                }}
+                            />
+                        </LightFilter>
+                    )
                 }}
 
-                request={async () => get(collection)}
+                dataSource={cerLang}
+                request={async () => {
+                    let f: any = {};
+                    if (searchPheDuyet) {
+                        f.pheDuyet = searchPheDuyet;
+                    }
+                    const data = await get(collection, {
+                        ...f,
+                        sort: sort
+                    });
+                    setCerLang(data.data)
+                    return {
+                        data: data.data
+                    }
+                }}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -505,18 +585,6 @@ const TableList: React.FC = () => {
                 columns={columns}
                 rowSelection={{}}
 
-
-
-                // expandable={
-                //     {
-                //         expandIcon: () => <>aaa</>,
-                //         columnTitle: (props: any) => <></>,
-                //         showExpandColumn: true,
-                //         onExpand(expanded, record) {
-                //             console.log(expanded, record)
-                //         },
-                //     }
-                // }
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -575,104 +643,9 @@ const TableList: React.FC = () => {
                 }}
             >
 
-                <ProFormList
-                    name="ngoaiNgu"
-                    creatorButtonProps={{
-                        creatorButtonText: 'Thêm một chứng chỉ ngoại ngữ',
-                    }}
-                    min={1}
-                    copyIconProps={false}
-                    itemRender={({ listDom, action }, { index }) => (
-                        <ProCard
-                            bordered
-                            style={{ marginBlockEnd: 8 }}
-                            title={`Chứng chỉ ngoại ngữ ${index + 1}`}
-                            extra={action}
-                            bodyStyle={{ paddingBlockEnd: 0 }}
-                        >
-                            {listDom}
-                        </ProCard>
-                    )}
-
-                >
-
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormText name="tenNgoaiNgu" key="tenNgoaiNgu" label="Ngoại ngữ" placeholder={'Ngoại ngữ'} />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} />
-                        </Col>
+                <AddCerLang open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
 
 
-                    </Row>
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="batDau"
-                                label={"Ngày cấp"}
-                                placeholder={"Ngày cấp"}
-                                rules={[
-                                    { required: true, message: "Ngày cấp" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="ketThuc"
-                                label={"Ngày hết hạn"}
-                                placeholder={"Ngày hết hạn"}
-                                rules={[
-                                    { required: true, message: "Ngày hết hạn" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                        </Col>
-
-                    </Row>
-
-                    <Row gutter={24} >
-                        <Col span={16} >
-                            <ProFormSelect fieldProps={{
-                                mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Cán bộ" request={async () => {
-                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                                let dataOptions = [] as any;
-                                if (nv) {
-                                    nv.data?.map(e => {
-                                        dataOptions.push({
-                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                            value: `${e.id}`
-                                        });
-                                    })
-                                }
-                                return dataOptions
-                            }} />
-                        </Col>
-                    </Row>
-                </ProFormList>
-
-                
 
             </ModalForm>
 

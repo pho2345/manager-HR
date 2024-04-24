@@ -1,6 +1,6 @@
 import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -16,7 +16,8 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
+import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
+import AddCerTech from '@/reuse/techs/AddCerTech';
 const configDefaultText = configText;
 
 
@@ -24,7 +25,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_CONFIG}/nhan-vien/tin-hoc`;
+    const collection = `${SERVER_URL_CONFIG}/tin-hoc`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -34,8 +35,12 @@ const TableList: React.FC = () => {
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
+    const [cerTech, setCerTech] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [selectRow, setSelectRow] = useState<[]>([]);
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -297,13 +302,13 @@ const TableList: React.FC = () => {
             valueType: 'indexBorder',
         },
         {
-            title: "Cán bộ",
-            key: 'hovaten',
-            dataIndex: 'hovaten',
+            title: "CBVC",
+            key: 'hoVaTen',
+            dataIndex: 'hoVaTen',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hovaten}</>
+                    <> {entity?.hoVaTen}</>
                 );
             },
             ...getColumnSearchProps('hovaten')
@@ -320,17 +325,7 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('xepLoaiChuyenMon')
         },
-        {
-            title: "Ngày sinh",
-            key: 'sinhNgay',
-            dataIndex: 'sinhNgay',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
-                );
-            },
-        },
+
         {
             title: "Tin học",
             key: 'tenTinHoc',
@@ -377,7 +372,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> {entity?.batDau ? moment(entity?.batDau).format(FORMAT_DATE) : ""}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -389,7 +384,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                    <>{entity?.ketThuc ? moment(entity?.ketThuc).format(FORMAT_DATE) : ''}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -401,9 +396,81 @@ const TableList: React.FC = () => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : "",
             ...getColumnSearchRange('create_at')
         },
+
+        {
+            title: "Trạng thái",
+            dataIndex: 'xacNhan',
+            // valueType: 'textarea',
+            key: 'xacNhan',
+            render: (_, entity) => mapXacNhan(entity.xacNhan),
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={XAC_NHAN}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchPheDuyet(value)
+                                    },
+                                    value: searchPheDuyet
+                                }}
+                                showSearch
+                                placeholder={'Chọn trạng thái'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchPheDuyet(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchPheDuyet ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
+        },
+
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -440,10 +507,6 @@ const TableList: React.FC = () => {
 
 
 
-    async function add(value: any) {
-
-    }
-
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection);
     }
@@ -456,16 +519,6 @@ const TableList: React.FC = () => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-                options={
-                    {
-                        reload: () => {
-                            return true;
-                        },
-                        setting: {
-                            checkable: false
-                        }
-                    }
-                }
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -477,22 +530,49 @@ const TableList: React.FC = () => {
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
                 ]}
+
                 toolbar={{
-                    settings: [
-                        {
-                            key: 'reload',
-                            tooltip: configDefaultText['reload'],
-                            icon: <ReloadOutlined />,
-                            onClick: () => {
-                                if (actionRef.current) {
-                                    actionRef.current.reload();
+                    filter: (
+                        <LightFilter>
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                                {
+                                    label: 'Ngày tạo',
+                                    value: 'createAt'
+                                },
+                                {
+                                    label: 'Ngày cập nhật',
+                                    value: 'updateAt'
                                 }
-                            }
-                        },
-                    ],
+                            ]}
+                                fieldProps={{
+                                    value: sort
+                                }}
+                                onChange={(e) => {
+                                    setSort(e);
+                                    actionRef?.current?.reload();
+                                }}
+                            />
+                        </LightFilter>
+                    )
                 }}
 
-                request={async () => get(collection)}
+                dataSource={cerTech}
+                request={async () => {
+                    let f: any = {};
+                    if (searchPheDuyet) {
+                        f.pheDuyet = searchPheDuyet;
+                    }
+
+
+                    const getData = await get(`${collection}`, {
+                        ...f,
+                        sort: sort
+                    })
+                    setCerTech(getData.data)
+                    return {
+                        data: []
+                    }
+                }}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -507,16 +587,6 @@ const TableList: React.FC = () => {
 
 
 
-                // expandable={
-                //     {
-                //         expandIcon: () => <>aaa</>,
-                //         columnTitle: (props: any) => <></>,
-                //         showExpandColumn: true,
-                //         onExpand(expanded, record) {
-                //             console.log(expanded, record)
-                //         },
-                //     }
-                // }
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -527,7 +597,7 @@ const TableList: React.FC = () => {
                 }}
             />
 
-            <ModalForm
+            {/* <ModalForm
                 form={form}
                 title={"Tạo chứng chỉ tin học"}
                 // width={window.innerWidth * 0.3}
@@ -565,8 +635,6 @@ const TableList: React.FC = () => {
 
                 }}
 
-
-
                 submitter={{
                     searchConfig: {
                         resetText: configDefaultText['buttonClose'],
@@ -575,26 +643,6 @@ const TableList: React.FC = () => {
                 }}
             >
 
-                <ProFormList
-                    name="tinHoc"
-                    creatorButtonProps={{
-                        creatorButtonText: 'Thêm một chứng chỉ tin học',
-                    }}
-                    min={1}
-                    copyIconProps={false}
-                    itemRender={({ listDom, action }, { index }) => (
-                        <ProCard
-                            bordered
-                            style={{ marginBlockEnd: 8 }}
-                            title={`Chứng chỉ tin học ${index + 1}`}
-                            extra={action}
-                            bodyStyle={{ paddingBlockEnd: 0 }}
-                        >
-                            {listDom}
-                        </ProCard>
-                    )}
-
-                >
 
                     <Row gutter={24} >
                         <Col span={8} >
@@ -670,16 +718,16 @@ const TableList: React.FC = () => {
                             }} />
                         </Col>
                     </Row>
-                </ProFormList>
 
                 
 
-            </ModalForm>
+            </ModalForm> */}
+
+            <AddCerTech open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
 
             <ModalForm
-                title={"Cập nhật Kỷ luật"}
+                title={"Cập nhật chứng chỉ tin học"}
                 form={form}
-                width={window.innerWidth * 0.3}
                 open={updateModalOpen}
                 modalProps={{
                     destroyOnClose: true,
@@ -706,60 +754,43 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={24} >
-                        <ProFormSelect
-                            label={"Đơn vị công tác"}
-                            // width='md'
-                            name='IdCoQuanQuyetDinh'
-                            placeholder={`Đơn vị công tác`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Đơn vị công tác'
-                                },
-                            ]}
-                            showSearch
-                        // options={organ}
-                        />
+                    <Col span={8} >
+                        <ProFormText name="tenTinHoc" key="tenTinHoc" label="Tin học" placeholder={'Tin học'} />
                     </Col>
 
-
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hành vi vi phạm"}
-                            // width='md'
-                            name='hanhViViPhamChinh'
-                            placeholder={`Hành vi vi phạm`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hành vi vi phạm'
-                                },
-                            ]} />
+                    <Col span={8} >
+                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
                     </Col>
 
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hình thức"}
-                            // width='md'
-                            name='hinhThuc'
-                            placeholder={`Hình thức`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức'
-                                },
-                            ]} />
+                    <Col span={8} >
+                        <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} />
                     </Col>
-                    <Col span={24} >
+                </Row>
+
+                <Row gutter={24} >
+                    <Col span={8} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày quyết định"}
-                            placeholder={"Ngày quyết định"}
+                            label={"Ngày cấp"}
+                            placeholder={"Ngày cấp"}
                             rules={[
-                                { required: true, message: "Ngày quyết định" }
+                                { required: true, message: "Ngày cấp" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+                    <Col span={8} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày hết hạn"}
+                            placeholder={"Ngày hết hạn"}
+                            rules={[
+                                { required: true, message: "Ngày hết hạn" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -770,22 +801,46 @@ const TableList: React.FC = () => {
                         />
                     </Col>
 
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
-                            rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
+                    <Col span={8} >
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
+
+                </Row>
+
+
+
+                <Row gutter={24} >
+                        {/* <Col span={12} >
+                            <ProFormSelect
+                                label={"CBVC"}
+                                // width='md'
+                                name=''
+                                placeholder={`CBVC`}
+                                rules={[
+                                    {
+                                        required: true,
+
+                                    },
+                                ]}
+                               
+
+                             
+                                showSearch
+
+                                request={async () => {
+                                    const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
+                                    const dataOptions = data.data.map((item: any) => {
+                                        return {
+                                            label: `${item.hoVaTen} - ${item.soCCCD}`,
+                                            value: item.id
+                                        }
+                                    })
+                                    return dataOptions;
+                                }}
+
+
+                            />
+                        </Col> */}
                 </Row>
             </ModalForm>
 

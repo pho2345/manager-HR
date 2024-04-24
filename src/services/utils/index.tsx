@@ -204,3 +204,17 @@ export async function getProvine() {
 
 }
 
+export const formatter = (value: any) => {
+  if (value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  return '';
+};
+
+export const parser = (value: any) => {
+  if (value) {
+    return value.replace(/\$\s?|(,*)/g, '');
+  }
+  return undefined;
+};
+

@@ -16,7 +16,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from '@/services/utils/constant';
+import AddProKnow from '@/reuse/pro-knowledge/AddProKnow';
 const configDefaultText = configText;
 
 
@@ -24,7 +24,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_CONFIG}/nhan-vien/nghiep-vu-chuyen-nganh`;
+    const collection = `${SERVER_URL_CONFIG}/nghiep-vu-chuyen-nganh`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -298,15 +298,15 @@ const TableList: React.FC = () => {
         },
         {
             title: "Cán bộ",
-            key: 'hovaten',
-            dataIndex: 'hovaten',
+            key: 'hoVaTen',
+            dataIndex: 'hoVaTen',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hovaten}</>
+                    <> {entity?.hoVaTen}</>
                 );
             },
-            ...getColumnSearchProps('hovaten')
+            ...getColumnSearchProps('hoVaTen')
         },
         {
             title: "Số CMND/CCCD",
@@ -318,19 +318,9 @@ const TableList: React.FC = () => {
                     <> {entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
+            ...getColumnSearchProps('soCCCD')
         },
-        {
-            title: "Ngày sinh",
-            key: 'sinhNgay',
-            dataIndex: 'sinhNgay',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
-                );
-            },
-        },
+      
 
         {
             title: "Chứng chỉ",
@@ -352,7 +342,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTao}</>
+                    <> {entity?.tenCoSoDaoTaoName}</>
                 );
             },
             // ...getColumnSearchProps('coQuanQuyetDinh')
@@ -365,7 +355,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> { entity?.batDau ? moment(entity?.batDau).format(FORMAT_DATE) : ""}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -377,7 +367,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                    <>{ entity?.ketThuc ? moment(entity?.ketThuc).format(FORMAT_DATE) : ""}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -389,7 +379,7 @@ const TableList: React.FC = () => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : "",
             ...getColumnSearchRange('create_at')
         },
         {
@@ -515,153 +505,7 @@ const TableList: React.FC = () => {
                 }}
             />
 
-            <ModalForm
-                form={form}
-                title={"Tạo nghiệp vụ chuyên ngành"}
-                // width={window.innerWidth * 0.3}
-                open={createModalOpen}
-                modalProps={{
-                    destroyOnClose: true,
-                    onCancel: () => {
-                        handleModalOpen(false)
-                    },
-                }}
-                onFinish={async (value) => {
-                    if (value.nghiepVuChuyenNganh && value.nghiepVuChuyenNganh.length !== 0) {
-                        const newData = value.nghiepVuChuyenNganh.map((e: any) => {
-                            const { danhSachMaHoSo, ketThuc, batDau, ...other } = e;
-                            return {
-                                nghiepVuChuyenNganh: {
-                                    ...other,
-                                    ketThuc: moment(ketThuc).toISOString(),
-                                    batDau: moment(batDau).toISOString(),
-                                },
-                                danhSachMaHoSo
-                            }
-                        });
-
-
-                        const success = await post2(collection, {}, newData);
-                        if (success) {
-                            handleModalOpen(false);
-                            form.resetFields();
-                            if (actionRef.current) {
-                                actionRef.current.reload();
-                            }
-                        }
-                    }
-
-                }}
-
-
-
-                submitter={{
-                    searchConfig: {
-                        resetText: configDefaultText['buttonClose'],
-                        submitText: configDefaultText['buttonAdd'],
-                    },
-                }}
-            >
-
-                <ProFormList
-                    name="nghiepVuChuyenNganh"
-                    creatorButtonProps={{
-                        creatorButtonText: 'Thêm một nghiệp vụ chuyên ngành',
-                    }}
-                    min={1}
-                    copyIconProps={false}
-                    itemRender={({ listDom, action }, { index }) => (
-                        <ProCard
-                            bordered
-                            style={{ marginBlockEnd: 8 }}
-                            title={`Nghiệp vụ chuyên ngành ${index + 1}`}
-                            extra={action}
-                            bodyStyle={{ paddingBlockEnd: 0 }}
-                        >
-                            {listDom}
-                        </ProCard>
-                    )}
-
-                >
-
-                    <Row gutter={24} >
-
-                        <Col span={12} >
-                            <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
-                        </Col>
-
-                        <Col span={12} >
-                            <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                        </Col>
-
-
-
-                    </Row>
-                    <Row gutter={24} >
-
-                        
-
-                        <Col span={12} >
-                            <ProFormDatePicker
-                                name="batDau"
-                                label={"Ngày cấp"}
-                                placeholder={"Ngày cấp"}
-                                rules={[
-                                    { required: true, message: "Ngày cấp" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-                        <Col span={12} >
-                            <ProFormDatePicker
-                                name="ketThuc"
-                                label={"Ngày hết hạn"}
-                                placeholder={"Ngày hết hạn"}
-                                rules={[
-                                    { required: true, message: "Ngày hết hạn" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-
-
-
-                    </Row>
-
-                    <Row gutter={24} >
-                        <Col span={16} >
-                            <ProFormSelect fieldProps={{
-                                mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Cán bộ" request={async () => {
-                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                                let dataOptions = [] as any;
-                                if (nv) {
-                                    nv.data?.map(e => {
-                                        dataOptions.push({
-                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                            value: `${e.id}`
-                                        });
-                                    })
-                                }
-                                return dataOptions
-                            }} />
-                        </Col>
-                    </Row>
-                </ProFormList>
-
-
-
-            </ModalForm>
+            <AddProKnow open={createModalOpen} actionRef={actionRef} handleOpen={handleModalOpen}/>
 
             <ModalForm
                 title={"Cập nhật Kỷ luật"}

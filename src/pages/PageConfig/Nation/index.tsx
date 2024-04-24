@@ -16,11 +16,12 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { runConsumer } from '@/pages/kafka/comsumer';
+// import { runConsumer } from '@/pages/kafka/comsumer';
 const configDefaultText = configText;
 import { Kafka, logLevel } from 'kafkajs';
 import MyComponent from '@/pages/kafka/producer';
-// import { runProducer } from '@/pages/kafka/producer';
+import { runConsumer } from '@/pages/kafka/comsumer';
+// import  runConsumer  from '@/pages/kafka/consumer';
 
 
 

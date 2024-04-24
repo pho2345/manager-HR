@@ -23,6 +23,7 @@ import {
   ProFormInstance,
   ProFormSwitch,
   ProCard,
+  LightFilter,
 
 } from '@ant-design/pro-components';
 import {
@@ -43,12 +44,13 @@ import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, m
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import AddNew from './AddNew';
-import { getOption, getProvine, handleAdd2 } from '@/services/utils';
+import { formatter, getOption, getProvine, handleAdd2, parser } from '@/services/utils';
 import { MdOutlineEdit } from 'react-icons/md';
 import AddBonus from '@/reuse/bonus/AddBonus';
 import UpdateForm from './UpdateForm';
 import { TINH_TRANG_SUC_KHOE, XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
-import { negate } from 'lodash';
+import { negate, truncate } from 'lodash';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 
 
 
@@ -82,10 +84,12 @@ async function get(url: string, params = {}) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
-    params: params
+    params: {
+      ...params
+    },
+    timeout: 10000
   });
 
-  console.log('fetchData', fetchData)
 
   return {
     total: fetchData && fetchData?.length,
@@ -113,16 +117,16 @@ const TableList: React.FC = () => {
   const [religion, setReligion] = useState<GEN.Option[]>([]);
   const [membership, setMembership] = useState<GEN.Option[]>([]);
 
-  const formRef = useRef<ProFormInstance>();
   const formRef2 = useRef<ProFormInstance>();
-  const formRef3 = useRef<ProFormInstance>();
 
 
   const [openApproval, setOpenApproval] = useState<boolean>(false);
-  const [statusApproval, setStatusApproval] = useState<"CHO_PHE_DUYET" | "DA_PHE_DUYET" | "TU_CHOI" | null>(null);
 
   const [visible, setVisible] = useState(false);
   const [update, setUpdate] = useState(false);
+
+  const [updatePosition, setUpdatePosition] = useState(false);
+
 
   const [officer, setOfficer] = useState<GEN.Option[]>([]);
   const [civilServant, setCivilServant] = useState<GEN.Option[]>([]);
@@ -137,7 +141,9 @@ const TableList: React.FC = () => {
   const [searchDanTocId, setSearchDanTocId] = useState<string | null>(null);
   const [searchChucVuHienTaiId, setSearchChucVuHienTaiId] = useState<string | null>(``);
   const [searchCoQuanToChucDonViId, setSearchCoQuanToChucDonViId] = useState<string>(``);
-  const [searchPheDuyet, setSearchPheDuyet] = useState<"CHO_PHE_DUYET" | "DA_PHE_DUYET" | "TU_CHOI" | null>(null);
+  const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+  const [sort, setSort] = useState<GEN.SORT>('createAt');
+  const [page, setPage] = useState<number>(0);
 
 
   const params = useParams();
@@ -485,14 +491,12 @@ const TableList: React.FC = () => {
     }
   }
 
-
-
-
-
-
-
-
   const columns: ProColumns<GEN.Employee>[] = [
+    {
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+    },
     {
       // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
       title: 'Ho tên',
@@ -853,10 +857,16 @@ const TableList: React.FC = () => {
       },
     },
 
-
-
-
-
+    {
+      title: 'Ngày tạo',
+      key: 'create_at',
+      dataIndex: 'date',
+      render: (_, entity) => {
+        return (
+          <>{entity?.create_at ? moment(entity.create_at).format(FORMAT_DATE) : ''}</>
+        );
+      },
+    },
 
     // {
     //   title: 'Giới tính',
@@ -949,27 +959,35 @@ const TableList: React.FC = () => {
           <Menu>
             <Menu.Item key="2"
               onClick={async () => {
-                // setOpenWgs(true);
-                // refIdCateogry.current = entity.id;
-                // refNameCategory.current = entity.attributes.name;
-                // setUpdate(true);
-                // const getInfo = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
-                // setInfo(getInfo.data);
-                // formRef.current?.setFieldsValue({
-                //   hoVaTen: 'bac',
-                //   soCCCD: 'bac',
-                // })
-
-                const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
-
-                setInfo(profile.data);
                 setUpdate(true)
-                form.setFieldsValue({
-                  hoVaTen: 'abc'
-                })
+                const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
+                setInfo(profile.data);
                 refId.current = entity.id
               }}
             >Cập nhật</Menu.Item>
+
+            <Menu.Item key="3"
+              onClick={async () => {
+                setUpdatePosition(true)
+                const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
+                if (profile) {
+                  form.setFieldsValue({
+                    chucVuHienTaiId: profile.data?.chuVu?.chucVuHienTaiId,
+                    ngayBoNhiem: profile.data?.chuVu?.ngayBoNhiem ? moment(profile.data.ngayBoNhiem) : null,
+                    ngayBoNhiemLai: profile.data?.chuVu?.ngayBoNhiemLai ? moment(profile.data.ngayBoNhiemLai) : null,
+                    duocQuyHoacChucDanh: profile.data?.chuVu?.duocQuyHoacChucDanh,
+                    phuCapChucVu: profile.data?.chuVu?.phuCapChucVu,
+                    coQuanToChucDonViTuyenDungId: profile.data?.chuVu?.coQuanToChucDonViTuyenDungId,
+
+                  })
+                  refId.current = entity.id
+                }
+                else {
+                  message.error("Không tìm thấy thông tin");
+                }
+
+              }}
+            >Cập nhật chức vụ</Menu.Item>
           </Menu>
         );
         return (
@@ -1014,7 +1032,7 @@ const TableList: React.FC = () => {
 
 
   const add = (fields: any) => {
-    return handleAdd2(fields, `${collection}`)
+    return handleAdd2(fields, `${SERVER_URL_ACCOUNT}/nhan-vien/tai-khoan`);
   }
 
   const updateProfile = async (data: GEN.ThongTinCanBo) => {
@@ -1022,6 +1040,22 @@ const TableList: React.FC = () => {
     if (up) {
       message.success("Cập nhật thành công");
       setVisible(false);
+      if (actionRef.current) {
+        actionRef.current?.reloadAndRest?.();
+      }
+    }
+  }
+
+  const handleUpdatePosition = async (data: any) => {
+    const { ngayBoNhiem, ngayBoNhiemLai, ...other } = data;
+    const up = await patch(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${refId.current}/chuc-vu`, {
+      ...other,
+      ngayBoNhiem: ngayBoNhiem ? moment(ngayBoNhiem).toISOString() : null,
+      ngayBoNhiemLai: ngayBoNhiemLai ? moment(ngayBoNhiemLai).toISOString() : null,
+    });
+    if (up) {
+      message.success("Cập nhật thành công");
+      setUpdatePosition(false);
       if (actionRef.current) {
         actionRef.current?.reloadAndRest?.();
       }
@@ -1064,42 +1098,78 @@ const TableList: React.FC = () => {
             ]
           }}
 
-          // toolbar={{
-          //   settings: [{
-          //     key: 'reload',
-          //     tooltip: configDefaultText['reload'],
-          //     icon: <ReloadOutlined></ReloadOutlined>,
-          //     onClick: () => {
-          //       if (actionRef.current) {
-          //         actionRef.current.reload();
-          //       }
-          //     }
-          //   }]
-          // }}
-
-
 
           pagination={{
-            pageSize: 10,
             locale: {
               next_page: configDefaultText['nextPage'],
               prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
               return `${range[range.length - 1]} / Tổng số: ${total}`
-            }
+            },
+            onChange(page, _) {
+              setPage(page - 1);
+            },
+            total: 100,
+            showSizeChanger: false,
+
           }}
+
+          toolbar={{
+            filter: (
+              <LightFilter>
+                <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                  {
+                    label: 'Ngày tạo',
+                    value: 'createAt'
+                  },
+                  {
+                    label: 'Ngày cập nhật',
+                    value: 'updateAt'
+                  }
+                ]}
+                  fieldProps={{
+                    value: sort
+                  }}
+                  onChange={(e) => {
+                    setSort(e);
+                    actionRef?.current?.reload();
+                  }}
+                />
+              </LightFilter>
+            )
+          }}
+
+
 
           dataSource={document}
 
           request={async () => {
+            let f: any = {};
+            if (searchHoVaTen && searchHoVaTen.trim() !== '') {
+              f.hoVaTen = searchHoVaTen;
+            }
+            if (searchSoCCCD && searchSoCCCD.trim() !== '') {
+              f.soCCCD = searchSoCCCD;
+            }
+            if (searchDanTocId) {
+              f.danTocId = searchDanTocId;
+            }
+            if (searchChucVuHienTaiId) {
+              f.chucVuHienTaiId = searchChucVuHienTaiId;
+            }
+            if (searchCoQuanToChucDonViId) {
+              f.coQuanToChucDonViId = searchCoQuanToChucDonViId;
+            }
+            if (searchPheDuyet) {
+              f.pheDuyet = searchPheDuyet;
+            }
+
             const data = await get(`${collection}`, {
-              soCCCD: searchSoCCCD,
-              hoVaTen: searchHoVaTen,
-              danTocId: searchDanTocId,
-              chucVuHienTaiId: searchChucVuHienTaiId,
-              coQuanToChucDonViId: searchCoQuanToChucDonViId,
-              pheDuyet: searchPheDuyet
+              ...f,
+              size: 15,
+              page: page,
+              sort: sort
             });
             setDocument(data?.data);
             return data;
@@ -1197,7 +1267,7 @@ const TableList: React.FC = () => {
         </ModalForm>
 
 
-        <ModalForm
+        {/* <ModalForm
           form={form}
           title={'Phê duyệt'}
           width={window.innerWidth * 0.3}
@@ -1233,15 +1303,138 @@ const TableList: React.FC = () => {
                     message: "Vui lòng chọn trạng thái"
                   },
                 ]}
-                fieldProps={{
-                  value: statusApproval
-                }}
+                // fieldProps={{
+                //   value: statusApproval
+                // }}
                 options={XAC_NHAN}
-                onChange={(e) => setStatusApproval(e)}
+              // onChange={(e) => setStatusApproval(e)}
               />
 
 
             </Col>
+          </Row>
+        </ModalForm> */}
+
+        <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nhan-vien/ho-so/phe-duyet'/>
+
+        <ModalForm
+          form={form}
+          title={'Cập nhật chức vụ'}
+          open={updatePosition}
+
+          modalProps={{
+            destroyOnClose: true,
+            onCancel: () => {
+              setUpdatePosition(false);
+            },
+          }}
+          onFinish={async (value) => {
+            await handleUpdatePosition(value);
+          }}
+
+          submitter={{
+            searchConfig: {
+              resetText: configDefaultText['buttonClose'],
+              submitText: configDefaultText['buttonAdd'],
+            },
+          }}
+        >
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="chucVuHienTaiId"
+                label={"Chức vụ hiện tại"}
+                placeholder={"Chức vụ hiện tại"}
+                rules={[
+                  { required: true, message: "Chức vụ hiện tại" },
+                ]}
+                request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormSelect
+                className="w-full"
+                name="coQuanToChucDonViTuyenDungId"
+                label={<FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" />}
+                placeholder={"Cơ quan, đơn vị tuyển dụng"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
+                ]}
+                request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+              />
+
+            </Col>
+          </Row>
+
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0">
+              <ProFormDatePicker
+                className="w-full"
+                name="ngayBoNhiem"
+                label={"Ngày bổ nhiệm chức vụ"}
+                placeholder={"Ngày bổ nhiệm chức vụ"}
+                rules={[
+                  { required: true, message: "Ngày bổ nhiệm chức vụ" },
+                ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDatePicker
+                className="w-full"
+                name="ngayBoNhiemLai"
+                label={"Ngày bổ nhiệm lại chức vụ"}
+                placeholder={"Ngày bổ nhiệm lại chức vụ"}
+                rules={[
+                  { required: true, message: "Ngày bổ nhiệm lại chức vụ" },
+                ]}
+                fieldProps={{
+                  style: {
+                    width: "100%"
+                  },
+                  disabledDate: disabledDate
+                }}
+              />
+            </Col>
+          </Row>
+          <Row gutter={24} className="m-0">
+            <Col span={12} className="gutter-row p-0" >
+              <ProFormDigit
+                className="w-full"
+                name="phuCapChucVu"
+                label={"Phụ cấp chức vụ (vnđ)"}
+                placeholder={"Phụ cấp chức vụ (vnđ)"}
+                rules={[
+                  { required: true, message: "Phụ cấp chức vụ" },
+                ]}
+                fieldProps={{
+                  min: 0,
+                  formatter,
+                  parser,
+                }}
+              />
+            </Col>
+
+            <Col span={12} className="gutter-row p-0">
+              <ProFormText
+                className="w-full"
+                name="duocQuyHoacChucDanh"
+                label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}
+                placeholder={"Được quy hoạch chức danh"}
+                rules={[
+                  { required: true, message: <FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" /> }
+                ]}
+              />
+            </Col>
+
           </Row>
         </ModalForm>
 
@@ -1258,9 +1451,7 @@ const TableList: React.FC = () => {
 
           onCurrentChange={(value: number) => {
 
-            if (value === 1) {
-              formRef.current?.setFieldValue("ngheNghiepTruocKhiTuyenDung", 'abc');
-            }
+
           }}
           onFinish={async (value) => {
 
@@ -1457,7 +1648,7 @@ const TableList: React.FC = () => {
                   label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                   placeholder={"Dân tộc"}
                   showSearch
-                  request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc`, 'id', 'name')}
+                  request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
                   rules={[
                     { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
                   ]}
@@ -1508,9 +1699,6 @@ const TableList: React.FC = () => {
                   ]}
                 />
               </Col>
-
-
-
             </Row>
 
             <Row gutter={24} className="m-0">
@@ -1636,6 +1824,12 @@ const TableList: React.FC = () => {
                     { required: true, message: "Tình trạng sức khỏe" }
                   ]}
                   options={TINH_TRANG_SUC_KHOE}
+                  fieldProps={{
+                    onFocus: () => {
+                      console.log('focus');
+                    }
+                  }}
+                  showSearch
                 />
               </Col>
 
@@ -1654,14 +1848,20 @@ const TableList: React.FC = () => {
 
             <Row gutter={24} className="m-0">
               <Col span={12} className="gutter-row p-0">
-                <ProFormText
+                <ProFormDigit
                   className="w-full"
                   name="canNang"
-                  label={"Cân nặng"}
-                  placeholder={"Cân nặng"}
+                  label={"Cân nặng (kg)"}
+                  placeholder={"Cân nặng (kg)"}
                   rules={[
                     { required: true, message: "Cân nặng" }
                   ]}
+                  fieldProps={{
+                    min: 30,
+                    max: 200,
+
+                  }}
+
                 />
               </Col>
 
@@ -1715,20 +1915,9 @@ const TableList: React.FC = () => {
               ngayVaoDangCongSanVietNam: info?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam ? moment(info?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam) : null,
               soTruongCongTac: info?.thongTinTuyenDung?.soTruongCongTac ?? null,
               congViecLamLauNhat: info?.thongTinTuyenDung?.congViecLamLauNhat ?? null,
-
-
-
-
               //
-             
-
             }}
-
           >
-
-
-
-
             <ProCard title={"Ngạch, Bậc"} type="inner" bordered>
               <ProFormSwitch
                 checkedChildren="Công chức"
@@ -1802,7 +1991,7 @@ const TableList: React.FC = () => {
                 <Col span={12} className="gutter-row p-0 w-full" >
                   <ProFormDigit
                     name="phanTramHuongLuongNgach"
-                    label={"Phần trăm hưởng lương ngạch"}
+                    label={"Phần trăm hưởng lương ngạch (%)"}
                     placeholder={"Phần trăm hưởng lương ngạch"}
                     rules={[
                       { required: true, message: "Phần trăm hưởng lương ngạch" }
@@ -1823,7 +2012,7 @@ const TableList: React.FC = () => {
                 <Col span={12} className="gutter-row p-0 w-full" >
                   <ProFormDigit
                     name="phuCapThamNienVuotKhungNgach"
-                    label={"Phụ cấp thâm niên vượt khung ngạch"}
+                    label={"Phụ cấp thâm niên vượt khung ngạch (%)"}
                     placeholder={"Phụ cấp thâm niên vượt khung ngạch"}
                     rules={[
                       { required: true, message: "Phụ cấp thâm niên vượt khung ngạch" }
@@ -1832,6 +2021,8 @@ const TableList: React.FC = () => {
                       style: {
                         width: "100%"
                       },
+                      min: 0,
+                      max: 100
                     }}
                   />
                 </Col>
@@ -1883,28 +2074,6 @@ const TableList: React.FC = () => {
                   />
                 </Col>
               </Row>
-
-
-              <Row gutter={24} className="m-0">
-                <Col span={12} className="gutter-row p-0" >
-                  <ProFormDatePicker
-                    className="w-full"
-                    name="ngayVaoCoQuanHienDangCongTac"
-                    label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
-                    placeholder={"Ngày vào cơ quan công tác"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
-                    ]}
-                    fieldProps={{
-                      style: {
-                        width: "100%"
-                      },
-                      disabledDate: disabledDate
-                    }}
-                  />
-                </Col>
-              </Row>
-
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0">
                   <ProFormText
@@ -1929,6 +2098,29 @@ const TableList: React.FC = () => {
                   />
                 </Col>
               </Row>
+
+
+              <Row gutter={24} className="m-0">
+                <Col span={12} className="gutter-row p-0" >
+                  <ProFormDatePicker
+                    className="w-full"
+                    name="ngayVaoCoQuanHienDangCongTac"
+                    label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
+                    placeholder={"Ngày vào cơ quan công tác"}
+                    rules={[
+                      { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
+                    ]}
+                    fieldProps={{
+                      style: {
+                        width: "100%"
+                      },
+                      disabledDate: disabledDate
+                    }}
+                  />
+                </Col>
+              </Row>
+
+
             </ProCard>
 
 
@@ -2029,7 +2221,7 @@ const TableList: React.FC = () => {
                     label={"Ngày bổ nhiệm lại chức vụ"}
                     placeholder={"Ngày bổ nhiệm lại chức vụ"}
                     rules={[
-                      { required: true, message:"Ngày bổ nhiệm lại chức vụ" },
+                      { required: true, message: "Ngày bổ nhiệm lại chức vụ" },
                     ]}
                     fieldProps={{
                       style: {
@@ -2051,7 +2243,9 @@ const TableList: React.FC = () => {
                       { required: true, message: "Phụ cấp chức vụ" },
                     ]}
                     fieldProps={{
-                      min: 0
+                      min: 0,
+                      formatter,
+                      parser,
                     }}
                   />
                 </Col>
@@ -2065,7 +2259,9 @@ const TableList: React.FC = () => {
                       { required: true, message: "Phụ cấp khác" },
                     ]}
                     fieldProps={{
-                      min: 0
+                      min: 0,
+                      formatter,
+                      parser,
                     }}
                   />
                 </Col>
@@ -2094,7 +2290,9 @@ const TableList: React.FC = () => {
                       { required: true, message: "Tiền lương (vnđ)" },
                     ]}
                     fieldProps={{
-                      min: 0
+                      min: 0,
+                      formatter,
+                      parser,
                     }}
                   />
                 </Col>
@@ -2151,7 +2349,9 @@ const TableList: React.FC = () => {
                       { required: true, message: "Phụ cấp kiêm nhiệm (vnđ)" },
                     ]}
                     fieldProps={{
-                      min: 0
+                      min: 0,
+                      formatter,
+                      parser,
                     }}
                   />
                 </Col>
@@ -2263,8 +2463,8 @@ const TableList: React.FC = () => {
             }}
             className="w-full"
             initialValues={{
-              ngayNhapNgu: info?.quanSu.ngayNhapNgu ? moment(info?.quanSu.ngayNhapNgu ) : null,
-              ngayXuatNgu: info?.quanSu.ngayXuatNgu? moment(info?.quanSu.ngayXuatNgu) : null,
+              ngayNhapNgu: info?.quanSu?.ngayNhapNgu ? moment(info?.quanSu?.ngayNhapNgu) : null,
+              ngayXuatNgu: info?.quanSu?.ngayXuatNgu ? moment(info?.quanSu?.ngayXuatNgu) : null,
               ngayThamGiaToChucChinhTriXaHoiDauTien: info?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien ? moment(info?.thongTinTuyenDung.ngayThamGiaToChucChinhTriXaHoiDauTien) : null,
 
               //dang
@@ -2274,10 +2474,11 @@ const TableList: React.FC = () => {
               //hoc-van
               doiTuongChinhSach: info?.doiTuongChinhSach ?? null,
               trinhDoGiaoDucPhoThong: info?.hocVan?.trinhDoGiaoDucPhoThong ?? null,
-              trinhDoChuyenMonCaoNhat: info?.hocVan?.trinhDoChuyenMon ?? null,
+              trinhDoChuyenMon: info?.hocVan?.trinhDoChuyenMon ?? null,
               danhHieuNhaNuocPhongTang: info?.hocVan?.danhHieuNhaNuocPhongTang ?? null,
               hocHam: info?.hocVan?.hocHam ?? null,
               capBacLoaiQuanHamQuanDoi: info?.quanSu?.capBacLoaiQuanHamQuanDoi ?? null,
+              thanhPhanGiaDinh: info?.thanhPhanGiaDinh ?? null,
             }}
           >
 
@@ -2481,7 +2682,7 @@ const TableList: React.FC = () => {
                   />
                 </Col>
               </Row>
-              
+
             </ProCard>
 
 

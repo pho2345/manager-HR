@@ -405,8 +405,8 @@ declare namespace GEN {
     nhomVienChucId: number,
     nhomVienChucName: string,
     loaiVienChucId: number,
-    loaiVienChucLoai:string,
-    loaiVienChucName:string,
+    loaiVienChucLoai: string,
+    loaiVienChucName: string,
     bacLuongId: number,
     bacLuongName: string,
     heSo: number
@@ -566,7 +566,7 @@ declare namespace GEN {
     create_at: Date,
     update_at: Date,
     trang_thai: boolean,
-    pheDuyet: 'CHO_PHE_DUYET' | 'DA_PHE_DUYET' | 'TU_CHOI',
+    pheDuyet: XACNHAN,
   }
 
   interface ThongTinTuyenDung {
@@ -905,7 +905,7 @@ declare namespace GEN {
     hoSoId: string,
     lyDo: string,
     hovaten: string,
-    xacNhan: "CHO_XAC_NHAN" | "XAC_NHAN" | "TU_CHOI" | "QUA_HAN",
+    xacNhan: XACNHAN,
     xepLoaiChuyenMon: "LOAI_A" | "LOAI_B" | "LOAI_C" | "LOAI_D",
   }
 
@@ -914,7 +914,8 @@ declare namespace GEN {
     nam: number,
     coQuanQuyetDinh: string
     hanhViViPhamChinh: sring
-    IdCoQuanQuyetDinh: string,
+    coQuanQuyetDinhId: string,
+    coQuanQuyetDinhName: string,
     hinhThuc: string,
     batDau: string,
     ketThuc: string,
@@ -922,84 +923,91 @@ declare namespace GEN {
     update_at: string,
     sinhNgay: string
     soCCCD: string,
-    hovaten: string,
+    hoVaTen: string,
+    xacNhan: XACNHAN,
+
   }
 
   type AdminGoOnBuss = {
     id: number,
-    donViCongTac: string
-    IdDonViCongTac: number,
+    donViCongTacName: string
+    donViCongTacId: number,
+    chucDanh: string,
     batDau: string,
     ketThuc: string,
     create_at: string
     update_at: string,
     sinhNgay: string
     soCCCD: string,
-    hovaten: string,
+    hoVaTen: string,
+    hoSoId: string,
+    xacNhan: XACNHAN,
   }
 
   type AdminCerLang = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
-    hovaten: string,
-    'soCCCD': string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
-    tenCoSoDaoTao: string,
-    IdTenCoSoDaoTao: number,
+    tenCoSoDaoTaoName: string,
+    tenCoSoDaoTaoId: number,
     tenNgoaiNgu: string,
     chungChiDuocCap: string,
     diemSo: number,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string
   }
 
   type AdminCerTech = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
-    hovaten: string,
-    'soCCCD': string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
     tenCoSoDaoTao: string,
-    IdTenCoSoDaoTao: number,
+    tenCoSoDaoTaoName: number,
     tenTinHoc: string,
     chungChiDuocCap: string,
     diemSo: number,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string
   }
 
   type AdminProfessionalKnowledge = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
-    hovaten: string,
-    'soCCCD': string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
-    tenCoSoDaoTao: string,
-    IdTenCoSoDaoTao: number,
+    tenCoSoDaoTaoName: string,
+    tenCoSoDaoTaoId: number,
     chungChiDuocCap: string,
     diemSo: number,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string
   }
+
+  type XACNHAN = 'CHO_PHE_DUYET' | 'DA_PHE_DUYET' | 'TU_CHOI'
 
   type AdminPoliticalTheory = {
     id: number,
     maSyll: string,
     batDau: string,
     hovaten: string,
-    'soCCCD': string,
+    soCMND: string,
     ketThuc: string,
     tenCoSoDaoTao: string,
     IdTenCoSoDaoTao: number,
     hinhThucDaoTao: string,
     vanBangDuocCap: string,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string,
   }
@@ -1010,22 +1018,24 @@ declare namespace GEN {
     maSyll: string,
     batDau: string,
     hovaten: string,
-    'soCCCD': string,
+    soCMND: string,
     ketThuc: string,
     toChucDiaChiCongViec: string,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string,
   }
+
+
 
   type AdminArmy = {
     id: number,
     maSyll: string,
     batDau: string,
     hovaten: string,
-    'soCCCD': string,
+    soCMND: string,
     ketThuc: string,
-    xacNhan: CHO_XAC_NHAN | XAC_NHAN | TU_CHOI | QUA_HAN,
+    xacNhan: XACNHAN
     create_at: string,
     update_at: string,
     tenCoSoDaoTao: string,
@@ -1044,12 +1054,6 @@ declare namespace GEN {
     update_at: string
   }
 
-  type AddBonus = {
-    actionRef: any;
-    createModalOpen: boolean;
-    handleModalOpen: function;
-    id: string;
-  }
 
 
 
@@ -1135,6 +1139,64 @@ declare namespace GEN {
     };
     pheDuyet: string;
   }
-  
+
+  type BonusAddNewProps = {
+    actionRef: any;
+    createModalOpen: boolean;
+    handleModalOpen: function;
+    id?: string;
+  }
+
+
+  type DisciplineAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+  }
+
+
+  type GOBAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+  }
+
+  type CerLangAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+  }
+
+
+  type SORT = "createAt" | "updateAt";
+
+  type CerTechAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+  }
+
+  type SelectedRow = {
+    id: string
+  }
+  type ModalApproval = {
+    openApproval: boolean;
+    setOpenApproval: (boolean) => void;
+    actionRef: any;
+    selectedRow: SelectedRow[];
+    subDirectory: string;
+
+  }
+
 }
 

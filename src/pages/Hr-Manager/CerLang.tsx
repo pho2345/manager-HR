@@ -14,10 +14,11 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddCerLang from '@/reuse/languages/AddLanguages';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -36,11 +37,11 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [cerLang, setCerLang] = useState<GEN.AdminCerLang[]>([]);
-
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -531,8 +532,17 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+                    selectedRow.length > 0 && (<Button
+                        type='dashed'
+                        key='primary'
+                        onClick={() => {
+                            setOpenApproval(true);
+                        }}
+                    >
+                        Phê duyệt
+                    </Button>)
                 ]}
-                
+
                 toolbar={{
                     filter: (
                         <LightFilter>
@@ -583,7 +593,12 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{}}
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
 
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
@@ -595,64 +610,14 @@ const TableList: React.FC = () => {
                 }}
             />
 
-            <ModalForm
-                form={form}
-                title={"Tạo chứng chỉ ngoại ngữ"}
-                // width={window.innerWidth * 0.3}
-                open={createModalOpen}
-                modalProps={{
-                    destroyOnClose: true,
-                    onCancel: () => {
-                        handleModalOpen(false)
-                    },
-                }}
-                onFinish={async (value) => {
-                    if (value.ngoaiNgu && value.ngoaiNgu.length !== 0) {
-                        const newData = value.ngoaiNgu.map((e: any) => {
-                            const { danhSachMaHoSo, ketThuc, batDau, ...other } = e;
-                            return {
-                                ngoaiNgu: {
-                                    ...other,
-                                    ketThuc: moment(ketThuc).toISOString(),
-                                    batDau: moment(batDau).toISOString(),
-                                },
-                                danhSachMaHoSo: ["111"]
-                            }
-                        });
 
+            <AddCerLang open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ngoai-ngu/phe-duyet' fieldApproval='xacNhan' />
 
-                        const success = await post2(collection, {}, newData);
-                        if (success) {
-                            handleModalOpen(false);
-                            form.resetFields();
-                            if (actionRef.current) {
-                                actionRef.current.reload();
-                            }
-                        }
-                    }
-
-                }}
-
-
-
-                submitter={{
-                    searchConfig: {
-                        resetText: configDefaultText['buttonClose'],
-                        submitText: configDefaultText['buttonAdd'],
-                    },
-                }}
-            >
-
-                <AddCerLang open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
-
-
-
-            </ModalForm>
 
             <ModalForm
-                title={"Cập nhật Kỷ luật"}
+                title={"Cập nhật chứng chỉ ngoại ngữ"}
                 form={form}
-                width={window.innerWidth * 0.3}
                 open={updateModalOpen}
                 modalProps={{
                     destroyOnClose: true,
@@ -679,84 +644,78 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={24} >
+                    <Col span={8} >
+                        <ProFormText name="tenNgoaiNgu" key="tenNgoaiNgu" label="Ngoại ngữ" placeholder={'Ngoại ngữ'} />
+                    </Col>
+
+                    <Col span={8} >
+                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
+                    </Col>
+
+                    <Col span={8} >
+                        <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} fieldProps={{
+                            min: 0
+                        }} />
+                    </Col>
+
+
+                </Row>
+                <Row gutter={24} >
+                    <Col span={8} >
+                        <ProFormDatePicker
+                            name="batDau"
+                            label={"Ngày cấp"}
+                            placeholder={"Ngày cấp"}
+                            rules={[
+                                { required: true, message: "Ngày cấp" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+                    <Col span={8} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày hết hạn"}
+                            placeholder={"Ngày hết hạn"}
+                            rules={[
+                                { required: true, message: "Ngày hết hạn" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+
+                    <Col span={8} >
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                    </Col>
+
+                </Row>
+
+
+                <Row gutter={24} >
+                    <Col span={12} >
                         <ProFormSelect
-                            label={"Đơn vị công tác"}
+                            label={"CBVC"}
                             // width='md'
-                            name='IdCoQuanQuyetDinh'
-                            placeholder={`Đơn vị công tác`}
+                            name='hoSoId'
+                            placeholder={`CBVC`}
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Đơn vị công tác'
+
                                 },
                             ]}
                             showSearch
-                        // options={organ}
-                        />
-                    </Col>
-
-
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hành vi vi phạm"}
-                            // width='md'
-                            name='hanhViViPhamChinh'
-                            placeholder={`Hành vi vi phạm`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hành vi vi phạm'
-                                },
-                            ]} />
-                    </Col>
-
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hình thức"}
-                            // width='md'
-                            name='hinhThuc'
-                            placeholder={`Hình thức`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức'
-                                },
-                            ]} />
-                    </Col>
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="batDau"
-                            label={"Ngày quyết định"}
-                            placeholder={"Ngày quyết định"}
-                            rules={[
-                                { required: true, message: "Ngày quyết định" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
-                        />
-                    </Col>
-
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
-                            rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                // disabledDate: disabledDate
-                            }}
+                            request={getOptionCBVC}
                         />
                     </Col>
                 </Row>

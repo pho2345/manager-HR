@@ -1,11 +1,11 @@
 import { get, post2 } from "@/services/ant-design-pro/api";
 import { getOption, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 import { useState } from "react";
 
-export default function AddDiscipline({ open, handleOpen, actionRef, id }: GEN.DisciplineAddNewProps) {
+export default function AddDiscipline({ open, handleOpen, actionRef, id, name, soCCCD }: GEN.DisciplineAddNewProps) {
     const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
     const collection = `${SERVER_URL_CONFIG}/ky-luat/${id ?? idEmploy}`;
@@ -26,7 +26,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id }: GEN.D
     return (
         <ModalForm
             form={form}
-            title={"Tạo Kỷ luật"}
+            title={<>Tạo Kỷ luật {id && <Tag color="green">CBVC: {name} - CMND/CCCD: {soCCCD}</Tag>}</>}
             open={open}
             modalProps={{
                 destroyOnClose: true,

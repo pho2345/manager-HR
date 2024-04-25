@@ -16,6 +16,7 @@ import {
   ProDescriptions,
   ProFormText,
   ProTable,
+  LightFilter,
 
 } from '@ant-design/pro-components';
 import {
@@ -42,6 +43,8 @@ import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
 import AddCerLang from '@/reuse/languages/AddLanguages';
 import AddCerTech from '@/reuse/techs/AddCerTech';
+import AddProKnow from '@/reuse/pro-knowledge/AddProKnow';
+import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
 
 
 
@@ -94,6 +97,18 @@ const TableList: React.FC = () => {
   const [openGOB, setOpenGOB] = useState<boolean>(false);
   const [openCerLang, setOpenCerLang] = useState<boolean>(false);
   const [openCerTech, setOpenCerTech] = useState<boolean>(false);
+  const [openProKnow, setOpenProKnow] = useState<boolean>(false);
+  const [openPolicalTheory, setOpenPolicalTheory] = useState<boolean>(false);
+
+
+
+  const [page, setPage] = useState<number>(0);
+  const [sort, setSort] = useState<GEN.SORT>('createAt');
+  const [total, setTotal] = useState<number>(0);
+  const [document, setDocument] = useState<[]>([]);
+
+
+
 
 
   const [visible, setVisible] = useState(false);
@@ -536,6 +551,24 @@ const TableList: React.FC = () => {
               }}
             >Tin học</Menu.Item>
 
+            <Menu.Item key="7"
+              onClick={() => {
+                setOpenProKnow(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Nghiệp vụ chuyên ngành</Menu.Item>
+
+            <Menu.Item key="8"
+              onClick={() => {
+                setOpenPolicalTheory(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Lý luận chính trị</Menu.Item>
+
           </Menu>
 
 
@@ -580,27 +613,76 @@ const TableList: React.FC = () => {
               >
                 <PlusOutlined /> {configDefaultText['buttonAdd']}
               </Button>,
+
+
+              ,
             ]
           }}
 
 
           pagination={{
-            pageSize: 10,
             locale: {
               next_page: configDefaultText['nextPage'],
               prev_page: configDefaultText['prePage'],
             },
             showTotal: (total, range) => {
               return `${range[range.length - 1]} / Tổng số: ${total}`
-            }
+            },
+            onChange(page, _) {
+              setPage(page - 1);
+            },
+            total: total,
+            showSizeChanger: false,
+
           }}
 
-          request={async () => get(collection)}
+          toolbar={{
+            filter: (
+              <LightFilter>
+                <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                  {
+                    label: 'Ngày tạo',
+                    value: 'createAt'
+                  },
+                  {
+                    label: 'Ngày cập nhật',
+                    value: 'updateAt'
+                  }
+                ]}
+                  fieldProps={{
+                    value: sort
+                  }}
+                  onChange={(e) => {
+                    setSort(e);
+                    actionRef?.current?.reload();
+                  }}
+                />
+              </LightFilter>
+            )
+          }}
+
+
+
+          dataSource={document}
+
+          request={async () => {
+            let f: any = {};
+
+
+            const data = await get(`${collection}`, {
+              ...f,
+              size: 15,
+              page: page,
+              sort: sort
+            });
+            setDocument(data?.data.data);
+            setTotal(data?.data.totalRecord)
+            return data;
+          }}
+
           columns={columns}
           rowSelection={{
-            // onChange: (_, selectedRows: any) => {
-            //   setSelectedRows(selectedRows);
-            // },
+
           }}
 
           tableAlertRender={({ selectedRowKeys }: any) => {
@@ -687,11 +769,14 @@ const TableList: React.FC = () => {
           </Row>
         </ModalForm>
 
-        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} />
-        <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} />
+        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
+        <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
         <AddGOB actionRef={actionRef} open={openGOB} handleOpen={setOpenGOB} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddProKnow open={openProKnow} actionRef={actionRef} handleOpen={setOpenProKnow} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+
 
 
 

@@ -144,6 +144,7 @@ const TableList: React.FC = () => {
   const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
   const [sort, setSort] = useState<GEN.SORT>('createAt');
   const [page, setPage] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
 
 
   const params = useParams();
@@ -478,18 +479,18 @@ const TableList: React.FC = () => {
     }
   }
 
-  const handleApproval = async (value: any) => {
-    const update = await put(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/phe-duyet`, selectedRow, {
-      pheDuyet: value.trangThai
-    });
-    if (update) {
-      message.success("Phê duyệt thành công");
-      setOpenApproval(false);
-      if (actionRef.current) {
-        actionRef.current?.reload?.();
-      }
-    }
-  }
+  // const handleApproval = async (value: any) => {
+  //   const update = await put(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/phe-duyet`, selectedRow, {
+  //     pheDuyet: value.trangThai
+  //   });
+  //   if (update) {
+  //     message.success("Phê duyệt thành công");
+  //     setOpenApproval(false);
+  //     if (actionRef.current) {
+  //       actionRef.current?.reload?.();
+  //     }
+  //   }
+  // }
 
   const columns: ProColumns<GEN.Employee>[] = [
     {
@@ -1110,7 +1111,7 @@ const TableList: React.FC = () => {
             onChange(page, _) {
               setPage(page - 1);
             },
-            total: 100,
+            total: total,
             showSizeChanger: false,
 
           }}
@@ -1171,7 +1172,8 @@ const TableList: React.FC = () => {
               page: page,
               sort: sort
             });
-            setDocument(data?.data);
+            setDocument(data?.data.data);
+            setTotal(data?.data.totalRecord)
             return data;
           }}
 
@@ -1266,56 +1268,9 @@ const TableList: React.FC = () => {
           </Row>
         </ModalForm>
 
+        
 
-        {/* <ModalForm
-          form={form}
-          title={'Phê duyệt'}
-          width={window.innerWidth * 0.3}
-          open={openApproval}
-
-          modalProps={{
-            destroyOnClose: true,
-            onCancel: () => {
-              setOpenApproval(false);
-            },
-          }}
-          onFinish={async (value) => {
-            await handleApproval(value as API.RuleListItem);
-          }}
-
-          submitter={{
-            searchConfig: {
-              resetText: configDefaultText['buttonClose'],
-              submitText: configDefaultText['buttonAdd'],
-            },
-          }}
-        >
-          <Row gutter={24} >
-            <Col span={24} >
-              <ProFormSelect
-                label={"Trạng thái"}
-                // width='md'
-                name='trangThai'
-                placeholder={`Trạng thái`}
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng chọn trạng thái"
-                  },
-                ]}
-                // fieldProps={{
-                //   value: statusApproval
-                // }}
-                options={XAC_NHAN}
-              // onChange={(e) => setStatusApproval(e)}
-              />
-
-
-            </Col>
-          </Row>
-        </ModalForm> */}
-
-        <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nhan-vien/ho-so/phe-duyet'/>
+        <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nhan-vien/ho-so/phe-duyet' fieldApproval='pheDuyet'/>
 
         <ModalForm
           form={form}

@@ -1,6 +1,6 @@
 import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -14,9 +14,11 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import AddProKnow from '@/reuse/pro-knowledge/AddProKnow';
+import { mapXacNhan } from '@/services/utils/constant';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -35,7 +37,15 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
+
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(15);
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
+
+
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -320,7 +330,7 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('soCCCD')
         },
-      
+
 
         {
             title: "Chứng chỉ",
@@ -355,7 +365,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> { entity?.batDau ? moment(entity?.batDau).format(FORMAT_DATE) : ""}</>
+                    <> {entity?.batDau ? moment(entity?.batDau).format(FORMAT_DATE) : ""}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -367,13 +377,11 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{ entity?.ketThuc ? moment(entity?.ketThuc).format(FORMAT_DATE) : ""}</>
+                    <>{entity?.ketThuc ? moment(entity?.ketThuc).format(FORMAT_DATE) : ""}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
         },
-
-
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
@@ -382,6 +390,17 @@ const TableList: React.FC = () => {
             renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : "",
             ...getColumnSearchRange('create_at')
         },
+
+        {
+            title: "Trạng thái",
+            key: 'xacNhan',
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                return (
+                    <> {mapXacNhan(entity.xacNhan)}</>
+                );
+            },
+        },
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -389,7 +408,6 @@ const TableList: React.FC = () => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -407,7 +425,6 @@ const TableList: React.FC = () => {
                                         ...getRecordCurrent.data
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -416,14 +433,13 @@ const TableList: React.FC = () => {
         }
     ];
 
-
-
-    async function add(value: any) {
-
-    }
-
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection);
+        const data  = {
+            ...value,
+            batDau: moment(value.batDau).toISOString(),
+            ketThuc: moment(value.ketThuc).toISOString(),
+        }
+        return await handleUpdate2(data, refIdCurrent.current, collection);
     }
 
 
@@ -434,16 +450,6 @@ const TableList: React.FC = () => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-                options={
-                    {
-                        reload: () => {
-                            return true;
-                        },
-                        setting: {
-                            checkable: false
-                        }
-                    }
-                }
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -454,23 +460,26 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+                    selectedRow.length > 0 && (<Button
+                        type='dashed'
+                        key='primary'
+                        onClick={() => {
+                            setOpenApproval(true);
+                        }}
+                    >
+                        Phê duyệt
+                    </Button>)
                 ]}
-                toolbar={{
-                    settings: [
-                        {
-                            key: 'reload',
-                            tooltip: configDefaultText['reload'],
-                            icon: <ReloadOutlined />,
-                            onClick: () => {
-                                if (actionRef.current) {
-                                    actionRef.current.reload();
-                                }
-                            }
-                        },
-                    ],
-                }}
 
-                request={async () => get(collection)}
+                request={async () => {
+                    const data = await get(collection, {
+                        sort: sort,
+                        page: page,
+                    });
+                    return {
+                        data: data.data
+                    }
+                }}
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -481,20 +490,12 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{}}
-
-
-
-                // expandable={
-                //     {
-                //         expandIcon: () => <>aaa</>,
-                //         columnTitle: (props: any) => <></>,
-                //         showExpandColumn: true,
-                //         onExpand(expanded, record) {
-                //             console.log(expanded, record)
-                //         },
-                //     }
-                // }
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -503,14 +504,40 @@ const TableList: React.FC = () => {
                 tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
                     return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
+
+                toolbar={{
+                    filter: (
+                        <LightFilter>
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                                {
+                                    label: 'Ngày tạo',
+                                    value: 'createAt'
+                                },
+                                {
+                                    label: 'Ngày cập nhật',
+                                    value: 'updateAt'
+                                }
+                            ]}
+                                fieldProps={{
+                                    value: sort
+                                }}
+                                onChange={(e) => {
+                                    setSort(e);
+                                    actionRef?.current?.reload();
+                                }}
+                            />
+                        </LightFilter>
+                    )
+                }}
             />
 
-            <AddProKnow open={createModalOpen} actionRef={actionRef} handleOpen={handleModalOpen}/>
+            <AddProKnow open={createModalOpen} actionRef={actionRef} handleOpen={handleModalOpen} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nghiep-vu-chuyen-nganh/phe-duyet' fieldApproval='xacNhan' />
+
 
             <ModalForm
-                title={"Cập nhật Kỷ luật"}
+                title={"Cập nhật nghiệp vụ chuyên ngành"}
                 form={form}
-                width={window.innerWidth * 0.3}
                 open={updateModalOpen}
                 modalProps={{
                     destroyOnClose: true,
@@ -537,60 +564,38 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={24} >
-                        <ProFormSelect
-                            label={"Đơn vị công tác"}
-                            // width='md'
-                            name='IdCoQuanQuyetDinh'
-                            placeholder={`Đơn vị công tác`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Đơn vị công tác'
-                                },
-                            ]}
-                            showSearch
-                        // options={organ}
-                        />
+                    <Col span={12} >
+                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ được cấp" placeholder={'Chứng chỉ'} />
                     </Col>
 
-
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hành vi vi phạm"}
-                            // width='md'
-                            name='hanhViViPhamChinh'
-                            placeholder={`Hành vi vi phạm`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hành vi vi phạm'
-                                },
-                            ]} />
+                    <Col span={12} >
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
-
-
-                    <Col span={24} >
-                        <ProFormText
-                            label={"Hình thức"}
-                            // width='md'
-                            name='hinhThuc'
-                            placeholder={`Hình thức`}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Hình thức'
-                                },
-                            ]} />
-                    </Col>
-                    <Col span={24} >
+                </Row>
+                <Row gutter={24} >
+                    <Col span={12} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày quyết định"}
-                            placeholder={"Ngày quyết định"}
+                            label={"Ngày cấp"}
+                            placeholder={"Ngày cấp"}
                             rules={[
-                                { required: true, message: "Ngày quyết định" }
+                                { required: true, message: "Ngày cấp" }
+                            ]}
+                            fieldProps={{
+                                style: {
+                                    width: "100%"
+                                },
+                                // disabledDate: disabledDate
+                            }}
+                        />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormDatePicker
+                            name="ketThuc"
+                            label={"Ngày hết hạn"}
+                            placeholder={"Ngày hết hạn"}
+                            rules={[
+                                { required: true, message: "Ngày hết hạn" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -601,20 +606,28 @@ const TableList: React.FC = () => {
                         />
                     </Col>
 
-                    <Col span={24} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
+
+
+                </Row>
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormSelect
+                            label={"CBVC"}
+                            // width='md'
+                            name='hoSoId'
+                            disabled
+                            placeholder={`CBVC`}
                             rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
+                                {
+                                    required: true,
+
                                 },
-                                // disabledDate: disabledDate
-                            }}
+                            ]}
+
+                            showSearch
+                            request={getOptionCBVC}
+
                         />
                     </Col>
                 </Row>

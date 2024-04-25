@@ -912,7 +912,6 @@ declare namespace GEN {
   type AdminDiscipline = {
     id: number,
     nam: number,
-    coQuanQuyetDinh: string
     hanhViViPhamChinh: sring
     coQuanQuyetDinhId: string,
     coQuanQuyetDinhName: string,
@@ -925,7 +924,6 @@ declare namespace GEN {
     soCCCD: string,
     hoVaTen: string,
     xacNhan: XACNHAN,
-
   }
 
   type AdminGoOnBuss = {
@@ -1000,8 +998,8 @@ declare namespace GEN {
     id: number,
     maSyll: string,
     batDau: string,
-    hovaten: string,
-    soCMND: string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
     tenCoSoDaoTao: string,
     IdTenCoSoDaoTao: number,
@@ -1145,6 +1143,8 @@ declare namespace GEN {
     createModalOpen: boolean;
     handleModalOpen: function;
     id?: string;
+    name?: string;
+    soCCCD?: string;
   }
 
 
@@ -1153,6 +1153,8 @@ declare namespace GEN {
     open: boolean;
     handleOpen: function;
     id?: string;
+    name?: string;
+    soCCCD?: string;
   }
 
 
@@ -1195,7 +1197,7 @@ declare namespace GEN {
     actionRef: any;
     selectedRow: SelectedRow[];
     subDirectory: string;
-
+    fieldApproval: string;
   }
 
 }

@@ -18,6 +18,7 @@ import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAler
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddCerTech from '@/reuse/techs/AddCerTech';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -35,10 +36,12 @@ const TableList: React.FC = () => {
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
-    const [cerTech, setCerTech] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(15);
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
 
     const [sort, setSort] = useState<GEN.SORT>('createAt');
 
@@ -327,19 +330,6 @@ const TableList: React.FC = () => {
         },
 
         {
-            title: "Tin học",
-            key: 'tenTinHoc',
-            dataIndex: 'tenTinHoc',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.tenTinHoc}</>
-                );
-            },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
-        },
-
-        {
             title: "Chứng chỉ",
             key: 'chungChiDuocCap',
             dataIndex: 'chungChiDuocCap',
@@ -529,6 +519,15 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+                    selectedRow.length > 0 && (<Button
+                        type='dashed'
+                        key='primary'
+                        onClick={() => {
+                            setOpenApproval(true);
+                        }}
+                    >
+                        Phê duyệt
+                    </Button>)
                 ]}
 
                 toolbar={{
@@ -556,21 +555,19 @@ const TableList: React.FC = () => {
                     )
                 }}
 
-                dataSource={cerTech}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
                         f.pheDuyet = searchPheDuyet;
                     }
 
-
                     const getData = await get(`${collection}`, {
                         ...f,
-                        sort: sort
+                        sort: sort,
+                        page: page
                     })
-                    setCerTech(getData.data)
                     return {
-                        data: []
+                        data: getData.data
                     }
                 }}
                 pagination={{
@@ -583,9 +580,12 @@ const TableList: React.FC = () => {
                     }
                 }}
                 columns={columns}
-                rowSelection={{}}
-
-
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
 
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
@@ -724,6 +724,8 @@ const TableList: React.FC = () => {
             </ModalForm> */}
 
             <AddCerTech open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/tin-hoc/phe-duyet' fieldApproval='xacNhan' />
+
 
             <ModalForm
                 title={"Cập nhật chứng chỉ tin học"}
@@ -754,21 +756,18 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={8} >
-                        <ProFormText name="tenTinHoc" key="tenTinHoc" label="Tin học" placeholder={'Tin học'} />
-                    </Col>
 
-                    <Col span={8} >
+                    <Col span={12} >
                         <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
                     </Col>
 
-                    <Col span={8} >
+                    <Col span={12} >
                         <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} />
                     </Col>
                 </Row>
 
                 <Row gutter={24} >
-                    <Col span={8} >
+                    <Col span={12} >
                         <ProFormDatePicker
                             name="batDau"
                             label={"Ngày cấp"}
@@ -784,7 +783,7 @@ const TableList: React.FC = () => {
                             }}
                         />
                     </Col>
-                    <Col span={8} >
+                    <Col span={12} >
                         <ProFormDatePicker
                             name="ketThuc"
                             label={"Ngày hết hạn"}
@@ -801,16 +800,14 @@ const TableList: React.FC = () => {
                         />
                     </Col>
 
-                    <Col span={8} >
-                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                    </Col>
+
 
                 </Row>
 
 
 
                 <Row gutter={24} >
-                        {/* <Col span={12} >
+                    {/* <Col span={12} >
                             <ProFormSelect
                                 label={"CBVC"}
                                 // width='md'
@@ -841,6 +838,10 @@ const TableList: React.FC = () => {
 
                             />
                         </Col> */}
+
+                    <Col span={12} >
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                    </Col>
                 </Row>
             </ModalForm>
 

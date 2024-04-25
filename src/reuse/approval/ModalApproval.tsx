@@ -3,19 +3,23 @@ import { XAC_NHAN } from "@/services/utils/constant";
 import { ModalForm, ProFormSelect } from "@ant-design/pro-components";
 import { Col, Row, message } from "antd";
 
-export default function ModalApproval({openApproval, setOpenApproval, actionRef, selectedRow, subDirectory }: GEN.ModalApproval ) {
+export default function ModalApproval({openApproval, setOpenApproval, actionRef, selectedRow, subDirectory, fieldApproval }: GEN.ModalApproval ) {
 
     const handleApproval = async (value: any) => {
+       try {
         const update = await put(`${SERVER_URL_ACCOUNT}${subDirectory}`, selectedRow, {
-          pheDuyet: value.trangThai
-        });
-        if (update) {
-          message.success("Phê duyệt thành công");
-          setOpenApproval(false);
-          if (actionRef.current) {
-            actionRef.current?.reload?.();
+            [fieldApproval]: value.trangThai
+          });
+          if (update) {
+            message.success("Phê duyệt thành công");
+            setOpenApproval(false);
+            if (actionRef.current) {
+              actionRef.current?.reload?.();
+            }
           }
-        }
+       } catch (error) {
+            message.error("Phê duyệt thất bại");
+       }
       }
 
       

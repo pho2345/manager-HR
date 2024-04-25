@@ -19,6 +19,7 @@ import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import Updateiscipline from '@/reuse/discipline/UpdateDiscipline';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -37,10 +38,13 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [discipline, setDiscipline] = useState<GEN.AdminDiscipline[]>([]);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(15);
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
 
 
 
@@ -107,8 +111,8 @@ const TableList: React.FC = () => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -543,9 +547,18 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+                    selectedRow.length > 0 && (<Button
+                        type='dashed'
+                        key='primary'
+                        onClick={() => {
+                            setOpenApproval(true);
+                        }}
+                    >
+                        Phê duyệt
+                    </Button>)
                 ]}
 
-                dataSource={discipline}
+                // dataSource={discipline}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
@@ -555,9 +568,27 @@ const TableList: React.FC = () => {
                         ...f,
                         sort: sort
                     });
-                    setDiscipline(data.data)
+                    // setDiscipline(data.data)
                     return {
-                        data: data.data
+                        data: [
+                            {
+                                id: 1,
+                                hoVaTen: 'Nguyễn Vă',
+                                soCCCD: '123456789',
+                                sinhNgay: '1999-01-01',
+                                coQuanQuyetDinhName: 'Công ty',
+                                hanhViViPhamChinh: 'Hành vi vi phạm',
+                                hinhThuc: 'Hình thức',
+                                batDau: '2021-01-01',
+                                ketThuc: '2021-01-01',
+                                create_at: '2021-01-01',
+                                xacNhan: 'DA_PHE_DUYET',
+                                coQuanQuyetDinhId: '1',
+                                nam: 2021,
+                                update_at: `2021-01-01`,
+                            },
+
+                        ]
                     }
                 }}
                 pagination={{
@@ -567,10 +598,20 @@ const TableList: React.FC = () => {
                     },
                     showTotal: (total, range) => {
                         return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
+                    },
+                    onChange(page, _) {
+                        setPage(page - 1);
+                    },
+                    total: total,
+                    showSizeChanger: false,
                 }}
                 columns={columns}
-                rowSelection={{}}
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
 
                 toolbar={{
                     filter: (
@@ -621,6 +662,8 @@ const TableList: React.FC = () => {
 
 
             <AddDiscipline actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ky-luat/phe-duyet' fieldApproval='xacNhan' />
+
             {/* <Updateiscipline actionRef={actionRef} open={updateModalOpen} handleOpen={handleUpdateModalOpen} id={refIdCurrent.current}/> */}
 
             <ModalForm

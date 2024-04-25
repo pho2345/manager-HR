@@ -18,6 +18,7 @@ import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAler
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan, mapXepLoaiChuyenMon, mapXepLoaiThiDua } from '@/services/utils/constant';
 import AddBonus from '@/reuse/bonus/AddBonus';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -36,12 +37,16 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-  const [selectRow, setSelectRow] = useState<[]>([]);
+  const [selectedRow, setSelectedRow] = useState<[]>([]);
   const [sort, setSort] = useState<GEN.SORT>('createAt');
   const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [total, setTotal] = useState<number>(15);
 
   const [bonus, setBonus] = useState<[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [openApproval, setOpenApproval] = useState<boolean>(false);
+
 
   const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
@@ -382,7 +387,8 @@ const TableList: React.FC = () => {
         'TRUNG_BINH': {
           text: 'Trung bình'
         },
-      }
+      },
+      // defaultFilteredValue: ['TRUNG_BINH']
     },
 
     {
@@ -484,7 +490,7 @@ const TableList: React.FC = () => {
         />
       ),
     },
-  
+
     {
       title: configDefaultText['titleOption'],
       dataIndex: 'atrributes',
@@ -553,10 +559,19 @@ const TableList: React.FC = () => {
           >
             <PlusOutlined /> {configDefaultText['buttonAdd']}
           </Button>,
+          selectedRow.length > 0 && (<Button
+            type='dashed'
+            key='primary'
+            onClick={() => {
+              setOpenApproval(true);
+            }}
+          >
+            Phê duyệt
+          </Button>)
         ]}
 
 
-        dataSource={bonus}
+        // dataSource={bonus}
 
         request={async () => {
           let f: any = {};
@@ -570,7 +585,7 @@ const TableList: React.FC = () => {
             sort: sort
           });
 
-          setBonus(data.data)
+          // setBonus(data.data)
 
           return {
             data: data.data
@@ -583,10 +598,20 @@ const TableList: React.FC = () => {
           },
           showTotal: (total, range) => {
             return `${range[range.length - 1]} / Tổng số: ${total}`
-          }
+          },
+          // onChange(page, _) {
+          //   setPage(page - 1);
+          // },
+          // total: total,
+          showSizeChanger: false,
         }}
         columns={columns}
-        rowSelection={{}}
+        rowSelection={{
+          onChange: (selectedRowKeys: any, _) => {
+            const id = selectedRowKeys.map((e: any) => ({ id: e }));
+            setSelectedRow(id);
+          },
+        }}
 
         toolbar={{
           filter: (
@@ -601,6 +626,7 @@ const TableList: React.FC = () => {
                   value: 'updateAt'
                 }
               ]}
+
                 fieldProps={{
                   value: sort
                 }}
@@ -763,6 +789,7 @@ const TableList: React.FC = () => {
             </ModalForm> */}
 
       <AddBonus createModalOpen={createModalOpen} handleModalOpen={handleModalOpen} actionRef={actionRef} />
+      <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/khen-thuong/phe-duyet' fieldApproval='xacNhan' />
 
       <ModalForm
         title={"Cập nhật khen thưởng"}

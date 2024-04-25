@@ -18,6 +18,7 @@ import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAler
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
+import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
@@ -43,6 +44,10 @@ const TableList: React.FC = () => {
     const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [goOnBus, setGoOnBus] = useState<GEN.AdminGoOnBuss[]>([]);
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
+
+
 
 
 
@@ -517,6 +522,15 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+                    selectedRow.length > 0 && (<Button
+                        type='dashed'
+                        key='primary'
+                        onClick={() => {
+                            setOpenApproval(true);
+                        }}
+                    >
+                        Phê duyệt
+                    </Button>)
                 ]}
 
                 toolbar={{
@@ -544,7 +558,6 @@ const TableList: React.FC = () => {
                     )
                 }}
 
-                dataSource={goOnBus}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
@@ -556,7 +569,6 @@ const TableList: React.FC = () => {
                         page: currentPage - 1,
                     
                     });
-                    setGoOnBus(data.data)
                     return {
                         data: data.data
                     }
@@ -572,7 +584,12 @@ const TableList: React.FC = () => {
                     },
                 }}
                 columns={columns}
-                rowSelection={{}}
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
 
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
@@ -697,6 +714,8 @@ const TableList: React.FC = () => {
 
             </ModalForm> */}
             <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
+
 
             <ModalForm
                 title={<>Cập nhật quá trình công tác {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}

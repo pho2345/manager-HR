@@ -2,11 +2,11 @@ import { get } from "@/services/ant-design-pro/api";
 import { getOption, handleAdd } from "@/services/utils";
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from "@/services/utils/constant";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 import { useState } from "react";
 
-export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id }: GEN.BonusAddNewProps) {
+export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id, name, soCCCD }: GEN.BonusAddNewProps) {
     const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
     const collection = `${SERVER_URL_CONFIG}/khen-thuong/${id ?? idEmploy}`;
@@ -21,7 +21,7 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
     return (
         <ModalForm
             form={form}
-            title={"Tạo mới khen thưởng"}
+            title={<>Tạo mới khen thưởng {id && <Tag color="green">CBVC: {name} - CMND/CCCD: {soCCCD}</Tag>}</>}
 
             open={createModalOpen}
             modalProps={{

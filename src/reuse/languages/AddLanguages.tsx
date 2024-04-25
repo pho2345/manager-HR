@@ -1,5 +1,5 @@
 import { get, post2 } from "@/services/ant-design-pro/api";
-import { getOption, handleAdd } from "@/services/utils";
+import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
@@ -129,17 +129,7 @@ export default function AddCerLang({ open, handleOpen, actionRef, id, name, soCM
                             }}
                             showSearch
 
-                            request={async () => {
-                                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                                const dataOptions = data.data.map((item: any) => {
-                                    return {
-                                        label: `${item.hoVaTen} - ${item.soCCCD}`,
-                                        value: item.id
-                                    }
-                                })
-                                return dataOptions;
-                            }}
-
+                            request={getOptionCBVC}
 
                         />
                     </Col>

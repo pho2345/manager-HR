@@ -122,6 +122,7 @@ const Login: React.FC = () => {
       
       // await fetchUserInfo(msg);
       if (msg) {
+        
         const defaultLoginSuccessMessage = configDefaultText['pages.login.successLogin']
         localStorage.setItem('access_token', msg?.data?.token || '');
         message.success(defaultLoginSuccessMessage);

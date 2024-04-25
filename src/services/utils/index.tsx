@@ -80,7 +80,7 @@ export const getOption = async (url: string, getValue: string, getLabel: string)
 export const handleAdd = async (fields: any, collection: string, date: boolean = false) => {
   const hide = message.loading('Đang thêm...');
   try {
-    
+
     const data = date ? {
       ...fields,
       batDau: moment(fields.batDau).toISOString(),
@@ -142,15 +142,15 @@ export const handleUpdate = async (fields: any, id: any, collection: string, dat
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields
 
-   const update = await patch(`${collection}/${id}`, {
+    const update = await patch(`${collection}/${id}`, {
       ...data
     })
-    if(update) {
+    if (update) {
       hide();
       message.success('Cập nhật thành công');
       return true;
     }
-   
+
   } catch (error: any) {
     hide();
     message.error("Cập nhật thất bại");
@@ -169,15 +169,15 @@ export const handleUpdate2 = async (fields: any, id: any, collection: string, da
       ketThuc: moment(fields.ketThuc).toISOString()
     } : fields
 
-   const update = await patch(`${collection}/${id}`, {
+    const update = await patch(`${collection}/${id}`, {
       ...data
     })
-    if(update) {
+    if (update) {
       hide();
       message.success('Cập nhật thành công');
       return true;
     }
-   
+
   } catch (error: any) {
     hide();
     message.error("Cập nhật thất bại");
@@ -190,7 +190,7 @@ export async function getProvine() {
     method: 'GET',
   });
 
-  if(fetchData) {
+  if (fetchData) {
     console.log(fetchData);
     const data = fetchData?.results?.map((e: any) => {
       return {
@@ -218,3 +218,17 @@ export const parser = (value: any) => {
   return undefined;
 };
 
+
+export const getOptionCBVC = async () => {
+  const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
+  if (data) {
+    const dataOptions = data.data.data.map((item: any) => {
+      return {
+        label: `${item.hoVaTen} - ${item.soCCCD}`,
+        value: item.id
+      }
+    })
+    return dataOptions;
+  }
+
+}

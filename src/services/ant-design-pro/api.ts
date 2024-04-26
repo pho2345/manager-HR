@@ -255,7 +255,6 @@ export async function customAPIDowload(
 
 
 export async function get(url: string, params = {}) {
-  console.log('params', params)
   const fetchData = await request<any>(url, {
     method: 'GET',
     headers: {

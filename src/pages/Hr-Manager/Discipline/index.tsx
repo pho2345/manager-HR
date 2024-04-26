@@ -18,7 +18,6 @@ import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAler
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddDiscipline from '@/reuse/discipline/AddDiscipline';
-import Updateiscipline from '@/reuse/discipline/UpdateDiscipline';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
@@ -33,13 +32,11 @@ const TableList: React.FC = () => {
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
-
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [selectedRow, setSelectedRow] = useState<[]>([]);
-    const [discipline, setDiscipline] = useState<GEN.AdminDiscipline[]>([]);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [page, setPage] = useState<number>(0);
@@ -570,25 +567,7 @@ const TableList: React.FC = () => {
                     });
                     // setDiscipline(data.data)
                     return {
-                        data: [
-                            {
-                                id: 1,
-                                hoVaTen: 'Nguyễn Vă',
-                                soCCCD: '123456789',
-                                sinhNgay: '1999-01-01',
-                                coQuanQuyetDinhName: 'Công ty',
-                                hanhViViPhamChinh: 'Hành vi vi phạm',
-                                hinhThuc: 'Hình thức',
-                                batDau: '2021-01-01',
-                                ketThuc: '2021-01-01',
-                                create_at: '2021-01-01',
-                                xacNhan: 'DA_PHE_DUYET',
-                                coQuanQuyetDinhId: '1',
-                                nam: 2021,
-                                update_at: `2021-01-01`,
-                            },
-
-                        ]
+                        data: data.data
                     }
                 }}
                 pagination={{

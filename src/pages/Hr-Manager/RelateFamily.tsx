@@ -19,6 +19,7 @@ import { FormattedMessage } from '@umijs/max';
 import { mapTrangThai, mapXacNhan } from '@/services/utils/constant';
 import AddArmy from '@/reuse/army/AddArmy';
 import ModalApproval from '@/reuse/approval/ModalApproval';
+import AddRelateFamily from '@/reuse/relate-family/AddRelateFamily';
 const configDefaultText = configText;
 
 
@@ -26,7 +27,7 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_CONFIG}/kien-thuc-an-ninh-quoc-phong`;
+    const collection = `${SERVER_URL_CONFIG}/quan-he-gia-dinh`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -108,8 +109,8 @@ const TableList: React.FC = () => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -298,7 +299,7 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.AdminArmy>[] = [
+    const columns: ProColumns<GEN.AdminRelateFamily>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -329,28 +330,39 @@ const TableList: React.FC = () => {
         },
 
         {
-            title: "Chứng chỉ",
-            key: 'chungChiDuocCap',
-            dataIndex: 'chungChiDuocCap',
+            title: "Mối quan hệ",
+            key: 'moiQuanHeName',
+            dataIndex: 'moiQuanHeName',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chungChiDuocCap}</>
+                    <> {entity?.moiQuanHeName}</>
                 );
             },
         },
 
         {
-            title: "Đơn vị đào tạo",
-            key: 'tenCoSoDaoTao',
-            dataIndex: 'tenCoSoDaoTao',
+            title: "Thông tin thân nhân",
+            key: 'thongTinThanNhan',
+            dataIndex: 'thongTinThanNhan',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTaoName}</>
+                    <> {entity?.thongTinThanNhan}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
+        },
+
+        {
+            title: "Thông tin thân nhân",
+            key: 'thongTinThanNhan',
+            dataIndex: 'thongTinThanNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.thongTinThanNhan}</>
+                );
+            },
         },
 
         {
@@ -363,33 +375,23 @@ const TableList: React.FC = () => {
                     <> {mapXacNhan(entity.xacNhan)}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
-
         {
-            title: "Ngày cấp",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                return (
-                    <> {entity.batDau ? moment(entity.batDau).format('DD/MM/YYYY') : ''}</>
-                );
-            },
-            ...getColumnSearchRange('batDau')
-        },
-        {
-            title: "Ngày hết hạn",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
+            title: "Năm sinh",
+            key: 'namSinh',
+            dataIndex: 'namSinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.ketThuc ? moment(entity.ketThuc).format('DD/MM/YYYY') : ''}</>
+                    <> {entity?.namSinh}</>
                 );
             },
-            ...getColumnSearchRange('ketThuc')
         },
+
+
+
+       
 
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
@@ -434,11 +436,6 @@ const TableList: React.FC = () => {
         }
     ];
 
-
-
-    async function add(value: any) {
-
-    }
 
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection);
@@ -541,8 +538,8 @@ const TableList: React.FC = () => {
             />
 
 
-            <AddArmy actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/kien-thuc-an-ninh-quoc-phong/phe-duyet' fieldApproval='xacNhan' />
+            <AddRelateFamily actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/quan-he-gia-dinh/phe-duyet' fieldApproval='xacNhan' />
 
 
             <ModalForm

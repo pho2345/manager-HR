@@ -1,5 +1,5 @@
 import { get, post2 } from "@/services/ant-design-pro/api";
-import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
+import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
@@ -22,6 +22,7 @@ export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCM
         handleOpen(false);
         return await handleAdd(data, collection);
     }
+
 
     return (
         <ModalForm
@@ -71,7 +72,15 @@ export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCM
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                           disabledDate:  current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
+                        //    current => {
+                        //         const endDate = form.getFieldValue('ketThuc');
+                        //         if(endDate) {
+                        //             return current && current >= moment(endDate).startOf('day');
+                        //         }
+                        //         return false
+
+                        //    } // Disable dates after the end date
                         }}
                     />
                 </Col>
@@ -87,7 +96,7 @@ export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCM
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                         }}
                     />
                 </Col>

@@ -37,5 +37,6 @@ export default {
 'menu.Quản lý.politicalTheory': 'Lý luận chính trị',
 'menu.Quản lý.workingAbroad': 'Làm việc ở nước ngoài',
 'menu.Quản lý.army': 'Kiến thức an ninh quốc phòng',
+'menu.Quản lý.relate': 'Quan hệ gia đình',
 
 }

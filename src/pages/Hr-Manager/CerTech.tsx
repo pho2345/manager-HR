@@ -326,7 +326,6 @@ const TableList: React.FC = () => {
                     <> {entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
         },
 
         {
@@ -339,7 +338,6 @@ const TableList: React.FC = () => {
                     <> {entity?.chungChiDuocCap}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
         {
@@ -349,12 +347,10 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTao}</>
+                    <> {entity?.tenCoSoDaoTaoName}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
-
 
         {
             title: "Ngày cấp",
@@ -503,6 +499,7 @@ const TableList: React.FC = () => {
 
 
 
+
     return (
         <PageContainer>
             <ProTable
@@ -560,7 +557,6 @@ const TableList: React.FC = () => {
                     if (searchPheDuyet) {
                         f.pheDuyet = searchPheDuyet;
                     }
-
                     const getData = await get(`${collection}`, {
                         ...f,
                         sort: sort,
@@ -596,132 +592,6 @@ const TableList: React.FC = () => {
                     return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
                 }}
             />
-
-            {/* <ModalForm
-                form={form}
-                title={"Tạo chứng chỉ tin học"}
-                // width={window.innerWidth * 0.3}
-                open={createModalOpen}
-                modalProps={{
-                    destroyOnClose: true,
-                    onCancel: () => {
-                        handleModalOpen(false)
-                    },
-                }}
-                onFinish={async (value) => {
-                    if (value.tinHoc && value.tinHoc.length !== 0) {
-                        const newData = value.tinHoc.map((e: any) => {
-                            const { danhSachMaHoSo, ketThuc, batDau, ...other } = e;
-                            return {
-                                tinHoc: {
-                                    ...other,
-                                    ketThuc: moment(ketThuc).toISOString(),
-                                    batDau: moment(batDau).toISOString(),
-                                },
-                                danhSachMaHoSo
-                            }
-                        });
-
-
-                        const success = await post2(collection, {}, newData);
-                        if (success) {
-                            handleModalOpen(false);
-                            form.resetFields();
-                            if (actionRef.current) {
-                                actionRef.current.reload();
-                            }
-                        }
-                    }
-
-                }}
-
-                submitter={{
-                    searchConfig: {
-                        resetText: configDefaultText['buttonClose'],
-                        submitText: configDefaultText['buttonAdd'],
-                    },
-                }}
-            >
-
-
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormText name="tenTinHoc" key="tenTinHoc" label="Tin học" placeholder={'Tin học'} />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} />
-                        </Col>
-
-
-                    </Row>
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="batDau"
-                                label={"Ngày cấp"}
-                                placeholder={"Ngày cấp"}
-                                rules={[
-                                    { required: true, message: "Ngày cấp" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="ketThuc"
-                                label={"Ngày hết hạn"}
-                                placeholder={"Ngày hết hạn"}
-                                rules={[
-                                    { required: true, message: "Ngày hết hạn" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                        </Col>
-
-                    </Row>
-
-                    <Row gutter={24} >
-                        <Col span={16} >
-                            <ProFormSelect fieldProps={{
-                                mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Cán bộ" request={async () => {
-                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                                let dataOptions = [] as any;
-                                if (nv) {
-                                    nv.data?.map(e => {
-                                        dataOptions.push({
-                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                            value: `${e.id}`
-                                        });
-                                    })
-                                }
-                                return dataOptions
-                            }} />
-                        </Col>
-                    </Row>
-
-                
-
-            </ModalForm> */}
 
             <AddCerTech open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} />
             <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/tin-hoc/phe-duyet' fieldApproval='xacNhan' />

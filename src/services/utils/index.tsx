@@ -4,6 +4,7 @@ import { deletes, get, patch, post } from "../ant-design-pro/api";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { request } from "@umijs/max";
+import { FormInstance } from "antd/lib";
 
 
 const handleRemove2 = async (arrayId: any, collection: string) => {
@@ -230,5 +231,22 @@ export const getOptionCBVC = async () => {
     })
     return dataOptions;
   }
-
 }
+
+export const disableDateStartAndDateEnd = (fieldDate: string, form: FormInstance, fieldCurrent: "start" | 'end', current: any) => {
+  if (fieldCurrent === 'start') {
+    const getDate = form.getFieldValue(fieldDate);
+    if (getDate) {
+        return current && current >= moment(getDate).startOf('day');
+    }
+    return false
+  }
+  else {
+    const getDate = form.getFieldValue(fieldDate);
+    if (getDate) {
+        return current && current <= moment(getDate).startOf('day');
+    }
+    return false
+  }
+}
+

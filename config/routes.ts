@@ -64,6 +64,7 @@
       { path: '/hr-manager/politicalTheory', name: 'politicalTheory', component: './Hr-Manager/PoliticalTheory' },
       { path: '/hr-manager/working-abroad', name: 'workingAbroad', component: './Hr-Manager/WorkingAbroad' },
       { path: '/hr-manager/army', name: 'army', component: './Hr-Manager/Army' },
+      { path: '/hr-manager/relate', name: 'relate', component: './Hr-Manager/RelateFamily' },
     ],
     // access: 'admin'
 

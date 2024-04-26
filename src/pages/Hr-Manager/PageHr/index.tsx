@@ -45,6 +45,8 @@ import AddCerLang from '@/reuse/languages/AddLanguages';
 import AddCerTech from '@/reuse/techs/AddCerTech';
 import AddProKnow from '@/reuse/pro-knowledge/AddProKnow';
 import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
+import AddWorkingAbroad from '@/reuse/working-abroad/AddWorkingAbroad';
+import AddArmy from '@/reuse/army/AddArmy';
 
 
 
@@ -99,6 +101,8 @@ const TableList: React.FC = () => {
   const [openCerTech, setOpenCerTech] = useState<boolean>(false);
   const [openProKnow, setOpenProKnow] = useState<boolean>(false);
   const [openPolicalTheory, setOpenPolicalTheory] = useState<boolean>(false);
+  const [openWorkingAbroad, setOpenWorkingAbroad] = useState<boolean>(false);
+  const [openArmy, setOpenArmy] = useState<boolean>(false);
 
 
 
@@ -569,6 +573,24 @@ const TableList: React.FC = () => {
               }}
             >Lý luận chính trị</Menu.Item>
 
+            <Menu.Item key="9"
+              onClick={() => {
+                setOpenWorkingAbroad(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Làm việc ở nước ngoài</Menu.Item>
+
+            <Menu.Item key="10"
+              onClick={() => {
+                setOpenArmy(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >An ninh quốc phòng</Menu.Item>
+
           </Menu>
 
 
@@ -776,6 +798,9 @@ const TableList: React.FC = () => {
         <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddProKnow open={openProKnow} actionRef={actionRef} handleOpen={setOpenProKnow} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddWorkingAbroad open={openWorkingAbroad} actionRef={actionRef} handleOpen={setOpenWorkingAbroad} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddArmy open={openArmy} actionRef={actionRef} handleOpen={setOpenArmy} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+
 
 
 

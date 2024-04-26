@@ -906,7 +906,7 @@ declare namespace GEN {
     lyDo: string,
     hovaten: string,
     xacNhan: XACNHAN,
-    xepLoaiChuyenMon: "LOAI_A" | "LOAI_B" | "LOAI_C" | "LOAI_D",
+    xepLoaiChuyenMon: LOAI_A | LOAI_B | LOAI_C | LOAI_D,
   }
 
   type AdminDiscipline = {
@@ -1013,10 +1013,10 @@ declare namespace GEN {
 
   type AdminWorkingAbroad = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
-    hovaten: string,
-    soCMND: string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
     toChucDiaChiCongViec: string,
     xacNhan: XACNHAN
@@ -1024,21 +1024,35 @@ declare namespace GEN {
     update_at: string,
   }
 
+  type AdminRelateFamily = {
+      id: number,
+      moiQuanHeId: number,
+      moiQuanHeName: string,
+      tenNhanThan: string,
+      namSinh: number,
+      thongTinThanNhan: string,
+      xacNhan: CHO_PHE_DUYET,
+      hoSoId: string,
+      hoVaTen: string,
+      soCCCD: string,
+      create_at: string,
+      update_at: string
+  }
 
 
   type AdminArmy = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
-    hovaten: string,
-    soCMND: string,
+    hoVaTen: string,
+    soCCCD: string,
     ketThuc: string,
     xacNhan: XACNHAN
     create_at: string,
     update_at: string,
     tenCoSoDaoTao: string,
-    IdTenCoSoDaoTao: number,
     chungChiDuocCap: string,
+    tenCoSoDaoTaoName: string,
   }
 
   type Discipline = {
@@ -1059,13 +1073,13 @@ declare namespace GEN {
     hoVaTen: string;
     gioiTinh: 'NAM' | 'NU';
     cacTenGoiKhac?: string;
-    sinhNgay: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    sinhNgay: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
     noiSinh: string;
     queQuan: string;
     danToc: number;
     tonGiao: number;
     soCCCD: string;
-    ngayCapCCCD: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+    ngayCapCCCD: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
     soDienThoai: string;
     soBHXH: string;
     soBHYT: string;
@@ -1073,18 +1087,18 @@ declare namespace GEN {
     thanhPhanGiaDinh: number;
     thongTinTuyenDung: {
       ngheNghiepTruocKhiTuyenDung: string;
-      ngayDuocTuyenDungLanDau: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayVaoCoQuanHienDangCongTac: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayVaoDangCongSanVietNam: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayChinhThuc: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayThamGiaToChucChinhTriXaHoiDauTien: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayDuocTuyenDungLanDau: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayVaoCoQuanHienDangCongTac: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayVaoDangCongSanVietNam: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayChinhThuc: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayThamGiaToChucChinhTriXaHoiDauTien: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       congViecChinhDuocGiao: string;
       soTruongCongTac: string;
       congViecLamLauNhat: string;
     };
     quanSu: {
-      ngayNhapNgu: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayXuatNgu: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayNhapNgu: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayXuatNgu: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       capBacLoaiQuanHamQuanDoi: number;
     };
     doiTuongChinhSach: number;
@@ -1096,15 +1110,15 @@ declare namespace GEN {
     };
     chucVu: {
       chucVuHienTaiId: number;
-      ngayBoNhiem: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayBoNhiemLai: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayBoNhiem: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayBoNhiemLai: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       duocQuyHoacChucDanh: string;
       phuCapChucVu: number;
       coQuanToChucDonViTuyenDungId: number;
     };
     chucVuKiemNhiem: {
       chucVuKiemNhiemId: number;
-      ngayBoNhiem: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayBoNhiem: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       phuCapKiemNhiem: number;
       phuCapKhac: number;
     };
@@ -1113,21 +1127,21 @@ declare namespace GEN {
     tienLuong: number;
     ngach: {
       ngachId: string;
-      ngayBoNhiemNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
-      ngayHuongLuongNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayBoNhiemNgach: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
+      ngayHuongLuongNgach: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       phanTramHuongLuongNgach: number;
       phuCapThamNienVuotKhungNgach: number;
-      ngayHuongPCTNVKNgach: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayHuongPCTNVKNgach: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
     };
     phuCapChucVu: number;
     phuCapKiemNhiem: number;
     phuCapKhac: number;
     viecLam: {
       viTriViecLamId: number;
-      ngayHuongLuongViTriViecLam: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayHuongLuongViTriViecLam: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
       phamTramHuongLuong: number;
       phuCapThamNienVuotKhung: number;
-      ngayHuongPCTNVK: string; // Dạng ISO 8601: "YYYY-MM-DDTHH:mm:ss.sssZ"
+      ngayHuongPCTNVK: string; // Dạng ISO 8601: YYYY-MM-DDTHH:mm:ss.sssZ
     };
     sucKhoe: {
       tinhTrangSucKhoe: 'TOT' | 'BINH_THUONG' | 'YEU';
@@ -1177,7 +1191,7 @@ declare namespace GEN {
   }
 
 
-  type SORT = "createAt" | "updateAt";
+  type SORT = createAt | updateAt;
 
   type CerTechAddNewProps = {
     actionRef: any;

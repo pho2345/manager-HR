@@ -554,7 +554,12 @@ const TableList: React.FC = () => {
                 }}
 
                 request={async () => {
+                    let f: any = {};
+                    if(searchPheDuyet){
+                        f.xacNhan = searchPheDuyet;
+                    }
                     const data = await get(`${collection}`, {
+                        ...f,
                         page: page,
                         sort: sort
                     });

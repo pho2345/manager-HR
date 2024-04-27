@@ -1,4 +1,4 @@
-import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
+import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
@@ -14,11 +14,13 @@ export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
+        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
         if (actionRef.current) {
-            actionRef.current?.reload();
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, `${collection}/${id ?? value.id}`);
     }
 
     return (
@@ -68,7 +70,7 @@ export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                         }}
                     />
                 </Col>
@@ -84,13 +86,10 @@ export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                         }}
                     />
                 </Col>
-
-
-
             </Row>
 
             <Row gutter={24} >

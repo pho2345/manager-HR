@@ -904,7 +904,7 @@ declare namespace GEN {
     soCCCD: string,
     hoSoId: string,
     lyDo: string,
-    hovaten: string,
+    hoVaTen: string,
     xacNhan: XACNHAN,
     xepLoaiChuyenMon: LOAI_A | LOAI_B | LOAI_C | LOAI_D,
   }
@@ -996,13 +996,13 @@ declare namespace GEN {
 
   type AdminPoliticalTheory = {
     id: number,
-    maSyll: string,
+    hoSoId: string,
     batDau: string,
     hoVaTen: string,
     soCCCD: string,
     ketThuc: string,
-    tenCoSoDaoTao: string,
-    IdTenCoSoDaoTao: number,
+    tenCoSoDaoTaoName: string,
+    tenCoSoDaoTaoId: number,
     hinhThucDaoTao: string,
     vanBangDuocCap: string,
     xacNhan: XACNHAN
@@ -1025,18 +1025,66 @@ declare namespace GEN {
   }
 
   type AdminRelateFamily = {
-      id: number,
-      moiQuanHeId: number,
-      moiQuanHeName: string,
-      tenNhanThan: string,
-      namSinh: number,
-      thongTinThanNhan: string,
-      xacNhan: CHO_PHE_DUYET,
-      hoSoId: string,
-      hoVaTen: string,
-      soCCCD: string,
-      create_at: string,
-      update_at: string
+    id: number,
+    moiQuanHeId: number,
+    moiQuanHeName: string,
+    tenNhanThan: string,
+    namSinh: number,
+    thongTinThanNhan: string,
+    xacNhan: XACNHAN,
+    hoSoId: string,
+    hoVaTen: string,
+    soCCCD: string,
+    create_at: string,
+    update_at: string
+  }
+
+
+  type AdminAllowance = {
+    id: number;
+    batDau: string;
+    ketThuc: string;
+    loaiPhuCapId: number;
+    loaiPhuCapName: string;
+    phanTramHuongPhuCap: number;
+    heSoPhuCap: number;
+    hinhThucHuong: string;
+    giaTri: number;
+    xacNhan: XACNHAN;
+    hoSoId: string;
+    hoVaTen: string;
+    soCCCD: string;
+    create_at: string;
+    update_at: string;
+  }
+
+  type Salary = {
+    id: number;
+    batDau: string;
+    ketThuc: string;
+    maSo: string;
+    bacLuong: string;
+    heSoLuong: number;
+    tienLuongTheoViTri: number;
+    xacNhan: XACNHAN;
+    hoSoId: string;
+    hoVaTen: string;
+    soCCCD: string;
+    create_at: string;
+    update_at: string;
+  }
+
+  type WorkModelOld = {
+    id: number;
+    batDau: string;
+    ketThuc: string;
+    chucDanhDonViDiaDiem: string;
+    xacNhan: XACNHAN;
+    hoSoId: string;
+    hoVaTen: string;
+    soCCCD: string;
+    create_at: string;
+    update_at: string;
   }
 
 

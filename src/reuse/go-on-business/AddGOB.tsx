@@ -1,14 +1,11 @@
-import { get, post2 } from "@/services/ant-design-pro/api";
-import { getOption, handleAdd } from "@/services/utils";
+import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
-import { useState } from "react";
 
 export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }: GEN.GOBAddNewProps) {
-    const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/qua-trinh-cong-tac/${id ?? idEmploy}`;
+    const collection = `${SERVER_URL_CONFIG}/qua-trinh-cong-tac`;
 
     async function add(value: any) {
         const data = {
@@ -16,11 +13,14 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
+
+        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
         if (actionRef.current) {
-            actionRef.current?.reload();
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, collection);
     }
 
     return (
@@ -35,7 +35,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
                 },
             }}
             onFinish={async (value) => {
-                const success = await add(value);
+                await add(value);
             }}
 
 
@@ -49,7 +49,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
 
             <Row gutter={24} >
                 <Col span={12} >
-                    <ProFormSelect name="loaiPhuCapId" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                    <ProFormSelect name="donViCongTacId" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                 </Col>
                 <Col span={12} >
                     <ProFormText name="chucDanh" key="chucDanh" label="Chức danh" placeholder={"Chức danh"} />
@@ -68,7 +68,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                         }}
                     />
                 </Col>
@@ -84,7 +84,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                         }}
                     />
                 </Col>
@@ -97,7 +97,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
                         <ProFormSelect
                             label={"CBVC"}
                             // width='md'
-                            name=''
+                            name='id'
                             placeholder={`CBVC`}
                             rules={[
                                 {
@@ -105,27 +105,8 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
 
                                 },
                             ]}
-                            onChange={(value: string) => {
-                                setIdEmploy(value);
-                            }}
-
-                            fieldProps={{
-                                value: idEmploy,
-
-                            }}
                             showSearch
-
-                            request={async () => {
-                                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                                const dataOptions = data.data.map((item: any) => {
-                                    return {
-                                        label: `${item.hoVaTen} - ${item.soCCCD}`,
-                                        value: item.id
-                                    }
-                                })
-                                return dataOptions;
-                            }}
-
+                            request={getOptionCBVC}
 
                         />
                     </Col>

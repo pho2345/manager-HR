@@ -8,13 +8,13 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
 import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
@@ -31,6 +31,8 @@ const TableList: React.FC = () => {
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -342,6 +344,19 @@ const TableList: React.FC = () => {
             },
         },
 
+        {
+            title: "Hình thức đào tạo",
+            key: 'hinhThucDaoTao',
+            dataIndex: 'hinhThucDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucDaoTao}</>
+                );
+            },
+        },
+
+
 
         {
             title: "Cơ sở đào tạo",
@@ -350,7 +365,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTao}</>
+                    <> {entity?.tenCoSoDaoTaoName}</>
                 );
             },
         },
@@ -362,7 +377,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> {displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -374,7 +389,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -386,7 +401,7 @@ const TableList: React.FC = () => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            renderText: (_, entity) => displayTime(entity.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -479,11 +494,15 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
 
@@ -497,7 +516,7 @@ const TableList: React.FC = () => {
 
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
 
 
@@ -555,7 +574,7 @@ const TableList: React.FC = () => {
 
                 request={async () => {
                     let f: any = {};
-                    if(searchPheDuyet){
+                    if (searchPheDuyet) {
                         f.xacNhan = searchPheDuyet;
                     }
                     const data = await get(`${collection}`, {
@@ -601,7 +620,7 @@ const TableList: React.FC = () => {
 
 
             <ModalForm
-                title={"Cập nhật Kỷ luật"}
+                title={<>Cập nhật lý luận chính trị {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -653,7 +672,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
                         />
                     </Col>
@@ -669,22 +688,18 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                             }}
                         />
                     </Col>
-
-
-
                 </Row>
 
                 <Row gutter={24} >
                     <Col span={12} >
                         <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
-                    <Col span={12} >
+                    {/* <Col span={12} >
                         <ProFormSelect
-                            disabled
                             label={"CBVC"}
                             // width='md'
                             name='id'
@@ -700,7 +715,7 @@ const TableList: React.FC = () => {
                             request={getOptionCBVC}
 
                         />
-                    </Col>
+                    </Col> */}
                 </Row>
             </ModalForm>
 

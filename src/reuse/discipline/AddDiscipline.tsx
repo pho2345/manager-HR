@@ -1,14 +1,11 @@
-import { get, post2 } from "@/services/ant-design-pro/api";
-import { getOption, handleAdd } from "@/services/utils";
+import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
-import { useState } from "react";
 
 export default function AddDiscipline({ open, handleOpen, actionRef, id, name, soCCCD }: GEN.DisciplineAddNewProps) {
-    const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/ky-luat/${id ?? idEmploy}`;
+    const collection = `${SERVER_URL_CONFIG}/ky-luat`;
 
     async function add(value: any) {
         const data = {
@@ -16,11 +13,14 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
+        
+        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
         if (actionRef.current) {
-            actionRef.current?.reload();
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, collection);
     }
 
     return (
@@ -35,9 +35,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
                 },
             }}
             onFinish={async (value) => {
-
-                const success = await add(value);
-
+                await add(value);
             }}
 
             submitter={{
@@ -102,7 +100,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
                         <ProFormSelect
                             label={"CBVC"}
                             // width='md'
-                            name=''
+                            name='id'
                             placeholder={`CBVC`}
                             rules={[
                                 {
@@ -110,28 +108,8 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
 
                                 },
                             ]}
-                            onChange={(value: string) => {
-                                setIdEmploy(value);
-                            }}
-
-                            fieldProps={{
-                                value: idEmploy,
-
-                            }}
                             showSearch
-
-                            request={async () => {
-                                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                                const dataOptions = data.data.map((item: any) => {
-                                    return {
-                                        label: `${item.hoVaTen} - ${item.soCCCD}`,
-                                        value: item.id
-                                    }
-                                })
-                                return dataOptions;
-                            }}
-
-
+                            request={getOptionCBVC}
                         />
                     </Col>
                 )}

@@ -47,6 +47,9 @@ import AddProKnow from '@/reuse/pro-knowledge/AddProKnow';
 import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
 import AddWorkingAbroad from '@/reuse/working-abroad/AddWorkingAbroad';
 import AddArmy from '@/reuse/army/AddArmy';
+import AddAllowance from '@/reuse/allowance/AddAllowance';
+import AddSalary from '@/reuse/salary/AddSalary';
+import AddWorkModelOld from '@/reuse/work-model-old/AddWorkModelOld';
 
 
 
@@ -103,6 +106,9 @@ const TableList: React.FC = () => {
   const [openPolicalTheory, setOpenPolicalTheory] = useState<boolean>(false);
   const [openWorkingAbroad, setOpenWorkingAbroad] = useState<boolean>(false);
   const [openArmy, setOpenArmy] = useState<boolean>(false);
+  const [openAllowance, setOpenAllowance] = useState<boolean>(false);
+  const [openSalary, setOpenSalary] = useState<boolean>(false);
+  const [openWorkModelOld, setOpenWorkModelOld] = useState<boolean>(false);
 
 
 
@@ -591,6 +597,32 @@ const TableList: React.FC = () => {
               }}
             >An ninh quốc phòng</Menu.Item>
 
+            <Menu.Item key="11"
+              onClick={() => {
+                setOpenAllowance(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Phụ cấp khác</Menu.Item>
+
+            <Menu.Item key="12"
+              onClick={() => {
+                setOpenSalary(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Lương</Menu.Item>
+
+            <Menu.Item key="13"
+              onClick={() => {
+                setOpenWorkModelOld(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Làm việc chế độ cũ</Menu.Item>
           </Menu>
 
 
@@ -800,6 +832,9 @@ const TableList: React.FC = () => {
         <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddWorkingAbroad open={openWorkingAbroad} actionRef={actionRef} handleOpen={setOpenWorkingAbroad} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddArmy open={openArmy} actionRef={actionRef} handleOpen={setOpenArmy} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddAllowance open={openAllowance} actionRef={actionRef} handleOpen={setOpenAllowance} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddSalary open={openSalary} actionRef={actionRef} handleOpen={setOpenSalary} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddWorkModelOld open={openWorkModelOld} actionRef={actionRef} handleOpen={setOpenWorkModelOld} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
 
 
 

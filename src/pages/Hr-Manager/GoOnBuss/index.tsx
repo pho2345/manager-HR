@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
@@ -364,7 +364,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <>{entity.batDau ? moment(entity.batDau).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -376,7 +376,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.ketThuc ? moment(entity.ketThuc).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -486,7 +486,9 @@ const TableList: React.FC = () => {
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
 
@@ -500,10 +502,8 @@ const TableList: React.FC = () => {
 
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, `${collection}/qua-trinh-cong-tac`);
+        return await handleUpdate2(value, refIdCurrent.current, `${collection}` ,true);
     }
-
-
 
     return (
         <PageContainer>
@@ -601,118 +601,6 @@ const TableList: React.FC = () => {
                 }}
             />
 
-            {/* <ModalForm
-                form={form}
-                title={"Tạo quá trình công tác"}
-                // width={window.innerWidth * 0.3}
-                open={createModalOpen}
-                modalProps={{
-                    destroyOnClose: true,
-                    onCancel: () => {
-                        handleModalOpen(false)
-                    },
-                }}
-                onFinish={async (value) => {
-                    if (value.kyLuat && value.kyLuat.length !== 0) {
-                        const newData = value.kyLuat.map((e: any) => {
-                            const { nam, danhSachMaHoSo, ketThuc, batDau, ...other } = e;
-                            return {
-                                kyLuat: {
-                                    ...other,
-                                    nam: moment(nam).toISOString(),
-                                    ketThuc: moment(ketThuc).toISOString(),
-                                    batDau: moment(batDau).toISOString(),
-                                },
-                                danhSachMaHoSo
-                            }
-                        });
-
-
-                        const success = await post2(collection, {}, newData);
-                        if (success) {
-                            handleModalOpen(false);
-                            form.resetFields();
-                            if (actionRef.current) {
-                                actionRef.current.reload();
-                            }
-                        }
-                    }
-
-                }}
-
-
-
-                submitter={{
-                    searchConfig: {
-                        resetText: configDefaultText['buttonClose'],
-                        submitText: configDefaultText['buttonAdd'],
-                    },
-                }}
-            >
-
-               
-
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormSelect name="donViCongTac" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                        </Col>
-                       
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="batDau"
-                                label={"Ngày bắt đầu"}
-                                placeholder={"Ngày bắt đầu"}
-                                rules={[
-                                    { required: true, message: "Ngày bắt đầu" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                name="ketThuc"
-                                label={"Ngày kết thúc"}
-                                placeholder={"Ngày kết thúc"}
-                                rules={[
-                                    { required: true, message: "Ngày kết thúc" }
-                                ]}
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate
-                                }}
-                            />
-                        </Col>
-
-                    </Row>
-
-                    <Row gutter={24} >
-                        <Col span={16} >
-                            <ProFormSelect fieldProps={{
-                                mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Nhân viên" request={async () => {
-                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                                let dataOptions = [] as any;
-                                if (nv) {
-                                    nv.data?.map((e: any) => {
-                                        dataOptions.push({
-                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                            value: `${e.id}`
-                                        });
-                                    })
-                                }
-                                return dataOptions
-                            }} />
-                        </Col>
-                    </Row>
-
-            </ModalForm> */}
             <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} />
             <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
 
@@ -747,7 +635,7 @@ const TableList: React.FC = () => {
             >
                 <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormSelect name="donViCongTac" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormSelect name="donViCongTacId" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
                     <Col span={12} >
                         <ProFormText name="chucDanh" key="chucDanh" label="Chức danh" placeholder={"Chức danh"} />
@@ -766,7 +654,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
                         />
                     </Col>
@@ -782,30 +670,13 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                             }}
                         />
                     </Col>
 
                 </Row>
-
-                {/* <Row gutter={24} >
-                    <Col span={16} >
-                        <ProFormSelect name="danhSachMaHoSo" key="danhSachMaHoSo" label="Nhân viên" request={async () => {
-                            const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                            let dataOptions = [] as any;
-                            if (nv) {
-                                nv.data?.map((e: any) => {
-                                    dataOptions.push({
-                                        label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                        value: `${e.id}`
-                                    });
-                                })
-                            }
-                            return dataOptions
-                        }} />
-                    </Col>
-                </Row> */}
+               
             </ModalForm>
 
         </PageContainer>

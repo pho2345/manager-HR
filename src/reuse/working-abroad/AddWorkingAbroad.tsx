@@ -15,11 +15,13 @@ export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-        if (actionRef.current) {
-            actionRef.current?.reload();
+         if (actionRef.current) {
+            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, `${collection}/${id ?? value?.id}`);
     }
 
 

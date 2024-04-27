@@ -1,6 +1,6 @@
-import { get, getCustome,} from '@/services/ant-design-pro/api';
-import { PlusOutlined,  SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter,  ProColumns,  ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,16 +8,17 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
+
 import configText from '@/locales/configText';
-import { getOption, getOptionCBVC, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, formatter, getOption, getOptionCBVC, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
-import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import ModalApproval from '@/reuse/approval/ModalApproval';
+import AddAllowance from '@/reuse/allowance/AddAllowance';
 const configDefaultText = configText;
 
 
@@ -25,21 +26,23 @@ const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const collection = `${SERVER_URL_CONFIG}/ky-luat`;
+    const collection = `${SERVER_URL_CONFIG}/phu-cap-khac`;
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
+
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectedRow, setSelectedRow] = useState<[]>([]);
-    const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [page, setPage] = useState<number>(0);
-    const [total, setTotal] = useState<number>(15);
+    const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
 
 
@@ -297,14 +300,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.AdminDiscipline>[] = [
+    const columns: ProColumns<GEN.AdminAllowance>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: "Nhân viên",
+            title: "CBVC",
             key: 'hoVaTen',
             dataIndex: 'hoVaTen',
             render: (_, entity) => {
@@ -322,93 +325,94 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.soCCCD}</>
+                    <>{entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('soCCCD')
-        },
-        {
-            title: "Ngày sinh",
-            key: 'sinhNgay',
-            dataIndex: 'sinhNgay',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
-                );
-            },
-        },
-        {
-            title: "Cơ quan quyết định",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.coQuanQuyetDinhName}</>
-                );
-            },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
         {
-            title: "Hành vi vi phạm",
-            key: 'hanhViViPhamChinh',
-            dataIndex: 'hanhViViPhamChinh',
+            title: "loaiPhuCapName",
+            key: 'loaiPhuCapName',
+            dataIndex: 'loaiPhuCapName',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hanhViViPhamChinh}</>
+                    <> {entity?.loaiPhuCapName}</>
                 );
             },
-            ...getColumnSearchProps('hanhViViPhamChinh')
         },
 
         {
-            title: "Hình thức kỷ luật",
-            key: 'hinhThuc',
-            dataIndex: 'hinhThuc',
+            title: "Phần trăm hưởng phụ cấp",
+            key: 'phanTramHuongPhuCap',
+            dataIndex: 'phanTramHuongPhuCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hinhThuc}</>
+                    <> {entity?.phanTramHuongPhuCap}</>
                 );
             },
-            ...getColumnSearchProps('hinhThucKhenThuong')
         },
 
         {
-            title: "Ngày quyết định",
+            title: "Hệ số phụ cấp",
+            key: 'heSoPhuCap',
+            dataIndex: 'heSoPhuCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.heSoPhuCap}</>
+                );
+            },
+        },
+
+        {
+            title: "Giá trị",
+            key: 'giaTri',
+            dataIndex: 'giaTri',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.giaTri}</>
+                );
+            },
+        },
+
+        {
+            title: "Hình thức hưởng",
+            key: 'hinhThucHuong',
+            dataIndex: 'hinhThucHuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucHuong}</>
+                );
+            },
+        },
+
+
+        {
+            title: "Ngày cấp",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {entity?.batDau ? moment(entity.batDau).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity?.ketThuc ? moment(entity.ketThuc).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
-        },
-
-
-        {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
-            ...getColumnSearchRange('create_at')
         },
         {
             title: "Trạng thái",
@@ -417,7 +421,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {mapXacNhan(entity.xacNhan)} </>
+                    <> {mapXacNhan(entity.xacNhan)}</>
                 );
             },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
@@ -484,6 +488,20 @@ const TableList: React.FC = () => {
                 />
             ),
         },
+
+
+
+
+
+
+        {
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            ...getColumnSearchRange('create_at')
+        },
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -502,15 +520,19 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        hoSoId: getRecordCurrent.data.hoSoId
+                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        hinhThucThuong: getRecordCurrent.data.hinhThucHuong,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -519,13 +541,9 @@ const TableList: React.FC = () => {
         }
     ];
 
-
-
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, `${collection}`);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
-
-
 
     return (
         <PageContainer>
@@ -533,7 +551,6 @@ const TableList: React.FC = () => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -555,21 +572,21 @@ const TableList: React.FC = () => {
                     </Button>)
                 ]}
 
-                // dataSource={discipline}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
                         f.pheDuyet = searchPheDuyet;
                     }
-                    const data = await get(collection, {
+                    const getData = await get(`${collection}`, {
                         ...f,
-                        sort: sort
-                    });
-                    // setDiscipline(data.data)
+                        sort: sort,
+                        page: page
+                    })
                     return {
-                        data: data.data
+                        data: getData.data
                     }
                 }}
+
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -577,12 +594,7 @@ const TableList: React.FC = () => {
                     },
                     showTotal: (total, range) => {
                         return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                    onChange(page, _) {
-                        setPage(page - 1);
-                    },
-                    total: total,
-                    showSizeChanger: false,
+                    }
                 }}
                 columns={columns}
                 rowSelection={{
@@ -617,6 +629,7 @@ const TableList: React.FC = () => {
                     )
                 }}
 
+
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
                 }}
@@ -627,11 +640,12 @@ const TableList: React.FC = () => {
             />
 
 
-            <AddDiscipline actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ky-luat/phe-duyet' fieldApproval='xacNhan' />
+            <AddAllowance actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/phu-cap-khac/phe-duyet' fieldApproval='xacNhan' />
+
 
             <ModalForm
-                title={"Cập nhật Kỷ luật"}
+                title={<>Cập nhật phụ cấp khác {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -659,35 +673,50 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-                    <Col span={8} >
-                        <ProFormSelect name="coQuanQuyetDinhId" key="coQuanQuyetDinh" label="Cơ quan quyết định" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                    <Col span={12} >
+                        <ProFormText name="hinhThucThuong" key="hinhThucThuong" label="Hình thức thưởng" placeholder={"Hình thức thưởng"} />
                     </Col>
-                    <Col span={8} >
-                        <ProFormText name="hinhThuc" key="hinhThuc" label="Hình thức kỷ luật" placeholder={"Hình thức"} />
-                    </Col>
-                    <Col span={8} >
-                        <ProFormText name="hanhViViPhamChinh" key="hanhViViPhamChinh" label="Hành vi vi phạm" placeholder={"Hành vi"} />
+                    <Col span={12} >
+                        <ProFormSelect name="loaiPhuCapId" key="loaiPhuCapId" label="Loại phụ cấp" request={() => getOption(`${SERVER_URL_CONFIG}/loai-phu-cap?page=0&size=100`, 'id', 'name')} />
                     </Col>
                 </Row>
 
                 <Row gutter={24} >
-                    <Col span={8} >
+                    <Col span={12} >
+                        <ProFormDigit name="giaTri" key="giaTri" label="Giá trị" placeholder={"Giá trị"} fieldProps={{
+                            min: 0,
+                            formatter,
+                            parser,
+
+                        }} />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormDigit name="heSoPhuCap" key="heSoPhuCap" label="Hệ số phụ cấp" placeholder={"Hệ số phụ cấp"} fieldProps={{
+                            min: 0,
+                            formatter,
+                            parser,
+                        }} />
+                    </Col>
+                </Row>
+
+                <Row gutter={24} >
+                    <Col span={12} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày quyết định"}
-                            placeholder={"Ngày quyết định"}
+                            label={"Ngày bắt đầu"}
+                            placeholder={"Ngày bắt đầu"}
                             rules={[
-                                { required: true, message: "Ngày quyết định" }
+                                { required: true, message: "Ngày bắt đầu" }
                             ]}
                             fieldProps={{
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
                         />
                     </Col>
-                    <Col span={8} >
+                    <Col span={12} >
                         <ProFormDatePicker
                             name="ketThuc"
                             label={"Ngày kết thúc"}
@@ -699,16 +728,24 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                             }}
                         />
                     </Col>
-
                 </Row>
 
                 <Row gutter={24} >
                     <Col span={12} >
+                        <ProFormDigit name="phanTramHuongPhuCap" key="phanTramHuongPhuCap" label="Phần trăm hưởng (%)" placeholder={"Phần trăm hưởng (%)"} fieldProps={{
+                            min: 0,
+                            max: 100
+                        }} />
+
+                    </Col>
+
+                    {/* <Col span={12} >
                         <ProFormSelect
+                            disabled
                             label={"CBVC"}
                             // width='md'
                             name='hoSoId'
@@ -721,10 +758,8 @@ const TableList: React.FC = () => {
                             ]}
                             showSearch
                             request={getOptionCBVC}
-
-
                         />
-                    </Col>
+                    </Col> */}
                 </Row>
             </ModalForm>
 

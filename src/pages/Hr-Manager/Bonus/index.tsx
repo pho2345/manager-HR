@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan, mapXepLoaiChuyenMon, mapXepLoaiThiDua } from '@/services/utils/constant';
 import AddBonus from '@/reuse/bonus/AddBonus';
@@ -307,19 +307,19 @@ const TableList: React.FC = () => {
       valueType: 'indexBorder',
     },
     {
-      title: "Nhân viên",
-      key: 'xepLoaiChuyenMon',
-      dataIndex: 'xepLoaiChuyenMon',
+      title: "CBVC",
+      key: 'hoVaTen',
+      dataIndex: 'hoVaTen',
       render: (_, entity) => {
         ;
         return (
-          <> {entity?.hovaten}</>
+          <> {entity?.hoVaTen}</>
         );
       },
-      ...getColumnSearchProps('xepLoaiChuyenMon')
+      ...getColumnSearchProps('hoVaTen')
     },
     {
-      title: "Số CMND/CCCD",
+      title: "CMND/CCCD",
       key: 'soCCCD',
       dataIndex: 'soCCCD',
       render: (_, entity) => {
@@ -639,19 +639,6 @@ const TableList: React.FC = () => {
           )
         }}
 
-
-
-        // expandable={
-        //     {
-        //         expandIcon: () => <>aaa</>,
-        //         columnTitle: (props: any) => <></>,
-        //         showExpandColumn: true,
-        //         onExpand(expanded, record) {
-        //             console.log(expanded, record)
-        //         },
-        //     }
-        // }
-
         tableAlertRender={({ selectedRowKeys }: any) => {
           return renderTableAlert(selectedRowKeys);
         }}
@@ -662,131 +649,6 @@ const TableList: React.FC = () => {
       />
 
 
-      {/* <ModalForm
-                form={form}
-                title={"Tạo khen thưởng"}
-                // width={window.innerWidth * 0.3}
-                open={createModalOpen}
-                modalProps={{
-                    destroyOnClose: true,
-                    onCancel: () => {
-                        handleModalOpen(false)
-                    },
-                }}
-                onFinish={async (value) => {
-                    if (value.khenThuong && value.khenThuong.length !== 0) {
-                        const newData = value.khenThuong.map((e: any) => {
-                            const { nam, danhSachMaHoSo, ...other } = e;
-                            return {
-                                khenThuong: {
-                                    ...other,
-                                    nam: moment(nam).toISOString()
-                                },
-                                danhSachMaHoSo
-                            }
-                        });
-
-
-                        const success = await post2('/nhan-vien/khen-thuong', {}, newData);
-                        if (success) {
-                            handleModalOpen(false);
-                            form.resetFields();
-                            if (actionRef.current) {
-                                actionRef.current.reload();
-                            }
-                        }
-                    }
-
-                }}
-
-
-
-                submitter={{
-                    searchConfig: {
-                        resetText: configDefaultText['buttonClose'],
-                        submitText: configDefaultText['buttonAdd'],
-                    },
-                }}
-            >
-
-                <ProFormList
-                    name="khenThuong"
-                    creatorButtonProps={{
-                        creatorButtonText: 'Thêm một khen thưởng',
-                    }}
-                    min={1}
-                    copyIconProps={false}
-                    itemRender={({ listDom, action }, { index }) => (
-                        <ProCard
-                            bordered
-                            style={{ marginBlockEnd: 8 }}
-                            title={`Khen thưởng${index + 1}`}
-                            extra={action}
-                            bodyStyle={{ paddingBlockEnd: 0 }}
-                        >
-                            {listDom}
-                        </ProCard>
-                    )}
-
-                >
-
-                    <Row gutter={24} >
-                        <Col span={8} >
-                            <ProFormSelect name="hinhThucKhenThuong" key="hinhThucKhenThuong" label="Hình thức khen thưởng" request={() => getOption(`${SERVER_URL_CONFIG}/hinh-thuc-khen-thuong`, 'id', 'name')} />
-
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormSelect name="xepLoaiChuyenMon" key="xepLoaiChuyenMon" label="Xếp loại chuyên môn" options={XEP_LOAI_CHUYEN_MON} />
-
-                        </Col>
-
-                        <Col span={8} >
-                            <ProFormSelect name="xepLoaiThiDua" key="xepLoaiThiDua" label="Xếp loại thi đua" options={XEP_LOAI_THI_DUA} />
-
-                        </Col>
-                    </Row>
-
-                    <Row gutter={24} >
-                        <Col span={16} >
-                            <ProFormSelect fieldProps={{
-                                mode: 'multiple'
-                            }} name="danhSachMaHoSo" key="danhSachMaHoSo" label="Nhân viên" request={async () => {
-                                const nv = await get(`${SERVER_URL_CONFIG}/nhan-vien/so-yeu-ly-lich`);
-                                let dataOptions = [] as any;
-                                if (nv) {
-                                    nv.data?.map((e: any) => {
-                                        dataOptions.push({
-                                            label: `${e.hoVaTen} - ${e.soCCCD}`,
-                                            value: `${e.id}`
-                                        });
-                                    })
-                                }
-                                return dataOptions
-                            }} />
-                        </Col>
-                        <Col span={8} >
-                            <ProFormDatePicker
-                                fieldProps={{
-                                    style: {
-                                        width: "100%"
-                                    },
-                                    // disabledDate: disabledDate\
-
-                                }}
-                                name="nam"
-                                label="Năm khen thưởng"
-                                placeholder="Năm khen thưởng"
-                                rules={[
-                                    { required: true, message: "Năm khen thưởng" },
-                                ]}
-
-                            />
-                        </Col>
-                    </Row>
-                </ProFormList>
-
-            </ModalForm> */}
 
       <AddBonus createModalOpen={createModalOpen} handleModalOpen={handleModalOpen} actionRef={actionRef} />
       <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/khen-thuong/phe-duyet' fieldApproval='xacNhan' />
@@ -888,6 +750,11 @@ const TableList: React.FC = () => {
               label={"Năm"}
               // width='md'
               name='nam'
+              fieldProps={{
+                style: {
+                  width: "100%"
+                },
+              }}
               placeholder={`Năm`}
               rules={[
                 {
@@ -917,16 +784,7 @@ const TableList: React.FC = () => {
               //     value: idEmploy
               // }}
 
-              request={async () => {
-                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                const dataOptions = data.data.map((item: any) => {
-                  return {
-                    label: `${item.hoVaTen} - ${item.soCCCD}`,
-                    value: item.id
-                  }
-                });
-                return dataOptions;
-              }}
+              request={getOptionCBVC}
 
             />
           </Col>

@@ -1,6 +1,6 @@
-import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import {  get, getCustome } from '@/services/ant-design-pro/api';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,15 +8,15 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
 import AddCerTech from '@/reuse/techs/AddCerTech';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
@@ -42,6 +42,10 @@ const TableList: React.FC = () => {
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(15);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
+
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
+
 
     const [sort, setSort] = useState<GEN.SORT>('createAt');
 
@@ -358,7 +362,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {entity?.batDau ? moment(entity?.batDau).format(FORMAT_DATE) : ""}</>
+                    <> {displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -370,22 +374,19 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity?.ketThuc ? moment(entity?.ketThuc).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
         },
-
-
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : "",
+            renderText: (_, text) =>  displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
             dataIndex: 'xacNhan',
@@ -475,11 +476,15 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
 
@@ -494,7 +499,9 @@ const TableList: React.FC = () => {
 
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection);
+        const offset = moment().utcOffset();
+        console.log('value', offset);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
 
 
@@ -598,7 +605,7 @@ const TableList: React.FC = () => {
 
 
             <ModalForm
-                title={"Cập nhật chứng chỉ tin học"}
+                title={<>Cập nhật chứng chỉ tin học {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -626,13 +633,11 @@ const TableList: React.FC = () => {
                 }}
             >
                 <Row gutter={24} >
-
                     <Col span={12} >
                         <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
                     </Col>
-
                     <Col span={12} >
-                        <ProFormDigit name="diemSo" key="diemSo" label="Điểm số" placeholder={`Điểm số`} />
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
                 </Row>
 
@@ -649,7 +654,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
                         />
                     </Col>
@@ -665,7 +670,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                             }}
                         />
                     </Col>
@@ -677,41 +682,8 @@ const TableList: React.FC = () => {
 
 
                 <Row gutter={24} >
-                    {/* <Col span={12} >
-                            <ProFormSelect
-                                label={"CBVC"}
-                                // width='md'
-                                name=''
-                                placeholder={`CBVC`}
-                                rules={[
-                                    {
-                                        required: true,
-
-                                    },
-                                ]}
-                               
-
-                             
-                                showSearch
-
-                                request={async () => {
-                                    const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                                    const dataOptions = data.data.map((item: any) => {
-                                        return {
-                                            label: `${item.hoVaTen} - ${item.soCCCD}`,
-                                            value: item.id
-                                        }
-                                    })
-                                    return dataOptions;
-                                }}
 
 
-                            />
-                        </Col> */}
-
-                    <Col span={12} >
-                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTaoId" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
-                    </Col>
                 </Row>
             </ModalForm>
 

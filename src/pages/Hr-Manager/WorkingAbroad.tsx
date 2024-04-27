@@ -8,13 +8,13 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, mapTrangThai, mapXacNhan } from '@/services/utils/constant';
 import AddWorkingAbroad from '@/reuse/working-abroad/AddWorkingAbroad';
@@ -31,6 +31,8 @@ const TableList: React.FC = () => {
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -325,7 +327,6 @@ const TableList: React.FC = () => {
                 );
             },
         },
-
         {
             title: "Tổ chức địa chỉ công việc",
             key: 'toChucDiaChiCongViec',
@@ -338,17 +339,13 @@ const TableList: React.FC = () => {
             },
             // ...getColumnSearchProps('coQuanQuyetDinh')
         },
-
-
-
-
         {
             title: "Ngày bắt đầu",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {moment(entity.batDau).format('DD/MM/YYYY')}</>
+                    <> {displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -360,19 +357,17 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{moment(entity.ketThuc).format('DD/MM/YYYY')}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
         },
-
-
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
         {
@@ -462,11 +457,15 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
 
@@ -479,7 +478,7 @@ const TableList: React.FC = () => {
     ];
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
 
     return (
@@ -582,7 +581,7 @@ const TableList: React.FC = () => {
             <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/lam-viec-o-nuoc-ngoai/phe-duyet' fieldApproval='xacNhan' />
 
             <ModalForm
-                title={"Cập nhật làm việc ở nước ngoài"}
+                title={<>Cập nhật làm việc ở nước ngoài {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -649,7 +648,7 @@ const TableList: React.FC = () => {
                     </Col>
 
                 </Row>
-                <Row gutter={24} >
+                {/* <Row gutter={24} >
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
@@ -661,7 +660,7 @@ const TableList: React.FC = () => {
                             request={getOptionCBVC}
                         />
                     </Col>
-                </Row>
+                </Row> */}
             </ModalForm>
 
         </PageContainer>

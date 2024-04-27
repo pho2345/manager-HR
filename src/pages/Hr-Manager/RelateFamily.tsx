@@ -8,15 +8,15 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { mapTrangThai, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, mapTrangThai, mapXacNhan } from '@/services/utils/constant';
 import AddArmy from '@/reuse/army/AddArmy';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 import AddRelateFamily from '@/reuse/relate-family/AddRelateFamily';
@@ -32,6 +32,8 @@ const TableList: React.FC = () => {
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -353,29 +355,7 @@ const TableList: React.FC = () => {
             },
         },
 
-        {
-            title: "Thông tin thân nhân",
-            key: 'thongTinThanNhan',
-            dataIndex: 'thongTinThanNhan',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.thongTinThanNhan}</>
-                );
-            },
-        },
 
-        {
-            title: "Trạng thái",
-            key: 'xacNhan',
-            dataIndex: 'xacNhan',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {mapXacNhan(entity.xacNhan)}</>
-                );
-            },
-        },
 
         {
             title: "Năm sinh",
@@ -391,15 +371,89 @@ const TableList: React.FC = () => {
 
 
 
-       
+
 
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
+        },
+        {
+            title: "Trạng thái",
+            key: 'xacNhan',
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)}</>
+                );
+            },
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={XAC_NHAN}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchPheDuyet(value)
+                                    },
+                                    value: searchPheDuyet
+                                }}
+                                showSearch
+                                placeholder={'Chọn trạng thái'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchPheDuyet(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchPheDuyet ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
         },
         {
             title: configDefaultText['titleOption'],
@@ -419,12 +473,14 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        tenCoSoDaoTao: getRecordCurrent.data.tenCoSoDaoTaoId,
+                                        hoSoId: getRecordCurrent.data.hoSoId,
                                     })
                                 }
 
@@ -543,7 +599,7 @@ const TableList: React.FC = () => {
 
 
             <ModalForm
-                title={"Cập nhật kien thuc an ninh quoc phong"}
+                title={<>Cập nhật quan hệ gia đình {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -570,52 +626,27 @@ const TableList: React.FC = () => {
                     },
                 }}
             >
-                <Row gutter={24}>
+                <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
+                        <ProFormText name="hoVaTen" key="hoVaTen" label="Họ tên" placeholder={"Họ tên"} />
                     </Col>
                     <Col span={12} >
-                        <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormSelect name="moiQuanHeId" key="moiQuanHeId" label="Mối quan hệ" request={() => getOption(`${SERVER_URL_CONFIG}/moi-quan-he?page=0&size=100`, 'id', 'name')} />
                     </Col>
                 </Row>
 
                 <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormDatePicker
-                            name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
-                            rules={[
-                                { required: true, message: "Ngày bắt đầu" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
-                            }}
-                        />
+                        <ProFormDigit name="namSinh" key="namSinh" label="Năm sinh" placeholder={"Năm sinh"} fieldProps={{
+                            min: 1900
+                        }} />
                     </Col>
                     <Col span={12} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
-                            rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
-                                },
-                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
-                            }}
-                        />
+                        <ProFormText name="thongTinThanNhan" key="thongTinThanNhan" label="Thông tin thân nhân" />
                     </Col>
-
                 </Row>
 
-                <Row gutter={24} >
+                {/* <Row gutter={24} >
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
@@ -634,7 +665,7 @@ const TableList: React.FC = () => {
                             request={getOptionCBVC}
                         />
                     </Col>
-                </Row>
+                </Row> */}
             </ModalForm>
 
         </PageContainer>

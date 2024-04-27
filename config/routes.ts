@@ -65,9 +65,11 @@
       { path: '/hr-manager/working-abroad', name: 'workingAbroad', component: './Hr-Manager/WorkingAbroad' },
       { path: '/hr-manager/army', name: 'army', component: './Hr-Manager/Army' },
       { path: '/hr-manager/relate', name: 'relate', component: './Hr-Manager/RelateFamily' },
+      { path: '/hr-manager/allowance', name: 'allowance', component: './Hr-Manager/Allowance' },
+      { path: '/hr-manager/salary', name: 'salary', component: './Hr-Manager/Salary' },
+      { path: '/hr-manager/work-model-old', name: 'workModelOld', component: './Hr-Manager/WorkModelOld' },
     ],
     // access: 'admin'
-
   },
   {
     name: 'Cấu hình',

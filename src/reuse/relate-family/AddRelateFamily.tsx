@@ -14,11 +14,16 @@ export default function AddRelateFamily({ open, handleOpen, actionRef, id, name,
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
+
         if (actionRef.current) {
-            actionRef.current?.reload();
+            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, `${collection}/${id ?? value?.id}`);
+
     }
 
 
@@ -49,7 +54,7 @@ export default function AddRelateFamily({ open, handleOpen, actionRef, id, name,
 
             <Row gutter={24} >
                 <Col span={12} >
-                    <ProFormText name="hoVaTen" key="hoVaTen" label="Họ tên" placeholder={"Họ tên"}/>
+                    <ProFormText name="hoVaTen" key="hoVaTen" label="Họ tên" placeholder={"Họ tên"} />
                 </Col>
                 <Col span={12} >
                     <ProFormSelect name="moiQuanHeId" key="moiQuanHeId" label="Mối quan hệ" request={() => getOption(`${SERVER_URL_CONFIG}/moi-quan-he?page=0&size=100`, 'id', 'name')} />
@@ -60,7 +65,7 @@ export default function AddRelateFamily({ open, handleOpen, actionRef, id, name,
                 <Col span={12} >
                     <ProFormDigit name="namSinh" key="namSinh" label="Năm sinh" placeholder={"Năm sinh"} fieldProps={{
                         min: 1900
-                    }}/>
+                    }} />
                 </Col>
                 <Col span={12} >
                     <ProFormText name="thongTinThanNhan" key="thongTinThanNhan" label="Thông tin thân nhân" />
@@ -81,7 +86,6 @@ export default function AddRelateFamily({ open, handleOpen, actionRef, id, name,
 
                                 },
                             ]}
-                            
                             showSearch
                             request={getOptionCBVC}
                         />

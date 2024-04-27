@@ -1,23 +1,29 @@
-import { get } from "@/services/ant-design-pro/api";
-import { getOption, handleAdd } from "@/services/utils";
+import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from "@/services/utils/constant";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
-import { useState } from "react";
 
 export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id, name, soCCCD }: GEN.BonusAddNewProps) {
-    const [idEmploy, setIdEmploy] = useState<string | undefined>(id);
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/khen-thuong/${id ?? idEmploy}`;
+    const collection = `${SERVER_URL_CONFIG}/khen-thuong`;
 
     async function add(value: any) {
         const data = {
             ...value,
             nam: moment(value.nam).toISOString(),
         }
-        return await handleAdd(data, collection);
+
+        if (actionRef.current) {
+            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            if (create) {
+                handleModalOpen(false);
+                actionRef.current?.reload();
+            }
+        }
+
     }
+
     return (
         <ModalForm
             form={form}
@@ -31,14 +37,7 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                 },
             }}
             onFinish={async (value) => {
-                const success = await add(value)
-                if (success) {
-                    handleModalOpen(false);
-                    form.resetFields();
-                    if (actionRef.current) {
-                        actionRef.current.reload();
-                    }
-                }
+                await add(value)
             }}
 
             submitter={{
@@ -123,14 +122,14 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                                 required: true,
                                 message: "Năm"
                             },
-                        ]} 
+                        ]}
                         fieldProps={{
                             style: {
                                 width: "100%"
                             },
                         }}
-                        
-                        />
+
+                    />
                 </Col>
 
                 {!id && (
@@ -138,32 +137,16 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                         <ProFormSelect
                             label={"CBVC"}
                             // width='md'
-                            name=''
+                            name='id'
                             placeholder={`CBVC`}
                             rules={[
                                 {
                                     required: true,
-                                
+
                                 },
                             ]}
-                            onChange={(value: string) => {
-                                setIdEmploy(value);
-                            }}
-
-                            fieldProps={{
-                                value: idEmploy,
-                            }}
                             showSearch
-                            request={async () => {
-                                const data = await get(`${SERVER_URL_CONFIG}/nhan-vien/ho-so?page=0&size=10000`);
-                                const dataOptions = data.data.map((item: any) => {
-                                    return {
-                                        label: `${item.hoVaTen} - ${item.soCCCD}`,
-                                        value: item.id
-                                    }
-                                })
-                                return dataOptions;
-                            }}
+                            request={getOptionCBVC}
 
 
                         />

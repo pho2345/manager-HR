@@ -1,9 +1,7 @@
-import { get, post2 } from "@/services/ant-design-pro/api";
 import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd } from "@/services/utils";
-import { ModalForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
-import { useState } from "react";
 
 export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
     const [form] = Form.useForm<any>();
@@ -15,11 +13,13 @@ export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND 
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-        if (actionRef.current) {
-            actionRef.current?.reload();
+         if (actionRef.current) {
+            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            if (create) {
+                handleOpen(false);
+                actionRef.current?.reload();
+            }
         }
-        handleOpen(false);
-        return await handleAdd(data, `${collection}/${id ?? value?.id}`);
     }
 
 

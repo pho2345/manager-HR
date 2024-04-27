@@ -8,13 +8,13 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { getOption, getOptionCBVC, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, mapXacNhan } from '@/services/utils/constant';
 import AddCerLang from '@/reuse/languages/AddLanguages';
@@ -31,6 +31,8 @@ const TableList: React.FC = () => {
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
+    const refName = useRef<string>();
+    const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
@@ -372,7 +374,7 @@ const TableList: React.FC = () => {
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <> {entity.batDau ? moment(entity.batDau).format(FORMAT_DATE) : ''}</>
+                    <> {displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
@@ -384,7 +386,7 @@ const TableList: React.FC = () => {
             render: (_, entity) => {
                 ;
                 return (
-                    <>{entity.ketThuc ? moment(entity.ketThuc).format(FORMAT_DATE) : ''}</>
+                    <>{displayTime(entity.ketThuc)}</>
                 );
             },
             ...getColumnSearchRange('ketThuc')
@@ -491,11 +493,15 @@ const TableList: React.FC = () => {
                             onClick={async () => {
                                 handleUpdateModalOpen(true);
                                 refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
                                 const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
 
@@ -616,7 +622,7 @@ const TableList: React.FC = () => {
 
 
             <ModalForm
-                title={"Cập nhật chứng chỉ ngoại ngữ"}
+                title={<>Cập nhật chứng chỉ ngoại ngữ {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -673,7 +679,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
                         />
                     </Col>
@@ -689,7 +695,7 @@ const TableList: React.FC = () => {
                                 style: {
                                     width: "100%"
                                 },
-                                // disabledDate: disabledDate
+                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                             }}
                         />
                     </Col>
@@ -701,7 +707,7 @@ const TableList: React.FC = () => {
                 </Row>
 
 
-                <Row gutter={24} >
+                {/* <Row gutter={24} >
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
@@ -718,7 +724,7 @@ const TableList: React.FC = () => {
                             request={getOptionCBVC}
                         />
                     </Col>
-                </Row>
+                </Row> */}
             </ModalForm>
 
         </PageContainer>

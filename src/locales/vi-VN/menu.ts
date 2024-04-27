@@ -38,5 +38,7 @@ export default {
 'menu.Quản lý.workingAbroad': 'Làm việc ở nước ngoài',
 'menu.Quản lý.army': 'Kiến thức an ninh quốc phòng',
 'menu.Quản lý.relate': 'Quan hệ gia đình',
-
+'menu.Quản lý.allowance': 'Phụ cấp khác',
+'menu.Quản lý.salary': 'Lương',
+'menu.Quản lý.workModelOld': 'Làm việc chế độ cũ',
 }

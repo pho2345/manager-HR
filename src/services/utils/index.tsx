@@ -250,3 +250,12 @@ export const disableDateStartAndDateEnd = (fieldDate: string, form: FormInstance
   }
 }
 
+export const handleTime = (time: string) => {
+  return moment(new Date(`${time}Z`)).toISOString()
+}
+
+export const displayTime = (time: string) => {
+  if(!time) return '';
+  return moment(new Date(`${time}Z`)).format(FORMAT_DATE)
+}
+

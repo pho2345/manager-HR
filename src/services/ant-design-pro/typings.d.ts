@@ -1308,5 +1308,10 @@ declare namespace GEN {
     collection: string
   }
 
+  type GOBTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
 }
 

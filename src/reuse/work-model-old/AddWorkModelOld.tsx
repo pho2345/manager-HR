@@ -1,29 +1,26 @@
-import { get, post2 } from "@/services/ant-design-pro/api";
-import { disableDateStartAndDateEnd, formatter, getOption, getOptionCBVC, handleAdd, parser } from "@/services/utils";
-import { ModalForm, ProFormDatePicker, ProFormDigit, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { disableDateStartAndDateEnd, getOptionCBVC, handleAdd} from "@/services/utils";
+import { ModalForm, ProFormDatePicker,  ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddWorkModelOld({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
+export default function AddWorkModelOld({ open, handleOpen, actionRef, id, name, soCMND, collection, type }: GEN.WorkModelOldAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/lam-viec-cho-che-do-cu`;
-
     async function add(value: any) {
         const data = {
             ...value,
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
+        
 
         if (actionRef.current) {
-            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
             if (create) {
                 handleOpen(false);
                 actionRef.current?.reload();
 
             }
         }
-
     }
 
 
@@ -54,7 +51,7 @@ export default function AddWorkModelOld({ open, handleOpen, actionRef, id, name,
                 <Col span={12} >
                     <ProFormText name="chucDanhDonViDiaDiem" key="chucDanhDonViDiaDiem" label="Chức danh đơn vị địa điểm" placeholder={"Chức danh đơn vị địa điểm"} />
                 </Col>
-                {!id && (
+                {(!id && type === 'ADMIN')  && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

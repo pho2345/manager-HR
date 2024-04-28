@@ -3,9 +3,8 @@ import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-d
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
+export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCMND, collection, type }: GEN.CerTechAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/tin-hoc`;
 
     async function add(value: any) {
         const data = {
@@ -13,7 +12,7 @@ export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCM
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+        const create = await handleAdd(data,  `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
         if (actionRef.current) {
             if (create) {
                 handleOpen(false);
@@ -99,7 +98,7 @@ export default function AddCerTech({ open, handleOpen, actionRef, id, name, soCM
 
 
             <Row gutter={24} >
-                {!id && (
+            {(!id && type === 'ADMIN')  && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

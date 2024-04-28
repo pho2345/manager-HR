@@ -960,10 +960,12 @@ const TableList: React.FC = () => {
           <Menu>
             <Menu.Item key="2"
               onClick={async () => {
-                setUpdate(true)
                 const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
-                setInfo(profile.data);
-                refId.current = entity.id
+                if (profile) {
+                  setInfo(profile.data);
+                  setUpdate(true)
+                  refId.current = entity.id
+                }
               }}
             >Cập nhật</Menu.Item>
 
@@ -1268,9 +1270,9 @@ const TableList: React.FC = () => {
           </Row>
         </ModalForm>
 
-        
 
-        <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nhan-vien/ho-so/phe-duyet' fieldApproval='pheDuyet'/>
+
+        <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/nhan-vien/ho-so/phe-duyet' fieldApproval='pheDuyet' />
 
         <ModalForm
           form={form}
@@ -1537,7 +1539,6 @@ const TableList: React.FC = () => {
             stepProps={{
             }}
             formRef={form as any}
-
             initialValues={{
               hoVaTen: info?.hoVaTen,
               gioiTinh: info?.gioiTinh || null,
@@ -1558,6 +1559,7 @@ const TableList: React.FC = () => {
               ngayCapCCCD: info?.ngayCapCCCD ? moment(info?.ngayCapCCCD) : null,
               canNang: info?.sucKhoe?.canNang ?? null,
             }}
+
             onFinish={async (value: object) => {
               handleSession(value);
               return true
@@ -1572,6 +1574,9 @@ const TableList: React.FC = () => {
                   rules={[
                     { required: true, message: <FormattedMessage id="page.profile.name" defaultMessage="Họ tên" /> },
                   ]}
+                  fieldProps={{
+                    defaultValue: info?.hoVaTen
+                  }}
                 />
               </Col>
 

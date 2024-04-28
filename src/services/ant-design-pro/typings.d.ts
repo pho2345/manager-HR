@@ -1236,6 +1236,8 @@ declare namespace GEN {
     id?: string;
     name?: string;
     soCMND?: string;
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
   }
 
 
@@ -1248,6 +1250,19 @@ declare namespace GEN {
     id?: string;
     name?: string;
     soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type RelateFamilyNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
   }
 
   type SelectedRow = {
@@ -1260,6 +1275,37 @@ declare namespace GEN {
     selectedRow: SelectedRow[];
     subDirectory: string;
     fieldApproval: string;
+  }
+
+  type WorkModelOldAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type WorkModelOldTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type LanguagesTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type CerTechsTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type RelateFamilyTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
   }
 
 }

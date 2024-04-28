@@ -50,6 +50,7 @@ import AddArmy from '@/reuse/army/AddArmy';
 import AddAllowance from '@/reuse/allowance/AddAllowance';
 import AddSalary from '@/reuse/salary/AddSalary';
 import AddWorkModelOld from '@/reuse/work-model-old/AddWorkModelOld';
+import AddRelateFamily from '@/reuse/relate-family/AddRelateFamily';
 
 
 
@@ -109,6 +110,7 @@ const TableList: React.FC = () => {
   const [openAllowance, setOpenAllowance] = useState<boolean>(false);
   const [openSalary, setOpenSalary] = useState<boolean>(false);
   const [openWorkModelOld, setOpenWorkModelOld] = useState<boolean>(false);
+  const [openRelateFamily, setOpenRelateFamily] = useState<boolean>(false);
 
 
 
@@ -597,6 +599,15 @@ const TableList: React.FC = () => {
               }}
             >An ninh quốc phòng</Menu.Item>
 
+            <Menu.Item key="14"
+              onClick={() => {
+                setOpenRelateFamily(true);
+                refId.current = entity.id;
+                refName.current = entity?.hoVaTen;
+                refSoCMND.current = entity?.soCCCD;
+              }}
+            >Quan hệ gia đình</Menu.Item>
+
             <Menu.Item key="11"
               onClick={() => {
                 setOpenAllowance(true);
@@ -826,15 +837,16 @@ const TableList: React.FC = () => {
         <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
         <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
         <AddGOB actionRef={actionRef} open={openGOB} handleOpen={setOpenGOB} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
-        <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
-        <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ngoai-ngu`} />
+        <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/tin-hoc`} />
         <AddProKnow open={openProKnow} actionRef={actionRef} handleOpen={setOpenProKnow} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddWorkingAbroad open={openWorkingAbroad} actionRef={actionRef} handleOpen={setOpenWorkingAbroad} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddArmy open={openArmy} actionRef={actionRef} handleOpen={setOpenArmy} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddAllowance open={openAllowance} actionRef={actionRef} handleOpen={setOpenAllowance} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
         <AddSalary open={openSalary} actionRef={actionRef} handleOpen={setOpenSalary} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
-        <AddWorkModelOld open={openWorkModelOld} actionRef={actionRef} handleOpen={setOpenWorkModelOld} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddWorkModelOld open={openWorkModelOld} actionRef={actionRef} handleOpen={setOpenWorkModelOld} id={refId.current} name={refName.current} soCMND={refSoCMND.current} collection={`${SERVER_URL_ACCOUNT}/lam-viec-cho-che-do-cu`} type='ADMIN' />
+        <AddRelateFamily open={openRelateFamily} actionRef={actionRef} handleOpen={setOpenRelateFamily} id={refId.current} name={refName.current} soCMND={refSoCMND.current} collection={`${SERVER_URL_ACCOUNT}/quan-he-gia-dinh`} type='ADMIN' />
 
 
 

@@ -1,6 +1,6 @@
-import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
+import { get, getCustome } from '@/services/ant-design-pro/api';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,16 +8,15 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, getOption, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapTrangThai, mapXacNhan } from '@/services/utils/constant';
-import AddArmy from '@/reuse/army/AddArmy';
+import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 import AddRelateFamily from '@/reuse/relate-family/AddRelateFamily';
 const configDefaultText = configText;

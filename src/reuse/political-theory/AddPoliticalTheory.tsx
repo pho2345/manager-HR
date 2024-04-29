@@ -4,9 +4,8 @@ import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 import { useState } from "react";
 
-export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
+export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name, soCMND, type, collection }: GEN.PoliticalTheoryAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/ly-luan-chinh-tri`;
 
     async function add(value: any) {
         const data = {
@@ -14,7 +13,7 @@ export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+        const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
         if (actionRef.current) {
             if (create) {
                 handleOpen(false);
@@ -96,11 +95,10 @@ export default function AddPolicalTheory({ open, handleOpen, actionRef, id, name
                 <Col span={12} >
                     <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                 </Col>
-                {!id && (
+                {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
-                            // width='md'
                             name='id'
                             placeholder={`CBVC`}
                             rules={[

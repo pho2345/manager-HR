@@ -3,9 +3,8 @@ import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-d
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }: GEN.GOBAddNewProps) {
+export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND, type, collection }: GEN.GOBAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/qua-trinh-cong-tac`;
 
     async function add(value: any) {
         const data = {
@@ -14,7 +13,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
             ketThuc: moment(value.ketThuc).toISOString(),
         }
 
-        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+        const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
         if (actionRef.current) {
             if (create) {
                 handleOpen(false);
@@ -92,7 +91,7 @@ export default function AddGOB({ open, handleOpen, actionRef, id, name, soCMND }
             </Row>
 
             <Row gutter={24} >
-                {!id && (
+            {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

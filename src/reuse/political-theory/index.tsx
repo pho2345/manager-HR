@@ -1,6 +1,6 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProColumns,  ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -12,16 +12,20 @@ import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
+
 import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN,  mapXacNhan } from '@/services/utils/constant';
-import AddGOB from '@/reuse/go-on-business/AddGOB';
+import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
+import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
-const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
+
+
+
+const TableList: React.FC<GEN.PoliticalTheoryTable> = ({type, collection}) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -34,27 +38,27 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [sort, setSort] = useState<GEN.SORT>('createAt');
-    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [openApproval, setOpenApproval] = useState<boolean>(false);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
 
 
-
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(15);
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-
     };
+
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
         confirm({
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -296,179 +300,8 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
         ,
     });
 
-    const columnsEmployee: ProColumns<GEN.AdminGoOnBuss>[] = [
-        {
-            title: 'STT',
-            dataIndex: 'index',
-            valueType: 'indexBorder',
-        },
-        {
-            title: "Chức danh",
-            key: 'chucDanh',
-            dataIndex: 'chucDanh',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.chucDanh}</>
-                );
-            },
-            ...getColumnSearchProps('chucDanh')
-        },
-        {
-            title: "Đơn vị công tác",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.donViCongTacName}</>
-                );
-            },
-        },
 
-        {
-            title: "Ngày bắt đầu",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                return (
-                    <>{displayTime(entity.batDau)}</>
-                );
-            },
-            ...getColumnSearchRange('batDau')
-        },
-        {
-            title: "Ngày kết thúc",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{displayTime(entity.ketThuc)}</>
-                );
-            },
-            ...getColumnSearchRange('ketThuc')
-        },
-
-
-        {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
-            ...getColumnSearchRange('create_at')
-        },
-
-        {
-            title: "Trạng thái",
-            dataIndex: 'xacNhan',
-            // valueType: 'textarea',
-            key: 'xacNhan',
-            render: (_, text) => mapXacNhan(text.xacNhan),
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-                //close
-            }: any) => (
-                <div
-                    style={{
-                        padding: 8,
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                >
-                    <Row gutter={24} className="m-0">
-                        <Col span={24} className="gutter-row p-0" >
-                            <ProFormSelect
-                                options={XAC_NHAN}
-                                fieldProps={{
-                                    onChange: (value: any) => {
-                                        setSearchPheDuyet(value)
-                                    },
-                                    value: searchPheDuyet
-                                }}
-                                showSearch
-                                placeholder={'Chọn trạng thái'}
-                            />
-                        </Col>
-                    </Row>
-                    <Space>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                confirm()
-                                actionRef.current?.reload();
-
-                            }}
-                            icon={<SearchOutlined />}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Tìm kiếm
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setSearchPheDuyet(null);
-                                actionRef.current?.reload();
-                            }}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Làm mới
-                        </Button>
-
-                    </Space>
-                </div>
-            ),
-            filterIcon: (filtered: boolean) => (
-                <SearchOutlined
-                    style={{
-                        color: searchPheDuyet ? '#1890ff' : undefined,
-                    }}
-                />
-            ),
-        },
-        {
-            title: configDefaultText['titleOption'],
-            dataIndex: 'atrributes',
-            valueType: 'textarea',
-            key: 'option',
-            align: 'center',
-            render: (_, entity) => {
-
-                return (
-                    <Tooltip title={configDefaultText['buttonUpdate']}>
-                        <Button
-                            style={{
-                                border: 'none'
-                            }}
-
-                            onClick={async () => {
-                                handleUpdateModalOpen(true);
-                                refIdCurrent.current = entity.id;
-                                refName.current = entity.hoVaTen;
-                                refSoCMND.current = entity.soCCCD;
-                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
-                                if (getRecordCurrent.data) {
-                                    handleUpdateModalOpen(true)
-                                    form.setFieldsValue({
-                                        ...getRecordCurrent.data,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
-                                    })
-                                }
-
-                            }}
-                            icon={<MdOutlineEdit />}
-                        />
-                    </Tooltip>)
-            }
-        }
-    ];
-
-    const columnsAdmin: ProColumns<GEN.AdminGoOnBuss>[] = [
+    const columnsAdmin: ProColumns<GEN.AdminPoliticalTheory>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -496,48 +329,60 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     <> {entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
         },
+
         {
-            title: "Chức danh",
-            key: 'chucDanh',
-            dataIndex: 'chucDanh',
+            title: "Văn bằng",
+            key: 'vanBangDuocCap',
+            dataIndex: 'vanBangDuocCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanh}</>
+                    <> {entity?.vanBangDuocCap}</>
                 );
             },
-            ...getColumnSearchProps('chucDanh')
         },
-        
+
         {
-            title: "Đơn vị công tác",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
+            title: "Hình thức đào tạo",
+            key: 'hinhThucDaoTao',
+            dataIndex: 'hinhThucDaoTao',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.donViCongTacName}</>
+                    <> {entity?.hinhThucDaoTao}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
+        },
+
+
+
+        {
+            title: "Cơ sở đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tenCoSoDaoTaoName}</>
+                );
+            },
         },
 
 
         {
-            title: "Ngày bắt đầu",
+            title: "Ngày cấp",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
                 return (
-                    <>{displayTime(entity.batDau)}</>
+                    <> {displayTime(entity.batDau)}</>
                 );
             },
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -555,7 +400,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, entity) => displayTime(entity.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -564,7 +409,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             dataIndex: 'xacNhan',
             // valueType: 'textarea',
             key: 'xacNhan',
-            render: (_, text) => mapXacNhan(text.xacNhan),
+            render: (_, entity) => mapXacNhan(entity.xacNhan),
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (
@@ -629,6 +474,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 />
             ),
         },
+
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -667,9 +513,201 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
         }
     ];
 
+    const columnsEmployee: ProColumns<GEN.AdminPoliticalTheory>[] = [
+        {
+            title: 'STT',
+            dataIndex: 'index',
+            valueType: 'indexBorder',
+        },
+
+        {
+            title: "Văn bằng",
+            key: 'vanBangDuocCap',
+            dataIndex: 'vanBangDuocCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.vanBangDuocCap}</>
+                );
+            },
+        },
+
+        {
+            title: "Hình thức đào tạo",
+            key: 'hinhThucDaoTao',
+            dataIndex: 'hinhThucDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucDaoTao}</>
+                );
+            },
+        },
+
+
+
+        {
+            title: "Cơ sở đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tenCoSoDaoTaoName}</>
+                );
+            },
+        },
+
+
+        {
+            title: "Ngày cấp",
+            key: 'batDau',
+            dataIndex: 'batDau',
+            render: (_, entity) => {
+                return (
+                    <> {displayTime(entity.batDau)}</>
+                );
+            },
+            ...getColumnSearchRange('batDau')
+        },
+        {
+            title: "Ngày hết hạn",
+            key: 'ketThuc',
+            dataIndex: 'ketThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{displayTime(entity.ketThuc)}</>
+                );
+            },
+            ...getColumnSearchRange('ketThuc')
+        },
+
+
+        {
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, entity) => displayTime(entity.create_at),
+            ...getColumnSearchRange('create_at')
+        },
+
+        {
+            title: "Trạng thái",
+            dataIndex: 'xacNhan',
+            // valueType: 'textarea',
+            key: 'xacNhan',
+            render: (_, entity) => mapXacNhan(entity.xacNhan),
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={XAC_NHAN}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchPheDuyet(value)
+                                    },
+                                    value: searchPheDuyet
+                                }}
+                                showSearch
+                                placeholder={'Chọn trạng thái'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchPheDuyet(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchPheDuyet ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
+        },
+
+        {
+            title: configDefaultText['titleOption'],
+            dataIndex: 'atrributes',
+            valueType: 'textarea',
+            key: 'option',
+            align: 'center',
+            render: (_, entity) => {
+
+                return (
+                    <Tooltip title={configDefaultText['buttonUpdate']}>
+                        <Button
+                            style={{
+                                border: 'none'
+                            }}
+
+                            onClick={async () => {
+                                handleUpdateModalOpen(true);
+                                refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
+                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
+                                if (getRecordCurrent.data) {
+                                    handleUpdateModalOpen(true)
+                                    form.setFieldsValue({
+                                        ...getRecordCurrent.data,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
+                                    })
+                                }
+
+                            }}
+                            icon={<MdOutlineEdit />}
+                        />
+                    </Tooltip>)
+            }
+        }
+    ];
+
+
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, `${collection}` ,true);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
+
+
 
     return (
         <PageContainer>
@@ -697,11 +735,10 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                         Phê duyệt
                     </Button>)
                 ]}
-
                 toolbar={{
                     filter: (
                         <LightFilter>
-                            <ProFormSelect name="startdate" label="Sắp xếp" tooltip="Sắp xếp" allowClear={false} options={[
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
                                 {
                                     label: 'Ngày tạo',
                                     value: 'createAt'
@@ -726,19 +763,17 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
+                        f.xacNhan = searchPheDuyet;
                     }
-                    const data = await get(collection, {
+                    const data = await get(`${collection}`, {
                         ...f,
-                        sort: sort,
-                        page: currentPage - 1,
-                    
+                        page: page,
+                        sort: sort
                     });
                     return {
-                        data: data.data
+                        data: data.data,
                     }
                 }}
-
                 pagination={{
                     locale: {
                         next_page: configDefaultText['nextPage'],
@@ -746,15 +781,17 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     },
                     showTotal: (total, range) => {
                         return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
+                    }
                 }}
-                columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
+                columns={type === 'ADMIN' ? columnsAdmin : columnsEmployee}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
                         const id = selectedRowKeys.map((e: any) => ({ id: e }));
                         setSelectedRow(id);
                     },
                 }}
+
+
 
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
@@ -766,12 +803,12 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 }}
             />
 
-            <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} type={type} collection={collection}/>
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
+            <AddPolicalTheory open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} collection={collection} type={type} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ly-luan-chinh-tri/phe-duyet' fieldApproval='xacNhan' />
 
 
             <ModalForm
-                title={<>Cập nhật quá trình công tác {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật lý luận chính trị {refIdCurrent && type ==='ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -798,22 +835,26 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     },
                 }}
             >
+
                 <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormSelect name="donViCongTacId" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormText name="vanBangDuocCap" key="vanBangDuocCap" label="Văn bằng" placeholder={'Văn bằng'} />
                     </Col>
+
                     <Col span={12} >
-                        <ProFormText name="chucDanh" key="chucDanh" label="Chức danh" placeholder={"Chức danh"} />
+                        <ProFormText name="hinhThucDaoTao" key="hinhThucDaoTao" label="Hình thức đào tạo" placeholder={'Hình thức đào tạo'} />
                     </Col>
+
+
                 </Row>
                 <Row gutter={24} >
                     <Col span={12} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
+                            label={"Ngày cấp"}
+                            placeholder={"Ngày cấp"}
                             rules={[
-                                { required: true, message: "Ngày bắt đầu" }
+                                { required: true, message: "Ngày cấp" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -826,10 +867,10 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     <Col span={12} >
                         <ProFormDatePicker
                             name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
+                            label={"Ngày hết hạn"}
+                            placeholder={"Ngày hết hạn"}
                             rules={[
-                                { required: true, message: "Ngày kết thúc" }
+                                { required: true, message: "Ngày hết hạn" }
                             ]}
                             fieldProps={{
                                 style: {
@@ -839,9 +880,13 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                             }}
                         />
                     </Col>
-
                 </Row>
-               
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                    </Col>
+                </Row>
             </ModalForm>
 
         </PageContainer>

@@ -133,7 +133,7 @@
        { path: '/profile/relate-family', name: 'menu.relateFamily', component: './Profile/RelateFamily' },
        { path: '/profile/go-on-bussiness', name: 'menu.goOnBussiness', component: './Profile/GoOnBuss' },
        { path: '/profile/other-allownce', name: 'menu.otherAllownce', component: './Profile/Allowance' },
-       { path: '/profile/marjor-bussiness', name: 'menu.majorBuz', component: './Profile/MajorBuz' },
+      //  { path: '/profile/marjor-bussiness', name: 'menu.majorBuz', component: './Profile/MajorBuz' },
        { path: '/profile/political-theory', name: 'menu.politicalTheory', component: './Profile/PoliticalTheory' },
        { path: '/profile/my-salary', name: 'menu.mySalary', component: './Profile/MySalary' },
        { path: '/profile/working-abroad', name: 'menu.workingAbroad', component: './Profile/WorkingAbroad' },

@@ -1,27 +1,29 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProColumns,  ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
     ProFormText,
     ProTable,
 } from '@ant-design/pro-components';
-
 import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, formatter, getOption, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN,  mapXacNhan } from '@/services/utils/constant';
-import AddGOB from '@/reuse/go-on-business/AddGOB';
+import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
+import AddAllowance from '@/reuse/allowance/AddAllowance';
 const configDefaultText = configText;
 
 
-const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
+
+
+
+const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -34,13 +36,11 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [selectRow, setSelectRow] = useState<[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
+    const [page, setPage] = useState<number>(0);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
-
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
 
 
 
@@ -107,8 +107,8 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -296,38 +296,75 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
         ,
     });
 
-    const columnsEmployee: ProColumns<GEN.AdminGoOnBuss>[] = [
+    const columnsEmployee: ProColumns<GEN.AdminAllowance>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: "Chức danh",
-            key: 'chucDanh',
-            dataIndex: 'chucDanh',
+            title: "Loại phụ cấp",
+            key: 'loaiPhuCapName',
+            dataIndex: 'loaiPhuCapName',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanh}</>
-                );
-            },
-            ...getColumnSearchProps('chucDanh')
-        },
-        {
-            title: "Đơn vị công tác",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.donViCongTacName}</>
+                    <> {entity?.loaiPhuCapName}</>
                 );
             },
         },
 
         {
-            title: "Ngày bắt đầu",
+            title: "Phần trăm hưởng phụ cấp",
+            key: 'phanTramHuongPhuCap',
+            dataIndex: 'phanTramHuongPhuCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.phanTramHuongPhuCap}</>
+                );
+            },
+        },
+
+        {
+            title: "Hệ số phụ cấp",
+            key: 'heSoPhuCap',
+            dataIndex: 'heSoPhuCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.heSoPhuCap}</>
+                );
+            },
+        },
+
+        {
+            title: "Giá trị",
+            key: 'giaTri',
+            dataIndex: 'giaTri',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.giaTri}</>
+                );
+            },
+        },
+
+        {
+            title: "Hình thức hưởng",
+            key: 'hinhThucHuong',
+            dataIndex: 'hinhThucHuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucHuong}</>
+                );
+            },
+        },
+
+
+        {
+            title: "Ngày cấp",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
@@ -338,7 +375,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -349,23 +386,16 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             },
             ...getColumnSearchRange('ketThuc')
         },
-
-
-        {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
-            ...getColumnSearchRange('create_at')
-        },
-
         {
             title: "Trạng thái",
-            dataIndex: 'xacNhan',
-            // valueType: 'textarea',
             key: 'xacNhan',
-            render: (_, text) => mapXacNhan(text.xacNhan),
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)}</>
+                );
+            },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (
@@ -430,6 +460,20 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 />
             ),
         },
+
+
+
+
+
+
+        {
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            ...getColumnSearchRange('create_at')
+        },
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -455,11 +499,12 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
+                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        hinhThucThuong: getRecordCurrent.data.hinhThucHuong,
                                         batDau: handleTime(getRecordCurrent.data?.batDau),
                                         ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -468,7 +513,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
         }
     ];
 
-    const columnsAdmin: ProColumns<GEN.AdminGoOnBuss>[] = [
+    const columnsAdmin: ProColumns<GEN.AdminAllowance>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -493,40 +538,74 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.soCCCD}</>
+                    <>{entity?.soCCCD}</>
                 );
             },
-            ...getColumnSearchProps('xepLoaiChuyenMon')
         },
+
         {
-            title: "Chức danh",
-            key: 'chucDanh',
-            dataIndex: 'chucDanh',
+            title: "Loại phụ cấp",
+            key: 'loaiPhuCapName',
+            dataIndex: 'loaiPhuCapName',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanh}</>
+                    <> {entity?.loaiPhuCapName}</>
                 );
             },
-            ...getColumnSearchProps('chucDanh')
         },
-        
+
         {
-            title: "Đơn vị công tác",
-            key: 'coQuanQuyetDinh',
-            dataIndex: 'coQuanQuyetDinh',
+            title: "Phần trăm hưởng phụ cấp",
+            key: 'phanTramHuongPhuCap',
+            dataIndex: 'phanTramHuongPhuCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.donViCongTacName}</>
+                    <> {entity?.phanTramHuongPhuCap}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
+        },
+
+        {
+            title: "Hệ số phụ cấp",
+            key: 'heSoPhuCap',
+            dataIndex: 'heSoPhuCap',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.heSoPhuCap}</>
+                );
+            },
+        },
+
+        {
+            title: "Giá trị",
+            key: 'giaTri',
+            dataIndex: 'giaTri',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.giaTri}</>
+                );
+            },
+        },
+
+        {
+            title: "Hình thức hưởng",
+            key: 'hinhThucHuong',
+            dataIndex: 'hinhThucHuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucHuong}</>
+                );
+            },
         },
 
 
         {
-            title: "Ngày bắt đầu",
+            title: "Ngày cấp",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
@@ -537,7 +616,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -548,23 +627,16 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             },
             ...getColumnSearchRange('ketThuc')
         },
-
-
-        {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
-            ...getColumnSearchRange('create_at')
-        },
-
         {
             title: "Trạng thái",
-            dataIndex: 'xacNhan',
-            // valueType: 'textarea',
             key: 'xacNhan',
-            render: (_, text) => mapXacNhan(text.xacNhan),
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)}</>
+                );
+            },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (
@@ -629,6 +701,20 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 />
             ),
         },
+
+
+
+
+
+
+        {
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            ...getColumnSearchRange('create_at')
+        },
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -654,11 +740,12 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
+                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        hinhThucThuong: getRecordCurrent.data.hinhThucHuong,
                                         batDau: handleTime(getRecordCurrent.data?.batDau),
                                         ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -668,7 +755,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
     ];
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, `${collection}` ,true);
+        return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
 
     return (
@@ -698,10 +785,42 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     </Button>)
                 ]}
 
+                request={async () => {
+                    let f: any = {};
+                    if (searchPheDuyet) {
+                        f.pheDuyet = searchPheDuyet;
+                    }
+                    const getData = await get(`${collection}`, {
+                        ...f,
+                        sort: sort,
+                        page: page
+                    })
+                    return {
+                        data: getData.data
+                    }
+                }}
+
+                pagination={{
+                    locale: {
+                        next_page: configDefaultText['nextPage'],
+                        prev_page: configDefaultText['prePage'],
+                    },
+                    showTotal: (total, range) => {
+                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                    }
+                }}
+                columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
+                rowSelection={{
+                    onChange: (selectedRowKeys: any, _) => {
+                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
+                        setSelectedRow(id);
+                    },
+                }}
+
                 toolbar={{
                     filter: (
                         <LightFilter>
-                            <ProFormSelect name="startdate" label="Sắp xếp" tooltip="Sắp xếp" allowClear={false} options={[
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
                                 {
                                     label: 'Ngày tạo',
                                     value: 'createAt'
@@ -723,39 +842,6 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     )
                 }}
 
-                request={async () => {
-                    let f: any = {};
-                    if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
-                    }
-                    const data = await get(collection, {
-                        ...f,
-                        sort: sort,
-                        page: currentPage - 1,
-                    
-                    });
-                    return {
-                        data: data.data
-                    }
-                }}
-
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                }}
-                columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
-                rowSelection={{
-                    onChange: (selectedRowKeys: any, _) => {
-                        const id = selectedRowKeys.map((e: any) => ({ id: e }));
-                        setSelectedRow(id);
-                    },
-                }}
-
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -766,12 +852,13 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 }}
             />
 
-            <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} type={type} collection={collection}/>
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
+
+            <AddAllowance actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/phu-cap-khac/phe-duyet' fieldApproval='xacNhan' />
 
 
             <ModalForm
-                title={<>Cập nhật quá trình công tác {refIdCurrent && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật phụ cấp khác {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -800,12 +887,31 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             >
                 <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormSelect name="donViCongTacId" key="donViCongTac" label="Đơn vị công tác" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormText name="hinhThucThuong" key="hinhThucThuong" label="Hình thức thưởng" placeholder={"Hình thức thưởng"} />
                     </Col>
                     <Col span={12} >
-                        <ProFormText name="chucDanh" key="chucDanh" label="Chức danh" placeholder={"Chức danh"} />
+                        <ProFormSelect name="loaiPhuCapId" key="loaiPhuCapId" label="Loại phụ cấp" request={() => getOption(`${SERVER_URL_CONFIG}/loai-phu-cap?page=0&size=100`, 'id', 'name')} />
                     </Col>
                 </Row>
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormDigit name="giaTri" key="giaTri" label="Giá trị" placeholder={"Giá trị"} fieldProps={{
+                            min: 0,
+                            formatter,
+                            parser,
+
+                        }} />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormDigit name="heSoPhuCap" key="heSoPhuCap" label="Hệ số phụ cấp" placeholder={"Hệ số phụ cấp"} fieldProps={{
+                            min: 0,
+                            formatter,
+                            parser,
+                        }} />
+                    </Col>
+                </Row>
+
                 <Row gutter={24} >
                     <Col span={12} >
                         <ProFormDatePicker
@@ -839,9 +945,19 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                             }}
                         />
                     </Col>
+                </Row>
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormDigit name="phanTramHuongPhuCap" key="phanTramHuongPhuCap" label="Phần trăm hưởng (%)" placeholder={"Phần trăm hưởng (%)"} fieldProps={{
+                            min: 0,
+                            max: 100
+                        }} />
+
+                    </Col>
+
 
                 </Row>
-               
             </ModalForm>
 
         </PageContainer>

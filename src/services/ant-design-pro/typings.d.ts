@@ -783,7 +783,9 @@ declare namespace GEN {
     ketThuc: sring
     loaiSoYeuLyLichChiTiet: sring
     create_at: string,
-    update_at: string
+    update_at: string,
+    hoVaTen: string,
+    soCCCD: string,
   }
 
   type GroupOfOfficials = {
@@ -1227,6 +1229,8 @@ declare namespace GEN {
     id?: string;
     name?: string;
     soCMND?: string;
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
   }
 
   type CerLangAddNewProps = {
@@ -1254,7 +1258,43 @@ declare namespace GEN {
     collection: string
   }
 
+  
+  type PoliticalTheoryAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type ProfessionalKnowledgeAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  
+
   type RelateFamilyNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type AllowanceAddNewProps = {
     actionRef: any;
     open: boolean;
     handleOpen: function;
@@ -1309,6 +1349,21 @@ declare namespace GEN {
   }
 
   type GOBTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type AllowanceTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type ProfessionalKnowledgeTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type PoliticalTheoryTable = {
     type: "EMPLOYEE" | "ADMIN",
     collection: string
   }

@@ -16,7 +16,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import AddCerLang from '@/reuse/languages/AddLanguages';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
@@ -30,14 +30,15 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
-
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+    const [page, setPage] = useState<number>(0);
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [cerLang, setCerLang] = useState<GEN.AdminCerLang[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
 
@@ -783,7 +784,6 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
                     )
                 }}
 
-                // dataSource={cerLang}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
@@ -791,28 +791,30 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
                     }
                     const data = await get(collection, {
                         ...f,
-                        sort: sort
+                        sort: sort,
+                        page: page,
+                        size: pageSize
                     });
-                    setCerLang(data.data)
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: data.data
+                        data: [],
+                        success: false
                     }
                 }}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
-                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
                         const id = selectedRowKeys.map((e: any) => ({ id: e }));
                         setSelectedRow(id);
                     },
+                    
                 }}
 
 

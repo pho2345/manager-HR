@@ -1,6 +1,6 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -13,19 +13,15 @@ import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, formatter, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
-import AddWorkModelOld from '@/reuse/work-model-old/AddWorkModelOld';
+import AddSalary from '@/reuse/salary/AddSalary';
 const configDefaultText = configText;
 
+const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
 
-
-
-
-
-const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -33,8 +29,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
-    const [total, setTotal] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
@@ -42,9 +36,13 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
-    const [page, setPage] = useState<number>(0);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
+
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+
 
 
 
@@ -300,7 +298,209 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
         ,
     });
 
-    const columnsAdmin: ProColumns<GEN.WorkModelOld>[] = [
+
+    const columnsEmployee: ProColumns<GEN.Salary>[] = [
+        {
+            title: 'STT',
+            dataIndex: 'index',
+            valueType: 'indexBorder',
+        },
+
+        {
+            title: "Bậc lương",
+            key: 'bacLuong',
+            dataIndex: 'bacLuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.bacLuong}</>
+                );
+            },
+        },
+
+        {
+            title: "Hệ số lương",
+            key: 'heSoLuong',
+            dataIndex: 'heSoLuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.heSoLuong}</>
+                );
+            },
+        },
+
+        {
+            title: "Mã số",
+            key: 'maSo',
+            dataIndex: 'maSo',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.maSo}</>
+                );
+            },
+        },
+
+        {
+            title: "Tiền lương (vnđ)",
+            key: 'tienLuongTheoViTri',
+            dataIndex: 'tienLuongTheoViTri',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tienLuongTheoViTri.toLocaleString()}</>
+                );
+            },
+        },
+
+        {
+            title: "Ngày cấp",
+            key: 'batDau',
+            dataIndex: 'batDau',
+            render: (_, entity) => {
+                return (
+                    <> {displayTime(entity.batDau)}</>
+                );
+            },
+            ...getColumnSearchRange('batDau')
+        },
+        {
+            title: "Ngày hết hạn",
+            key: 'ketThuc',
+            dataIndex: 'ketThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <>{displayTime(entity.ketThuc)}</>
+                );
+            },
+            ...getColumnSearchRange('ketThuc')
+        },
+
+
+        {
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
+            dataIndex: 'create_at',
+            // valueType: 'textarea',
+            key: 'create_at',
+            renderText: (_, entity) => displayTime(entity.create_at),
+            ...getColumnSearchRange('create_at')
+        },
+        {
+            title: "Trạng thái",
+            key: 'xacNhan',
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)}</>
+                );
+            },
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+                //close
+            }: any) => (
+                <div
+                    style={{
+                        padding: 8,
+                    }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                >
+                    <Row gutter={24} className="m-0">
+                        <Col span={24} className="gutter-row p-0" >
+                            <ProFormSelect
+                                options={XAC_NHAN}
+                                fieldProps={{
+                                    onChange: (value: any) => {
+                                        setSearchPheDuyet(value)
+                                    },
+                                    value: searchPheDuyet
+                                }}
+                                showSearch
+                                placeholder={'Chọn trạng thái'}
+                            />
+                        </Col>
+                    </Row>
+                    <Space>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                confirm()
+                                actionRef.current?.reload();
+
+                            }}
+                            icon={<SearchOutlined />}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Tìm kiếm
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSearchPheDuyet(null);
+                                actionRef.current?.reload();
+                            }}
+                            size="small"
+                            style={{
+                                width: 90,
+                            }}
+                        >
+                            Làm mới
+                        </Button>
+
+                    </Space>
+                </div>
+            ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined
+                    style={{
+                        color: searchPheDuyet ? '#1890ff' : undefined,
+                    }}
+                />
+            ),
+        },
+
+        {
+            title: configDefaultText['titleOption'],
+            dataIndex: 'atrributes',
+            valueType: 'textarea',
+            key: 'option',
+            align: 'center',
+            render: (_, entity) => {
+                return (
+                    <Tooltip title={configDefaultText['buttonUpdate']}>
+                        <Button
+                            style={{
+                                border: 'none'
+                            }}
+
+                            onClick={async () => {
+                                handleUpdateModalOpen(true);
+                                refIdCurrent.current = entity.id;
+                                refName.current = entity.hoVaTen;
+                                refSoCMND.current = entity.soCCCD;
+                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
+                                if (getRecordCurrent.data) {
+                                    handleUpdateModalOpen(true)
+                                    form.setFieldsValue({
+                                        ...getRecordCurrent.data,
+                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        batDau: handleTime(getRecordCurrent.data?.batDau),
+                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
+                                    })
+                                }
+
+                            }}
+                            icon={<MdOutlineEdit />}
+                        />
+                    </Tooltip>)
+            }
+        }
+    ];
+
+    const columnsAdmin: ProColumns<GEN.Salary>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -318,7 +518,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
             ...getColumnSearchProps('hoVaTen')
         },
-
         {
             title: "Số CMND/CCCD",
             key: 'soCCCD',
@@ -330,18 +529,54 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 );
             },
         },
+
         {
-            title: "Chức danh đơn vị địa điểm",
-            key: 'chucDanhDonViDiaDiem',
-            dataIndex: 'chucDanhDonViDiaDiem',
+            title: "Bậc lương",
+            key: 'bacLuong',
+            dataIndex: 'bacLuong',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanhDonViDiaDiem}</>
+                    <> {entity?.bacLuong}</>
                 );
             },
         },
 
+        {
+            title: "Hệ số lương",
+            key: 'heSoLuong',
+            dataIndex: 'heSoLuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.heSoLuong}</>
+                );
+            },
+        },
+
+        {
+            title: "Mã số",
+            key: 'maSo',
+            dataIndex: 'maSo',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.maSo}</>
+                );
+            },
+        },
+
+        {
+            title: "Tiền lương (vnđ)",
+            key: 'tienLuongTheoViTri',
+            dataIndex: 'tienLuongTheoViTri',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tienLuongTheoViTri.toLocaleString()}</>
+                );
+            },
+        },
 
         {
             title: "Ngày cấp",
@@ -355,7 +590,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -366,6 +601,8 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
             ...getColumnSearchRange('ketThuc')
         },
+
+
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
@@ -374,7 +611,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             renderText: (_, entity) => displayTime(entity.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
             key: 'xacNhan',
@@ -450,7 +686,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             ),
         },
 
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -458,7 +693,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -491,175 +725,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
     ];
 
 
-    const columnsEmployee: ProColumns<GEN.WorkModelOld>[] = [
-        {
-            title: 'STT',
-            dataIndex: 'index',
-            valueType: 'indexBorder',
-        },
-        {
-            title: "Chức danh đơn vị địa điểm",
-            key: 'chucDanhDonViDiaDiem',
-            dataIndex: 'chucDanhDonViDiaDiem',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.chucDanhDonViDiaDiem}</>
-                );
-            },
-        },
-
-
-        {
-            title: "Ngày cấp",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                return (
-                    <> {displayTime(entity.batDau)}</>
-                );
-            },
-            ...getColumnSearchRange('batDau')
-        },
-        {
-            title: "Ngày kết thúc",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
-            render: (_, entity) => {
-                ;
-                return (
-                    <>{displayTime(entity.ketThuc)}</>
-                );
-            },
-            ...getColumnSearchRange('ketThuc')
-        },
-        {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, entity) => displayTime(entity.create_at),
-            ...getColumnSearchRange('create_at')
-        },
-
-        {
-            title: "Trạng thái",
-            key: 'xacNhan',
-            dataIndex: 'xacNhan',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {mapXacNhan(entity.xacNhan)}</>
-                );
-            },
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-                //close
-            }: any) => (
-                <div
-                    style={{
-                        padding: 8,
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                >
-                    <Row gutter={24} className="m-0">
-                        <Col span={24} className="gutter-row p-0" >
-                            <ProFormSelect
-                                options={XAC_NHAN}
-                                fieldProps={{
-                                    onChange: (value: any) => {
-                                        setSearchPheDuyet(value)
-                                    },
-                                    value: searchPheDuyet
-                                }}
-                                showSearch
-                                placeholder={'Chọn trạng thái'}
-                            />
-                        </Col>
-                    </Row>
-                    <Space>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                confirm()
-                                actionRef.current?.reload();
-
-                            }}
-                            icon={<SearchOutlined />}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Tìm kiếm
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setSearchPheDuyet(null);
-                                actionRef.current?.reload();
-                            }}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Làm mới
-                        </Button>
-
-                    </Space>
-                </div>
-            ),
-            filterIcon: (filtered: boolean) => (
-                <SearchOutlined
-                    style={{
-                        color: searchPheDuyet ? '#1890ff' : undefined,
-                    }}
-                />
-            ),
-        },
-
-
-        {
-            title: configDefaultText['titleOption'],
-            dataIndex: 'atrributes',
-            valueType: 'textarea',
-            key: 'option',
-            align: 'center',
-            render: (_, entity) => {
-
-                return (
-                    <Tooltip title={configDefaultText['buttonUpdate']}>
-                        <Button
-                            style={{
-                                border: 'none'
-                            }}
-
-                            onClick={async () => {
-                                handleUpdateModalOpen(true);
-                                refIdCurrent.current = entity.id;
-                                refName.current = entity.hoVaTen;
-                                refSoCMND.current = entity.soCCCD;
-                                const getRecordCurrent = await getCustome(`${collection}/${entity.id}`);
-                                if (getRecordCurrent.data) {
-                                    handleUpdateModalOpen(true)
-                                    form.setFieldsValue({
-                                        ...getRecordCurrent.data,
-                                        hoSoId: getRecordCurrent.data.hoSoId,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
-                                    })
-                                }
-
-                            }}
-                            icon={<MdOutlineEdit />}
-                        />
-                    </Tooltip>)
-            }
-        }
-    ];
 
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
+
+
 
     return (
         <PageContainer>
@@ -691,19 +762,22 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
+                        f = {
+                            ...f,
+                            xacNhan: searchPheDuyet
+                        }
                     }
-                    const getData = await get(`${collection}`, {
+                    const data = await get(collection, {
                         ...f,
                         sort: sort,
                         page: page,
                         size: pageSize
-                    })
-                    if(getData.data){
-                        setTotal(getData.data.totalRecord);
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
                         return {
-                            data: getData.data.data,
-                            success: true
+                            data: data.data.data,
+                            success: true,
                         }
                     }
                     return {
@@ -712,28 +786,8 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                     }
                 }}
 
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                    total: total,
-                    pageSize: pageSize,
-                    onChange: (page) => {
-                        setPage(page - 1);
-                        actionRef?.current?.reload();
-                    },
-
-                    onShowSizeChange(current, size) {
-                        setPageSize(size);
-                        actionRef?.current?.reload();
-                    },
-
-                    showSizeChanger: true
-                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+                
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
@@ -778,12 +832,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             />
 
 
-            <AddWorkModelOld actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} collection={collection} type={type} />
+            <AddSalary actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
             <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='xacNhan' />
 
 
             <ModalForm
-                title={<>Cập nhật làm việc cho chế độ cũ {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật lương {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
 
                 form={form}
                 open={updateModalOpen}
@@ -813,7 +867,30 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             >
                 <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormText name="chucDanhDonViDiaDiem" key="chucDanhDonViDiaDiem" label="Chức danh đơn vị địa điểm" placeholder={"Chức danh đơn vị địa điểm"} />
+                        <ProFormText name="maSo" key="maSo" label="Mã số" placeholder={"Mã số"} />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormText name="bacLuong" key="bacLuong" label="Bậc lương" placeholder={"Bậc lương"} />
+                    </Col>
+                </Row>
+
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormDigit name="heSoLuong" key="heSoLuong" label="Hệ số lương" placeholder={"Hệ số lương"} fieldProps={{
+                            min: 0,
+                            max: 20,
+                            formatter,
+                            parser,
+
+                        }} />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormDigit name="tienLuongTheoViTri" key="tienLuongTheoViTri" label="Tiền lương (vnđ)" placeholder={"Tiền lương (vnđ)"} fieldProps={{
+                            min: 0,
+                            formatter,
+                            parser,
+                        }} />
                     </Col>
                 </Row>
 
@@ -851,7 +928,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                         />
                     </Col>
                 </Row>
-
             </ModalForm>
 
         </PageContainer>

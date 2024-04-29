@@ -3,9 +3,8 @@ import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-d
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
+export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND, collection, type }: GEN.ArmyAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/kien-thuc-an-ninh-quoc-phong`;
 
     async function add(value: any) {
         const data = {
@@ -13,8 +12,8 @@ export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND 
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-         if (actionRef.current) {
-            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+        if (actionRef.current) {
+            const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
             if (create) {
                 handleOpen(false);
                 actionRef.current?.reload();
@@ -92,7 +91,7 @@ export default function AddArmy({ open, handleOpen, actionRef, id, name, soCMND 
             </Row>
 
             <Row gutter={24} >
-                {!id && (
+                {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

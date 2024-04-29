@@ -1258,6 +1258,40 @@ declare namespace GEN {
     collection: string
   }
 
+  type ArmyAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type WorkingAbroadAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type SalaryAddNewProps = {
+    actionRef: any;
+    open: boolean;
+    handleOpen: function;
+    id?: string;
+    name?: string;
+    soCMND?: string;
+    type?: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+
   
   type PoliticalTheoryAddNewProps = {
     actionRef: any;
@@ -1364,6 +1398,21 @@ declare namespace GEN {
   }
 
   type PoliticalTheoryTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type SalaryTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type WorkingAbroadTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type ArmyTable = {
     type: "EMPLOYEE" | "ADMIN",
     collection: string
   }

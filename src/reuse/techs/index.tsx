@@ -16,7 +16,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import AddCerTech from '@/reuse/techs/AddCerTech';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
@@ -41,6 +41,8 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(15);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+
 
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
@@ -738,21 +740,23 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
                     const getData = await get(`${collection}`, {
                         ...f,
                         sort: sort,
-                        page: page
+                        page: page,
+                        size: pageSize
                     })
+                    if (getData.data) {
+                        setTotal(getData.data.totalRecord);
+                        return {
+                            data: getData.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: getData.data
+                        data: [],
+                        success: false
                     }
                 }}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
-                }}
+
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
                 columns={type === 'ADMIN' ? columnsAdmin : columnsEmployee}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {

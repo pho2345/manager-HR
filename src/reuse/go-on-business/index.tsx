@@ -1,6 +1,6 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProColumns,  ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -15,13 +15,13 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN,  mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
-const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
+const TableList: React.FC<GEN.GOBTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -40,6 +40,10 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
+
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+    const [page, setPage] = useState<number>(0);
 
 
 
@@ -510,7 +514,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
             },
             ...getColumnSearchProps('chucDanh')
         },
-        
+
         {
             title: "Đơn vị công tác",
             key: 'coQuanQuyetDinh',
@@ -668,7 +672,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
     ];
 
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, `${collection}` ,true);
+        return await handleUpdate2(value, refIdCurrent.current, `${collection}`, true);
     }
 
     return (
@@ -731,23 +735,24 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     const data = await get(collection, {
                         ...f,
                         sort: sort,
-                        page: currentPage - 1,
-                    
+                        page: page,
+                        size: pageSize
                     });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: data.data
+                        data: [],
+                        success: false
                     }
                 }}
 
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
@@ -766,7 +771,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                 }}
             />
 
-            <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} type={type} collection={collection}/>
+            <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} type={type} collection={collection} />
             <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
 
 
@@ -841,7 +846,7 @@ const TableList: React.FC<GEN.GOBTable> = ({type, collection}) => {
                     </Col>
 
                 </Row>
-               
+
             </ModalForm>
 
         </PageContainer>

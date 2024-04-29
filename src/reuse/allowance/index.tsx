@@ -14,7 +14,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, formatter, getOption, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 import AddAllowance from '@/reuse/allowance/AddAllowance';
 const configDefaultText = configText;
@@ -38,9 +38,12 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
-    const [page, setPage] = useState<number>(0);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
+
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+    const [page, setPage] = useState<number>(0);
 
 
 
@@ -754,6 +757,7 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
         }
     ];
 
+
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
@@ -788,27 +792,32 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
+                        f = {
+                            ...f,
+                            xacNhan: searchPheDuyet
+                        }
                     }
-                    const getData = await get(`${collection}`, {
+                    const data = await get(collection, {
                         ...f,
                         sort: sort,
-                        page: page
-                    })
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: getData.data
+                        data: [],
+                        success: false
                     }
                 }}
 
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
-                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {

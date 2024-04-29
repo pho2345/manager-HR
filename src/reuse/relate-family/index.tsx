@@ -16,7 +16,7 @@ import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
 import { displayTime, getOption, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 import AddRelateFamily from '@/reuse/relate-family/AddRelateFamily';
 const configDefaultText = configText;
@@ -25,7 +25,7 @@ const configDefaultText = configText;
 
 
 
-const TableList: React.FC<GEN.RelateFamilyTable> = ({type, collection}) => {
+const TableList: React.FC<GEN.RelateFamilyTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -33,6 +33,9 @@ const TableList: React.FC<GEN.RelateFamilyTable> = ({type, collection}) => {
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
     const [form] = Form.useForm<any>();
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+    const [page, setPage] = useState<number>(0);
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
@@ -40,7 +43,6 @@ const TableList: React.FC<GEN.RelateFamilyTable> = ({type, collection}) => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
-    const [page, setPage] = useState<number>(0);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
 
@@ -744,25 +746,28 @@ const TableList: React.FC<GEN.RelateFamilyTable> = ({type, collection}) => {
                     if (searchPheDuyet) {
                         f.pheDuyet = searchPheDuyet;
                     }
-                    const getData = await get(`${collection}`, {
+                    const data = await get(collection, {
                         ...f,
                         sort: sort,
-                        page: page
-                    })
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: getData.data
+                        data: [],
+                        success: false
                     }
                 }}
 
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
-                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
+
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {

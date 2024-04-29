@@ -17,7 +17,7 @@ import configText from '@/locales/configText';
 import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
@@ -25,7 +25,7 @@ const configDefaultText = configText;
 
 
 
-const TableList: React.FC<GEN.PoliticalTheoryTable> = ({type, collection}) => {
+const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -42,10 +42,12 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({type, collection}) => {
 
 
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [page, setPage] = useState<number>(0);
-    const [total, setTotal] = useState<number>(15);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
+
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+    const [page, setPage] = useState<number>(0);
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -763,26 +765,33 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({type, collection}) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.xacNhan = searchPheDuyet;
+                        f = {
+                            ...f,
+                            xacNhan: searchPheDuyet
+                        }
                     }
-                    const data = await get(`${collection}`, {
+                    const data = await get(collection, {
                         ...f,
+                        sort: sort,
                         page: page,
-                        sort: sort
+                        size: pageSize
                     });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data.data,
+                            success: true,
+                        }
+                    }
                     return {
-                        data: data.data,
+                        data: [],
+                        success: false
                     }
                 }}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    }
-                }}
+
+                
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
                 columns={type === 'ADMIN' ? columnsAdmin : columnsEmployee}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
@@ -808,7 +817,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({type, collection}) => {
 
 
             <ModalForm
-                title={<>Cập nhật lý luận chính trị {refIdCurrent && type ==='ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật lý luận chính trị {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{

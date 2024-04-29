@@ -80,3 +80,29 @@ export const mapTrangThai = (value: string) => {
     return map
 }
 
+export const createPaginationProps = (total: number, pageSize: number, setPage: Function, setPageSize: Function, actionRef: any) => {
+    
+    return {
+        locale: {
+            next_page:  "Trang sau",
+            prev_page: "Trang trước",
+        },
+        showTotal: (total: number, range: number[]) => {
+            return `${range[range.length - 1]} / Tổng số: ${total}`
+        },
+        pageSize: pageSize,
+        total: total,
+        onChange: (page:number, pageSize: number) => {
+            console.log('page', page);
+            setPage(page - 1);
+            actionRef.current?.reload();
+        },
+        onShowSizeChange: (current: number, size: number) => {
+            // setPage(0);
+            setPageSize(size);
+            actionRef.current?.reload();
+        },
+        showSizeChanger: true,
+    }
+};
+

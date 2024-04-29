@@ -5,9 +5,8 @@ import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 import { useState } from "react";
 
-export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name, soCMND }: GEN.CerTechAddNewProps) {
+export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name, soCMND, type, collection }: GEN.WorkingAbroadAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/lam-viec-o-nuoc-ngoai`;
 
     async function add(value: any) {
         const data = {
@@ -15,8 +14,8 @@ export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-         if (actionRef.current) {
-            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+        if (actionRef.current) {
+            const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
             if (create) {
                 handleOpen(false);
                 actionRef.current?.reload();
@@ -91,7 +90,7 @@ export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name
 
             </Row>
             <Row gutter={24} >
-                {!id && (
+                {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
@@ -104,7 +103,7 @@ export default function AddWorkingAbroad({ open, handleOpen, actionRef, id, name
 
                                 },
                             ]}
-                            
+
                             showSearch
                             request={getOptionCBVC}
                         />

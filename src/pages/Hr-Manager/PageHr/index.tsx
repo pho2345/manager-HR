@@ -840,11 +840,11 @@ const TableList: React.FC = () => {
         <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ngoai-ngu`} />
         <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/tin-hoc`} />
         <AddProKnow open={openProKnow} actionRef={actionRef} handleOpen={setOpenProKnow} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/nghiep-vu-chuyen-nganh`}/>
-        <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
-        <AddWorkingAbroad open={openWorkingAbroad} actionRef={actionRef} handleOpen={setOpenWorkingAbroad} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
-        <AddArmy open={openArmy} actionRef={actionRef} handleOpen={setOpenArmy} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddPolicalTheory open={openPolicalTheory} actionRef={actionRef} handleOpen={setOpenPolicalTheory} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ly-luan-chinh-tri`} />
+        <AddWorkingAbroad open={openWorkingAbroad} actionRef={actionRef} handleOpen={setOpenWorkingAbroad} id={refId.current} name={refName.current} soCMND={refSoCMND.current}  type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/lam-viec-o-nuoc-ngoai`} />
+        <AddArmy open={openArmy} actionRef={actionRef} handleOpen={setOpenArmy} id={refId.current} name={refName.current} soCMND={refSoCMND.current}  type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/kien-thuc-an-ninh-quoc-phong`} />
         <AddAllowance open={openAllowance} actionRef={actionRef} handleOpen={setOpenAllowance} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/phu-cap-khac`} />
-        <AddSalary open={openSalary} actionRef={actionRef} handleOpen={setOpenSalary} id={refId.current} name={refName.current} soCMND={refSoCMND.current} />
+        <AddSalary open={openSalary} actionRef={actionRef} handleOpen={setOpenSalary} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/luong-ban-than`}  />
         <AddWorkModelOld open={openWorkModelOld} actionRef={actionRef} handleOpen={setOpenWorkModelOld} id={refId.current} name={refName.current} soCMND={refSoCMND.current} collection={`${SERVER_URL_ACCOUNT}/lam-viec-cho-che-do-cu`} type='ADMIN' />
         <AddRelateFamily open={openRelateFamily} actionRef={actionRef} handleOpen={setOpenRelateFamily} id={refId.current} name={refName.current} soCMND={refSoCMND.current} collection={`${SERVER_URL_ACCOUNT}/quan-he-gia-dinh`} type='ADMIN' />
 

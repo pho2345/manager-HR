@@ -1,6 +1,6 @@
-import { get, getCustome } from '@/services/ant-design-pro/api';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { deletes, get, getCustome, patch, post, post2 } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, LightFilter, ProCard, ProColumns, ProForm, ProFormDatePicker, ProFormDigit, ProFormList, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,33 +8,32 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
+
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, getOption, getOptionCBVC, handleAdd2, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
+import { XAC_NHAN, createPaginationProps, mapTrangThai, mapXacNhan } from '@/services/utils/constant';
+import AddArmy from '@/reuse/army/AddArmy';
 import ModalApproval from '@/reuse/approval/ModalApproval';
-import AddWorkModelOld from '@/reuse/work-model-old/AddWorkModelOld';
 const configDefaultText = configText;
 
 
 
 
 
-
-const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
+const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
+
     const [form] = Form.useForm<any>();
-    const [total, setTotal] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
@@ -42,10 +41,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
-    const [page, setPage] = useState<number>(0);
     const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
 
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
 
 
@@ -111,8 +112,8 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record.attributes[dataIndex]) {
+                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -300,7 +301,8 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
         ,
     });
 
-    const columnsAdmin: ProColumns<GEN.WorkModelOld>[] = [
+
+    const columnsAdmin: ProColumns<GEN.AdminArmy>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -318,7 +320,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
             ...getColumnSearchProps('hoVaTen')
         },
-
         {
             title: "Số CMND/CCCD",
             key: 'soCCCD',
@@ -330,17 +331,33 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 );
             },
         },
+
         {
-            title: "Chức danh đơn vị địa điểm",
-            key: 'chucDanhDonViDiaDiem',
-            dataIndex: 'chucDanhDonViDiaDiem',
+            title: "Chứng chỉ",
+            key: 'chungChiDuocCap',
+            dataIndex: 'chungChiDuocCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanhDonViDiaDiem}</>
+                    <> {entity?.chungChiDuocCap}</>
                 );
             },
         },
+
+        {
+            title: "Đơn vị đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tenCoSoDaoTaoName}</>
+                );
+            },
+            // ...getColumnSearchProps('coQuanQuyetDinh')
+        },
+
+       
 
 
         {
@@ -355,7 +372,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -366,15 +383,15 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
             ...getColumnSearchRange('ketThuc')
         },
+
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, entity) => displayTime(entity.create_at),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
             key: 'xacNhan',
@@ -449,8 +466,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 />
             ),
         },
-
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -458,7 +473,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -476,7 +490,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        tenCoSoDaoTao: getRecordCurrent.data.tenCoSoDaoTaoId,
                                         batDau: handleTime(getRecordCurrent.data?.batDau),
                                         ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
@@ -490,24 +504,39 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
         }
     ];
 
-
-    const columnsEmployee: ProColumns<GEN.WorkModelOld>[] = [
+    const columnsEmployee: ProColumns<GEN.AdminArmy>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
+
         {
-            title: "Chức danh đơn vị địa điểm",
-            key: 'chucDanhDonViDiaDiem',
-            dataIndex: 'chucDanhDonViDiaDiem',
+            title: "Chứng chỉ",
+            key: 'chungChiDuocCap',
+            dataIndex: 'chungChiDuocCap',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chucDanhDonViDiaDiem}</>
+                    <> {entity?.chungChiDuocCap}</>
                 );
             },
         },
+
+        {
+            title: "Đơn vị đào tạo",
+            key: 'tenCoSoDaoTao',
+            dataIndex: 'tenCoSoDaoTao',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.tenCoSoDaoTaoName}</>
+                );
+            },
+            // ...getColumnSearchProps('coQuanQuyetDinh')
+        },
+
+       
 
 
         {
@@ -522,7 +551,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày kết thúc",
+            title: "Ngày hết hạn",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -533,15 +562,15 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
             ...getColumnSearchRange('ketThuc')
         },
+
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, entity) => displayTime(entity.create_at),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
             key: 'xacNhan',
@@ -616,8 +645,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 />
             ),
         },
-
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -625,7 +652,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
-
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -643,7 +669,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        hoSoId: getRecordCurrent.data.hoSoId,
+                                        tenCoSoDaoTao: getRecordCurrent.data.tenCoSoDaoTaoId,
                                         batDau: handleTime(getRecordCurrent.data?.batDau),
                                         ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
                                     })
@@ -657,9 +683,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
         }
     ];
 
+
     async function update(value: any) {
         return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
+
+
 
     return (
         <PageContainer>
@@ -691,19 +720,22 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
+                        f = {
+                            ...f,
+                            xacNhan: searchPheDuyet
+                        }
                     }
-                    const getData = await get(`${collection}`, {
+                    const data = await get(collection, {
                         ...f,
                         sort: sort,
                         page: page,
                         size: pageSize
-                    })
-                    if(getData.data){
-                        setTotal(getData.data.totalRecord);
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
                         return {
-                            data: getData.data.data,
-                            success: true
+                            data: data.data.data,
+                            success: true,
                         }
                     }
                     return {
@@ -712,29 +744,8 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                     }
                 }}
 
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                    total: total,
-                    pageSize: pageSize,
-                    onChange: (page) => {
-                        setPage(page - 1);
-                        actionRef?.current?.reload();
-                    },
-
-                    onShowSizeChange(current, size) {
-                        setPageSize(size);
-                        actionRef?.current?.reload();
-                    },
-
-                    showSizeChanger: true
-                }}
-                columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+                columns={type === 'ADMIN' ? columnsAdmin : columnsEmployee}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
                         const id = selectedRowKeys.map((e: any) => ({ id: e }));
@@ -778,12 +789,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             />
 
 
-            <AddWorkModelOld actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} collection={collection} type={type} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='xacNhan' />
+            <AddArmy actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen}  type={type} collection={collection} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/kien-thuc-an-ninh-quoc-phong/phe-duyet' fieldApproval='xacNhan' />
 
 
             <ModalForm
-                title={<>Cập nhật làm việc cho chế độ cũ {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật kiến thức an ninh quốc phòng {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
 
                 form={form}
                 open={updateModalOpen}
@@ -811,9 +822,12 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                     },
                 }}
             >
-                <Row gutter={24} >
+                <Row gutter={24}>
                     <Col span={12} >
-                        <ProFormText name="chucDanhDonViDiaDiem" key="chucDanhDonViDiaDiem" label="Chức danh đơn vị địa điểm" placeholder={"Chức danh đơn vị địa điểm"} />
+                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
+                    </Col>
+                    <Col span={12} >
+                        <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
                 </Row>
 
@@ -850,6 +864,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
                             }}
                         />
                     </Col>
+
                 </Row>
 
             </ModalForm>

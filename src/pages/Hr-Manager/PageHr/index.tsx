@@ -32,12 +32,10 @@ import {
   FormattedMessage,
   useParams
 } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
+import {  Button, Col, Drawer, Form, Input, Modal, Row, Space, message } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import AddNew from './AddNew';
-import { getOption, handleAdd2 } from '@/services/utils';
-import { MdOutlineEdit } from 'react-icons/md';
+import { handleAdd2 } from '@/services/utils';
 import AddBonus from '@/reuse/bonus/AddBonus';
 import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
@@ -80,7 +78,6 @@ const handleRemove = async (selectedRows: any) => {
 
 const TableList: React.FC = () => {
   const collection = `${SERVER_URL_PROFILE}/nhan-vien/ho-so`;
-  const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const refId = useRef<any>();
@@ -93,9 +90,6 @@ const TableList: React.FC = () => {
   const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
   const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-
-  const [religion, setReligion] = useState<GEN.Option[]>([]);
-  const [membership, setMembership] = useState<GEN.Option[]>([]);
 
 
   const [openBus, setOpenBus] = useState<boolean>(false);
@@ -834,7 +828,7 @@ const TableList: React.FC = () => {
           </Row>
         </ModalForm>
 
-        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
+        <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} name={refName.current} soCCCD={refSoCMND.current}  type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/khen-thuong`}/>
         <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
         <AddGOB actionRef={actionRef} open={openGOB} handleOpen={setOpenGOB} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/qua-trinh-cong-tac`}/>
         <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ngoai-ngu`} />

@@ -1,5 +1,4 @@
 import {
-  get,
   getCustome,
   patch,
 } from '@/services/ant-design-pro/api';
@@ -14,12 +13,10 @@ import {
   ProFormSwitch,
   ProFormInstance,
   ProFormDigit,
-
 } from '@ant-design/pro-components';
 import {
-  Card,
   Descriptions,
-  Image, UploadFile
+  Image
 } from 'antd';
 
 import configText from '@/locales/configText';
@@ -28,90 +25,14 @@ const configDefaultText = configText;
 
 import {
   FormattedMessage,
+  useModel,
   useParams
 } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import {  Button, Col, Modal, Row, message, Form } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import AddNew from './FormUpdate';
 import { formatter, getOption, getProvine, parser } from '@/services/utils';
-import { TINH_TRANG_SUC_KHOE, mapTinhTrangSucKhoe, mapTrangThai, mapXacNhan } from '@/services/utils/constant';
-
-
-const handleAdd = async (fields: any) => {
-  const hide = message.loading('Đang thêm...');
-  try {
-    hide();
-
-
-    // const cow = await customAPIAdd({ ...fields }, 'cows');
-
-    // if (fields?.upload && cow) {
-    //   const uploadImages = fields?.upload.map((e: any) => {
-    //     let formdata = new FormData();
-    //     formdata.append('files', e?.originFileObj);
-    //     formdata.append('ref', 'api::cow.cow');
-    //     formdata.append('refId', cow?.id);
-    //     formdata.append('field', 'photos');
-    //     return customAPIUpload({
-    //       data: formdata
-    //     })
-    //   });
-    //   const photoCow = await Promise.all(uploadImages);
-    // }
-
-    message.success('Thêm thành công');
-    return true;
-  } catch (error: any) {
-    message.error(error?.response?.data?.error?.message);
-    return false;
-  }
-};
-
-
-// const handleUpdate = async (fields: any, id: any) => {
-//   const hide = message.loading('Đang cập nhật...');
-//   try {
-//     let uploadImages: any[] = [];
-//     let photoCowCustom: any[] = [];
-//     if (fields?.photos && fields.photos.length !== 0) {
-//       fields?.photos.map((e: any) => {
-//         if (e.originFileObj) {
-//           let formdata = new FormData();
-//           formdata.append('files', e?.originFileObj);
-//           formdata.append('ref', 'api::cow.cow');
-//           formdata.append('refId', id.current);
-//           formdata.append('field', 'photos');
-//           // uploadImages.push(customAPIUpload({
-//           //   data: formdata
-//           // }))
-//         }
-//         else {
-//           photoCowCustom.push(e.uid)
-//         }
-//         return null;
-//       });
-//     }
-
-//     let photoCow = await Promise.all(uploadImages);
-//     if (photoCow.length !== 0) {
-//       photoCow.map((e) => {
-//         photoCowCustom.push(e[0].id)
-//       })
-//     }
-//     fields.photos = photoCowCustom
-
-//     hide();
-//     message.success('Cập nhật thành công');
-//     return true;
-//   } catch (error: any) {
-//     hide();
-//     message.error(error?.response?.data?.error?.message);
-//     return false;
-//   }
-// };
-
-
+import { TINH_TRANG_SUC_KHOE, mapTinhTrangSucKhoe, mapXacNhan } from '@/services/utils/constant';
 
 
 const getProfile = async (setProfile: any, setLoading: any) => {
@@ -133,37 +54,29 @@ const getProfile = async (setProfile: any, setLoading: any) => {
 
 
 const TableList: React.FC = () => {
-  const refIdCow = useRef<any>();
-  const [currentRow, setCurrentRow] = useState<any>();
   const [form] = Form.useForm<any>();
-  const searchInput = useRef(null);
-  const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
-
-  const [collapsed, setCollapsed] = useState(true);
-
-  const [profile, setProfile] = useState<GEN.Profile | undefined>();
+  const [profile, setProfile] = useState<GEN.Profile>();
   const [loading, setLoading] = useState<boolean>(false);
+  const { initialState } = useModel('@@initialState');
+  const { nation, religion, groupBlood, officialRank, civilServantRank, position, 
+    organization, 
+    rankCommunistParty, 
+    militaryRank,
+    positionJob,
+    policyObject,
+    secondaryEducation,
+    professionalLevel,
+    stateRank,
+    academicLevel,
+    memberFamily
+   } = initialState || {};
 
 
 
-  const [visible, setVisible] = useState(false);
 
-
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-
-  const [religion, setReligion] = useState<GEN.Option[]>([]); name
-  const [sex, setSex] = useState<GEN.Option[]>([]);
-  const [membership, setMembership] = useState<GEN.Option[]>([]);
-  const [position, setPosition] = useState<GEN.Option[]>([]);
-  const [groupBlood, setGroupBlood] = useState<GEN.Option[]>([]);
-  const [policyObject, setPolicyObject] = useState<GEN.Option[]>([]);
-  const [secondaryEducationLevel, setSecondaryEducationLevel] = useState<GEN.Option[]>([]);
-  const [professionalLevel, setProfessionalLevel] = useState<GEN.Option[]>([]);
-  const [stateRank, setStateRank] = useState<GEN.Option[]>([]);
   const [officer, setOfficer] = useState<GEN.Option[]>([]);
   const [civilServant, setCivilServant] = useState<GEN.Option[]>([]);
-  const [organ, setOrgan] = useState<GEN.Option[]>([]);
   const [checkOfficer, setCheckOfficer] = useState<boolean>(true);
 
   const formRef = useRef<ProFormInstance>();
@@ -260,7 +173,7 @@ const TableList: React.FC = () => {
     const up = await patch(`${SERVER_URL_ACCOUNT}/ca-nhan/ho-so`, data);
     if (up) {
       message.success("Cập nhật thành công");
-      setVisible(false);
+      // setVisible(false);
       // if (actionRef.current) {
       //   actionRef.current?.reloadAndRest?.();
       // }
@@ -581,7 +494,6 @@ const TableList: React.FC = () => {
                   footer={submitter}
                   destroyOnClose={true}
                   onOk={() => {
-                    console.log('dd')
                   }}
                 >
                   {dom}
@@ -663,7 +575,8 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                     placeholder={"Dân tộc"}
                     showSearch
-                    request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
+                    options={nation}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
                     ]}
@@ -696,7 +609,8 @@ const TableList: React.FC = () => {
                     label={"Tôn giáo"}
                     placeholder={"Tôn giáo"}
                     showSearch
-                    request={() => getOption(`${SERVER_URL_CONFIG}/ton-giao`, 'id', 'name')}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/ton-giao`, 'id', 'name')}
+                    options={religion}
                     rules={[
                       { required: true, message: "Tôn giáo" }
                     ]}
@@ -839,12 +753,7 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Tình trạng sức khỏe" }
                     ]}
-                    // options={TINH_TRANG_SUC_KHOE}
-                    fieldProps={{
-                      onFocus: () => {
-                        console.log('focus');
-                      }
-                    }}
+                    options={TINH_TRANG_SUC_KHOE}
                     showSearch
                   />
                 </Col>
@@ -890,7 +799,8 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
+                    options={groupBlood}
                   />
                 </Col>
               </Row>
@@ -1191,7 +1101,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: "Chức vụ hiện tại" },
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                      options={position}
                     />
                   </Col>
 
@@ -1204,7 +1115,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+                      options={organization}
                     />
 
                   </Col>
@@ -1328,7 +1240,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                      options={position}
                     />
                   </Col>
 
@@ -1387,7 +1300,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: "Vị trí việc làm" },
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      options={positionJob}
                     />
                   </Col>
 
@@ -1563,8 +1477,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
-
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
+                      options={militaryRank}
                     />
                   </Col>
                 </Row>
@@ -1580,7 +1494,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      options={rankCommunistParty}
                     />
                   </Col>
 
@@ -1593,7 +1508,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                      options={rankCommunistParty}
 
                     />
                   </Col>
@@ -1618,7 +1534,8 @@ const TableList: React.FC = () => {
                         { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
                         // { required: true, message: "Dân tộc" }
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
+                      options={policyObject}
                     />
                   </Col>
 
@@ -1632,7 +1549,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
+                      options={secondaryEducation}
                     />
                   </Col>
                 </Row>
@@ -1649,7 +1567,8 @@ const TableList: React.FC = () => {
                         { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
                       ]}
 
-                      request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
+                      options={professionalLevel}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
                     />
                   </Col>
 
@@ -1663,7 +1582,8 @@ const TableList: React.FC = () => {
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
                       ]}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
+                      options={stateRank}
                     />
                   </Col>
                 </Row>
@@ -1675,7 +1595,8 @@ const TableList: React.FC = () => {
                       name="hocHam"
                       label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
                       placeholder={"Học hàm"}
-                      request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
+                      options={academicLevel}
                       showSearch
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
@@ -1690,7 +1611,8 @@ const TableList: React.FC = () => {
                       label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}
                       placeholder={"Thành phần gia đình"}
                       showSearch
-                      request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
+                      // request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
+                      options={memberFamily}
                       rules={[
                         { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
                       ]}

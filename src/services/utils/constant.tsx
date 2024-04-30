@@ -46,7 +46,7 @@ export const XAC_NHAN = [
     {label: 'Từ chối', value: 'TU_CHOI'},
 ]
 
-export const mapXacNhan = (value?: GEN.XACNHAN) => {
+export const mapXacNhan = (value: GEN.XACNHAN) => {
     if(!value) return  "";
     if(value === 'CHO_PHE_DUYET') return <Tag color="blue">Chờ phê duyệt</Tag>;
     if(value === 'DA_PHE_DUYET') return <Tag color="green">Đã phê duyệt</Tag>;

@@ -65,7 +65,7 @@ export const getOption = async (url: string, getValue: string, getLabel: string)
   try {
     const { data }: any = await get(url);
     if (data) {
-      return data
+      return data?.data
         .filter((e: any) => e[getValue] && e[getLabel])
         .map(({ [getLabel]: label, [getValue]: value }) => ({ label, value }));
     }

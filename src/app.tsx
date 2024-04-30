@@ -12,6 +12,7 @@ import React from 'react';
 import { ConfigProvider } from 'antd';
 import Page403 from '@/pages/403';
 import viVNIntl from 'antd/lib/locale/vi_VN';
+import { getOption } from './services/utils';
 
 //const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -26,11 +27,28 @@ export async function getInitialState(): Promise<{
 
   // fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
-  religion?: {
-    total: any;
-    success: any;
-    data: any;
-  }
+  religion?:  GEN.Option[];
+  tyBonus?:  GEN.Option[];
+  nation?:  GEN.Option[];
+  position?:  GEN.Option[];
+  policyObject?:  GEN.Option[];
+  academicLevel?:  GEN.Option[];
+  memberFamily?:  GEN.Option[];
+  secondaryEducation?:  GEN.Option[];
+  professionalLevel?:  GEN.Option[];
+  rankSalary?:  GEN.Option[];
+  groupBlood?:  GEN.Option[];
+  militaryRank?:  GEN.Option[];
+  officialRank?:  GEN.Option[];
+  civilServantRank?:  GEN.Option[];
+  organization?:  GEN.Option[];
+  positionJob?:  GEN.Option[];
+  rankCommunistParty?:  GEN.Option[];
+  relate?:  GEN.Option[];
+  typeAllowance?:  GEN.Option[];
+  typeSivilServant?:  GEN.Option[];
+  typeOfficial?:  GEN.Option[];
+  stateRank?:  GEN.Option[];
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -54,7 +72,28 @@ export async function getInitialState(): Promise<{
       fetchUserInfo,
       currentUser,
       settings: defaultSettings,
-      religion: await get(`${SERVER_URL_ACCOUNT}/dan-toc`)
+      religion: await getOption(`${SERVER_URL_ACCOUNT}/ton-giao?page=0&size=1000`, 'id', 'name'),
+      tyBonus: await getOption(`${SERVER_URL_ACCOUNT}/hinh-thuc-khen-thuong`, 'id', 'name'),
+      nation: await getOption(`${SERVER_URL_ACCOUNT}/dan-toc?page=0&size=1000`, 'id', 'name'),
+      position: await getOption(`${SERVER_URL_ACCOUNT}/chuc-vu?page=0&size=1000`, 'id', 'name'),
+      policyObject: await getOption(`${SERVER_URL_ACCOUNT}/doi-tuong-chinh-sach?page=0&size=1000`, 'id', 'name'),
+      academicLevel: await getOption(`${SERVER_URL_ACCOUNT}/hoc-ham?page=0&size=1000`, 'id', 'name'),
+      memberFamily: await getOption(`${SERVER_URL_ACCOUNT}/thanh-phan-gia-dinh?page=0&size=1000`, 'id', 'name'),
+      secondaryEducation: await getOption(`${SERVER_URL_ACCOUNT}/trinh-do-giao-duc-pho-thong?page=0&size=1000`, 'id', 'name'),
+      professionalLevel: await getOption(`${SERVER_URL_ACCOUNT}/trinh-do-chuyen-mon?page=0&size=1000`, 'id', 'name'),
+      rankSalary: await getOption(`${SERVER_URL_ACCOUNT}/bac-luong?page=0&size=1000`, 'id', 'name'),
+      groupBlood: await getOption(`${SERVER_URL_ACCOUNT}/nhom-mau?page=0&size=1000`, 'id', 'name'),
+      militaryRank: await getOption(`${SERVER_URL_ACCOUNT}/cap-bac-loai-quan-ham-quan-doi?page=0&size=1000`, 'id', 'name'),
+      officialRank: await getOption(`${SERVER_URL_ACCOUNT}/ngach-vien-chuc?page=0&size=1000`, 'id', 'name'),
+      civilServantRank: await getOption(`${SERVER_URL_ACCOUNT}/ngach-cong-chuc?page=0&size=1000`, 'id', 'name'),
+      organization: await getOption(`${SERVER_URL_ACCOUNT}/coquan-tochuc-donvi?page=0&size=1000`, 'id', 'name'),
+      positionJob: await getOption(`${SERVER_URL_ACCOUNT}/vi-tri-viec-lam?page=0&size=1000`, 'id', 'name'),
+      rankCommunistParty: await getOption(`${SERVER_URL_ACCOUNT}/chuc-danh-dang?page=0&size=1000`, 'id', 'name'),
+      relate: await getOption(`${SERVER_URL_ACCOUNT}/moi-quan-he?page=0&size=1000`, 'id', 'name'),
+      typeAllowance: await getOption(`${SERVER_URL_ACCOUNT}/loai-phu-cap?page=0&size=1000`, 'id', 'name'),
+      typeSivilServant: await getOption(`${SERVER_URL_ACCOUNT}/loai-cong-chuc?page=0&size=1000`, 'id', 'name'),
+      typeOfficial: await getOption(`${SERVER_URL_ACCOUNT}/loai-vien-chuc?page=0&size=1000`, 'id', 'name'),
+      stateRank: await getOption(`${SERVER_URL_ACCOUNT}/danh-hieu-nha-nuoc-phong??page=0&size=1000`, 'id', 'name'),
     };
   }
   return {

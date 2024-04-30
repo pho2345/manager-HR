@@ -1,12 +1,14 @@
 import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA } from "@/services/utils/constant";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { useModel } from "@umijs/max";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id, name, soCCCD }: GEN.BonusAddNewProps) {
+export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, id, name, soCCCD, type, collection }: GEN.BonusAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/khen-thuong`;
+    const { initialState } = useModel('@@initialState');
+    const { tyBonus } = initialState || {};
 
     async function add(value: any) {
         const data = {
@@ -15,7 +17,7 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
         }
 
         if (actionRef.current) {
-            const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+            const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
             if (create) {
                 handleModalOpen(false);
                 actionRef.current?.reload();
@@ -86,13 +88,8 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                         // width='md'
                         name='hinhThucKhenThuongId'
                         placeholder={`Hình thức khen thưởng`}
-                        request={() => getOption(`${SERVER_URL_CONFIG}/hinh-thuc-khen-thuong`, 'id', 'name')}
-                        rules={[
-                            {
-                                required: true,
-                                message: "Hình thức khen thưởng"
-                            },
-                        ]} />
+                        options={tyBonus}
+                         />
                 </Col>
 
                 <Col span={12} >
@@ -132,7 +129,7 @@ export default function AddBonus({ createModalOpen, handleModalOpen, actionRef, 
                     />
                 </Col>
 
-                {!id && (
+                {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

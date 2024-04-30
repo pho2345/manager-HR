@@ -696,9 +696,9 @@ declare namespace GEN {
     viecLam: ViecLam;
     sucKhoe: SucKhoe;
     taiKhoan: number;
-    pheDuyet: string;
     create_at: string;
     update_at: string;
+    pheDuyet: XACNHAN;
   }
 
   type WorkOld = {
@@ -1209,6 +1209,8 @@ declare namespace GEN {
     id?: string;
     name?: string;
     soCCCD?: string;
+    collection: string,
+    type: "EMPLOYEE" | "ADMIN"
   }
 
 
@@ -1413,6 +1415,11 @@ declare namespace GEN {
   }
 
   type ArmyTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type BonusTable = {
     type: "EMPLOYEE" | "ADMIN",
     collection: string
   }

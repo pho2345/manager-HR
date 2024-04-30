@@ -38,6 +38,7 @@ const configDefaultText = configText;
 import {
   FormattedMessage,
   request,
+  useModel,
   useParams
 } from '@umijs/max';
 import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
@@ -114,8 +115,6 @@ const TableList: React.FC = () => {
   const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
   const [selectedRow, setSelectedRow] = useState<[]>([]);
   const [info, setInfo] = useState<GEN.ThongTinCanBo>();
-  const [religion, setReligion] = useState<GEN.Option[]>([]);
-  const [membership, setMembership] = useState<GEN.Option[]>([]);
 
   const formRef2 = useRef<ProFormInstance>();
 
@@ -145,6 +144,21 @@ const TableList: React.FC = () => {
   const [sort, setSort] = useState<GEN.SORT>('createAt');
   const [page, setPage] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+
+
+  const { initialState } = useModel('@@initialState');
+  const { nation, religion, groupBlood, officialRank, civilServantRank, position,
+    organization,
+    rankCommunistParty,
+    militaryRank,
+    positionJob,
+    policyObject,
+    secondaryEducation,
+    professionalLevel,
+    stateRank,
+    academicLevel,
+    memberFamily
+  } = initialState || {};
 
 
   const params = useParams();
@@ -479,18 +493,7 @@ const TableList: React.FC = () => {
     }
   }
 
-  // const handleApproval = async (value: any) => {
-  //   const update = await put(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/phe-duyet`, selectedRow, {
-  //     pheDuyet: value.trangThai
-  //   });
-  //   if (update) {
-  //     message.success("Phê duyệt thành công");
-  //     setOpenApproval(false);
-  //     if (actionRef.current) {
-  //       actionRef.current?.reload?.();
-  //     }
-  //   }
-  // }
+
 
   const columns: ProColumns<GEN.Employee>[] = [
     {
@@ -1608,7 +1611,8 @@ const TableList: React.FC = () => {
                   label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}
                   placeholder={"Dân tộc"}
                   showSearch
-                  request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
+                  options={nation}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
                   rules={[
                     { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
                   ]}
@@ -1641,7 +1645,8 @@ const TableList: React.FC = () => {
                   label={"Tôn giáo"}
                   placeholder={"Tôn giáo"}
                   showSearch
-                  request={() => getOption(`${SERVER_URL_CONFIG}/ton-giao`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/ton-giao`, 'id', 'name')}
+                  options={religion}
                   rules={[
                     { required: true, message: "Tôn giáo" }
                   ]}
@@ -1834,7 +1839,8 @@ const TableList: React.FC = () => {
                   rules={[
                     { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
                   ]}
-                  request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
+                  options={groupBlood}
                 />
               </Col>
             </Row>
@@ -2136,7 +2142,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Chức vụ hiện tại" },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                    options={position}
+
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2149,7 +2157,8 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+                    options={organization}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
                   />
 
                 </Col>
@@ -2273,7 +2282,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                    options={position}
+
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2332,7 +2343,8 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: "Vị trí việc làm" },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                    options={positionJob}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2508,7 +2520,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
+                    options={militaryRank}
+
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
 
                   />
                 </Col>
@@ -2525,7 +2539,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                    options={rankCommunistParty}
+
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2538,7 +2554,8 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                    options={rankCommunistParty}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
 
                   />
                 </Col>
@@ -2563,7 +2580,8 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
                       // { required: true, message: "Dân tộc" }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
+                    options={policyObject}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2577,7 +2595,8 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
+                    options={secondaryEducation}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -2593,8 +2612,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
                     ]}
+                    options={professionalLevel}
 
-                    request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2608,7 +2628,9 @@ const TableList: React.FC = () => {
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
                     ]}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
+                    options={stateRank}
+
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -2620,11 +2642,13 @@ const TableList: React.FC = () => {
                     name="hocHam"
                     label={<FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" />}
                     placeholder={"Học hàm"}
-                    request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
+                    options={academicLevel}
                     showSearch
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
                     ]}
+
                   />
                 </Col>
 
@@ -2635,7 +2659,8 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" />}
                     placeholder={"Thành phần gia đình"}
                     showSearch
-                    request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
+                    options={memberFamily}
+                    // request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
                     ]}

@@ -14,18 +14,18 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
-import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
-import AddArmy from '@/reuse/army/AddArmy';
+import { getOption, getOptionCBVC, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { XAC_NHAN, XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, createPaginationProps, mapXacNhan, mapXepLoaiChuyenMon, mapXepLoaiThiDua } from '@/services/utils/constant';
+import AddBonus from '@/reuse/bonus/AddBonus';
 import ModalApproval from '@/reuse/approval/ModalApproval';
+import { useModel } from '@umijs/max';
 const configDefaultText = configText;
 
 
 
 
 
-const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
+const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -33,21 +33,25 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
 
+    const { initialState, setInitialState } = useModel('@@initialState');
+    const { tyBonus } = initialState || {};
+
+
     const [form] = Form.useForm<any>();
 
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
-    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [sort, setSort] = useState<GEN.SORT>('createAt');
     const [selectedRow, setSelectedRow] = useState<[]>([]);
-    const [openApproval, setOpenApproval] = useState<boolean>(false);
+    const [sort, setSort] = useState<GEN.SORT>('createAt');
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
 
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
@@ -60,6 +64,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -112,8 +117,8 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -302,7 +307,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
     });
 
 
-    const columnsAdmin: ProColumns<GEN.AdminArmy>[] = [
+    const columnsAdmin: ProColumns<GEN.AdminBonus>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -321,7 +326,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             ...getColumnSearchProps('hoVaTen')
         },
         {
-            title: "Số CMND/CCCD",
+            title: "CMND/CCCD",
             key: 'soCCCD',
             dataIndex: 'soCCCD',
             render: (_, entity) => {
@@ -330,68 +335,94 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                     <> {entity?.soCCCD}</>
                 );
             },
+            ...getColumnSearchProps('xepLoaiChuyenMon')
         },
 
         {
-            title: "Chứng chỉ",
-            key: 'chungChiDuocCap',
-            dataIndex: 'chungChiDuocCap',
+            title: "Xếp loại chuyên môn",
+            key: 'xepLoaiChuyenMon',
+            dataIndex: 'xepLoaiChuyenMon',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.chungChiDuocCap}</>
+                    <> {mapXepLoaiChuyenMon(entity?.xepLoaiChuyenMon)}</>
                 );
             },
+            filters: true,
+            valueEnum: {
+                'LOAI_A': {
+                    text: 'Hoàn thành xuất sắc nhiệm vụ',
+                },
+                'LOAI_B': {
+                    text: 'Hoàn thành tốt nhiệm vụ'
+                },
+                'LOAI_C': {
+                    text: 'Hoàn thành nhiệm vụ'
+                },
+                'LOAI_D': {
+                    text: 'Không hoàn thành nhiệm vụ'
+                },
+            }
+
         },
 
+
+
         {
-            title: "Đơn vị đào tạo",
-            key: 'tenCoSoDaoTao',
-            dataIndex: 'tenCoSoDaoTao',
+            title: "Xếp loại thi đua",
+            key: 'xepLoaiThiDua',
+            dataIndex: 'xepLoaiThiDua',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTaoName}</>
+                    <> {mapXepLoaiThiDua(entity?.xepLoaiThiDua)}</>
                 );
             },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
-        },
-
-       
-
-
-        {
-            title: "Ngày cấp",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                return (
-                    <> {displayTime(entity.batDau)}</>
-                );
+            // ...getColumnSearchProps('xepLoaiThiDua')\
+            filters: true,
+            onFilter: true,
+            valueEnum: {
+                'TOT': {
+                    text: 'Tốt',
+                },
+                'XUAT_SAC': {
+                    text: 'Xuất sắc'
+                },
+                'KHA': {
+                    text: 'Khá'
+                },
+                'TRUNG_BINH': {
+                    text: 'Trung bình'
+                },
             },
-            ...getColumnSearchRange('batDau')
+            // defaultFilteredValue: ['TRUNG_BINH']
         },
+
         {
-            title: "Ngày hết hạn",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
+            title: "Hình thức khen thưởng",
+            key: 'hinhThucKhenThuong',
+            dataIndex: 'hinhThucKhenThuong',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{displayTime(entity.ketThuc)}</>
+                    <> {entity?.hinhThucKhenThuongName}</>
                 );
             },
-            ...getColumnSearchRange('ketThuc')
         },
 
         {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => displayTime(text.create_at),
-            ...getColumnSearchRange('create_at')
+            title: "Năm khen thưởng",
+            key: 'nam',
+            dataIndex: 'nam',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.nam ? moment(entity?.nam).format(FORMAT_DATE) : ""} </>
+                );
+            },
+            ...getColumnSearchProps('nam')
         },
+
         {
             title: "Trạng thái",
             key: 'xacNhan',
@@ -399,7 +430,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {mapXacNhan(entity.xacNhan)}</>
+                    <> {mapXacNhan(entity.xacNhan)} </>
                 );
             },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
@@ -466,6 +497,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                 />
             ),
         },
+
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -473,6 +505,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
+
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -489,11 +522,13 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data,
-                                        tenCoSoDaoTao: getRecordCurrent.data.tenCoSoDaoTaoId,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
-                                    })
+                                        xepLoaiChuyenMon: getRecordCurrent.data?.xepLoaiChuyenMon,
+                                        xepLoaiThiDua: getRecordCurrent.data?.xepLoaiThiDua,
+                                        lyDo: getRecordCurrent?.data?.lyDo,
+                                        nam: getRecordCurrent.data.nam ? moment(getRecordCurrent.data.nam) : null,
+                                        hinhThucKhenThuongId: getRecordCurrent.data?.hinhThucKhenThuongId,
+                                        hoSoId: getRecordCurrent.data.hoSoId
+                                    });
                                 }
 
                             }}
@@ -504,73 +539,98 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
         }
     ];
 
-    const columnsEmployee: ProColumns<GEN.AdminArmy>[] = [
+    const columnsEmployee: ProColumns<GEN.AdminBonus>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
-
-        {
-            title: "Chứng chỉ",
-            key: 'chungChiDuocCap',
-            dataIndex: 'chungChiDuocCap',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.chungChiDuocCap}</>
-                );
-            },
-        },
-
-        {
-            title: "Đơn vị đào tạo",
-            key: 'tenCoSoDaoTao',
-            dataIndex: 'tenCoSoDaoTao',
-            render: (_, entity) => {
-                ;
-                return (
-                    <> {entity?.tenCoSoDaoTaoName}</>
-                );
-            },
-            // ...getColumnSearchProps('coQuanQuyetDinh')
-        },
-
        
-
-
         {
-            title: "Ngày cấp",
-            key: 'batDau',
-            dataIndex: 'batDau',
-            render: (_, entity) => {
-                return (
-                    <> {displayTime(entity.batDau)}</>
-                );
-            },
-            ...getColumnSearchRange('batDau')
-        },
-        {
-            title: "Ngày hết hạn",
-            key: 'ketThuc',
-            dataIndex: 'ketThuc',
+            title: "Xếp loại chuyên môn",
+            key: 'xepLoaiChuyenMon',
+            dataIndex: 'xepLoaiChuyenMon',
             render: (_, entity) => {
                 ;
                 return (
-                    <>{displayTime(entity.ketThuc)}</>
+                    <> {mapXepLoaiChuyenMon(entity?.xepLoaiChuyenMon)}</>
                 );
             },
-            ...getColumnSearchRange('ketThuc')
+            filters: true,
+            valueEnum: {
+                'LOAI_A': {
+                    text: 'Hoàn thành xuất sắc nhiệm vụ',
+                },
+                'LOAI_B': {
+                    text: 'Hoàn thành tốt nhiệm vụ'
+                },
+                'LOAI_C': {
+                    text: 'Hoàn thành nhiệm vụ'
+                },
+                'LOAI_D': {
+                    text: 'Không hoàn thành nhiệm vụ'
+                },
+            }
+
+        },
+
+
+
+        {
+            title: "Xếp loại thi đua",
+            key: 'xepLoaiThiDua',
+            dataIndex: 'xepLoaiThiDua',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXepLoaiThiDua(entity?.xepLoaiThiDua)}</>
+                );
+            },
+            // ...getColumnSearchProps('xepLoaiThiDua')\
+            filters: true,
+            onFilter: true,
+            valueEnum: {
+                'TOT': {
+                    text: 'Tốt',
+                },
+                'XUAT_SAC': {
+                    text: 'Xuất sắc'
+                },
+                'KHA': {
+                    text: 'Khá'
+                },
+                'TRUNG_BINH': {
+                    text: 'Trung bình'
+                },
+            },
+            // defaultFilteredValue: ['TRUNG_BINH']
         },
 
         {
-            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
-            dataIndex: 'create_at',
-            // valueType: 'textarea',
-            key: 'create_at',
-            renderText: (_, text) => displayTime(text.create_at),
-            ...getColumnSearchRange('create_at')
+            title: "Hình thức khen thưởng",
+            key: 'hinhThucKhenThuong',
+            dataIndex: 'hinhThucKhenThuong',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThucKhenThuongName}</>
+                );
+            },
         },
+
+        {
+            title: "Năm khen thưởng",
+            key: 'nam',
+            dataIndex: 'nam',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.nam ? moment(entity?.nam).format(FORMAT_DATE) : ""} </>
+                );
+            },
+            ...getColumnSearchProps('nam')
+        },
+
         {
             title: "Trạng thái",
             key: 'xacNhan',
@@ -578,7 +638,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {mapXacNhan(entity.xacNhan)}</>
+                    <> {mapXacNhan(entity.xacNhan)} </>
                 );
             },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
@@ -645,6 +705,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                 />
             ),
         },
+
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -652,6 +713,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             key: 'option',
             align: 'center',
             render: (_, entity) => {
+
                 return (
                     <Tooltip title={configDefaultText['buttonUpdate']}>
                         <Button
@@ -668,11 +730,13 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                                 if (getRecordCurrent.data) {
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
-                                        ...getRecordCurrent.data,
-                                        tenCoSoDaoTao: getRecordCurrent.data.tenCoSoDaoTaoId,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
-                                    })
+                                        xepLoaiChuyenMon: getRecordCurrent.data?.xepLoaiChuyenMon,
+                                        xepLoaiThiDua: getRecordCurrent.data?.xepLoaiThiDua,
+                                        lyDo: getRecordCurrent?.data?.lyDo,
+                                        nam: getRecordCurrent.data.nam ? moment(getRecordCurrent.data.nam) : null,
+                                        hinhThucKhenThuongId: getRecordCurrent.data?.hinhThucKhenThuongId,
+                                        hoSoId: getRecordCurrent.data.hoSoId
+                                    });
                                 }
 
                             }}
@@ -684,8 +748,14 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
     ];
 
 
+
+
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection, true);
+        const { hoSoId, nam, ...other } = value;
+        return await handleUpdate2({
+            ...other,
+            nam: moment(nam).toISOString()
+        }, refIdCurrent.current, collection);
     }
 
 
@@ -696,6 +766,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
+
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -716,6 +787,9 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                         Phê duyệt
                     </Button>)
                 ]}
+
+
+                // dataSource={bonus}
 
                 request={async () => {
                     let f: any = {};
@@ -766,6 +840,7 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                                     value: 'updateAt'
                                 }
                             ]}
+
                                 fieldProps={{
                                     value: sort
                                 }}
@@ -778,7 +853,6 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                     )
                 }}
 
-
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
                 }}
@@ -789,13 +863,13 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             />
 
 
-            <AddArmy actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen}  type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/kien-thuc-an-ninh-quoc-phong/phe-duyet' fieldApproval='xacNhan' />
 
+            <AddBonus createModalOpen={createModalOpen} handleModalOpen={handleModalOpen} actionRef={actionRef} type={type} collection={collection} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/khen-thuong/phe-duyet' fieldApproval='xacNhan' />
 
             <ModalForm
-                title={<>Cập nhật kiến thức an ninh quốc phòng {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
 
+                title={<>Cập nhật khen thưởng {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -822,51 +896,106 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
                     },
                 }}
             >
-                <Row gutter={24}>
+                <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormText name="chungChiDuocCap" key="chungChiDuocCap" label="Chứng chỉ" placeholder={'Chứng chỉ'} />
+                        <ProFormSelect
+                            label={"Xếp loại chuyên môn"}
+                            // width='md'
+                            name='xepLoaiChuyenMon'
+                            placeholder={`Xếp loại chuyên môn`}
+                            options={XEP_LOAI_CHUYEN_MON}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Xếp loại chuyên môn"
+                                },
+                            ]} />
                     </Col>
+
                     <Col span={12} >
-                        <ProFormSelect name="tenCoSoDaoTao" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormSelect
+                            label={"Xếp loại thi đua"}
+                            // width='md'
+                            name='xepLoaiThiDua'
+                            placeholder={`Xếp loại thi đua`}
+                            options={XEP_LOAI_THI_DUA}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Xếp loại thi đua"
+                                },
+                            ]} />
+                    </Col>
+                </Row>
+
+                <Row gutter={24} >
+                    <Col span={12} >
+                        <ProFormSelect
+                            label={"Hình thức khen thưởng"}
+                            // width='md'
+                            name='hinhThucKhenThuongId'
+                            placeholder={`Hình thức khen thưởng`}
+                            options={tyBonus}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Hình thức khen thưởng"
+                                },
+                            ]} />
+                    </Col>
+
+                    <Col span={12} >
+                        <ProFormText
+                            label={"Lý do"}
+                            // width='md'
+                            name='lyDo'
+                            placeholder={`Lý do`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Lý do"
+                                },
+                            ]} />
                     </Col>
                 </Row>
 
                 <Row gutter={24} >
                     <Col span={12} >
                         <ProFormDatePicker
-                            name="batDau"
-                            label={"Ngày bắt đầu"}
-                            placeholder={"Ngày bắt đầu"}
-                            rules={[
-                                { required: true, message: "Ngày bắt đầu" }
-                            ]}
+                            label={"Năm"}
+                            // width='md'
+                            name='nam'
                             fieldProps={{
                                 style: {
                                     width: "100%"
                                 },
-                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                             }}
-                        />
+                            placeholder={`Năm`}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Năm"
+                                },
+                            ]} />
                     </Col>
+
                     <Col span={12} >
-                        <ProFormDatePicker
-                            name="ketThuc"
-                            label={"Ngày kết thúc"}
-                            placeholder={"Ngày kết thúc"}
+                        <ProFormSelect
+                            label={"CBVC"}
+                            // width='md'
+                            name='hoSoId'
+                            placeholder={`CBVC`}
                             rules={[
-                                { required: true, message: "Ngày kết thúc" }
-                            ]}
-                            fieldProps={{
-                                style: {
-                                    width: "100%"
+                                {
+                                    required: true,
+                                    message: "CBVC"
                                 },
-                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
-                            }}
+                            ]}
+                            request={getOptionCBVC}
+
                         />
                     </Col>
-
                 </Row>
-
             </ModalForm>
 
         </PageContainer>

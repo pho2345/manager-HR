@@ -9,6 +9,6 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
     admin: () => {
       return currentUser?.role === 'ADMIN'
     },
-    member: () => currentUser?.role !== 'ADMIN',
+    employee: () => currentUser?.role !== 'ADMIN',
   };
 }

@@ -509,7 +509,6 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
             },
         },
 
-
         {
             title: "Ngày cấp",
             key: 'batDau',
@@ -779,7 +778,7 @@ const TableList: React.FC<GEN.WorkModelOldTable> = ({ type, collection }) => {
 
 
             <AddWorkModelOld actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} collection={collection} type={type} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

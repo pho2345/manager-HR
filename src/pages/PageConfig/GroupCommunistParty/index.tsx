@@ -1,5 +1,5 @@
-import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
-import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { get, getCustome } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
 import {
     ModalForm,
@@ -8,14 +8,15 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import { Button, Col, Form, Input, Row, Space, Switch, Tooltip } from 'antd';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -31,6 +32,12 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+
+
 
     const add = async (value: any) => {
         return handleAdd2(value, collection);
@@ -330,7 +337,7 @@ const TableList: React.FC = () => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at,
+            renderText: (_, text) => displayTime(text.create_at),
             // ...getColumnSearchProps('name')
         },
         {
@@ -414,16 +421,25 @@ const TableList: React.FC = () => {
 
 
 
-                request={async () => get(collection)}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
                     }
                 }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
                 columns={columns}
                 rowSelection={{}}
 

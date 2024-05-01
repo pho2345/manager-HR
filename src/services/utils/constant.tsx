@@ -7,6 +7,11 @@ export const XEP_LOAI_CHUYEN_MON = [
     {label: 'Không hoàn thành nhiệm vụ',value: 'LOAI_D'},
 ]
 
+export const SEX = [
+    {label: 'Nam', value: 'NAM'},
+    {label: 'Nữ', value: 'NU'},
+]
+
 export const mapXepLoaiChuyenMon = (value: string) => {
     let map;
     XEP_LOAI_CHUYEN_MON.forEach(item => {

@@ -1,6 +1,6 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,20 +8,18 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input,  Row, Space, Switch, Tooltip } from 'antd';
+import { Button, Col, Form, Input,  Row, Space, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
 const configDefaultText = configText;
 
-
-
 const TableList: React.FC = () => {
-
     const collection = `${SERVER_URL_CONFIG}/ton-giao`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -33,6 +31,10 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
 
 
@@ -306,25 +308,13 @@ const TableList: React.FC = () => {
             },
             ...getColumnSearchProps('name')
         },
-        // {
-        //     title: "Trạng thái",
-        //     key: 'trangThai',
-        //     dataIndex: 'trangThai',
-        //     render: (_, entity) => {
-        //         ;
-        //         return (
-        //             <Switch disabled checked={entity.trangThai} />
-        //         );
-        //     },
-        // },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             key: 'create_at',
-            renderText: (_, text) => moment(text.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -414,17 +404,25 @@ const TableList: React.FC = () => {
 
 
                 
-                request={async () => get(`${collection}?page=0&size=100`)}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
                     }
                 }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
                 columns={columns}
                 rowSelection={{}}
 

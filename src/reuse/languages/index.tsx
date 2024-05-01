@@ -394,7 +394,7 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
         {
@@ -608,7 +608,7 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
         {
@@ -787,7 +787,7 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.pheDuyet = searchPheDuyet;
+                        f.xacNhan = searchPheDuyet;
                     }
                     const data = await get(collection, {
                         ...f,

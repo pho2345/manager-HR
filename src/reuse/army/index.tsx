@@ -112,8 +112,8 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -790,12 +790,11 @@ const TableList: React.FC<GEN.ArmyTable> = ({type, collection}) => {
 
 
             <AddArmy actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen}  type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/kien-thuc-an-ninh-quoc-phong/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/kien-thuc-an-ninh-quoc-phong/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm
                 title={<>Cập nhật kiến thức an ninh quốc phòng {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
-
                 form={form}
                 open={updateModalOpen}
                 modalProps={{

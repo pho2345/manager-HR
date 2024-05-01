@@ -360,7 +360,7 @@ const TableList: React.FC<GEN.GOBTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -559,7 +559,7 @@ const TableList: React.FC<GEN.GOBTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => moment(text?.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -772,7 +772,7 @@ const TableList: React.FC<GEN.GOBTable> = ({ type, collection }) => {
             />
 
             <AddGOB actionRef={actionRef} handleOpen={handleModalOpen} open={createModalOpen} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/qua-trinh-cong-tac/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

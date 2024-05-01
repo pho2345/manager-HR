@@ -1,6 +1,6 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect, ProFormSwitch } from '@ant-design/pro-components';
+import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,21 +8,27 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input,  Row, Space, Switch, Tooltip } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Col, Form, Input, Row, Space, Tooltip } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
+// import { runConsumer } from '@/pages/kafka/comsumer';
 const configDefaultText = configText;
-
 
 
 const TableList: React.FC = () => {
 
-    const collection = '/gioi-tinh'
+    useEffect(() => {
+        const run = async () => {
+        }
+        run()
+    }, []);
+    const collection = `${SERVER_URL_CONFIG}/dan-toc`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
@@ -33,6 +39,10 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
 
 
@@ -288,14 +298,14 @@ const TableList: React.FC = () => {
     });
 
 
-    const columns: ProColumns<GEN.Sex>[] = [
+    const columns: ProColumns<API.Nation>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
         {
-            title: <FormattedMessage id="page.Sex.table.name" defaultMessage="Name" />,
+            title: <FormattedMessage id="page.nation.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
             render: (_, entity) => {
@@ -304,26 +314,13 @@ const TableList: React.FC = () => {
                     <> {entity?.name}</>
                 );
             },
-            width: '30vh',
             ...getColumnSearchProps('name')
-        },
-        {
-            title: "Trạng thái",
-            key: 'trangThai',
-            dataIndex: 'trangThai',
-            render: (_, entity) => {
-                ;
-                return (
-                    <Switch disabled checked={entity.trangThai} />
-                );
-            },
-            width: '30vh',
         },
         {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             key: 'create_at',
-            renderText: (_, text) => moment(text.create_at).format(FORMAT_DATE),
+            render: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -352,7 +349,6 @@ const TableList: React.FC = () => {
                                         ...getRecordCurrent.data
                                     })
                                 }
-
                             }}
                             icon={<MdOutlineEdit />}
                         />
@@ -366,7 +362,7 @@ const TableList: React.FC = () => {
 
 
     async function add(value: any) {
-        return await handleAdd2(value, collection);
+        return await handleAdd(value, collection);
     }
 
     async function update(value: any) {
@@ -379,16 +375,6 @@ const TableList: React.FC = () => {
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-                options={
-                    {
-                        reload: () => {
-                            return true;
-                        },
-                        setting: {
-                            checkable: false
-                        }
-                    }
-                }
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -415,18 +401,27 @@ const TableList: React.FC = () => {
 
 
 
-                
-                request={async () => get(collection)}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
+
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
                     }
                 }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
                 columns={columns}
                 rowSelection={{}}
 
@@ -441,7 +436,7 @@ const TableList: React.FC = () => {
 
             <ModalForm
                 form={form}
-                title={<FormattedMessage id="page.Sex.modal.titleCreate" defaultMessage="Create Nation" />}
+                title={<FormattedMessage id="page.nation.modal.titleCreate" defaultMessage="Create Nation" />}
                 width={window.innerWidth * 0.3}
                 open={createModalOpen}
                 modalProps={{
@@ -471,14 +466,14 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.Sex.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.nation.table.name" defaultMessage="Name" />}
                             // width='md'
                             name='name'
                             placeholder={`Tên dân tộc`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.Sex.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.nation.require.name" defaultMessage="Name" />
                                 },
                             ]} />
                     </Col>
@@ -488,7 +483,7 @@ const TableList: React.FC = () => {
             </ModalForm>
 
             <ModalForm
-                title={<FormattedMessage id="page.Sex.modal.titleUpdate" defaultMessage="Update Nation" />}
+                title={<FormattedMessage id="page.PolicyObject.modal.titleUpdate" defaultMessage="Update Nation" />}
                 form={form}
                 width={window.innerWidth * 0.3}
                 open={updateModalOpen}
@@ -519,17 +514,17 @@ const TableList: React.FC = () => {
                 <Row gutter={24} >
                     <Col span={24} >
                         <ProFormText
-                            label={<FormattedMessage id="page.Sex.table.name" defaultMessage="Name" />}
+                            label={<FormattedMessage id="page.nation.table.name" defaultMessage="Name" />}
                             name='name'
                             placeholder={`Tên dân tộc`}
                             rules={[
                                 {
                                     required: true,
-                                    message: <FormattedMessage id="page.Sex.require.name" defaultMessage="Name" />
+                                    message: <FormattedMessage id="page.nation.require.name" defaultMessage="Name" />
                                 },
                             ]} />
 
-                        <ProFormSwitch
+                        {/* <ProFormSwitch
                             label={"Trạng thái"}
                             name='trangThai'
                             rules={[
@@ -537,7 +532,7 @@ const TableList: React.FC = () => {
                                     required: true,
                                     message: "Trạng thái"
                                 },
-                            ]} />
+                            ]} /> */}
                     </Col>
                 </Row>
             </ModalForm>

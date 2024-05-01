@@ -740,7 +740,7 @@ const TableList: React.FC<GEN.WorkingAbroadTable> = ({ type, collection }) => {
 
 
             <AddWorkingAbroad actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/lam-viec-o-nuoc-ngoai/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/lam-viec-o-nuoc-ngoai/phe-duyet' fieldApproval='pheDuyet' />
 
             <ModalForm
                 title={<>Cập nhật làm việc ở nước ngoài {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}

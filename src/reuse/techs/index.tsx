@@ -61,6 +61,7 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -672,8 +673,6 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
 
 
     async function update(value: any) {
-        const offset = moment().utcOffset();
-        console.log('value', offset);
         return await handleUpdate2(value, refIdCurrent.current, collection, true);
     }
 
@@ -696,7 +695,7 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
-                    selectedRow.length > 0 && (<Button
+                    selectedRow.length > 0 && type === 'ADMIN' && (<Button
                         type='dashed'
                         key='primary'
                         onClick={() => {
@@ -776,7 +775,7 @@ const TableList: React.FC<GEN.CerTechsTable> = ({type, collection}) => {
             />
 
             <AddCerTech open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} collection={collection} type={type}/>
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/tin-hoc/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/tin-hoc/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

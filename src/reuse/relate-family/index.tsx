@@ -730,7 +730,7 @@ const TableList: React.FC<GEN.RelateFamilyTable> = ({ type, collection }) => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
-                    selectedRow.length > 0 && (<Button
+                    selectedRow.length > 0 && type === 'ADMIN' && (<Button
                         type='dashed'
                         key='primary'
                         onClick={() => {
@@ -813,7 +813,7 @@ const TableList: React.FC<GEN.RelateFamilyTable> = ({ type, collection }) => {
 
 
             <AddRelateFamily actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/quan-he-gia-dinh/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/quan-he-gia-dinh/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

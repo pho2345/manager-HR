@@ -31,8 +31,8 @@ import {
 import {  Button, Col, Modal, Row, message, Form } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { formatter, getOption, getProvine, parser } from '@/services/utils';
-import { TINH_TRANG_SUC_KHOE, mapTinhTrangSucKhoe, mapXacNhan } from '@/services/utils/constant';
+import { displayTime, formatter, getOption, getProvine, handleTime, parser } from '@/services/utils';
+import { SEX, TINH_TRANG_SUC_KHOE, mapTinhTrangSucKhoe, mapXacNhan } from '@/services/utils/constant';
 
 
 const getProfile = async (setProfile: any, setLoading: any) => {
@@ -241,10 +241,10 @@ const TableList: React.FC = () => {
               <Descriptions column={3} style={{ marginBlockEnd: -16 }}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>{profile?.hoVaTen ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>{profile?.cacTenGoiKhac ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{profile?.sinhNgay ? moment(profile?.sinhNgay).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{displayTime(profile?.sinhNgay)}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{profile?.gioiTinh ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>{profile?.soCCCD ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{profile?.ngayCapCCCD ? moment(profile?.ngayCapCCCD).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{displayTime(profile?.ngayCapCCCD)}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danTocName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={`Tôn giáo`}>{profile?.tonGiaoName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}>{profile?.noiSinh ?? ""}</Descriptions.Item>
@@ -269,11 +269,10 @@ const TableList: React.FC = () => {
               }}>
               <Descriptions column={3} style={{ marginBlockEnd: 0 }} >
                 <Descriptions.Item label={"Nghề nghiệp trước khi được tuyển dụng"}>{profile?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau ? moment(profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau).format(FORMAT_DATE) : ""}</Descriptions.Item>
-                <Descriptions.Item label={"Cơ quan, tổ chức, đơn vị tuyển dụng"}>{""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày vào cơ quan hiện đang công tác"}>{profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac ? moment(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac).format(FORMAT_DATE) : ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày vào Đảng Cộng sản Việt Nam"}>{profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam ? moment(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam).format(FORMAT_DATE) : ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày chính thức"}>{profile?.thongTinTuyenDung?.ngayChinhThuc ? moment(profile?.thongTinTuyenDung?.ngayChinhThuc).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày được tuyển dụng lần đầu"}>{displayTime(profile?.thongTinTuyenDung?.ngayDuocTuyenDungLanDau)}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày vào cơ quan hiện đang công tác"}>{displayTime(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac)}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày vào Đảng Cộng sản Việt Nam"}> {displayTime(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam)} </Descriptions.Item>
+                <Descriptions.Item label={"Ngày chính thức"}>{displayTime(profile?.thongTinTuyenDung?.ngayChinhThuc)}</Descriptions.Item>
               </Descriptions>
             </ProCard>
 
@@ -285,8 +284,8 @@ const TableList: React.FC = () => {
                 fontWeight: 'bolder'
               }}>
               <Descriptions column={3} style={{ marginBlockEnd: 0 }} title={"Thông tin nhập ngũ"}>
-                <Descriptions.Item label={"Ngày nhập ngũ"}>{profile?.quanSu?.ngayNhapNgu ? moment(profile?.quanSu?.ngayNhapNgu).format(FORMAT_DATE) : ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày xuất ngũ"}>{profile?.quanSu?.ngayXuatNgu ? moment(profile?.quanSu?.ngayXuatNgu).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày nhập ngũ"}>{displayTime(profile?.quanSu?.ngayNhapNgu)}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày xuất ngũ"}>{displayTime(profile?.quanSu?.ngayXuatNgu)}</Descriptions.Item>
                 <Descriptions.Item label={"Quân hàm cao nhất"}>{profile?.quanSu?.capBacLoaiQuanHamQuanDoiName ?? ""}</Descriptions.Item>
               </Descriptions>
 
@@ -312,8 +311,8 @@ const TableList: React.FC = () => {
 
               <Descriptions column={2} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Chức vụ"}>
                 {/* <Descriptions.Item label={"Chức vụ hiện tại"}>{profile?.chucVuDangHienTai ?? ""}</Descriptions.Item> */}
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{profile?.chucVu?.ngayBoNhiem ? moment(profile?.chucVu?.ngayBoNhiem).format(FORMAT_DATE) : ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{profile?.chucVu?.ngayBoNhiemLai ? moment(profile?.chucVu?.ngayBoNhiemLai).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointment" defaultMessage="Ngày bổ nhiệm" />}>{displayTime(profile?.chucVu?.ngayBoNhiem)}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateReAppointment" defaultMessage="Ngày bổ nhiệm lại" />}>{displayTime(profile?.chucVu?.ngayBoNhiemLai)}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.planningPosition" defaultMessage="Được quy hoạch chức danh" />}>{profile?.chucVu?.duocQuyHoacChucDanh ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}>{profile?.chucVuKiemNhiem?.chucVuKiemNhiemName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}>{profile?.chucVuDangHienTaiName ?? ""}</Descriptions.Item>
@@ -322,32 +321,32 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}>{profile?.thongTinTuyenDung?.soTruongCongTac ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}>{profile?.thongTinTuyenDung?.congViecLamLauNhat ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Tiền lương"}>{profile?.tienLuong ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Cơ quan, tổ chức, đơn vị tuyển dụng"}>{profile?.chucVu?.coQuanToChucDonViTuyenDungName ?? ""}</Descriptions.Item>
               </Descriptions>
 
               <Descriptions column={2} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Ngạch nghề nghiệp"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.quotaCareer" defaultMessage="Ngạch nghề nghiệp" />}>{profile?.ngach?.ngachName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.codeQuotaCareer" defaultMessage="Mã ngạch nghề nghiệp" />}>{profile?.ngach?.ngachId ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{profile?.ngach?.ngayBoNhiemNgach ? moment(profile?.ngach?.ngayBoNhiemNgach).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" />}>{displayTime(profile?.ngach?.ngayBoNhiemNgach)}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Bậc lương ngạch nghề nghiệp" />}>{profile?.ngach?.bacLuongName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberSalaryQuotaCareer" defaultMessage="Hệ số lương ngạch nghề nghiệp" />}>{profile?.ngach?.heSo ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{profile?.ngach?.ngayHuongLuongNgach ? moment(profile?.ngach?.ngayHuongLuongNgach).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}>{displayTime(profile?.ngach?.ngayHuongLuongNgach)}</Descriptions.Item>
                 <Descriptions.Item style={{
                   fontWeight: 'bolder'
-
                 }} label={"Phần trăm hưởng lương ngạch nghề nghiệp (%)"}>{profile?.ngach?.phanTramHuongLuongNgach ?? ""} </Descriptions.Item>
-                <Descriptions.Item label={"Phụ cấp thâm niên vượt khung ngạch nghề nghiệp (vnđ)"}>{profile?.ngach?.phuCapThamNienVuotKhungNgach ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{profile?.ngach?.ngayHuongPCTNVKNgach ? moment(profile?.ngach?.ngayHuongPCTNVKNgach).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={"Phụ cấp thâm niên vượt khung ngạch nghề nghiệp (vnđ)"}>{profile?.ngach?.phuCapThamNienVuotKhungNgach?.toLocaleString?.() ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.dateGetAllowancePassQuotaCareer" defaultMessage="Ngày hưởng phụ cấp thâm niên vượt khung ngạch nghề nghiệp" />}>{displayTime(profile?.ngach?.ngayHuongPCTNVKNgach)}</Descriptions.Item>
               </Descriptions>
 
               <Descriptions column={3} style={{ marginBlockEnd: -16, marginBottom: 24 }} title={"Vị trí việc làm"}>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.workplace" defaultMessage="Vị trí việc làm" />}>{profile?.viecLam?.viTriViecLamName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Mã số"}>{profile?.viecLam?.viTriViecLamId ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Bậc lương"}>{profile?.viecLam?.bacLuongName ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Lương theo mức tiền"}>{profile?.viecLam?.tienLuong ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày hưởng"}>{profile?.viecLam?.ngayHuongLuongViTriViecLam ? moment(profile?.viecLam?.ngayHuongLuongViTriViecLam).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={"Lương theo mức tiền (vnđ)"}>{profile?.viecLam?.tienLuong?.toLocaleString() ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày hưởng"}>{displayTime(profile?.viecLam?.ngayHuongLuongViTriViecLam)}</Descriptions.Item>
                 <Descriptions.Item label={"Phần trăm hưởng (%)"}>{profile?.viecLam?.phamTramHuongLuong ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Phụ cấp thâm niên vượt khung (%)"}>{profile?.viecLam?.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={"Ngày hưởng PCTNVK"}>{profile?.viecLam?.ngayHuongPCTNVK ? moment(profile?.viecLam?.ngayHuongPCTNVK).format(FORMAT_DATE) : ""}</Descriptions.Item>
+                <Descriptions.Item label={"Phụ cấp thâm niên vượt khung (vnđ)"}>{profile?.viecLam?.phuCapThamNienVuotKhung ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={"Ngày hưởng PCTNVK"}>{displayTime(profile?.viecLam?.ngayHuongPCTNVK)}</Descriptions.Item>
               </Descriptions>
             </ProCard>
             {/* 
@@ -377,10 +376,7 @@ const TableList: React.FC = () => {
             // }}
 
             onCurrentChange={(value: number) => {
-
-              if (value === 1) {
-                formRef.current?.setFieldValue("ngheNghiepTruocKhiTuyenDung", 'abc');
-              }
+              
             }}
             onFinish={async (value) => {
 
@@ -515,7 +511,7 @@ const TableList: React.FC = () => {
                 gioiTinh: profile?.gioiTinh || null,
                 danToc: profile?.danToc || null,
                 tonGiao: profile?.tonGiao || null,
-                sinhNgay: profile?.sinhNgay ? moment(profile?.sinhNgay) : null,
+                sinhNgay: handleTime(profile?.sinhNgay),
                 soCCCD: profile?.soCCCD ?? null,
                 soDienThoai: profile?.soDienThoai ?? null,
                 soBHXH: profile?.soBHXH ?? null,
@@ -527,7 +523,7 @@ const TableList: React.FC = () => {
                 tinhTrangSucKhoe: profile?.sucKhoe?.tinhTrangSucKhoe ?? null,
                 chieuCao: profile?.sucKhoe?.chieuCao ?? null,
                 nhomMau: profile?.sucKhoe?.nhomMau ?? null,
-                ngayCapCCCD: profile?.ngayCapCCCD ? moment(profile?.ngayCapCCCD) : null,
+                ngayCapCCCD: handleTime(profile?.ngayCapCCCD),
                 canNang: profile?.sucKhoe?.canNang ?? null,
               }}
               onFinish={async (value: object) => {
@@ -554,12 +550,7 @@ const TableList: React.FC = () => {
 
                     label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
                     placeholder={"Giới tính"}
-                    options={[
-                      {
-                        label: 'Nam',
-                        value: 'NAM'
-                      }
-                    ]}
+                    options={SEX}
                     rules={[
                       { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
                     ]}
@@ -776,7 +767,7 @@ const TableList: React.FC = () => {
                   <ProFormDigit
                     className="w-full"
                     name="canNang"
-                    label={"Cân nặng"}
+                    label={"Cân nặng (kg)"}
                     placeholder={"Cân nặng"}
                     rules={[
                       { required: true, message: "Cân nặng" }
@@ -821,23 +812,23 @@ const TableList: React.FC = () => {
 
               initialValues={{
                 ngachNgheNghiep: profile?.ngach?.ngachId ?? null,
-                ngayBoNhiemNgach: profile?.ngach?.ngayBoNhiemNgach ? moment(profile?.ngach?.ngayBoNhiemNgach) : null,
-                ngayHuongLuongNgach: profile?.ngach?.ngayHuongLuongNgach ? moment(profile?.ngach?.ngayHuongLuongNgach) : null,
+                ngayBoNhiemNgach: handleTime(profile?.ngach?.ngayBoNhiemNgach),
+                ngayHuongLuongNgach: handleTime(profile?.ngach?.ngayHuongLuongNgach),
                 phanTramHuongLuongNgach: profile?.ngach?.phanTramHuongLuongNgach ?? null,
                 phuCapThamNienVuotKhungNgach: profile?.ngach?.phuCapThamNienVuotKhungNgach ?? null,
-                ngayHuongPCTNVKNgachNgheNghiep: profile?.ngach?.ngayHuongPCTNVKNgach ? moment(profile?.ngach?.ngayHuongPCTNVKNgach) : null,
+                ngayHuongPCTNVKNgachNgheNghiep: handleTime(profile?.ngach?.ngayHuongPCTNVKNgach),
                 // coQuanToChucDonViTuyenDung: profile?.thongTinTuyenDung?.coQuanToChucDonViTuyenDungId,
                 // phuCapChucVu: profile?.,
                 phuCapKhac: profile?.chucVuKiemNhiem?.phuCapKhac ?? null,
-                ngayBoNhiem: profile?.chucVu?.ngayBoNhiem ? moment(profile?.chucVu?.ngayBoNhiem) : null,
+                ngayBoNhiem: handleTime(profile?.chucVu?.ngayBoNhiem),
 
                 // duocQuyHoacChucDanh: profile?.thongTinTuyenDung?.duocQuyHoacChucDanh,
 
                 //thong-tin-tuyen-dung
                 ngheNghiepTruocKhiTuyenDung: profile?.thongTinTuyenDung?.ngheNghiepTruocKhiTuyenDung ?? null,
                 congViecChinhDuocGiao: profile?.thongTinTuyenDung?.congViecChinhDuocGiao ?? null,
-                ngayVaoCoQuanHienDangCongTac: profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac ? moment(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac) : null,
-                ngayVaoDangCongSanVietNam: profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam ? moment(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam) : null,
+                ngayVaoCoQuanHienDangCongTac: handleTime(profile?.thongTinTuyenDung?.ngayVaoCoQuanHienDangCongTac),
+                ngayVaoDangCongSanVietNam: handleTime(profile?.thongTinTuyenDung?.ngayVaoDangCongSanVietNam),
                 soTruongCongTac: profile?.thongTinTuyenDung?.soTruongCongTac ?? null,
                 congViecLamLauNhat: profile?.thongTinTuyenDung?.congViecLamLauNhat ?? null,
                 //
@@ -1070,27 +1061,27 @@ const TableList: React.FC = () => {
                 //chuc-vu
                 chucVuHienTai: profile?.chucVu?.chucVuHienTaiId,
                 coQuanToChucDonViTuyenDungId: profile?.chucVu?.coQuanToChucDonViTuyenDungId,
-                ngayBoNhiemChucVu: profile?.chucVu?.ngayBoNhiem ? moment(profile?.chucVu?.ngayBoNhiem) : null,
-                ngayBoNhiemLai: profile?.chucVu?.ngayBoNhiemLai ? moment(profile?.chucVu?.ngayBoNhiemLai) : null,
+                ngayBoNhiemChucVu: handleTime(profile?.chucVu?.ngayBoNhiem),
+                ngayBoNhiemLai: handleTime(profile?.chucVu?.ngayBoNhiemLai),
                 duocQuyHoacChucDanh: profile?.chucVu?.duocQuyHoacChucDanh,
                 phuCapChucVu: profile?.chucVu?.phuCapChucVu,
 
                 //chuc-vu-kiem-nhiem
                 chucVuKiemNhiem: profile?.chucVuKiemNhiem?.chucVuKiemNhiemId,
-                ngayBoNhiemChucVuKiemNhiem: profile?.chucVuKiemNhiem?.ngayBoNhiem ? moment(profile?.chucVuKiemNhiem?.ngayBoNhiem) : null,
+                ngayBoNhiemChucVuKiemNhiem: handleTime(profile?.chucVuKiemNhiem?.ngayBoNhiem),
                 phuCapKiemNhiem: profile?.chucVuKiemNhiem?.phuCapKiemNhiem,
 
                 //vi-tri-viec-lam
                 viTriViecLam: profile?.viecLam?.viTriViecLamId,
-                ngayHuongLuongViTriViecLam: profile?.viecLam?.ngayHuongLuongViTriViecLam ? moment(profile?.viecLam?.ngayHuongLuongViTriViecLam) : null,
-                ngayHuongPCTNVK: profile?.viecLam?.ngayHuongPCTNVK ? moment(profile?.viecLam?.ngayHuongPCTNVK) : null,
+                ngayHuongLuongViTriViecLam: handleTime(profile?.viecLam?.ngayHuongLuongViTriViecLam),
+                ngayHuongPCTNVK:  handleTime(profile?.viecLam?.ngayHuongPCTNVK),
                 phuCapThamNienVuotKhung: profile?.viecLam?.phuCapThamNienVuotKhung,
                 phamTramHuongLuong: profile?.viecLam?.phamTramHuongLuong,
                 tienLuong: profile?.tienLuong,
               }}
               className="w-full"
             >
-              <ProCard title="Chức vụ" type="inner" bordered>
+              {/* <ProCard title="Chức vụ" type="inner" bordered>
                 <Row gutter={24} className="m-0">
                   <Col span={12} className="gutter-row p-0">
                     <ProFormSelect
@@ -1225,7 +1216,7 @@ const TableList: React.FC = () => {
                   </Col>
                 </Row>
 
-              </ProCard>
+              </ProCard> */}
 
 
               <ProCard title="Chức vụ kiêm nhiệm" type="inner" bordered>
@@ -1392,9 +1383,9 @@ const TableList: React.FC = () => {
               }}
               className="w-full"
               initialValues={{
-                ngayNhapNgu: profile?.quanSu?.ngayNhapNgu ? moment(profile?.quanSu?.ngayNhapNgu) : null,
-                ngayXuatNgu: profile?.quanSu?.ngayXuatNgu ? moment(profile?.quanSu?.ngayXuatNgu) : null,
-                ngayThamGiaToChucChinhTriXaHoiDauTien: profile?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien ? moment(profile?.thongTinTuyenDung.ngayThamGiaToChucChinhTriXaHoiDauTien) : null,
+                ngayNhapNgu: handleTime(profile?.quanSu?.ngayNhapNgu),
+                ngayXuatNgu: handleTime(profile?.quanSu?.ngayXuatNgu),
+                ngayThamGiaToChucChinhTriXaHoiDauTien: handleTime(profile?.thongTinTuyenDung?.ngayThamGiaToChucChinhTriXaHoiDauTien),
 
                 //dang
                 chucVuDangHienTai: profile?.chucVuDangHienTai ?? null,

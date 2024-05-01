@@ -69,7 +69,7 @@
       { path: '/hr-manager/salary', name: 'salary', component: './Hr-Manager/Salary' },
       { path: '/hr-manager/work-model-old', name: 'workModelOld', component: './Hr-Manager/WorkModelOld' },
     ],
-    // access: 'admin'
+    access: 'admin'
   },
   {
     name: 'Cấu hình',
@@ -78,6 +78,7 @@
     // menuHeaderRender: false,
     routes: [
       { path: '/config/nation', name: 'menu.nation', component: './PageConfig/Nation' },
+      { path: '/config/nationf', name: 'menu.nationff', component: './PageConfig/NationFake' },
       { path: '/config/policy-object', name: 'menu.policyObject', component: './PageConfig/PolicyObject' },
       { path: '/config/state-rank', name: 'menu.stateRank', component: './PageConfig/StateRank' },
       // { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },
@@ -101,7 +102,7 @@
       // { path: '/config/group-rank-communist-party', name: 'menu.groupRankCommunistParty', component: './PageConfig/GroupRankCommunistParty' },
       { path: '/config/rank-communist-party', name: 'menu.rankCommunistParty', component: './PageConfig/RankCommunistParty' },
       // { path: '/config/group-communist-party', name: 'menu.groupCommunistParty', component: './PageConfig/GroupCommunistParty' },
-      // { path: '/config/type-bonus', name: 'menu.typeBonus', component: './PageConfig/TypeBonus' },
+      { path: '/config/type-bonus', name: 'menu.typeBonus', component: './PageConfig/TypeBonus' },
       { path: '/config/job-position', name: 'menu.jobPosition', component: './PageConfig/JobPosition' },
       { path: '/config/relationship', name: 'menu.relationship', component: './PageConfig/Relationship' },
       { path: '/config/allowance-type', name: 'menu.allowanceType', component: './PageConfig/AllowanceType' },
@@ -116,7 +117,7 @@
       //   redirect: '/config/nation',
       // }
     ],
-    //  access: 'admin'
+     access: 'admin'
   },
 
 
@@ -141,12 +142,8 @@
        { path: '/profile/bonus', name: 'menu.bonus', component: './Profile/Bonus' },
        { path: '/profile/discipline', name: 'menu.discipline', component: './Profile/Discipline' },
        { path: '/profile/professional-knowledge', name: 'menu.professionalKnowledge', component: './Profile/ProfessionalKnowledge' },
-      {
-        path: '/profile',
-        redirect: '/profile/nation',
-      }
     ],
-    //  access: 'admin'
+     access: 'employee'
   },
 
 
@@ -156,13 +153,18 @@
     path: '/account',
     menuHeaderRender: false,
     component: './Account',
-    
-    // access: 'admin'
+    access: 'admin'
   },
   {
     path: '/',
     redirect: '/config/nation',
+    access: 'admin'
   },
+  // {
+  //   path: '/',
+  //   redirect: '/profile/basic',
+  //   access: 'employee'
+  // },
   {
     path: '*',
     layout: false,

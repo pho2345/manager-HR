@@ -1,11 +1,10 @@
-import { getOption, getOptionCBVC, handleAdd } from "@/services/utils";
+import { disableDateStartAndDateEnd, getOption, getOptionCBVC, handleAdd } from "@/services/utils";
 import { ModalForm, ProFormDatePicker, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Col, Form, Row, Tag } from "antd";
 import moment from "moment";
 
-export default function AddDiscipline({ open, handleOpen, actionRef, id, name, soCCCD }: GEN.DisciplineAddNewProps) {
+export default function AddDiscipline({ open, handleOpen, actionRef, id, name, soCCCD, collection, type }: GEN.DisciplineAddNewProps) {
     const [form] = Form.useForm<any>();
-    const collection = `${SERVER_URL_CONFIG}/ky-luat`;
 
     async function add(value: any) {
         const data = {
@@ -13,8 +12,8 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
             batDau: moment(value.batDau).toISOString(),
             ketThuc: moment(value.ketThuc).toISOString(),
         }
-        
-        const create = await handleAdd(data, `${collection}/${id ?? value?.id}`);
+
+        const create = await handleAdd(data, `${collection}${type !== 'EMPLOYEE' ? `/${id ?? value?.id}` : ''}`);
         if (actionRef.current) {
             if (create) {
                 handleOpen(false);
@@ -71,7 +70,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
                         }}
                     />
                 </Col>
@@ -87,7 +86,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
                             style: {
                                 width: "100%"
                             },
-                            // disabledDate: disabledDate
+                            disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
                         }}
                     />
                 </Col>
@@ -95,7 +94,7 @@ export default function AddDiscipline({ open, handleOpen, actionRef, id, name, s
             </Row>
 
             <Row gutter={24} >
-                {!id && (
+                {(!id && type === 'ADMIN') && (
                     <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}

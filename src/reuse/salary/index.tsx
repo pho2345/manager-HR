@@ -833,7 +833,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
 
 
             <AddSalary actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/luong-ban-than/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

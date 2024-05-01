@@ -1,10 +1,8 @@
 import {
   getCustome,
-  // get,
   patch,
-  put,
 } from '@/services/ant-design-pro/api';
-import { ExclamationCircleOutlined, HolderOutlined, PhoneOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, SoundTwoTone } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ProColumns,
@@ -12,8 +10,6 @@ import {
   ProFormDatePicker,
   ProFormDigit,
   ProFormSelect,
-  ProFormTextArea,
-  ProFormUploadButton,
   ModalForm,
   PageContainer,
   ProDescriptions,
@@ -24,11 +20,10 @@ import {
   ProFormSwitch,
   ProCard,
   LightFilter,
-
 } from '@ant-design/pro-components';
 import {
   Dropdown,
-  Image, Menu, UploadFile, UploadProps
+  Image, Menu
 } from 'antd';
 
 import configText from '@/locales/configText';
@@ -41,16 +36,11 @@ import {
   useModel,
   useParams
 } from '@umijs/max';
-import { Avatar, Button, Col, Drawer, Form, Input, Modal, Row, Space, Tooltip, message } from 'antd';
+import {  Button, Col, Drawer, Form, Input, Modal, Row, Space, message } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import AddNew from './AddNew';
-import { formatter, getOption, getProvine, handleAdd2, parser } from '@/services/utils';
-import { MdOutlineEdit } from 'react-icons/md';
-import AddBonus from '@/reuse/bonus/AddBonus';
-import UpdateForm from './UpdateForm';
-import { TINH_TRANG_SUC_KHOE, XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
-import { negate, truncate } from 'lodash';
+import { formatter, getOption, getProvine, handleAdd2, handleTime, parser } from '@/services/utils';
+import { SEX, TINH_TRANG_SUC_KHOE, XAC_NHAN, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 
 
@@ -781,75 +771,7 @@ const TableList: React.FC = () => {
         />
       ),
     },
-    // {
-    //   title: 'Co quan to chuc don vi',
-    //   key: '',
-    //   // dataIndex: 'gioiTinh',
-    //   render: (_, entity) => entity.co ?? "",
-    //   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-    //     //close
-    //   }: any) => (
-    //     <div
-    //       style={{
-    //         padding: 8,
-    //       }}
-    //       onKeyDown={(e) => e.stopPropagation()}
-    //     >
-    //       <Row gutter={24} className="m-0">
-    //         <Col span={24} className="gutter-row p-0" >
-    //           <ProFormSelect
-    //             request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
-    //             fieldProps={{
-    //               onChange: (value: any) => {
-    //                 setSearchDanTocId(value)
-    //               },
-    //               value: searchDanTocId
-    //             }}
-    //             showSearch
-    //             placeholder={'Chọn chức vụ'}
-    //           />
-    //         </Col>
-    //       </Row>
-    //       <Space>
-    //         <Button
-    //           type="primary"
-    //           onClick={() => {
-    //             confirm()
-    //             actionRef.current?.reload();
-
-    //           }}
-    //           icon={<SearchOutlined />}
-    //           size="small"
-    //           style={{
-    //             width: 90,
-    //           }}
-    //         >
-    //           Tìm kiếm
-    //         </Button>
-    //         <Button
-    //           onClick={() => {
-    //             setSearchChucVuHienTaiId(null);
-    //             actionRef.current?.reload();
-    //           }}
-    //           size="small"
-    //           style={{
-    //             width: 90,
-    //           }}
-    //         >
-    //           Làm mới
-    //         </Button>
-
-    //       </Space>
-    //     </div>
-    //   ),
-    //   filterIcon: (filtered: boolean) => (
-    //     <SearchOutlined
-    //       style={{
-    //         color: searchChucVuHienTaiId ? '#1890ff' : undefined,
-    //       }}
-    //     />
-    //   ),
-    // },
+  
     {
       title: 'Quê quán',
       key: 'queQuan',
@@ -974,16 +896,16 @@ const TableList: React.FC = () => {
 
             <Menu.Item key="3"
               onClick={async () => {
-                setUpdatePosition(true)
                 const profile = await getCustome(`${SERVER_URL_ACCOUNT}/nhan-vien/ho-so/${entity.id}`);
                 if (profile) {
+                  setUpdatePosition(true)
                   form.setFieldsValue({
-                    chucVuHienTaiId: profile.data?.chuVu?.chucVuHienTaiId,
-                    ngayBoNhiem: profile.data?.chuVu?.ngayBoNhiem ? moment(profile.data.ngayBoNhiem) : null,
-                    ngayBoNhiemLai: profile.data?.chuVu?.ngayBoNhiemLai ? moment(profile.data.ngayBoNhiemLai) : null,
-                    duocQuyHoacChucDanh: profile.data?.chuVu?.duocQuyHoacChucDanh,
-                    phuCapChucVu: profile.data?.chuVu?.phuCapChucVu,
-                    coQuanToChucDonViTuyenDungId: profile.data?.chuVu?.coQuanToChucDonViTuyenDungId,
+                    chucVuHienTaiId: profile.data?.chucVu?.chucVuHienTaiId,
+                    ngayBoNhiem: handleTime(profile.data?.chucVu?.ngayBoNhiem),
+                    ngayBoNhiemLai: handleTime(profile.data?.chucVu?.ngayBoNhiemLai),
+                    duocQuyHoacChucDanh: profile.data?.chucVu?.duocQuyHoacChucDanh,
+                    phuCapChucVu: profile.data?.chucVu?.phuCapChucVu,
+                    coQuanToChucDonViTuyenDungId: profile.data?.chucVu?.coQuanToChucDonViTuyenDungId,
 
                   })
                   refId.current = entity.id
@@ -1590,12 +1512,7 @@ const TableList: React.FC = () => {
 
                   label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
                   placeholder={"Giới tính"}
-                  options={[
-                    {
-                      label: 'Nam',
-                      value: 'NAM'
-                    }
-                  ]}
+                  options={SEX}
                   rules={[
                     { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
                   ]}
@@ -2013,7 +1930,9 @@ const TableList: React.FC = () => {
 
             </ProCard>
 
-            <ProCard title={"Thông tin tuyển dụng"} type="inner" bordered>
+            <ProCard title={"Thông tin tuyển dụng"} type="inner" bordered style={{
+              marginTop: 20
+            }}>
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0" >
                   <ProFormText
@@ -2131,7 +2050,7 @@ const TableList: React.FC = () => {
             }}
             className="w-full"
           >
-            <ProCard title="Chức vụ" type="inner" bordered>
+            {/* <ProCard title="Chức vụ" type="inner" bordered>
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0">
                   <ProFormSelect
@@ -2144,7 +2063,7 @@ const TableList: React.FC = () => {
                     ]}
                     options={position}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2158,7 +2077,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.recruitmentAgency" defaultMessage="Cơ quan, đơn vị tuyển dụng" /> },
                     ]}
                     options={organization}
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')}
                   />
 
                 </Col>
@@ -2267,7 +2186,7 @@ const TableList: React.FC = () => {
                 </Col>
               </Row>
 
-            </ProCard>
+            </ProCard> */}
 
 
             <ProCard title="Chức vụ kiêm nhiệm" type="inner" bordered>
@@ -2284,7 +2203,7 @@ const TableList: React.FC = () => {
                     ]}
                     options={position}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2344,7 +2263,7 @@ const TableList: React.FC = () => {
                       { required: true, message: "Vị trí việc làm" },
                     ]}
                     options={positionJob}
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2522,14 +2441,16 @@ const TableList: React.FC = () => {
                     ]}
                     options={militaryRank}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
 
                   />
                 </Col>
               </Row>
             </ProCard>
 
-            <ProCard title="Đảng" type="inner" bordered>
+            <ProCard title="Đảng" type="inner" bordered style={{
+              marginTop: 20
+            }}>
               <Row gutter={24} className="m-0">
                 <Col span={12} className="gutter-row p-0">
                   <ProFormSelect
@@ -2541,7 +2462,7 @@ const TableList: React.FC = () => {
                     ]}
                     options={rankCommunistParty}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2555,7 +2476,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
                     ]}
                     options={rankCommunistParty}
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
 
                   />
                 </Col>
@@ -2581,7 +2502,7 @@ const TableList: React.FC = () => {
                       // { required: true, message: "Dân tộc" }
                     ]}
                     options={policyObject}
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2596,7 +2517,7 @@ const TableList: React.FC = () => {
                       { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
                     ]}
                     options={secondaryEducation}
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>
@@ -2614,7 +2535,7 @@ const TableList: React.FC = () => {
                     ]}
                     options={professionalLevel}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
 
@@ -2630,7 +2551,7 @@ const TableList: React.FC = () => {
                     ]}
                     options={stateRank}
 
-                    // request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
+                  // request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
                   />
                 </Col>
               </Row>

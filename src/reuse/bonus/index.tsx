@@ -788,9 +788,6 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
                     </Button>)
                 ]}
 
-
-                // dataSource={bonus}
-
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
@@ -865,7 +862,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
 
 
             <AddBonus createModalOpen={createModalOpen} handleModalOpen={handleModalOpen} actionRef={actionRef} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/khen-thuong/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/khen-thuong/phe-duyet' fieldApproval='pheDuyet' />
 
             <ModalForm
 

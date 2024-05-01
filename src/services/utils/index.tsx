@@ -192,7 +192,6 @@ export async function getProvine() {
   });
 
   if (fetchData) {
-    console.log(fetchData);
     const data = fetchData?.results?.map((e: any) => {
       return {
         value: e.province_name,
@@ -250,11 +249,12 @@ export const disableDateStartAndDateEnd = (fieldDate: string, form: FormInstance
   }
 }
 
-export const handleTime = (time: string) => {
+export const handleTime = (time?: string) => {
+  if(!time) return null;
   return moment(new Date(`${time}Z`)).toISOString()
 }
 
-export const displayTime = (time: string) => {
+export const displayTime = (time?: string) => {
   if(!time) return '';
   return moment(new Date(`${time}Z`)).format(FORMAT_DATE)
 }

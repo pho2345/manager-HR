@@ -1,5 +1,5 @@
-import { get, getCustome, patch, post } from '@/services/ant-design-pro/api';
-import { EditTwoTone, ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { get, getCustome } from '@/services/ant-design-pro/api';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
@@ -8,14 +8,15 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Dropdown, Form, Input, Menu, Modal, Row, Space, Switch, Tooltip, message } from 'antd';
-import React, { Fragment, useRef, useState } from 'react';
+import { Button, Col, Form, Input, Row, Space, Tooltip } from 'antd';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd, handleAdd2, handleUpdate, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -31,6 +32,10 @@ const TableList: React.FC = () => {
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
+
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
 const add = async (value: any) => {
     return handleAdd2(value, collection);
@@ -130,7 +135,7 @@ const update = async (value: any) => {
     };
 
 
-    const getColumnSearchRange = () => ({
+    const getColumnSearchRange = (dataIndex: string) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
             //close
         }: any) => (
@@ -142,8 +147,8 @@ const update = async (value: any) => {
             >
                 {
                     showRangeTo && (<>
-                        <Row gutter={24} className='m-0'>
-                            <Col span={24} className='gutter-row p-0' >
+                        <Row gutter={24} className="m-0">
+                            <Col span={24} className="gutter-row p-0" >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -160,8 +165,8 @@ const update = async (value: any) => {
                                 />
                             </Col>
                         </Row>
-                        <Row gutter={24} className='m-0'>
-                            <Col span={24} className='gutter-row p-0' >
+                        <Row gutter={24} className="m-0">
+                            <Col span={24} className="gutter-row p-0" >
                                 <ProFormDatePicker
                                     fieldProps={{
                                         style: {
@@ -185,8 +190,8 @@ const update = async (value: any) => {
                     </>
                     )
                 }
-                <Row gutter={24} className='m-0'>
-                    <Col span={24} className='gutter-row p-0' >
+                <Row gutter={24} className="m-0">
+                    <Col span={24} className="gutter-row p-0" >
                         <ProFormSelect
 
                             options={[
@@ -228,7 +233,7 @@ const update = async (value: any) => {
                 </Row>
                 <Space>
                     <Button
-                        type='primary'
+                        type="primary"
                         onClick={() => {
                             if (optionRangeSearch !== 'range') {
                                 setSelectedKeys([JSON.stringify([optionRangeSearch])])
@@ -241,7 +246,7 @@ const update = async (value: any) => {
 
                         }}
                         icon={<SearchOutlined />}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -250,7 +255,7 @@ const update = async (value: any) => {
                     </Button>
                     <Button
                         onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
-                        size='small'
+                        size="small"
                         style={{
                             width: 90,
                         }}
@@ -274,7 +279,7 @@ const update = async (value: any) => {
                 const optionValue = convertValue[0];
                 if (optionValue === 'range') {
                     if (convertValue[1] && convertValue[2]) {
-                        if (moment(record.attributes.createdAt).isAfter(convertValue[1]) && moment(record.attributes.createdAt).isBefore(convertValue[2])) {
+                        if (moment(record[dataIndex]).isAfter(convertValue[1]) && moment(record[dataIndex]).isBefore(convertValue[2])) {
                             return record
                         }
                     }
@@ -282,7 +287,7 @@ const update = async (value: any) => {
                 else {
                     const timeStart = moment().startOf(optionValue).toISOString();
                     const timeEnd = moment().endOf(optionValue).toISOString();
-                    if (moment(record.attributes.createdAt).isAfter(timeStart) && moment(record.attributes.createdAt).isBefore(timeEnd)) {
+                    if (moment(record[dataIndex]).isAfter(timeStart) && moment(record[dataIndex]).isBefore(timeEnd)) {
                         return record;
                     }
                 }
@@ -291,7 +296,6 @@ const update = async (value: any) => {
         }
         ,
     });
-
 
     const columns: ProColumns<GEN.Organ>[] = [
         {
@@ -311,25 +315,13 @@ const update = async (value: any) => {
                 );
             },
         },
-        // {
-        //     title: 'Trạng thái',
-        //     key: 'status',
-        //     dataIndex: 'status',
-        //     render: (_, entity) => {
-        //         ;
-        //         return (
-        //             <Switch disabled checked={entity.trangThai} />
-        //         );
-        //     },
-        // },
-
+       
         {
-            title: <FormattedMessage id='page.table.createAt' defaultMessage='Create At' />,
+            title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
-            // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at,
-            // ...getColumnSearchProps('name')
+            renderText: (_, text) => displayTime(text.create_at),
+            ...getColumnSearchRange('create_at')
         },
         {
             title: configDefaultText['titleOption'],
@@ -365,27 +357,12 @@ const update = async (value: any) => {
         }
     ];
 
-
-
-
-
     return (
         <PageContainer>
             <ProTable
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
-                options={
-                    {
-                        reload: () => {
-                            return true;
-                        },
-                        setting: {
-                            checkable: false
-                        }
-                    }
-                }
-                
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -413,16 +390,25 @@ const update = async (value: any) => {
 
 
 
-                request={async () =>  get(`${collection}?page=0&size=100`)}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
                     }
                 }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
                 columns={columns}
                 rowSelection={{}}
 

@@ -27,7 +27,8 @@ declare namespace API {
     // currentAuthority?: string;
     data: {
       taikhoan?: object,
-      token?: string
+      token?: string,
+      role?: 'ADMIN' | 'EMPLOYEE'
     }
   };
 
@@ -107,7 +108,7 @@ declare namespace API {
     avatar?: string;
     title?: string;
     status?: string;
-    Date?: string;
+    string?: string;
     description?: string;
     type?: NoticeIconItemType;
   };
@@ -333,8 +334,8 @@ declare namespace GEN {
   type MilitaryRanks = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
@@ -369,8 +370,8 @@ declare namespace GEN {
   type StateRank = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
@@ -393,8 +394,8 @@ declare namespace GEN {
   type CivilServantRank = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
   }
 
 
@@ -410,13 +411,14 @@ declare namespace GEN {
     bacLuongId: number,
     bacLuongName: string,
     heSo: number
+    create_at?: string;
   }
 
   type OfficerRank = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
 
   }
@@ -427,32 +429,32 @@ declare namespace GEN {
   type Sex = {
     id?: number;
     name?: string;
-    create_at?: Date;
+    create_at?: string;
     trangThai?: boolean;
-    update_at?: Date;
+    update_at?: string;
   }
 
   type AcademicDegrees = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type MemberFamily = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type HealthStatus = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     title?: string;
     trangThai?: boolean;
   }
@@ -460,43 +462,43 @@ declare namespace GEN {
   type Religion = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type SecondaryEducationLevel = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type GroupRankCommunistParty = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type GroupCommunistParty = {
     id?: number;
     name?: string;
-    create_at?: Date;
+    create_at?: string;
     trangThai?: boolean;
 
-    update_at?: Date;
+    update_at?: string;
   }
 
 
   type JobPosition = {
     id?: number;
     name?: string;
-    create_at?: Date;
+    create_at?: string;
     trangThai?: boolean;
-    update_at?: Date;
+    update_at?: string;
     tienLuong?: number;
     bacLuongId: number,
     bacLuongName: string,
@@ -505,8 +507,8 @@ declare namespace GEN {
   type TypeBonus = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
@@ -514,16 +516,16 @@ declare namespace GEN {
   type RankCommunistParty = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
   }
 
 
   type ProfessionalLevel = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
 
   }
@@ -531,8 +533,8 @@ declare namespace GEN {
   type Organ = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
@@ -540,16 +542,16 @@ declare namespace GEN {
   type RankSalary = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
   type GroupBlood = {
     id?: number;
     name?: string;
-    create_at?: Date;
-    update_at?: Date;
+    create_at?: string;
+    update_at?: string;
     trangThai?: boolean;
   }
 
@@ -563,8 +565,8 @@ declare namespace GEN {
     chucVuDangHienTaiName: string,
     queQuan: string,
     ngachNgheNghiep: string,
-    create_at: Date,
-    update_at: Date,
+    create_at: string,
+    update_at: string,
     trang_thai: boolean,
     pheDuyet: XACNHAN,
   }
@@ -756,6 +758,8 @@ declare namespace GEN {
     bacLuongName: string,
     nhomCongChucId: number,
     nhomCongChucName: string,
+    create_at: string,
+
   }
 
   type CivilServantGroup = {
@@ -772,6 +776,8 @@ declare namespace GEN {
     id: number,
     name: string,
     loai: string,
+    create_at: string,
+    update_at: string,
   }
 
 
@@ -803,6 +809,8 @@ declare namespace GEN {
     bacLuongName: string,
     nhomVienChucId: number,
     nhomVienChucName: string,
+    create_at: string,
+
   }
 
   type OtherAllowance = {
@@ -1221,6 +1229,8 @@ declare namespace GEN {
     id?: string;
     name?: string;
     soCCCD?: string;
+    collection: string,
+    type: "EMPLOYEE" | "ADMIN"
   }
 
 
@@ -1420,6 +1430,11 @@ declare namespace GEN {
   }
 
   type BonusTable = {
+    type: "EMPLOYEE" | "ADMIN",
+    collection: string
+  }
+
+  type DisciplineTable = {
     type: "EMPLOYEE" | "ADMIN",
     collection: string
   }

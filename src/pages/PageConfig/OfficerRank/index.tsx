@@ -14,8 +14,9 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, handleAdd2, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -34,18 +35,23 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-
     };
+
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
         confirm({
             closeDropdown: false,
         });
     };
+
     const getColumnSearchProps = (dataIndex: any) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
             <div
@@ -321,7 +327,7 @@ const TableList: React.FC = () => {
             title: <FormattedMessage id="page.table.createAt" defaultMessage="Create At" />,
             dataIndex: 'create_at',
             key: 'create_at',
-            renderText: (_, text) => moment(text.create_at).format(FORMAT_DATE),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
 
@@ -358,9 +364,6 @@ const TableList: React.FC = () => {
             }
         }
     ];
-
-
-
 
 
     async function add(value: any) {
@@ -414,17 +417,26 @@ const TableList: React.FC = () => {
 
 
                 
-                request={async () => get(collection)}
-                pagination={{
-                    locale: {
-                        next_page: configDefaultText['nextPage'],
-                        prev_page: configDefaultText['prePage'],
-                    },
-                    showTotal: (total, range) => {
-                        
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
                     }
                 }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+                
                 columns={columns}
                 rowSelection={{}}
 

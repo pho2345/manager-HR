@@ -474,7 +474,7 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            renderText: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
         {
@@ -715,7 +715,7 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, text) => text?.create_at ? moment(text?.create_at).format(FORMAT_DATE) : '',
+            renderText: (_, text) => displayTime(text?.create_at),
             ...getColumnSearchRange('create_at')
         },
         {
@@ -863,7 +863,7 @@ const TableList: React.FC<GEN.AllowanceTable> = ({ type, collection }) => {
 
 
             <AddAllowance actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/phu-cap-khac/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/phu-cap-khac/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

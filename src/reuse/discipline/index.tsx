@@ -1,4 +1,4 @@
-import { get, getCustome } from '@/services/ant-design-pro/api';
+import { get, getCustome, } from '@/services/ant-design-pro/api';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
 import {
@@ -8,52 +8,50 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tag, Tooltip, } from 'antd';
 import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
-
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, getOption, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, getOption, getOptionCBVC, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import AddPolicalTheory from '@/reuse/political-theory/AddPoliticalTheory';
 import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
+import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 const configDefaultText = configText;
 
 
-
-
-
-const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => {
+const TableList: React.FC<GEN.DisciplineTable> = ({ type, collection }) => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const refIdCurrent = useRef<any>();
     const refName = useRef<string>();
     const refSoCMND = useRef<string>();
-    const [form] = Form.useForm<any>();
 
+
+    const [form] = Form.useForm<any>();
     const [showRangeTo, setShowRangeTo] = useState<boolean>(false);
     const [searchRangeFrom, setSearchRangeFrom] = useState<any>(null);
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
     const [selectedRow, setSelectedRow] = useState<[]>([]);
-
-
-    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
-    const [openApproval, setOpenApproval] = useState<boolean>(false);
     const [sort, setSort] = useState<GEN.SORT>('createAt');
+    const [searchPheDuyet, setSearchPheDuyet] = useState<GEN.XACNHAN | null>(null);
 
+    const [openApproval, setOpenApproval] = useState<boolean>(false);
+
+    const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
-    const [page, setPage] = useState<number>(0);
+
+
 
 
     const handleSearch = (selectedKeys: any, confirm: any) => {
         confirm();
-    };
 
+    };
     const handleReset = (clearFilters: any, confirm: any) => {
         clearFilters();
         confirm({
@@ -113,8 +111,8 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
             />
         ),
         onFilter: (value: any, record: any) => {
-            if (record.attributes[dataIndex]) {
-                return record.attributes[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+            if (record[dataIndex]) {
+                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
             }
             return null;
         }
@@ -303,7 +301,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
     });
 
 
-    const columnsAdmin: ProColumns<GEN.AdminPoliticalTheory>[] = [
+    const columnsAdmin: ProColumns<GEN.AdminDiscipline>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
@@ -331,49 +329,60 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                     <> {entity?.soCCCD}</>
                 );
             },
+            ...getColumnSearchProps('soCCCD')
         },
-
         {
-            title: "Văn bằng",
-            key: 'vanBangDuocCap',
-            dataIndex: 'vanBangDuocCap',
+            title: "Ngày sinh",
+            key: 'sinhNgay',
+            dataIndex: 'sinhNgay',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.vanBangDuocCap}</>
+                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
                 );
             },
         },
-
         {
-            title: "Hình thức đào tạo",
-            key: 'hinhThucDaoTao',
-            dataIndex: 'hinhThucDaoTao',
+            title: "Cơ quan quyết định",
+            key: 'coQuanQuyetDinh',
+            dataIndex: 'coQuanQuyetDinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hinhThucDaoTao}</>
+                    <> {entity?.coQuanQuyetDinhName}</>
                 );
             },
+            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
-
-
         {
-            title: "Cơ sở đào tạo",
-            key: 'tenCoSoDaoTao',
-            dataIndex: 'tenCoSoDaoTao',
+            title: "Hành vi vi phạm",
+            key: 'hanhViViPhamChinh',
+            dataIndex: 'hanhViViPhamChinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTaoName}</>
+                    <> {entity?.hanhViViPhamChinh}</>
                 );
             },
+            ...getColumnSearchProps('hanhViViPhamChinh')
         },
 
+        {
+            title: "Hình thức kỷ luật",
+            key: 'hinhThuc',
+            dataIndex: 'hinhThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThuc}</>
+                );
+            },
+            ...getColumnSearchProps('hinhThucKhenThuong')
+        },
 
         {
-            title: "Ngày cấp",
+            title: "Ngày quyết định",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
@@ -384,7 +393,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày hết hạn",
+            title: "Ngày kết thúc",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -402,16 +411,19 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, entity) => displayTime(entity.create_at),
+            renderText: (_, text) => displayTime(text.create_at),
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
-            dataIndex: 'xacNhan',
-            // valueType: 'textarea',
             key: 'xacNhan',
-            render: (_, entity) => mapXacNhan(entity.xacNhan),
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)} </>
+                );
+            },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (
@@ -476,7 +488,6 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                 />
             ),
         },
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -502,8 +513,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
+                                        hoSoId: getRecordCurrent.data.hoSoId
                                     })
                                 }
 
@@ -515,54 +525,64 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
         }
     ];
 
-    const columnsEmployee: ProColumns<GEN.AdminPoliticalTheory>[] = [
+    const columnsEmployee: ProColumns<GEN.AdminDiscipline>[] = [
         {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
         },
-
         {
-            title: "Văn bằng",
-            key: 'vanBangDuocCap',
-            dataIndex: 'vanBangDuocCap',
+            title: "Ngày sinh",
+            key: 'sinhNgay',
+            dataIndex: 'sinhNgay',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.vanBangDuocCap}</>
+                    <> {moment(entity?.create_at).format(FORMAT_DATE)}</>
                 );
             },
         },
-
         {
-            title: "Hình thức đào tạo",
-            key: 'hinhThucDaoTao',
-            dataIndex: 'hinhThucDaoTao',
+            title: "Cơ quan quyết định",
+            key: 'coQuanQuyetDinh',
+            dataIndex: 'coQuanQuyetDinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.hinhThucDaoTao}</>
+                    <> {entity?.coQuanQuyetDinhName}</>
                 );
             },
+            // ...getColumnSearchProps('coQuanQuyetDinh')
         },
 
-
-
         {
-            title: "Cơ sở đào tạo",
-            key: 'tenCoSoDaoTao',
-            dataIndex: 'tenCoSoDaoTao',
+            title: "Hành vi vi phạm",
+            key: 'hanhViViPhamChinh',
+            dataIndex: 'hanhViViPhamChinh',
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tenCoSoDaoTaoName}</>
+                    <> {entity?.hanhViViPhamChinh}</>
                 );
             },
+            ...getColumnSearchProps('hanhViViPhamChinh')
         },
 
+        {
+            title: "Hình thức kỷ luật",
+            key: 'hinhThuc',
+            dataIndex: 'hinhThuc',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {entity?.hinhThuc}</>
+                );
+            },
+            ...getColumnSearchProps('hinhThucKhenThuong')
+        },
 
         {
-            title: "Ngày cấp",
+            title: "Ngày quyết định",
             key: 'batDau',
             dataIndex: 'batDau',
             render: (_, entity) => {
@@ -573,7 +593,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
             ...getColumnSearchRange('batDau')
         },
         {
-            title: "Ngày hết hạn",
+            title: "Ngày kết thúc",
             key: 'ketThuc',
             dataIndex: 'ketThuc',
             render: (_, entity) => {
@@ -591,16 +611,19 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
             dataIndex: 'create_at',
             // valueType: 'textarea',
             key: 'create_at',
-            renderText: (_, entity) => displayTime(entity.create_at),
+            renderText: (_, text) => { displayTime(text.create_at) },
             ...getColumnSearchRange('create_at')
         },
-
         {
             title: "Trạng thái",
-            dataIndex: 'xacNhan',
-            // valueType: 'textarea',
             key: 'xacNhan',
-            render: (_, entity) => mapXacNhan(entity.xacNhan),
+            dataIndex: 'xacNhan',
+            render: (_, entity) => {
+                ;
+                return (
+                    <> {mapXacNhan(entity.xacNhan)} </>
+                );
+            },
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (
@@ -665,7 +688,6 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                 />
             ),
         },
-
         {
             title: configDefaultText['titleOption'],
             dataIndex: 'atrributes',
@@ -691,8 +713,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                                     handleUpdateModalOpen(true)
                                     form.setFieldsValue({
                                         ...getRecordCurrent.data,
-                                        batDau: handleTime(getRecordCurrent.data?.batDau),
-                                        ketThuc: handleTime(getRecordCurrent.data?.ketThuc),
+                                        hoSoId: getRecordCurrent.data.hoSoId
                                     })
                                 }
 
@@ -705,8 +726,9 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
     ];
 
 
+
     async function update(value: any) {
-        return await handleUpdate2(value, refIdCurrent.current, collection, true);
+        return await handleUpdate2(value, refIdCurrent.current, `${collection}`);
     }
 
 
@@ -717,6 +739,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                 actionRef={actionRef}
                 rowKey='id'
                 search={false}
+
                 toolBarRender={() => [
                     <Button
                         type='primary'
@@ -737,31 +760,8 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                         Phê duyệt
                     </Button>)
                 ]}
-                toolbar={{
-                    filter: (
-                        <LightFilter>
-                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
-                                {
-                                    label: 'Ngày tạo',
-                                    value: 'createAt'
-                                },
-                                {
-                                    label: 'Ngày cập nhật',
-                                    value: 'updateAt'
-                                }
-                            ]}
-                                fieldProps={{
-                                    value: sort
-                                }}
-                                onChange={(e) => {
-                                    setSort(e);
-                                    actionRef?.current?.reload();
-                                }}
-                            />
-                        </LightFilter>
-                    )
-                }}
 
+                // dataSource={discipline}
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
@@ -789,9 +789,7 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                     }
                 }}
 
-                
                 pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
-
                 columns={type === 'ADMIN' ? columnsAdmin : columnsEmployee}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
@@ -800,8 +798,30 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                     },
                 }}
 
-
-
+                toolbar={{
+                    filter: (
+                        <LightFilter>
+                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+                                {
+                                    label: 'Ngày tạo',
+                                    value: 'createAt'
+                                },
+                                {
+                                    label: 'Ngày cập nhật',
+                                    value: 'updateAt'
+                                }
+                            ]}
+                                fieldProps={{
+                                    value: sort
+                                }}
+                                onChange={(e) => {
+                                    setSort(e);
+                                    actionRef?.current?.reload();
+                                }}
+                            />
+                        </LightFilter>
+                    )
+                }}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);
@@ -812,12 +832,12 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                 }}
             />
 
-            <AddPolicalTheory open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} collection={collection} type={type} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ly-luan-chinh-tri/phe-duyet' fieldApproval='pheDuyet' />
 
+            <AddDiscipline actionRef={actionRef} open={createModalOpen} handleOpen={handleModalOpen} type={type} collection={collection} />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ky-luat/phe-duyet' fieldApproval='pheDuyet' />
 
             <ModalForm
-                title={<>Cập nhật lý luận chính trị {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
+                title={<>Cập nhật Kỷ luật {refIdCurrent && type === 'ADMIN' && <Tag color="green">CBVC: {refName.current} - CMND/CCCD: {refSoCMND.current}</Tag>}</>}
                 form={form}
                 open={updateModalOpen}
                 modalProps={{
@@ -844,58 +864,74 @@ const TableList: React.FC<GEN.PoliticalTheoryTable> = ({ type, collection }) => 
                     },
                 }}
             >
-
                 <Row gutter={24} >
-                    <Col span={12} >
-                        <ProFormText name="vanBangDuocCap" key="vanBangDuocCap" label="Văn bằng" placeholder={'Văn bằng'} />
+                    <Col span={8} >
+                        <ProFormSelect name="coQuanQuyetDinhId" key="coQuanQuyetDinh" label="Cơ quan quyết định" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
                     </Col>
-
-                    <Col span={12} >
-                        <ProFormText name="hinhThucDaoTao" key="hinhThucDaoTao" label="Hình thức đào tạo" placeholder={'Hình thức đào tạo'} />
+                    <Col span={8} >
+                        <ProFormText name="hinhThuc" key="hinhThuc" label="Hình thức kỷ luật" placeholder={"Hình thức"} />
                     </Col>
-
-
+                    <Col span={8} >
+                        <ProFormText name="hanhViViPhamChinh" key="hanhViViPhamChinh" label="Hành vi vi phạm" placeholder={"Hành vi"} />
+                    </Col>
                 </Row>
+
                 <Row gutter={24} >
-                    <Col span={12} >
+                    <Col span={8} >
                         <ProFormDatePicker
                             name="batDau"
-                            label={"Ngày cấp"}
-                            placeholder={"Ngày cấp"}
+                            label={"Ngày quyết định"}
+                            placeholder={"Ngày quyết định"}
                             rules={[
-                                { required: true, message: "Ngày cấp" }
+                                { required: true, message: "Ngày quyết định" }
                             ]}
                             fieldProps={{
                                 style: {
                                     width: "100%"
                                 },
-                                disabledDate: current => disableDateStartAndDateEnd('ketThuc', form, 'start', current)
+                                // disabledDate: disabledDate
                             }}
                         />
                     </Col>
-                    <Col span={12} >
+                    <Col span={8} >
                         <ProFormDatePicker
                             name="ketThuc"
-                            label={"Ngày hết hạn"}
-                            placeholder={"Ngày hết hạn"}
+                            label={"Ngày kết thúc"}
+                            placeholder={"Ngày kết thúc"}
                             rules={[
-                                { required: true, message: "Ngày hết hạn" }
+                                { required: true, message: "Ngày kết thúc" }
                             ]}
                             fieldProps={{
                                 style: {
                                     width: "100%"
                                 },
-                                disabledDate: current => disableDateStartAndDateEnd('batDau', form, 'end', current)
+                                // disabledDate: disabledDate
                             }}
                         />
                     </Col>
+
                 </Row>
 
-                <Row gutter={24} >
+                {/* <Row gutter={24} >
                     <Col span={12} >
-                        <ProFormSelect name="tenCoSoDaoTaoId" key="tenCoSoDaoTao" label="Cơ sở đào tạo" request={() => getOption(`${SERVER_URL_CONFIG}/coquan-tochuc-donvi?page=0&size=100`, 'id', 'name')} />
+                        <ProFormSelect
+                            label={"CBVC"}
+                            // width='md'
+                            name='hoSoId'
+                            placeholder={`CBVC`}
+                            rules={[
+                                {
+                                    required: true,
+
+                                },
+                            ]}
+                            showSearch
+                            request={getOptionCBVC}
+
+
+                        />
                     </Col>
-                </Row>
+                </Row> */}
             </ModalForm>
 
         </PageContainer>

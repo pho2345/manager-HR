@@ -1,13 +1,26 @@
-import { put } from "@/services/ant-design-pro/api";
 import { XAC_NHAN } from "@/services/utils/constant";
 import { ModalForm, ProFormSelect } from "@ant-design/pro-components";
+import { request } from "@umijs/max";
 import { Col, Row, message } from "antd";
+
+export async function patch(subSolder: string, body: object, params  : object = {}) {
+    const fetchData = await request<any>(subSolder, {
+      method: 'patch',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      data: body,
+      params: params
+    });
+    return fetchData
+  }
 
 export default function ModalApproval({openApproval, setOpenApproval, actionRef, selectedRow, subDirectory, fieldApproval }: GEN.ModalApproval ) {
 
     const handleApproval = async (value: any) => {
        try {
-        const update = await put(`${SERVER_URL_ACCOUNT}${subDirectory}`, selectedRow, {
+        const update = await patch(`${SERVER_URL_ACCOUNT}${subDirectory}`, selectedRow, {
             [fieldApproval]: value.trangThai
           });
           if (update) {

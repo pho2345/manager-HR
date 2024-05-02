@@ -1,5 +1,5 @@
 import { outLogin } from '@/services/ant-design-pro/api';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, MailOutlined, SyncOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
 import { Avatar, Spin } from 'antd';
@@ -12,6 +12,8 @@ import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
+  setOpenApproval: (value: boolean) => void;
+  setOpenMail: (value: boolean) => void;
 };
 
 const Name = () => {
@@ -54,7 +56,8 @@ const AvatarLogo = () => {
   return <Avatar size="small" className={avatarClassName} src={'https://imgupscaler.com/images/samples/animal-after.webp'} alt="avatar" />;
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, setOpenApproval, setOpenMail }) => {
+
 
   const loginOut = async () => {
     await outLogin();
@@ -73,6 +76,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       });
     }
   };
+
   const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
@@ -88,6 +92,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       },
     };
   });
+
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
@@ -128,27 +133,29 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   }
 
   const menuItems = [
-    ...(menu
+    ...(currentUser.role === 'EMPLOYEE'
       ? [
         {
           key: 'center',
-          icon: <UserOutlined />,
-          label: 'Center',
+          icon: <SyncOutlined />,
+          label: 'Đổi mật khẩu',
+          onClick: () => setOpenApproval(true),
         },
+
         {
-          key: 'settings',
-          icon: <SettingOutlined />,
-          label: 'Setting',
+          key: 'center',
+          icon: <MailOutlined />,
+          label: 'Đổi email',
+          onClick: () => setOpenMail(true),
         },
-        {
-          type: 'divider' as const,
-        },
+
       ]
       : []),
     {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: 'Đăng xuất',
+      onClick: onMenuClick,
     },
   ];
 
@@ -156,20 +163,15 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     <HeaderDropdown
       menu={{
         selectedKeys: [],
-        onClick: onMenuClick,
-        items: [
-          {
-            key: 'logout',
-            icon: <LogoutOutlined />,
-            label: 'Đăng xuất',
-          }
-        ],
+        // onClick: onMenuClick,
+        items: menuItems
       }}
     >
       <span className={actionClassName}>
         <AvatarLogo />
         <Name />
       </span>
+      
     </HeaderDropdown>
   );
 };

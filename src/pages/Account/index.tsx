@@ -1,5 +1,5 @@
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -7,31 +7,17 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Modal, Row, Space, message } from 'antd';
+import { Button, Col, Form, Row, Space } from 'antd';
 import React, { useRef, useState } from 'react';
-import moment from 'moment';
 
 import configText from '@/locales/configText';
-import { handleAdd, renderTableAlert, renderTableAlertOption } from '@/services/utils';
-import { FormattedMessage, request, useModel } from '@umijs/max';
+import { handleAdd, renderTableAlert } from '@/services/utils';
+import { FormattedMessage, request } from '@umijs/max';
 const configDefaultText = configText;
 
 
 
 
-const handleUpdate = async (fields: any, id: any) => {
-    const hide = message.loading('Đang cập nhật...');
-    try {
-        hide();
-
-        message.success('Cập nhật thành công');
-        return true;
-    } catch (error: any) {
-        hide();
-        message.error(error?.response?.data?.error?.message);
-        return false;
-    }
-};
 
 
 
@@ -61,10 +47,10 @@ const TableList: React.FC = () => {
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
-    const refIdCurrent = useRef<any>();
+    // const refIdCurrent = useRef<any>();
     const [form] = Form.useForm<any>();
 
-    const { initialState, setInitialState } = useModel('@@initialState');
+    // const { initialState, setInitialState } = useModel('@@initialState');
 
 
    
@@ -78,70 +64,7 @@ const TableList: React.FC = () => {
             closeDropdown: false,
         });
     };
-    const getColumnSearchProps = (dataIndex: any) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                <Input
-                    placeholder={`Tìm kiếm`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys, confirm)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Tìm
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Làm mới
-                    </Button>
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1890ff' : undefined,
-                }}
-                onClick={() => {
-                }}
-            />
-        ),
-        onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-            }
-            return null;
-        }
-        ,
-        onFilterDropdownOpenChange: (visible: any) => {
-            if (visible) {
-            }
-        },
-    });
-
+   
 
 
 
@@ -433,14 +356,7 @@ const TableList: React.FC = () => {
                     },
                 }}
                 onFinish={async (values: any) => {
-                    const success = await handleUpdate(values as any, refIdCurrent.current);
-                    if (success) {
-                        handleUpdateModalOpen(false);
-                        form.resetFields();
-                        if (actionRef.current) {
-                            actionRef.current.reload();
-                        }
-                    }
+                  
                 }}
 
                 submitter={{

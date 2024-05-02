@@ -747,9 +747,6 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
         }
     ];
 
-
-
-
     async function update(value: any) {
         const { hoSoId, nam, ...other } = value;
         return await handleUpdate2({
@@ -793,7 +790,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
                     if (searchPheDuyet) {
                         f = {
                             ...f,
-                            xacNhan: searchPheDuyet
+                            pheDuyet: searchPheDuyet
                         }
                     }
                     const data = await get(collection, {

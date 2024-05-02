@@ -787,7 +787,7 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
                 request={async () => {
                     let f: any = {};
                     if (searchPheDuyet) {
-                        f.xacNhan = searchPheDuyet;
+                        f.pheDuyet = searchPheDuyet;
                     }
                     const data = await get(collection, {
                         ...f,
@@ -829,7 +829,7 @@ const TableList: React.FC<GEN.LanguagesTable> = ({ type, collection }) => {
 
 
             <AddCerLang open={createModalOpen} handleOpen={handleModalOpen} actionRef={actionRef} type={type} collection={collection} />
-            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ngoai-ngu/phe-duyet' fieldApproval='xacNhan' />
+            <ModalApproval openApproval={openApproval} actionRef={actionRef} selectedRow={selectedRow} setOpenApproval={setOpenApproval} subDirectory='/ngoai-ngu/phe-duyet' fieldApproval='pheDuyet' />
 
 
             <ModalForm

@@ -669,7 +669,7 @@ const TableList: React.FC<GEN.WorkingAbroadTable> = ({ type, collection }) => {
                     if (searchPheDuyet) {
                         f = {
                             ...f,
-                            xacNhan: searchPheDuyet
+                            pheDuyet: searchPheDuyet
                         }
                     }
                     const data = await get(collection, {

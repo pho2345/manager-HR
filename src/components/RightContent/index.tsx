@@ -1,8 +1,10 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { SelectLang, useModel } from '@umijs/max';
-import React, {memo} from 'react';
+import { useModel } from '@umijs/max';
+import React, { memo } from 'react';
 import Avatar from './AvatarDropdown';
+import { ModalForm, ProFormText } from '@ant-design/pro-components';
+import { Col, Row, Form, FormInstance, message } from 'antd';
+import { patch } from '@/services/ant-design-pro/api';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -39,6 +41,56 @@ const GlobalHeaderRight: React.FC = () => {
     return null;
   }
 
+  const [openApproval, setOpenApproval] = React.useState(false);
+  const [openMail, setOpenMail] = React.useState(false);
+  const [form] = Form.useForm<FormInstance>();
+
+  const handleChangePassword = async ({ password, rePassword }: any) => {
+    try {
+      if (password !== rePassword) {
+        message.error('Mật khẩu không trùng khớp');
+        return false;
+      }
+
+      const changedPassword = await patch(`${SERVER_URL_CONFIG}/ca-nhan/tai-khoan/doi-mat-khau`, {
+        matkhau: password,
+      });
+
+      if (changedPassword) {
+        message.success('Đổi mật khẩu thành công');
+        setOpenApproval(false);
+        return true;
+      }
+    } catch (error) {
+      message.error('Thất bại');
+      return false;
+    }
+  }
+
+
+  
+  const handleChangeMail = async ({ mail }: any) => {
+    try {
+    
+
+      const changedMail = await patch(`${SERVER_URL_CONFIG}/ca-nhan/tai-khoan/doi-email`, {
+        email: mail,
+      });
+
+      if (changedMail) {
+        message.success('Đổi mail thành công');
+        setOpenMail(false);
+        return true;
+      }
+    } catch (error) {
+      message.error('Thất bại');
+      return false;
+    }
+  }
+
+
+
+
   return (
     <div className={className}>
       {/* <span
@@ -49,7 +101,108 @@ const GlobalHeaderRight: React.FC = () => {
       >
         <QuestionCircleOutlined /> 
       </span> */}
-      <Avatar />
+      <Avatar setOpenApproval={setOpenApproval} setOpenMail={setOpenMail} />
+
+      <ModalForm
+        title={'Đổi mật khẩu'}
+        form={form}
+        width={window.innerWidth * 0.3}
+        open={openApproval}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            setOpenApproval(false);
+          },
+        }}
+        onFinish={handleChangePassword}
+
+        submitter={{
+          searchConfig: {
+            resetText: "Đóng",
+            submitText: "Xác nhận",
+          },
+        }}
+      >
+        <Row gutter={24} >
+          <Col span={24} >
+            <ProFormText.Password
+              label={"Mật khẩu mới"}
+              fieldProps={{
+                // variant: 'outlined',
+                minLength: 6,
+              }}
+              name='password'
+              placeholder={`Mật khẩu`}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập mật khẩu mới"
+                },
+              ]}
+            />
+          </Col>
+          <Col span={24} >
+            <ProFormText.Password
+              label={"Nhập lại mật khẩu mới"}
+              fieldProps={{
+                // variant: 'outlined',
+                minLength: 6,
+              }}
+
+              name='rePassword'
+              placeholder={`Nhập lại mật khẩu mới`}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập lại mật khẩu mới"
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+      </ModalForm>
+
+      <ModalForm
+        title={'Đổi email'}
+        form={form}
+        width={window.innerWidth * 0.3}
+        open={openMail}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => {
+            setOpenApproval(false);
+          },
+        }}
+        onFinish={handleChangeMail}
+
+        submitter={{
+          searchConfig: {
+            resetText: "Đóng",
+            submitText: "Xác nhận",
+          },
+        }}
+      >
+        <Row gutter={24} >
+          <Col span={24} >
+            <ProFormText
+              label={"Email mới"}
+              fieldProps={{
+                // variant: 'outlined',
+              
+              }}
+             
+              name='mail'
+              placeholder={`Email mới`}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập email mới"
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+      </ModalForm>
       {/* <SelectLang className={actionClassName} /> */}
     </div>
   );

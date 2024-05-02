@@ -764,7 +764,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     if (searchPheDuyet) {
                         f = {
                             ...f,
-                            xacNhan: searchPheDuyet
+                            pheDuyet: searchPheDuyet
                         }
                     }
                     const data = await get(collection, {

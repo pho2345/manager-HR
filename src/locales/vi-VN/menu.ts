@@ -41,4 +41,5 @@ export default {
 'menu.Quản lý.allowance': 'Phụ cấp khác',
 'menu.Quản lý.salary': 'Lương',
 'menu.Quản lý.workModelOld': 'Làm việc chế độ cũ',
+'menu.Cấu hình.menu.nationff': 'Dân tộc F',
 }

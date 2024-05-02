@@ -713,7 +713,7 @@ const TableList: React.FC<GEN.ProfessionalKnowledgeTable> = ({ type, collection 
                     if (searchPheDuyet) {
                         f = {
                             ...f,
-                            xacNhan: searchPheDuyet
+                            pheDuyet: searchPheDuyet
                         }
                     }
                     const data = await get(collection, {

@@ -12,21 +12,44 @@ import { Button, Col, Form, Input, Row, Space, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
-
+import { io, Socket } from "socket.io-client";
 import configText from '@/locales/configText';
 import { displayTime, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
 import { createPaginationProps } from '@/services/utils/constant';
-// import { runConsumer } from '@/pages/kafka/comsumer';
 const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-
+    const host = 'https://3000-giaptai-microservicehrm-kc781e2e108.ws-us110.gitpod.io';
+    const [arrivalMessage, setArrivalMessage] = useState<any>();
+    const socket = useRef<Socket>();
     useEffect(() => {
-        const run = async () => {
+        socket.current = io(host);
+        if (socket?.current) {
+            console.log('vao day');
+            socket?.current?.on("msg-recieved", async (msg) => {
+                //   setArrivalMessage({
+                //     to: msg.to,
+                //     from: msg.from,
+                //     fromSelf: false,
+                //     message: {
+                //       text: msg.message
+                //     },
+                //   })
+                console.log('msg-recieved msg', msg)
+            })
+
+            // socket.current.on("msg-group-revieced", (msg) => {
+            //   setArrivalMessage(msg);
+            // })
         }
-        run()
+
+        
+
+        return () => {
+
+        }
     }, []);
     const collection = `${SERVER_URL_CONFIG}/dan-toc`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
@@ -385,6 +408,22 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
+
+                    <Button
+                        type='primary'
+                        key='primary'
+                        onClick={() => {
+                            console.log('abc');
+                            console.log(socket.current);
+                           socket.current?.emit("msg-send", {
+                               to: "1",
+                               from: "2",
+                               message: "Hello"
+                           })
+                        }}
+                    >
+                        Test
+                    </Button>
                 ]}
                 toolbar={{
                     settings: [{

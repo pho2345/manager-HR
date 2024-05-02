@@ -3,7 +3,6 @@ const app = express()
 const port = 3000
 var cors = require('cors');
 const { Kafka, CompressionTypes, logLevel } = require('kafkajs');
-const { keyBy } = require('lodash');
 
 
 app.use(cors({

@@ -8,7 +8,7 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip } from 'antd';
+import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
@@ -16,41 +16,14 @@ import { io, Socket } from "socket.io-client";
 import configText from '@/locales/configText';
 import { displayTime, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { createPaginationProps } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
     const host = 'https://3000-giaptai-microservicehrm-kc781e2e108.ws-us110.gitpod.io';
-    const [arrivalMessage, setArrivalMessage] = useState<any>();
+    const [data, setData] = useState<any>([]);
     const socket = useRef<Socket>();
-    useEffect(() => {
-        socket.current = io(host);
-        if (socket?.current) {
-            console.log('vao day');
-            socket?.current?.on("msg-recieved", async (msg) => {
-                //   setArrivalMessage({
-                //     to: msg.to,
-                //     from: msg.from,
-                //     fromSelf: false,
-                //     message: {
-                //       text: msg.message
-                //     },
-                //   })
-                console.log('msg-recieved msg', msg)
-            })
-
-            // socket.current.on("msg-group-revieced", (msg) => {
-            //   setArrivalMessage(msg);
-            // })
-        }
-
-        
-
-        return () => {
-
-        }
-    }, []);
+   
     const collection = `${SERVER_URL_CONFIG}/dan-toc`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -63,9 +36,18 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
-    const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
+
+    useEffect(() => {
+        socket.current = io(host);
+        if (socket?.current) {
+            socket?.current?.on("msg-recieved", async (msg) => {
+                setData(msg.data);
+                setTotal(msg.data.length);
+            })
+        }
+       
+    }, []);
 
 
 
@@ -328,6 +310,10 @@ const TableList: React.FC = () => {
             valueType: 'indexBorder',
         },
         {
+            title: 'STT',
+            dataIndex: 'id',
+        },
+        {
             title: <FormattedMessage id="page.nation.table.name" defaultMessage="Name" />,
             key: 'name',
             dataIndex: 'name',
@@ -440,29 +426,23 @@ const TableList: React.FC = () => {
 
 
 
-
-                request={async () => {
-                    const data = await get(collection, {
-                        // sort: sort,
-                        page: page,
-                        size: pageSize
-                    });
-                    if (data.data) {
-                        setTotal(data.data.totalRecord);
-                        return {
-                            data: data.data?.data,
-                            success: true,
-                        }
-                    }
-                    return {
-                        data: [],
-                        success: false
-                    }
-                }}
-                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+                dataSource={data}
+               
 
                 columns={columns}
                 rowSelection={{}}
+
+                pagination={{
+                    showTotal: (total: number, range: number[]) => {
+                        return `${range[range.length - 1]} / Tổng số: ${total}`
+                    },
+                    locale: {
+                        next_page:  "Trang sau",
+                        prev_page: "Trang trước",
+                    },
+                    total: total,
+                    pageSize: 10000
+                }}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);

@@ -366,7 +366,6 @@ export async function put(subSolder: string, body: object, params  : object = {}
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
     },
-    
     data: body,
     params: params
   });

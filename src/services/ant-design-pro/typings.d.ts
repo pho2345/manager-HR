@@ -1304,7 +1304,7 @@ declare namespace GEN {
   }
 
 
-  
+
   type PoliticalTheoryAddNewProps = {
     actionRef: any;
     open: boolean;
@@ -1327,7 +1327,7 @@ declare namespace GEN {
     collection: string
   }
 
-  
+
 
   type RelateFamilyNewProps = {
     actionRef: any;
@@ -1438,6 +1438,9 @@ declare namespace GEN {
     type: "EMPLOYEE" | "ADMIN",
     collection: string
   }
+
+  type RANGE_SEARCH = 'days' | 'months' | 'years' | 'weeks' | 'range';
+
 
 }
 

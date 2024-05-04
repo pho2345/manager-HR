@@ -1,5 +1,5 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, LightFilter, ProColumns, ProFormDatePicker, ProFormDigit, ProFormSelect } from '@ant-design/pro-components';
 import {
     ModalForm,
@@ -8,19 +8,18 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tag, Tooltip } from 'antd';
+import { Button, Col, Form, Row, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
-import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 import configText from '@/locales/configText';
-import { disableDateStartAndDateEnd, displayTime, formatter, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { disableDateStartAndDateEnd, displayTime, filterCreateAndUpdateAt, formatter, getColumnSearchProps, getColumnSearchRange, handleTime, handleUpdate2, parser, renderTableAlert, renderTableAlertOption, searchPheDuyetProps } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
-import { XAC_NHAN, createPaginationProps, mapXacNhan } from '@/services/utils/constant';
+import { createPaginationProps, mapXacNhan } from '@/services/utils/constant';
 import ModalApproval from '@/reuse/approval/ModalApproval';
 import AddSalary from '@/reuse/salary/AddSalary';
 const configDefaultText = configText;
 
-const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
+const TableList: React.FC<GEN.SalaryTable> = ({ type, collection }) => {
 
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -39,264 +38,22 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
     const [selectedRow, setSelectedRow] = useState<[]>([]);
     const [openApproval, setOpenApproval] = useState<boolean>(false);
 
+    const [showRangeToTimeStart, setShowRangeToTimeStart] = useState<boolean>(false);
+    const [searchRangeFromTimeStart, setSearchRangeFromTimeStart] = useState<any>(null);
+    const [searchRangeToTimeStart, setSearchRangeToTimeStart] = useState<any>(null);
+    const [optionRangeSearchTimeStart, setOptionRangeSearchTimeStart] = useState<any>();
+
+    const [showRangeToTimeEnd, setShowRangeToTimeEnd] = useState<boolean>(false);
+    const [searchRangeFromTimeEnd, setSearchRangeFromTimeEnd] = useState<any>(null);
+    const [searchRangeToTimeEnd, setSearchRangeToTimeEnd] = useState<any>(null);
+    const [optionRangeSearchTimeEnd, setOptionRangeSearchTimeEnd] = useState<any>();
+
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
 
 
-
-
-    const handleSearch = (selectedKeys: any, confirm: any) => {
-        confirm();
-
-    };
-    const handleReset = (clearFilters: any, confirm: any) => {
-        clearFilters();
-        confirm({
-            closeDropdown: false,
-        });
-    };
-    const getColumnSearchProps = (dataIndex: any) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                <Input
-                    placeholder={`Tìm kiếm`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys, confirm)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Tìm
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Làm mới
-                    </Button>
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1890ff' : undefined,
-                }}
-                onClick={() => {
-                }}
-            />
-        ),
-        onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-            }
-            return null;
-        }
-        ,
-        onFilterDropdownOpenChange: (visible: any) => {
-            if (visible) {
-            }
-        },
-    });
-
-    const handleSearchRange = (selectedKeys: any, confirm: any) => {
-        confirm();
-    };
-
-    const clearResetRange = (clearFilters: any, confirm: any) => {
-        clearFilters();
-        setSearchRangeFrom(null);
-        setSearchRangeTo(null);
-        setOptionRangeSearch(null);
-        confirm({
-            closeDropdown: false,
-        });
-    };
-
-
-    const getColumnSearchRange = (dataIndex: string) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-            //close
-        }: any) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                {
-                    showRangeTo && (<>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
-                                <ProFormDatePicker
-                                    fieldProps={{
-                                        style: {
-                                            width: '100%'
-                                        },
-                                        onChange: (e: any) => {
-                                            if (e) {
-                                                setSearchRangeFrom(moment(e['$d']).toISOString());
-                                            }
-                                        },
-                                        value: searchRangeFrom
-                                    }}
-                                    placeholder={'Thời gian từ'}
-                                />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
-                                <ProFormDatePicker
-                                    fieldProps={{
-                                        style: {
-                                            width: '100%'
-                                        },
-                                        value: searchRangeTo,
-                                        onChange: (e: any) => {
-                                            if (e) {
-                                                setSearchRangeTo(moment(e['$d']).toISOString());
-                                            }
-                                        },
-                                    }}
-                                    rules={[
-                                        { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
-                                    ]}
-                                    placeholder={'Thời gian đến'}
-
-                                />
-                            </Col>
-                        </Row>
-                    </>
-                    )
-                }
-                <Row gutter={24} className="m-0">
-                    <Col span={24} className="gutter-row p-0" >
-                        <ProFormSelect
-
-                            options={[
-                                {
-                                    value: 'days',
-                                    label: 'Trong ngày'
-                                },
-                                {
-                                    value: 'weeks',
-                                    label: 'Trong tuần'
-                                },
-                                {
-                                    value: 'months',
-                                    label: 'Trong tháng'
-                                },
-                                {
-                                    value: 'years',
-                                    label: 'Trong năm'
-                                },
-                                {
-                                    value: 'range',
-                                    label: 'Khoảng'
-                                }
-                            ]}
-                            fieldProps={{
-                                onChange: (value: any) => {
-                                    if (value === 'range') {
-                                        setShowRangeTo(true);
-                                    }
-                                    else {
-                                        setShowRangeTo(false);
-                                    }
-                                    setOptionRangeSearch(value);
-                                },
-                                value: optionRangeSearch
-                            }}
-                        />
-                    </Col>
-                </Row>
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            if (optionRangeSearch !== 'range') {
-                                setSelectedKeys([JSON.stringify([optionRangeSearch])])
-                            }
-                            else {
-                                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
-                            }
-                            handleSearchRange(selectedKeys, confirm);
-                            // confirm()\
-
-                        }}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Tìm kiếm
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Làm mới
-                    </Button>
-
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1890ff' : undefined,
-                }}
-            />
-        ),
-        onFilter: (value: any, record: any) => {
-            if (typeof value === 'string') {
-                const convertValue = JSON.parse(value);
-                const optionValue = convertValue[0];
-                if (optionValue === 'range') {
-                    if (convertValue[1] && convertValue[2]) {
-                        if (moment(record[dataIndex]).isAfter(convertValue[1]) && moment(record[dataIndex]).isBefore(convertValue[2])) {
-                            return record
-                        }
-                    }
-                }
-                else {
-                    const timeStart = moment().startOf(optionValue).toISOString();
-                    const timeEnd = moment().endOf(optionValue).toISOString();
-                    if (moment(record[dataIndex]).isAfter(timeStart) && moment(record[dataIndex]).isBefore(timeEnd)) {
-                        return record;
-                    }
-                }
-            }
-            return null;
-        }
-        ,
-    });
 
 
     const columnsEmployee: ProColumns<GEN.Salary>[] = [
@@ -349,7 +106,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.tienLuongTheoViTri.toLocaleString()}</>
+                    <> {entity?.tienLuongTheoViTri?.toLocaleString()}</>
                 );
             },
         },
@@ -363,7 +120,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <> {displayTime(entity.batDau)}</>
                 );
             },
-            ...getColumnSearchRange('batDau')
+            ...getColumnSearchRange('batDau', showRangeToTimeStart, setShowRangeToTimeStart, searchRangeFromTimeStart, setSearchRangeFromTimeStart, searchRangeToTimeStart, setSearchRangeToTimeStart, optionRangeSearchTimeStart, setOptionRangeSearchTimeStart)
         },
         {
             title: "Ngày hết hạn",
@@ -375,7 +132,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <>{displayTime(entity.ketThuc)}</>
                 );
             },
-            ...getColumnSearchRange('ketThuc')
+            ...getColumnSearchRange('ketThuc', showRangeToTimeEnd, setShowRangeToTimeEnd, searchRangeFromTimeEnd, setSearchRangeFromTimeEnd, searchRangeToTimeEnd, setSearchRangeToTimeEnd, optionRangeSearchTimeEnd, setOptionRangeSearchTimeEnd)
         },
 
 
@@ -385,7 +142,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
             // valueType: 'textarea',
             key: 'create_at',
             renderText: (_, entity) => displayTime(entity.create_at),
-            ...getColumnSearchRange('create_at')
+            ...getColumnSearchRange('create_at', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
         },
         {
             title: "Trạng thái",
@@ -397,69 +154,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <> {mapXacNhan(entity.xacNhan)}</>
                 );
             },
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-                //close
-            }: any) => (
-                <div
-                    style={{
-                        padding: 8,
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                >
-                    <Row gutter={24} className="m-0">
-                        <Col span={24} className="gutter-row p-0" >
-                            <ProFormSelect
-                                options={XAC_NHAN}
-                                fieldProps={{
-                                    onChange: (value: any) => {
-                                        setSearchPheDuyet(value)
-                                    },
-                                    value: searchPheDuyet
-                                }}
-                                showSearch
-                                placeholder={'Chọn trạng thái'}
-                            />
-                        </Col>
-                    </Row>
-                    <Space>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                confirm()
-                                actionRef.current?.reload();
-
-                            }}
-                            icon={<SearchOutlined />}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Tìm kiếm
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setSearchPheDuyet(null);
-                                actionRef.current?.reload();
-                            }}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Làm mới
-                        </Button>
-
-                    </Space>
-                </div>
-            ),
-            filterIcon: (filtered: boolean) => (
-                <SearchOutlined
-                    style={{
-                        color: searchPheDuyet ? '#1890ff' : undefined,
-                    }}
-                />
-            ),
+            ...searchPheDuyetProps(searchPheDuyet, setSearchPheDuyet, actionRef)
         },
 
         {
@@ -587,7 +282,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <> {displayTime(entity.batDau)}</>
                 );
             },
-            ...getColumnSearchRange('batDau')
+            ...getColumnSearchRange('batDau', showRangeToTimeStart, setShowRangeToTimeStart, searchRangeFromTimeStart, setSearchRangeFromTimeStart, searchRangeToTimeStart, setSearchRangeToTimeStart, optionRangeSearchTimeStart, setOptionRangeSearchTimeStart)
         },
         {
             title: "Ngày hết hạn",
@@ -599,7 +294,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <>{displayTime(entity.ketThuc)}</>
                 );
             },
-            ...getColumnSearchRange('ketThuc')
+            ...getColumnSearchRange('ketThuc', showRangeToTimeEnd, setShowRangeToTimeEnd, searchRangeFromTimeEnd, setSearchRangeFromTimeEnd, searchRangeToTimeEnd, setSearchRangeToTimeEnd, optionRangeSearchTimeEnd, setOptionRangeSearchTimeEnd)
         },
 
 
@@ -609,7 +304,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
             // valueType: 'textarea',
             key: 'create_at',
             renderText: (_, entity) => displayTime(entity.create_at),
-            ...getColumnSearchRange('create_at')
+            ...getColumnSearchRange('create_at', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
         },
         {
             title: "Trạng thái",
@@ -621,69 +316,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     <> {mapXacNhan(entity.xacNhan)}</>
                 );
             },
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-                //close
-            }: any) => (
-                <div
-                    style={{
-                        padding: 8,
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                >
-                    <Row gutter={24} className="m-0">
-                        <Col span={24} className="gutter-row p-0" >
-                            <ProFormSelect
-                                options={XAC_NHAN}
-                                fieldProps={{
-                                    onChange: (value: any) => {
-                                        setSearchPheDuyet(value)
-                                    },
-                                    value: searchPheDuyet
-                                }}
-                                showSearch
-                                placeholder={'Chọn trạng thái'}
-                            />
-                        </Col>
-                    </Row>
-                    <Space>
-                        <Button
-                            type="primary"
-                            onClick={() => {
-                                confirm()
-                                actionRef.current?.reload();
-
-                            }}
-                            icon={<SearchOutlined />}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Tìm kiếm
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setSearchPheDuyet(null);
-                                actionRef.current?.reload();
-                            }}
-                            size="small"
-                            style={{
-                                width: 90,
-                            }}
-                        >
-                            Làm mới
-                        </Button>
-
-                    </Space>
-                </div>
-            ),
-            filterIcon: (filtered: boolean) => (
-                <SearchOutlined
-                    style={{
-                        color: searchPheDuyet ? '#1890ff' : undefined,
-                    }}
-                />
-            ),
+            ...searchPheDuyetProps(searchPheDuyet, setSearchPheDuyet, actionRef)
         },
 
         {
@@ -787,7 +420,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                 }}
 
                 pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
-                
+
                 columns={type === 'EMPLOYEE' ? columnsEmployee : columnsAdmin}
                 rowSelection={{
                     onChange: (selectedRowKeys: any, _) => {
@@ -796,30 +429,7 @@ const TableList: React.FC<GEN.SalaryTable> = ({type, collection}) => {
                     },
                 }}
 
-                toolbar={{
-                    filter: (
-                        <LightFilter>
-                            <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
-                                {
-                                    label: 'Ngày tạo',
-                                    value: 'createAt'
-                                },
-                                {
-                                    label: 'Ngày cập nhật',
-                                    value: 'updateAt'
-                                }
-                            ]}
-                                fieldProps={{
-                                    value: sort
-                                }}
-                                onChange={(e) => {
-                                    setSort(e);
-                                    actionRef?.current?.reload();
-                                }}
-                            />
-                        </LightFilter>
-                    )
-                }}
+                toolbar={filterCreateAndUpdateAt(sort, setSort, actionRef)}
 
 
                 tableAlertRender={({ selectedRowKeys }: any) => {

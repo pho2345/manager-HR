@@ -1,12 +1,12 @@
-import { Button, Col, Modal, Row, Space, message } from "antd";
+import { Button, Col, Input, Modal, Row, Space, message } from "antd";
 import { Fragment } from "react";
 import { deletes, get, patch, post } from "../ant-design-pro/api";
 import { ExclamationCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { request } from "@umijs/max";
 import { FormInstance } from "antd/lib";
-import { ProFormDatePicker, ProFormSelect } from "@ant-design/pro-components";
-import { RANGE_SEARCH } from "./constant";
+import { LightFilter, ProFormDatePicker, ProFormSelect } from "@ant-design/pro-components";
+import { RANGE_SEARCH, XAC_NHAN } from "./constant";
 
 
 const handleRemove2 = async (arrayId: any, collection: string) => {
@@ -63,13 +63,15 @@ export function renderTableAlertOption(selectedRows: any, selectedRowKeys: any, 
 }
 
 
-export const getOption = async (url: string, getValue: string, getLabel: string): Promise<GEN.Option[]> => {
+export const getOption = async (url: string, getValue: any, getLabel: any): Promise<GEN.Option[]> => {
   try {
     const { data }: any = await get(url);
     if (data) {
-      return data?.data
-        .filter((e: any) => e[getValue] && e[getLabel])
-        .map(({ [getLabel]: label, [getValue]: value }) => ({ label, value }));
+      const getDataOption =  data?.data
+      .filter((e: any) => e[getValue] && e[getLabel])
+      .map(({ [getLabel]: label, [getValue]: value }) => ({ label, value }));
+
+      return getDataOption
     }
     return [];
   } catch (error) {
@@ -273,7 +275,7 @@ const clearResetRange = (clearFilters: any, confirm: any, setSearchRangeFrom: an
   setSearchRangeTo(null);
   setOptionRangeSearch(null);
   confirm({
-      closeDropdown: false,
+    closeDropdown: false,
   });
 };
 
@@ -303,7 +305,13 @@ export const getColumnSearchRange = (dataIndex: string,
                       setSearchRangeFrom(moment(e['$d']).toISOString());
                     }
                   },
-                  value: searchRangeFrom
+                  value: searchRangeFrom,
+                  disabledDate: current => {
+                    if (searchRangeTo) {
+                      return current && current >= moment(searchRangeTo).startOf('day');
+                    }
+                    return false
+                  }
                 }}
                 placeholder={'Thời gian từ'}
               />
@@ -322,9 +330,15 @@ export const getColumnSearchRange = (dataIndex: string,
                       setSearchRangeTo(moment(e['$d']).toISOString());
                     }
                   },
+                  disabledDate: current => {
+                    if (searchRangeFrom) {
+                      return current && current <= moment(searchRangeFrom).startOf('day');
+                    }
+                    return false
+                  }
                 }}
                 rules={[
-                  { required: true, message: 'Thời gian đến không được để trống'},
+                  { required: true, message: 'Thời gian đến không được để trống' },
                 ]}
                 placeholder={'Thời gian đến'}
 
@@ -419,3 +433,170 @@ export const getColumnSearchRange = (dataIndex: string,
   ,
 });
 
+
+const handleSearch = (selectedKeys: any, confirm: any) => {
+  confirm();
+
+};
+const handleReset = (clearFilters: any, confirm: any) => {
+  clearFilters();
+  confirm({
+    closeDropdown: false,
+  });
+};
+
+export const getColumnSearchProps = (dataIndex: any) => ({
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    <div
+      style={{
+        padding: 8,
+      }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <Input
+        placeholder={`Tìm kiếm`}
+        value={selectedKeys[0]}
+        onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+        onPressEnter={() => handleSearch(selectedKeys, confirm)}
+        style={{
+          marginBottom: 8,
+          display: 'block',
+        }}
+      />
+      <Space>
+        <Button
+          type="primary"
+          onClick={() => handleSearch(selectedKeys, confirm)}
+          icon={<SearchOutlined />}
+          size="small"
+          style={{
+            width: 90,
+          }}
+        >
+          Tìm
+        </Button>
+        <Button
+          onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+          size="small"
+          style={{
+            width: 90,
+          }}
+        >
+          Làm mới
+        </Button>
+      </Space>
+    </div>
+  ),
+  filterIcon: (filtered: boolean) => (
+    <SearchOutlined
+      style={{
+        color: filtered ? '#1890ff' : undefined,
+      }}
+      onClick={() => {
+      }}
+    />
+  ),
+  onFilter: (value: any, record: any) => {
+    if (record[dataIndex]) {
+      return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
+    }
+    return null;
+  }
+  ,
+  onFilterDropdownOpenChange: (visible: any) => {
+    if (visible) {
+    }
+  },
+});
+
+
+export const searchPheDuyetProps = (searchPheDuyet: any, setSearchPheDuyet: Function, actionRef: any) => ({
+  filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
+    //close
+  }: any) => (
+    <div
+      style={{
+        padding: 8,
+      }}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <Row gutter={24} className="m-0">
+        <Col span={24} className="gutter-row p-0" >
+          <ProFormSelect
+            options={XAC_NHAN}
+            fieldProps={{
+              onChange: (value: any) => {
+                setSearchPheDuyet(value)
+              },
+              value: searchPheDuyet
+            }}
+            showSearch
+            placeholder={'Chọn trạng thái'}
+          />
+        </Col>
+      </Row>
+      <Space>
+        <Button
+          type="primary"
+          onClick={() => {
+            confirm()
+            actionRef.current?.reload();
+
+          }}
+          icon={<SearchOutlined />}
+          size="small"
+          style={{
+            width: 90,
+          }}
+        >
+          Tìm kiếm
+        </Button>
+        <Button
+          onClick={() => {
+            setSearchPheDuyet(null);
+            actionRef.current?.reload();
+          }}
+          size="small"
+          style={{
+            width: 90,
+          }}
+        >
+          Làm mới
+        </Button>
+
+      </Space>
+    </div>
+  ),
+  filterIcon: (filtered: boolean) => (
+    <SearchOutlined
+      style={{
+        color: searchPheDuyet ? '#1890ff' : undefined,
+      }}
+    />
+  ),
+})
+
+export const filterCreateAndUpdateAt = (sort: 'createAt' | 'updateAt', setSort: Function, actionRef: any) => ({
+  filter: (
+    <LightFilter>
+      <ProFormSelect name="startdate" label="Sắp xếp" allowClear={false} options={[
+        {
+          label: 'Ngày tạo',
+          value: 'createAt'
+        },
+        {
+          label: 'Ngày cập nhật',
+          value: 'updateAt'
+        }
+      ]}
+        fieldProps={{
+          value: sort
+        }}
+        onChange={(e) => {
+          setSort(e);
+          actionRef?.current?.reload();
+        }}
+      />
+    </LightFilter>
+  )
+})

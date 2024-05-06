@@ -49,6 +49,7 @@ export async function getInitialState(): Promise<{
   typeSivilServant?:  GEN.Option[];
   typeOfficial?:  GEN.Option[];
   stateRank?:  GEN.Option[];
+  numberSalaryCivilServan?:  GEN.Option[];
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -93,7 +94,8 @@ export async function getInitialState(): Promise<{
       typeAllowance: await getOption(`${SERVER_URL_ACCOUNT}/loai-phu-cap?page=0&size=1000`, 'id', 'name'),
       typeSivilServant: await getOption(`${SERVER_URL_ACCOUNT}/loai-cong-chuc?page=0&size=1000`, 'id', 'name'),
       typeOfficial: await getOption(`${SERVER_URL_ACCOUNT}/loai-vien-chuc?page=0&size=1000`, 'id', 'name'),
-      stateRank: await getOption(`${SERVER_URL_ACCOUNT}/danh-hieu-nha-nuoc-phong??page=0&size=1000`, 'id', 'name'),
+      stateRank: await getOption(`${SERVER_URL_ACCOUNT}/danh-hieu-nha-nuoc-phong?page=0&size=1000`, 'id', 'name'),
+      // numberSalaryCivilServan: await getOption(`${SERVER_URL_ACCOUNT}/he-so-luong-cong-chuc?page=0&size=1000`, 'id', 'bacLuongId'),
     };
   }
   return {

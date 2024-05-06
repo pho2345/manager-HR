@@ -14,6 +14,11 @@ const kafka = new Kafka({
     logLevel: logLevel.DEBUG,
     brokers: [`localhost:9092`],
     clientId: 'example-producer',
+    sasl: {
+        mechanism: 'plain',
+        username: 'kafkabroker1',
+        password: 'kafkabroker1-secret',
+    },
 })
 
 app.get('/', async(req, res) => {

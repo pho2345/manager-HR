@@ -1,6 +1,8 @@
 import { get, getCustome } from '@/services/ant-design-pro/api';
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { ActionType, ProColumns, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
     ModalForm,
     PageContainer,
@@ -8,22 +10,36 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 
-import { Button, Col, Form, Input, Row, Space, Tooltip, message } from 'antd';
+import { Button, Col, Form, Row, Tooltip } from 'antd';
+import { Button, Col, Form, Row, Tooltip } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
-import { io, Socket } from "socket.io-client";
 import configText from '@/locales/configText';
-import { displayTime, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, getColumnSearchProps, getColumnSearchRange, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
+import { displayTime, getColumnSearchProps, getColumnSearchRange, handleAdd, handleUpdate2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import { FormattedMessage } from '@umijs/max';
+import { createPaginationProps } from '@/services/utils/constant';
+import { io, Socket } from "socket.io-client";
+
+// import { runConsumer } from '@/pages/kafka/comsumer';
 const configDefaultText = configText;
 
 
 const TableList: React.FC = () => {
-    const host = 'https://3000-giaptai-microservicehrm-kc781e2e108.ws-us110.gitpod.io';
     const [data, setData] = useState<any>([]);
+    const host = 'https://3000-giaptai-microservicehrm-kc781e2e108.ws-us110.gitpod.io';
     const socket = useRef<Socket>();
-   
+
+    useEffect(() => {
+        socket.current = io(host);
+        if (socket?.current) {
+            socket?.current?.on("msg-recieved", async (msg) => {
+               console.log('msg', msg)
+            })
+        }
+
+    }, []);
+
     const collection = `${SERVER_URL_CONFIG}/dan-toc`
     const [createModalOpen, handleModalOpen] = useState<boolean>(false);
     const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
@@ -36,271 +52,13 @@ const TableList: React.FC = () => {
     const [searchRangeTo, setSearchRangeTo] = useState<any>(null);
     const [optionRangeSearch, setOptionRangeSearch] = useState<any>();
 
+    const [page, setPage] = useState<number>(0);
+    const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
-    useEffect(() => {
-        socket.current = io(host);
-        if (socket?.current) {
-            socket?.current?.on("msg-recieved", async (msg) => {
-                setData(msg.data);
-                setTotal(msg.data.length);
-            })
-        }
-       
-    }, []);
+    const [pageSize, setPageSize] = useState<number>(PAGE_SIZE);
 
-
-
-    const handleSearch = (selectedKeys: any, confirm: any) => {
-        confirm();
-
-    };
-    const handleReset = (clearFilters: any, confirm: any) => {
-        clearFilters();
-        confirm({
-            closeDropdown: false,
-        });
-    };
-    const getColumnSearchProps = (dataIndex: any) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                <Input
-                    placeholder={`Tìm kiếm`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys, confirm)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Tìm
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters, confirm)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Làm mới
-                    </Button>
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1890ff' : undefined,
-                }}
-                onClick={() => {
-                }}
-            />
-        ),
-        onFilter: (value: any, record: any) => {
-            if (record[dataIndex]) {
-                return record[dataIndex].toString().toLowerCase().includes(value.toLowerCase());
-            }
-            return null;
-        }
-        ,
-        onFilterDropdownOpenChange: (visible: any) => {
-            if (visible) {
-            }
-        },
-    });
-
-    const handleSearchRange = (selectedKeys: any, confirm: any) => {
-        confirm();
-    };
-
-    const clearResetRange = (clearFilters: any, confirm: any) => {
-        clearFilters();
-        setSearchRangeFrom(null);
-        setSearchRangeTo(null);
-        setOptionRangeSearch(null);
-        confirm({
-            closeDropdown: false,
-        });
-    };
-
-
-    const getColumnSearchRange = (dataIndex: string) => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
-            //close
-        }: any) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
-                {
-                    showRangeTo && (<>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
-                                <ProFormDatePicker
-                                    fieldProps={{
-                                        style: {
-                                            width: '100%'
-                                        },
-                                        onChange: (e: any) => {
-                                            if (e) {
-                                                setSearchRangeFrom(moment(e['$d']).toISOString());
-                                            }
-                                        },
-                                        value: searchRangeFrom
-                                    }}
-                                    placeholder={'Thời gian từ'}
-                                />
-                            </Col>
-                        </Row>
-                        <Row gutter={24} className="m-0">
-                            <Col span={24} className="gutter-row p-0" >
-                                <ProFormDatePicker
-                                    fieldProps={{
-                                        style: {
-                                            width: '100%'
-                                        },
-                                        value: searchRangeTo,
-                                        onChange: (e: any) => {
-                                            if (e) {
-                                                setSearchRangeTo(moment(e['$d']).toISOString());
-                                            }
-                                        },
-                                    }}
-                                    rules={[
-                                        { required: true, message: configDefaultText['page.listFair.required.timeEnd'] },
-                                    ]}
-                                    placeholder={'Thời gian đến'}
-
-                                />
-                            </Col>
-                        </Row>
-                    </>
-                    )
-                }
-                <Row gutter={24} className="m-0">
-                    <Col span={24} className="gutter-row p-0" >
-                        <ProFormSelect
-
-                            options={[
-                                {
-                                    value: 'days',
-                                    label: 'Trong ngày'
-                                },
-                                {
-                                    value: 'weeks',
-                                    label: 'Trong tuần'
-                                },
-                                {
-                                    value: 'months',
-                                    label: 'Trong tháng'
-                                },
-                                {
-                                    value: 'years',
-                                    label: 'Trong năm'
-                                },
-                                {
-                                    value: 'range',
-                                    label: 'Khoảng'
-                                }
-                            ]}
-                            fieldProps={{
-                                onChange: (value: any) => {
-                                    if (value === 'range') {
-                                        setShowRangeTo(true);
-                                    }
-                                    else {
-                                        setShowRangeTo(false);
-                                    }
-                                    setOptionRangeSearch(value);
-                                },
-                                value: optionRangeSearch
-                            }}
-                        />
-                    </Col>
-                </Row>
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            if (optionRangeSearch !== 'range') {
-                                setSelectedKeys([JSON.stringify([optionRangeSearch])])
-                            }
-                            else {
-                                setSelectedKeys([JSON.stringify([optionRangeSearch, searchRangeFrom, searchRangeTo])])
-                            }
-                            handleSearchRange(selectedKeys, confirm);
-                            // confirm()\
-
-                        }}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Tìm kiếm
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearResetRange(clearFilters, confirm)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        Làm mới
-                    </Button>
-
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1890ff' : undefined,
-                }}
-            />
-        ),
-        onFilter: (value: any, record: any) => {
-            if (typeof value === 'string') {
-                const convertValue = JSON.parse(value);
-                const optionValue = convertValue[0];
-                if (optionValue === 'range') {
-                    if (convertValue[1] && convertValue[2]) {
-                        if (moment(record[dataIndex]).isAfter(convertValue[1]) && moment(record[dataIndex]).isBefore(convertValue[2])) {
-                            return record
-                        }
-                    }
-                }
-                else {
-                    const timeStart = moment().startOf(optionValue).toISOString();
-                    const timeEnd = moment().endOf(optionValue).toISOString();
-                    if (moment(record[dataIndex]).isAfter(timeStart) && moment(record[dataIndex]).isBefore(timeEnd)) {
-                        return record;
-                    }
-                }
-            }
-            return null;
-        }
-        ,
-    });
 
 
     const columns: ProColumns<API.Nation>[] = [
@@ -308,10 +66,6 @@ const TableList: React.FC = () => {
             title: 'STT',
             dataIndex: 'index',
             valueType: 'indexBorder',
-        },
-        {
-            title: 'STT',
-            dataIndex: 'id',
         },
         {
             title: <FormattedMessage id="page.nation.table.name" defaultMessage="Name" />,
@@ -330,7 +84,8 @@ const TableList: React.FC = () => {
             dataIndex: 'create_at',
             key: 'create_at',
             render: (_, text) => displayTime(text?.create_at),
-            ...getColumnSearchRange('create_at')
+            ...getColumnSearchRange('create_at', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
+            ...getColumnSearchRange('create_at', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
         },
 
         {
@@ -394,22 +149,6 @@ const TableList: React.FC = () => {
                     >
                         <PlusOutlined /> {configDefaultText['buttonAdd']}
                     </Button>,
-
-                    <Button
-                        type='primary'
-                        key='primary'
-                        onClick={() => {
-                            console.log('abc');
-                            console.log(socket.current);
-                           socket.current?.emit("msg-send", {
-                               to: "1",
-                               from: "2",
-                               message: "Hello"
-                           })
-                        }}
-                    >
-                        Test
-                    </Button>
                 ]}
                 toolbar={{
                     settings: [{
@@ -426,23 +165,49 @@ const TableList: React.FC = () => {
 
 
 
-                dataSource={data}
-               
+
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
+                    }
+                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
+
+                request={async () => {
+                    const data = await get(collection, {
+                        // sort: sort,
+                        page: page,
+                        size: pageSize
+                    });
+                    if (data.data) {
+                        setTotal(data.data.totalRecord);
+                        return {
+                            data: data.data?.data,
+                            success: true,
+                        }
+                    }
+                    return {
+                        data: [],
+                        success: false
+                    }
+                }}
+                pagination={createPaginationProps(total, pageSize, setPage, setPageSize, actionRef)}
 
                 columns={columns}
                 rowSelection={{}}
-
-                pagination={{
-                    showTotal: (total: number, range: number[]) => {
-                        return `${range[range.length - 1]} / Tổng số: ${total}`
-                    },
-                    locale: {
-                        next_page:  "Trang sau",
-                        prev_page: "Trang trước",
-                    },
-                    total: total,
-                    pageSize: 10000
-                }}
 
                 tableAlertRender={({ selectedRowKeys }: any) => {
                     return renderTableAlert(selectedRowKeys);

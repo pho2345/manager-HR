@@ -13,6 +13,7 @@ import React, { useRef, useState } from 'react';
 import configText from '@/locales/configText';
 import { handleAdd, renderTableAlert } from '@/services/utils';
 import { FormattedMessage, request } from '@umijs/max';
+import { mapRole } from '@/services/utils/constant';
 const configDefaultText = configText;
 
 
@@ -111,7 +112,7 @@ const TableList: React.FC = () => {
             title: <FormattedMessage id="page.Account.table.role" defaultMessage="Quyền" />,
             dataIndex: 'role',
             valueType: 'textarea',
-            renderText: (_, text) => text?.role,
+            renderText: (_, text) => mapRole(text?.role),
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
                 //close
             }: any) => (

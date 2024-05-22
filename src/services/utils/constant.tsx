@@ -37,6 +37,10 @@ export const mapTinhTrangSucKhoe = (value?: string) => {
     if (value === 'TOT') return <Tag color="green">Tốt</Tag>;
 }
 
+export const mapRole = (value?: string) => {
+    if (value === 'EMPLOYEE') return <Tag color="blue">CBVC</Tag>;
+    if (value === 'ADMIN') return <Tag color="green">Admin</Tag>;
+}
 
 export const XEP_LOAI_THI_DUA = [
     { label: 'Xuất sắc', value: 'XUAT_SAC' },

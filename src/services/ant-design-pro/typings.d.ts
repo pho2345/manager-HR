@@ -904,7 +904,6 @@ declare namespace GEN {
 
   type AdminBonus = {
     id: number,
-    nam: number,
     xepLoaiChuyenMon: string
     xepLoaiThiDua: sring
     hinhThucKhenThuongName: string,

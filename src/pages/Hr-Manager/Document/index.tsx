@@ -1282,7 +1282,7 @@ const TableList: React.FC = () => {
                   style: {
                     width: "100%"
                   },
-                  disabledDate: disabledDate
+                  // disabledDate: disabledDate
                 }}
               />
             </Col>

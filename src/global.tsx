@@ -1,9 +1,10 @@
-import { useIntl } from '@umijs/max';
+import { useIntl, useModel } from '@umijs/max';
 import { Button, message, notification } from 'antd';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
+
 
 const clearCache = () => {
   // remove all caches
@@ -89,3 +90,10 @@ if (pwa) {
 
   clearCache();
 }
+
+
+// notification.success({
+//   message: 'fffff',
+//   placement: 'topRight',
+//   duration: 3
+// })

@@ -35,7 +35,7 @@ import {
 import {  Button, Col, Drawer, Form, Input, Modal, Row, Space, message } from 'antd';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { handleAdd2 } from '@/services/utils';
+import { handleAdd2, renderTableAlert, renderTableAlertOption } from '@/services/utils';
 import AddBonus from '@/reuse/bonus/AddBonus';
 import AddDiscipline from '@/reuse/discipline/AddDiscipline';
 import AddGOB from '@/reuse/go-on-business/AddGOB';
@@ -408,28 +408,7 @@ const TableList: React.FC = () => {
     });
   };
 
-  function renderTableAlert(selectedRowKeys: any) {
-    return (
-      <Fragment>
-        Đã chọn <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> mục&nbsp;&nbsp;
-      </Fragment>
-    );
-  }
 
-
-  function renderTableAlertOption(selectedRows: any) {
-    return (
-      <>
-        <Fragment>
-          <Button onClick={async () => {
-            //  await confirm(selectedRows as any, 'xóa', actionRef);
-            confirm(selectedRows);
-            // actionRef.current?.reloadAndRest?.();
-          }}>Xóa</Button>
-        </Fragment>
-      </>
-    );
-  }
 
   const columns: ProColumns<GEN.Employee>[] = [
     {
@@ -746,12 +725,11 @@ const TableList: React.FC = () => {
 
           tableAlertRender={({ selectedRowKeys }: any) => {
             return renderTableAlert(selectedRowKeys);
-          }}
+        }}
 
-
-          tableAlertOptionRender={({ selectedRows }: any) => {
-            return renderTableAlertOption(selectedRows)
-          }}
+        tableAlertOptionRender={({ selectedRows, selectedRowKeys }: any) => {
+            return renderTableAlertOption(selectedRows, selectedRowKeys, actionRef, collection)
+        }}
 
         />
 
@@ -829,7 +807,7 @@ const TableList: React.FC = () => {
         </ModalForm>
 
         <AddBonus actionRef={actionRef} createModalOpen={openBus} handleModalOpen={setOpenBus} id={refId.current} name={refName.current} soCCCD={refSoCMND.current}  type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/khen-thuong`}/>
-        <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} name={refName.current} soCCCD={refSoCMND.current} />
+        <AddDiscipline actionRef={actionRef} open={openDiscipline} handleOpen={setOpenDiscipline} id={refId.current} name={refName.current} soCCCD={refSoCMND.current}  type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ky-luat`}/>
         <AddGOB actionRef={actionRef} open={openGOB} handleOpen={setOpenGOB} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/qua-trinh-cong-tac`}/>
         <AddCerLang actionRef={actionRef} open={openCerLang} handleOpen={setOpenCerLang} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/ngoai-ngu`} />
         <AddCerTech actionRef={actionRef} open={openCerTech} handleOpen={setOpenCerTech} id={refId.current} name={refName.current} soCMND={refSoCMND.current} type='ADMIN' collection={`${SERVER_URL_ACCOUNT}/tin-hoc`} />

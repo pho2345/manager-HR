@@ -16,7 +16,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: false,
   pwa: false,
-  logo: 'https://imgs.search.brave.com/gFrV_qyAVfCP6BVFf3C3XS-jGxZkkvHips3oIlXmesE/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE1/MDgwMDQ1MjYwNzIt/M2JlNDNhNTAwNWY2/P3E9ODAmdz0xMDAw/JmF1dG89Zm9ybWF0/JmZpdD1jcm9wJml4/bGliPXJiLTQuMC4z/Jml4aWQ9TTN3eE1q/QTNmREI4TUh4elpX/RnlZMmg4TWpCOGZI/QnBZM1IxY21WOFpX/NThNSHg4TUh4OGZE/QT0.jpeg',
+  logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRWbPGynlornWe69h8xKgQ9LnJWzhQ2GyBjpC6BNpv9g&s',
   iconfontUrl: '',
 };
 

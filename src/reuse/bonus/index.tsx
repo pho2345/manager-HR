@@ -14,7 +14,7 @@ import moment from 'moment';
 import { MdOutlineEdit } from 'react-icons/md';
 
 import configText from '@/locales/configText';
-import { filterCreateAndUpdateAt, getColumnSearchProps, getColumnSearchRange, getOption, getOptionCBVC, handleUpdate2, renderTableAlert, renderTableAlertOption, searchPheDuyetProps } from '@/services/utils';
+import { displayTime, filterCreateAndUpdateAt, getColumnSearchProps, getColumnSearchRange, getOption, getOptionCBVC, handleTime, handleUpdate2, renderTableAlert, renderTableAlertOption, searchPheDuyetProps } from '@/services/utils';
 import { XEP_LOAI_CHUYEN_MON, XEP_LOAI_THI_DUA, createPaginationProps, mapXacNhan, mapXepLoaiChuyenMon, mapXepLoaiThiDua } from '@/services/utils/constant';
 import AddBonus from '@/reuse/bonus/AddBonus';
 import ModalApproval from '@/reuse/approval/ModalApproval';
@@ -173,7 +173,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.nam ? moment(entity?.nam).format(FORMAT_DATE) : ""} </>
+                    <> {displayTime(entity?.nam)} </>
                 );
             },
             ...getColumnSearchRange('nam', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
@@ -219,7 +219,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
                                         xepLoaiChuyenMon: getRecordCurrent.data?.xepLoaiChuyenMon,
                                         xepLoaiThiDua: getRecordCurrent.data?.xepLoaiThiDua,
                                         lyDo: getRecordCurrent?.data?.lyDo,
-                                        nam: getRecordCurrent.data.nam ? moment(getRecordCurrent.data.nam) : null,
+                                        nam: handleTime(getRecordCurrent.data?.nam),
                                         hinhThucKhenThuongId: getRecordCurrent.data?.hinhThucKhenThuongId,
                                         hoSoId: getRecordCurrent.data.hoSoId
                                     });
@@ -319,7 +319,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
             render: (_, entity) => {
                 ;
                 return (
-                    <> {entity?.nam ? moment(entity?.nam).format(FORMAT_DATE) : ""} </>
+                    <> {displayTime(entity?.nam)}</>
                 );
             },
             ...getColumnSearchRange('nam', showRangeTo, setShowRangeTo, searchRangeFrom, setSearchRangeFrom, searchRangeTo, setSearchRangeTo, optionRangeSearch, setOptionRangeSearch)
@@ -581,7 +581,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
                             ]} />
                     </Col>
 
-                    <Col span={12} >
+                    {/* <Col span={12} >
                         <ProFormSelect
                             label={"CBVC"}
                             // width='md'
@@ -596,7 +596,7 @@ const TableList: React.FC<GEN.BonusTable> = ({ type, collection }) => {
                             request={getOptionCBVC}
 
                         />
-                    </Col>
+                    </Col> */}
                 </Row>
             </ModalForm>
 

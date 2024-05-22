@@ -16,7 +16,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useModel } from '@umijs/max';
+import { Link, history, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 
 import React, { useState } from 'react';
@@ -205,30 +205,11 @@ const Login: React.FC = () => {
               {
                 key: 'account',
                 label: configDefaultText['pages.login.title']
-                //  intl.formatMessage({
-                //   id: 'pages.login.accountLogin.tab',
-                //   defaultMessage: 'Đăng nhập',
-                // }),
               },
-              // {
-              //   key: 'mobile',
-              //   label: intl.formatMessage({
-              //     id: 'pages.login.phoneLogin.tab',
-              //     defaultMessage: 'Login Phone',
-              //   }),
-              // },
+            
             ]}
           />
-{/* 
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage
-              content={configDefaultText['pages.login.title']}
-            {intl.formatMessage({
-              id: 'pages.login.accountLogin.errorMessage',
-              defaultMessage: 'Error Message',
-            })}
-            />
-          )} */}
+
           {type === 'account' && (
             <>
               <ProFormText
@@ -282,89 +263,8 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {/* {status === 'error' && loginType === 'mobile' && <LoginMessage content="Mobile" />} */}
-          {type === 'mobile' && (
-            // <>
-            //   <ProFormText
-            //     fieldProps={{
-            //       size: 'large',
-            //       prefix: <MobileOutlined />,
-            //     }}
-            //     name="mobile"
-            //     placeholder={intl.formatMessage({
-            //       id: 'pages.login.phoneNumber.placeholder',
-            //       defaultMessage: 'Phone Number',
-            //     })}
-            //     rules={[
-            //       {
-            //         required: true,
-            //         message: (
-            //           <FormattedMessage
-            //             id="pages.login.phoneNumber.required"
-            //             defaultMessage="Phone Number required"
-            //           />
-            //         ),
-            //       },
-            //       {
-            //         pattern: /^1\d{10}$/,
-            //         message: (
-            //           <FormattedMessage
-            //             id="pages.login.phoneNumber.invalid"
-            //             defaultMessage="Phone Number invalid"
-            //           />
-            //         ),
-            //       },
-            //     ]}
-            //   />
-            //   <ProFormCaptcha
-            //     fieldProps={{
-            //       size: 'large',
-            //       prefix: <LockOutlined />,
-            //     }}
-            //     captchaProps={{
-            //       size: 'large',
-            //     }}
-            //     placeholder={intl.formatMessage({
-            //       id: 'pages.login.captcha.placeholder',
-            //       defaultMessage: 'Captcha',
-            //     })}
-            //     captchaTextRender={(timing, count) => {
-            //       if (timing) {
-            //         return `${count} ${intl.formatMessage({
-            //           id: 'pages.getCaptchaSecondText',
-            //           defaultMessage: 'Get Captcha',
-            //         })}`;
-            //       }
-            //       return intl.formatMessage({
-            //         id: 'pages.login.phoneLogin.getVerificationCode',
-            //         defaultMessage: 'Verifycation Code',
-            //       });
-            //     }}
-            //     name="captcha"
-            //     rules={[
-            //       {
-            //         required: true,
-            //         message: (
-            //           <FormattedMessage
-            //             id="pages.login.captcha.required"
-            //             defaultMessage="Captcha required"
-            //           />
-            //         ),
-            //       },
-            //     ]}
-            //     onGetCaptcha={async (phone) => {
-            //       const result = await getFakeCaptcha({
-            //         phone,
-            //       });
-            //       if (!result) {
-            //         return;
-            //       }
-            //       message.success('Success');
-            //     }}
-            //   />
-            // </>
-            <></>
-          )}
+         
+        
           <div
             style={{
               marginBottom: 24,
@@ -380,7 +280,7 @@ const Login: React.FC = () => {
               }}
               
             >
-              {configDefaultText['pages.login.accountLogin.forgetPassword']}
+              <Link to={'/user/forget-password'}>{configDefaultText['pages.login.accountLogin.forgetPassword']}</Link>
             </a>
           </div>
         </LoginForm>

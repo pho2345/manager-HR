@@ -8,6 +8,11 @@
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'forgetPassword',
+        path: '/user/forget-password',
+        component: './User/ForgetPassword',
+      }
     ],
   },
   {
@@ -78,7 +83,7 @@
     // menuHeaderRender: false,
     routes: [
       { path: '/config/nation', name: 'menu.nation', component: './PageConfig/Nation' },
-      { path: '/config/nationf', name: 'menu.nationff', component: './PageConfig/NationFake' },
+      // { path: '/config/nationf', name: 'menu.nationff', component: './PageConfig/NationFake' },
       { path: '/config/policy-object', name: 'menu.policyObject', component: './PageConfig/PolicyObject' },
       { path: '/config/state-rank', name: 'menu.stateRank', component: './PageConfig/StateRank' },
       // { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },

@@ -11,7 +11,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Link, history, useModel } from '@umijs/max';
+import { Link, history, request, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 
 import React, { useState } from 'react';
@@ -53,17 +53,25 @@ const Login: React.FC = () => {
 
 
 
-  const handleSubmit = async (values: API.LoginParams) => {
+  const handleSubmit = async (values: any) => {
     try {
-      const msg = await login({ ...values, type })
-     
+      console.log('value', values);
+      if (values?.email) {
+        const msg = await request(`${SERVER_URL_CONFIG}/dang-nhap/quen-mat-khau`, {
+          method: 'POST',
+          data: {
+            email: values.email
+          }
+        })
+      }
+
 
     } catch (error) {
       const defaultLoginFailureMessage = configDefaultText['pages.login.failure'];
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
-   
+
   };
 
   return (
@@ -97,7 +105,7 @@ const Login: React.FC = () => {
                 key: 'account',
                 label: "Quên mật khẩu"
               },
-            
+
             ]}
           />
 
@@ -125,19 +133,19 @@ const Login: React.FC = () => {
             </>
           )}
 
-         
-        
+
+
           <div
             style={{
               marginBottom: 24,
             }}
           >
-           
+
             <a
               style={{
                 float: 'right',
               }}
-              
+
             >
               <Link to={'/user/login'}>Đăng nhập</Link>
             </a>

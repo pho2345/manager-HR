@@ -11,7 +11,6 @@ export async function currentUser(options?: { [key: string]: any }) {
     
   });
 
-  console.log('data', data);
 
   if(data?.data){
     return data.data as API.CurrentUser

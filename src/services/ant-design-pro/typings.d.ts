@@ -562,7 +562,10 @@ declare namespace GEN {
     gioiTinh: string,
     soCCCD: string,
     sinhNgay: string,
-    chucVuDangHienTaiName: string,
+    chucVu: {
+      chucVuHienTaiName?: string,
+      chucVuHienTaiId?: number
+    },
     queQuan: string,
     ngachNgheNghiep: string,
     create_at: string,

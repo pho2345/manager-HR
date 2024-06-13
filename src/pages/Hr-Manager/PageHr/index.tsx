@@ -412,6 +412,11 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<GEN.Employee>[] = [
     {
+      title: 'STT',
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+    },
+    {
       // title: <FormattedMessage id='page.searchTable.column.code' defaultMessage='Code' />,
       title: 'Ho tên',
       key: 'code',
@@ -432,7 +437,16 @@ const TableList: React.FC = () => {
     {
       title: 'Dân tộc',
       dataIndex: 'danToc',
-      render: (_, text) => "",
+      render: (_, text) => text.danTocName,
+    },
+    {
+      title: 'Chức vụ hiện tại',
+      key: 'chucVuHienTai',
+      render: (_, entity) => {
+        return (
+          <>{entity?.chucVu?.chucVuHienTaiName}</>
+        );
+      },
     },
     {
       title: 'Quê quán',
@@ -461,25 +475,8 @@ const TableList: React.FC = () => {
           <>{entity.sinhNgay ? moment(entity.sinhNgay).format(FORMAT_DATE) : ''}</>
         );
       },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
     },
-    {
-      title: 'Chức vụ hiện tại',
-      key: 'chucVuHienTai',
-      // dataIndex: 'gioiTinh',
-      render: (_, entity) => {
-        return (
-          <>{entity.chucVuDangHienTaiName}</>
-        );
-      },
-      // filters: farm,
-      // onFilter: (value, record) => {
-      //   return record?.farm?.id === value;
-      // },
-    },
+    
 
     {
       title: configDefaultText['titleOption'],

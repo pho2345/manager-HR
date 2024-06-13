@@ -706,7 +706,7 @@ const TableList: React.FC = () => {
       title: 'Chức vụ hiện tại',
       key: 'chucVuDangHienTaiName',
       // dataIndex: 'gioiTinh',
-      render: (_, entity) => entity.chucVuDangHienTaiName ?? "",
+      render: (_, entity) => entity?.chucVu?.chucVuHienTaiName ?? "",
       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters,
         //close
       }: any) => (
@@ -1496,9 +1496,9 @@ const TableList: React.FC = () => {
                   name="hoVaTen"
                   label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}
                   placeholder={configDefaultText["page.listCow.column.name"]}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.name" defaultMessage="Họ tên" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.name" defaultMessage="Họ tên" /> },
+                  // ]}
                   fieldProps={{
                     defaultValue: info?.hoVaTen
                   }}
@@ -1513,9 +1513,9 @@ const TableList: React.FC = () => {
                   label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}
                   placeholder={"Giới tính"}
                   options={SEX}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" /> }
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1530,9 +1530,9 @@ const TableList: React.FC = () => {
                   showSearch
                   options={nation}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/dan-toc?page=0&size=100`, 'id', 'name')}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" /> }
+                  // ]}
                 />
               </Col>
 
@@ -1547,9 +1547,9 @@ const TableList: React.FC = () => {
                   name="sinhNgay"
                   label={configDefaultText["page.listCow.column.birthdate"]}
                   placeholder={configDefaultText["page.listCow.column.birthdate"]}
-                  rules={[
-                    { required: true, message: configDefaultText["page.listCow.required.birthdate"] },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: configDefaultText["page.listCow.required.birthdate"] },
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1564,9 +1564,9 @@ const TableList: React.FC = () => {
                   showSearch
                   // request={() => getOption(`${SERVER_URL_CONFIG}/ton-giao`, 'id', 'name')}
                   options={religion}
-                  rules={[
-                    { required: true, message: "Tôn giáo" }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "Tôn giáo" }
+                  // ]}
                 />
               </Col>
 
@@ -1576,9 +1576,9 @@ const TableList: React.FC = () => {
                   name="cacTenGoiKhac"
                   label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}
                   placeholder={"Tên gọi khác"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1590,9 +1590,9 @@ const TableList: React.FC = () => {
                   name="soCCCD"
                   label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}
                   placeholder={"CMND/CCCD"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" /> }
+                  // ]}
                 />
               </Col>
               <Col span={12} className="gutter-row p-0">
@@ -1606,9 +1606,9 @@ const TableList: React.FC = () => {
                   name="ngayCapCCCD"
                   label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}
                   placeholder={"Ngày cấp CCCD/CMND"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" /> },
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1620,9 +1620,9 @@ const TableList: React.FC = () => {
                   name="soDienThoai"
                   label={<FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" />}
                   placeholder={"Số điện thoại"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.phone" defaultMessage="Số điện thoại" /> },
+                  // ]}
                 />
               </Col>
 
@@ -1632,9 +1632,9 @@ const TableList: React.FC = () => {
                   name="soBHXH"
                   label={<FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" />}
                   placeholder={"Mã BHXH"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.socialInsurance" defaultMessage="Mã BHXH" /> },
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1646,9 +1646,9 @@ const TableList: React.FC = () => {
                   name="soBHYT"
                   label={"Số BHYT"}
                   placeholder={"Số BHYT"}
-                  rules={[
-                    { required: true, message: "Số BHYT" },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "Số BHYT" },
+                  // ]}
                 />
               </Col>
 
@@ -1658,9 +1658,9 @@ const TableList: React.FC = () => {
                   name="noiOHienNay"
                   label={<FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" />}
                   placeholder={"Nơi ở hiện nay"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.accommodationToday" defaultMessage="Nơi ở hiện nay" /> },
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1672,9 +1672,9 @@ const TableList: React.FC = () => {
                   name="noiSinh"
                   label={<FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" />}
                   placeholder={"Nơi sinh"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.placeOfBirth" defaultMessage="Nơi sinh" /> },
+                  // ]}
                   request={() => getProvine()}
                 />
               </Col>
@@ -1685,9 +1685,9 @@ const TableList: React.FC = () => {
                   name="queQuan"
                   label={<FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" />}
                   placeholder={"Quê quán"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" /> },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.homeTown" defaultMessage="Quê quán" /> },
+                  // ]}
                   request={() => getProvine()}
                 />
               </Col>
@@ -1702,9 +1702,9 @@ const TableList: React.FC = () => {
                   name="tinhTrangSucKhoe"
                   label={"Tình trạng sức khỏe"}
                   placeholder={"Tình trạng sức khỏe"}
-                  rules={[
-                    { required: true, message: "Tình trạng sức khỏe" }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "Tình trạng sức khỏe" }
+                  // ]}
                   options={TINH_TRANG_SUC_KHOE}
                   fieldProps={{
                     onFocus: () => {
@@ -1721,9 +1721,9 @@ const TableList: React.FC = () => {
                   name="chieuCao"
                   label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}
                   placeholder={"Chiều cao"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" /> }
+                  // ]}
                 />
               </Col>
             </Row>
@@ -1735,9 +1735,9 @@ const TableList: React.FC = () => {
                   name="canNang"
                   label={"Cân nặng (kg)"}
                   placeholder={"Cân nặng (kg)"}
-                  rules={[
-                    { required: true, message: "Cân nặng" }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "Cân nặng" }
+                  // ]}
                   fieldProps={{
                     min: 30,
                     max: 200,
@@ -1753,9 +1753,9 @@ const TableList: React.FC = () => {
                   name="nhomMau"
                   label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}
                   placeholder={"Nhóm máu"}
-                  rules={[
-                    { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
-                  ]}
+                  // rules={[
+                  //   { required: true, message: <FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" /> }
+                  // ]}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/nhom-mau?page=0&size=100`, 'id', 'name')}
                   options={groupBlood}
                 />
@@ -1821,9 +1821,9 @@ const TableList: React.FC = () => {
                     name="ngachNgheNghiep"
                     label={"Ngạch, bậc nghề nghiệp"}
                     placeholder={"Ngạch, bậc nghề nghiệp"}
-                    rules={[
-                      { required: true, message: "Ngạch, bậc nghề nghiệp", }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Ngạch, bậc nghề nghiệp", }
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -1846,9 +1846,9 @@ const TableList: React.FC = () => {
                       },
                       disabledDate: disabledDate
                     }}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.dateAppointmentQuotaCareer" defaultMessage="Ngày bổ nhiệm ngạch" /> }
+                    // ]}
                   />
                 </Col>
               </Row>
@@ -1859,9 +1859,9 @@ const TableList: React.FC = () => {
                     name="ngayHuongLuongNgach"
                     label={<FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" />}
                     placeholder={"Ngày hưởng lương ngạch nghề nghiệp"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.dateGetSalaryQuotaCareer" defaultMessage="Ngày hưởng lương ngạch nghề nghiệp" /> }
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -1876,9 +1876,9 @@ const TableList: React.FC = () => {
                     name="phanTramHuongLuongNgach"
                     label={"Phần trăm hưởng lương ngạch (%)"}
                     placeholder={"Phần trăm hưởng lương ngạch"}
-                    rules={[
-                      { required: true, message: "Phần trăm hưởng lương ngạch" }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Phần trăm hưởng lương ngạch" }
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -1897,9 +1897,9 @@ const TableList: React.FC = () => {
                     name="phuCapThamNienVuotKhungNgach"
                     label={"Phụ cấp thâm niên vượt khung ngạch (%)"}
                     placeholder={"Phụ cấp thâm niên vượt khung ngạch"}
-                    rules={[
-                      { required: true, message: "Phụ cấp thâm niên vượt khung ngạch" }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Phụ cấp thâm niên vượt khung ngạch" }
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -1921,9 +1921,9 @@ const TableList: React.FC = () => {
                     name="ngayHuongPCTNVKNgachNgheNghiep"
                     label={"Ngày hưởng PCTNVK ngạch nghề nghiệp"}
                     placeholder={"Ngày hưởng PCTNVK ngạch nghề nghiệp"}
-                    rules={[
-                      { required: true, message: "Ngày hưởng PCTNVK ngạch nghề nghiệp" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Ngày hưởng PCTNVK ngạch nghề nghiệp" },
+                    // ]}
                   />
                 </Col>
               </Row>
@@ -1940,9 +1940,9 @@ const TableList: React.FC = () => {
                     name="ngheNghiepTruocKhiTuyenDung"
                     label={<FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" />}
                     placeholder={"Nghề nghiệp trước khi tuyển dụng"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.beforeJob" defaultMessage="Nghề nghiệp trước khi tuyển dụng" /> },
+                    // ]}
                   />
                 </Col>
 
@@ -1952,9 +1952,9 @@ const TableList: React.FC = () => {
                     name="congViecChinhDuocGiao"
                     label={"Công việc chính được giao"}
                     placeholder={"Công việc chính được giao"}
-                    rules={[
-                      { required: true, message: "Công việc chính được giao" }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Công việc chính được giao" }
+                    // ]}
                   // options={jobPosition}
                   />
                 </Col>
@@ -1966,9 +1966,9 @@ const TableList: React.FC = () => {
                     name="soTruongCongTac"
                     label={<FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" />}
                     placeholder={"Sở trường công tác"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.forte" defaultMessage="Sở trường công tác" /> }
+                    // ]}
                   />
                 </Col>
                 <Col span={12} className="gutter-row p-0">
@@ -1977,9 +1977,9 @@ const TableList: React.FC = () => {
                     name="congViecLamLauNhat"
                     label={<FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" />}
                     placeholder={"Công việc lâu nhất"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.positionLongest" defaultMessage="Công việc lâu nhất" /> }
+                    // ]}
                   />
                 </Col>
               </Row>
@@ -1992,9 +1992,9 @@ const TableList: React.FC = () => {
                     name="ngayVaoCoQuanHienDangCongTac"
                     label={<FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" />}
                     placeholder={"Ngày vào cơ quan công tác"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.dateAgencyToDo" defaultMessage="Ngày vào cơ quan công tác" /> },
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -2198,9 +2198,9 @@ const TableList: React.FC = () => {
                     name="chucVuKiemNhiem"
                     label={<FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" />}
                     placeholder={"Chức vụ kiêm nhiệm"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.chargePosition" defaultMessage="Chức vụ kiêm nhiệm" /> },
+                    // ]}
                     options={position}
 
                   // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-vu?page=0&size=100`, 'id', 'name')}
@@ -2213,9 +2213,9 @@ const TableList: React.FC = () => {
                     name="ngayBoNhiemChucVuKiemNhiem"
                     label={"Ngày bổ nhiệm chức vụ kiêm nhiệm"}
                     placeholder={"Ngày bổ nhiệm chức vụ kiêm nhiệm"}
-                    rules={[
-                      { required: true, message: "Ngày bổ nhiệm chức vụ kiêm nhiệm" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Ngày bổ nhiệm chức vụ kiêm nhiệm" },
+                    // ]}
                     fieldProps={{
                       style: {
                         width: "100%"
@@ -2235,9 +2235,9 @@ const TableList: React.FC = () => {
                     name="phuCapKiemNhiem"
                     label={"Phụ cấp kiêm nhiệm (vnđ)"}
                     placeholder={"Phụ cấp kiêm nhiệm (vnđ)"}
-                    rules={[
-                      { required: true, message: "Phụ cấp kiêm nhiệm (vnđ)" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Phụ cấp kiêm nhiệm (vnđ)" },
+                    // ]}
                     fieldProps={{
                       min: 0,
                       formatter,
@@ -2259,9 +2259,9 @@ const TableList: React.FC = () => {
                     name="viTriViecLam"
                     label={"Vị trí việc làm"}
                     placeholder={"Vị trí việc làm"}
-                    rules={[
-                      { required: true, message: "Vị trí việc làm" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Vị trí việc làm" },
+                    // ]}
                     options={positionJob}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
                   />
@@ -2278,9 +2278,9 @@ const TableList: React.FC = () => {
                     name="ngayHuongLuongViTriViecLam"
                     label={"Ngày hưởng lương vị trí việc làm"}
                     placeholder={"Ngày hưởng lương vị trí việc làm"}
-                    rules={[
-                      { required: true, message: "Ngày hưởng lương vị trí việc làm" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Ngày hưởng lương vị trí việc làm" },
+                    // ]}
                   />
                 </Col>
 
@@ -2293,9 +2293,9 @@ const TableList: React.FC = () => {
                     name="phuCapThamNienVuotKhung"
                     label={"Phụ cấp thâm niên vượt khung (%)"}
                     placeholder={"Phụ cấp thâm niên vượt khung (%)"}
-                    rules={[
-                      { required: true, message: "Phụ cấp thâm niên vượt khung", }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Phụ cấp thâm niên vượt khung", }
+                    // ]}
                     fieldProps={{
                       min: 0,
                       max: 100
@@ -2309,9 +2309,9 @@ const TableList: React.FC = () => {
                     name="phamTramHuongLuong"
                     label={"Phần trăm hưởng lương (%)"}
                     placeholder={"Phần trăm hưởng lương (%)"}
-                    rules={[
-                      { required: true, message: "Phần trăm hưởng lương (%)", }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Phần trăm hưởng lương (%)", }
+                    // ]}
                     fieldProps={{
                       min: 0,
                       max: 100
@@ -2333,9 +2333,9 @@ const TableList: React.FC = () => {
                     name="ngayHuongPCTNVK"
                     label={"Ngày hưởng phụ cấp thâm niên vượt khung"}
                     placeholder={"Ngày hưởng phụ cấp thâm niên vượt khung"}
-                    rules={[
-                      { required: true, message: "Ngày hưởng phụ cấp thâm niên vượt khung" },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: "Ngày hưởng phụ cấp thâm niên vượt khung" },
+                    // ]}
                   />
                 </Col>
               </Row>
@@ -2388,9 +2388,9 @@ const TableList: React.FC = () => {
                     name="ngayNhapNgu"
                     label={<FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" />}
                     placeholder={"Ngày nhập ngũ"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.dateOfEnlistment" defaultMessage="Ngày nhập ngũ" /> },
+                    // ]}
                   />
                 </Col>
                 <Col span={12} className="gutter-row p-0 w-full" >
@@ -2404,9 +2404,9 @@ const TableList: React.FC = () => {
                     name="ngayXuatNgu"
                     label={<FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" />}
                     placeholder={"Ngày xuất ngũ"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.dateDischargedFromMilitaryService" defaultMessage="Ngày xuất ngũ" /> },
+                    // ]}
                   />
                 </Col>
               </Row>
@@ -2423,9 +2423,9 @@ const TableList: React.FC = () => {
                     name="ngayThamGiaToChucChinhTriXaHoiDauTien"
                     label={<FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" />}
                     placeholder={"Ngày tham gia tổ chức chính trị - xã hội đầu tiên"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.firstDateJoinLargestSocialPoliticalOrg" defaultMessage="Ngày tham gia tổ chức chính trị - xã hội đầu tiên" /> },
+                    // ]}
                   />
                 </Col>
 
@@ -2436,9 +2436,9 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" />}
                     placeholder={"Cấp bậc quân hàm"}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.militaryRanks" defaultMessage="Cấp bậc quân hàm" /> }
+                    // ]}
                     options={militaryRank}
 
                   // request={() => getOption(`${SERVER_URL_CONFIG}/cap-bac-loai-quan-ham-quan-doi?page=0&size=100`, 'id', 'name')}
@@ -2457,9 +2457,9 @@ const TableList: React.FC = () => {
                     name="chucVuDangHienTai"
                     label={<FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" />}
                     placeholder={"Chức vụ Đảng hiện tại"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.currentPositionCommunistParty" defaultMessage="Chức vụ Đảng hiện tại" /> },
+                    // ]}
                     options={rankCommunistParty}
 
                   // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
@@ -2472,9 +2472,9 @@ const TableList: React.FC = () => {
                     name="chucVuDangKiemNhiem"
                     label={<FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" />}
                     placeholder={"Chức vụ Đảng kiêm nhiệm"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.chargePositionCommunistParty" defaultMessage="Chức vụ Đảng kiêm nhiệm" /> }
+                    // ]}
                     options={rankCommunistParty}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/chuc-danh-dang?page=0&size=100`, 'id', 'name')}
 
@@ -2497,10 +2497,10 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" />}
                     placeholder={"Đối tượng chính sách"}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
-                      // { required: true, message: "Dân tộc" }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.policyOjbect" defaultMessage="Đối tượng chính sách" /> }
+                    //   // { required: true, message: "Dân tộc" }
+                    // ]}
                     options={policyObject}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/doi-tuong-chinh-sach?page=0&size=50`, 'id', 'name')}
                   />
@@ -2513,9 +2513,9 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" />}
                     placeholder={"Trình độ giáo dục phổ thông"}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.secondaryEducationLevel" defaultMessage="Trình độ giáo dục phổ thông" /> }
+                    // ]}
                     options={secondaryEducation}
                   // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-giao-duc-pho-thong?page=0&size=100`, 'id', 'name')}
                   />
@@ -2530,9 +2530,9 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" />}
                     placeholder={"Trình độ chuyên môn"}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.professionalLevel" defaultMessage="Trình độ chuyên môn" /> }
+                    // ]}
                     options={professionalLevel}
 
                   // request={() => getOption(`${SERVER_URL_CONFIG}/trinh-do-chuyen-mon?page=0&size=100`, 'id', 'name')}
@@ -2546,9 +2546,9 @@ const TableList: React.FC = () => {
                     label={<FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" />}
                     placeholder={"Danh hiệu nhà nước"}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.stateRank" defaultMessage="Danh hiệu nhà nước phong tặng" /> }
+                    // ]}
                     options={stateRank}
 
                   // request={() => getOption(`${SERVER_URL_CONFIG}/danh-hieu-nha-nuoc-phong?page=0&size=100`, 'id', 'name')}
@@ -2566,9 +2566,9 @@ const TableList: React.FC = () => {
                     // request={() => getOption(`${SERVER_URL_CONFIG}/hoc-ham?page=0&size=100`, 'id', 'name')}
                     options={academicLevel}
                     showSearch
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.academicDegrees" defaultMessage="Học hàm" /> }
+                    // ]}
 
                   />
                 </Col>
@@ -2582,9 +2582,9 @@ const TableList: React.FC = () => {
                     showSearch
                     options={memberFamily}
                     // request={() => getOption(`${SERVER_URL_CONFIG}/thanh-phan-gia-dinh?page=0&size=100`, 'id', 'name')}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.membership" defaultMessage="Thành phần gia đình" /> }
+                    // ]}
                   />
                 </Col>
               </Row>

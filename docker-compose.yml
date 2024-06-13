@@ -23,7 +23,7 @@ services:
       - 8200:8080
     environment:
        KAFKA_CLUSTERS_0_NAME: local
-       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: host.docker.internal:29092
+       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: host.docker.internal:29092,host.docker.internal:29093,host.docker.internal:29094
        DYNAMIC_CONFIG_ENABLED: 'true'
        KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: first
        KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://10.0.5.2:8083

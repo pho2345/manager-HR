@@ -359,7 +359,7 @@ app.get('/stream', (req, res) => {
     sse.init(req, res);
 });
 
-app.post('/receiveData', async (req, res) => {
+app.post('/send-mail', async (req, res) => {
     console.log('req.body: ', req.body);
     try {
         const data = req.body;
@@ -396,3 +396,19 @@ app.post('/receiveData2', async (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
+
+
+const config = {
+    "connector.class": "io.aiven.kafka.connect.http.HttpSinkConnector",
+    "http.authorization.type": "none",
+    "http.url": "http://localhost:3000/send-mail",
+    "http.headers.content.type": "application/json",
+    "batching.enabled": true,
+    "batch.max.size": 1,
+    "tasks.max": "1",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "topics": "send_mail",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false
+  }

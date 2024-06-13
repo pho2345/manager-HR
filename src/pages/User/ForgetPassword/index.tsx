@@ -55,21 +55,26 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      console.log('value', values);
       if (values?.email) {
         const msg = await request(`${SERVER_URL_CONFIG}/dang-nhap/quen-mat-khau`, {
           method: 'POST',
           data: {
             email: values.email
           }
-        })
+        });
+
+        if(msg) {
+            message.success('Đã gửi mật khẩu về mail. Vui lòng kiểm tra')
+          }
+          else {
+            message.error('Email không tồn tại trong hệ thống')
+          }
       }
 
 
     } catch (error) {
-      const defaultLoginFailureMessage = configDefaultText['pages.login.failure'];
       console.log(error);
-      message.error(defaultLoginFailureMessage);
+      message.error('Có lỗi xảy ra, liên hệ admin');
     }
 
   };

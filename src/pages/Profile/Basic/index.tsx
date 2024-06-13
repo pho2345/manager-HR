@@ -32,7 +32,7 @@ import {  Button, Col, Modal, Row, message, Form } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { displayTime, formatter, getOption, getProvine, handleTime, parser } from '@/services/utils';
-import { SEX, TINH_TRANG_SUC_KHOE, mapTinhTrangSucKhoe, mapXacNhan } from '@/services/utils/constant';
+import { SEX, TINH_TRANG_SUC_KHOE, mapSex, mapTinhTrangSucKhoe, mapXacNhan } from '@/services/utils/constant';
 
 
 const getProfile = async (setProfile: any, setLoading: any) => {
@@ -242,7 +242,7 @@ const TableList: React.FC = () => {
                 <Descriptions.Item label={<FormattedMessage id="page.profile.name" defaultMessage="Họ tên" />}>{profile?.hoVaTen ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}>{profile?.cacTenGoiKhac ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.birthdate" defaultMessage="Ngày sinh" />}>{displayTime(profile?.sinhNgay)}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{profile?.gioiTinh ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.sex" defaultMessage="Giới tính" />}>{mapSex(profile?.gioiTinh) ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.numberIdentify" defaultMessage="CMND/CCCD" />}>{profile?.soCCCD ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.dateNumberIdentify" defaultMessage="Ngày cấp CCCD/CMND" />}>{displayTime(profile?.ngayCapCCCD)}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.nation" defaultMessage="Dân tộc" />}>{profile?.danTocName ?? ""}</Descriptions.Item>
@@ -257,7 +257,7 @@ const TableList: React.FC = () => {
 
                 <Descriptions.Item label={<FormattedMessage id="page.profile.tall" defaultMessage="Chiều cao" />}>{profile?.sucKhoe?.chieuCao ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="page.profile.weight" defaultMessage="Cân nặng" />}>{profile?.sucKhoe?.canNang ?? ""}</Descriptions.Item>
-                <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.sucKhoe?.nhomMau ?? ""}</Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="page.profile.groupBlood" defaultMessage="Nhóm máu" />}>{profile?.sucKhoe?.nhomMauName ?? ""}</Descriptions.Item>
                 <Descriptions.Item label={"Tình trạng sức khỏe"}>{mapTinhTrangSucKhoe(profile?.sucKhoe?.tinhTrangSucKhoe) ?? ""}</Descriptions.Item>
               </Descriptions>
             </ProCard>
@@ -614,9 +614,9 @@ const TableList: React.FC = () => {
                     name="cacTenGoiKhac"
                     label={<FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" />}
                     placeholder={"Tên gọi khác"}
-                    rules={[
-                      { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
-                    ]}
+                    // rules={[
+                    //   { required: true, message: <FormattedMessage id="page.profile.diffName" defaultMessage="Tên gọi khác" /> }
+                    // ]}
                   />
                 </Col>
               </Row>

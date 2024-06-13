@@ -12,6 +12,13 @@ export const SEX = [
     { label: 'Nữ', value: 'NU' },
 ]
 
+export const mapSex = (value?: string) => {
+    if(value === 'NU') return 'Nữ';
+    if(value === 'NAM') return 'Nam';
+    if(!value) return ''
+
+}
+
 export const mapXepLoaiChuyenMon = (value: string) => {
     let map;
     XEP_LOAI_CHUYEN_MON.forEach(item => {

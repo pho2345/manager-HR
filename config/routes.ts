@@ -8,6 +8,11 @@
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'forgetPassword',
+        path: '/user/forget-password',
+        component: './User/ForgetPassword',
+      }
     ],
   },
   {
@@ -28,145 +33,143 @@
     ],
   },
 
-  {
-    name: 'Web-cPass',
-    icon: 'table',
-    path: '/web-c-pass',
-    menuHeaderRender: false,
-    routes: [
-      { path: '/web-c-pass/fairs',hideInMenu: false,  name: 'Danh sách đợt mở bán', component: './Web-cPass/TableListFair' },
-      { path: '/web-c-pass/c-pass-mega',hideInMenu: false,  name: 'Danh sách CPass Mega', component: './Web-cPass/TableListCPass' },
-     
-    ],
-  },
-
-  {
-    name: 'AgriGate',
-    icon: 'table',
-    path: '/agrigate',
-    menuHeaderRender: false,
-    routes: [
-      { path: '/agrigate/farm', name: 'Danh sách trang trại', component: './AgriGate/TableListFarm' },
-      { path: '/agrigate/cows',hideInMenu: false,  name: 'Danh sách bò', component: './AgriGate/TableListCow' },
-      { path: '/agrigate/c-pass',hideInMenu: false,  name: 'Danh sách cPass', component: './AgriGate/TableListCPass' },
-      { path: '/agrigate/group-cow',hideInMenu: false,  name: 'Danh sách nhóm', component: './AgriGate/TableListGroupCow' },
-      { path: '/agrigate/category',hideInMenu: false,  name: 'Giống bò', component: './AgriGate/TableListCategory' },
-      { path: '/agrigate/status-owner',hideInMenu: false,  name: 'Thể trạng', component: './AgriGate/TableListBodyCondition' },
-      { path: '/agrigate/wge',hideInMenu: false,  name: 'Hiệu quả tăng trọng', component: './AgriGate/TableListWGE' },
-      { path: '/agrigate/awg',hideInMenu: false,  name: 'Tăng trọng trung bình', component: './AgriGate/TableListAWG' },
-      { path: '/agrigate/range-p-zero', name: 'Khoảng cân nặng P0', component: './AgriGate/TableListRangeWeightZero' },
-      { path: '/agrigate/wgs', name: 'Tăng trọng tiêu chuẩn', component: './AgriGate/TableListWGS' },
-      { path: '/agrigate/input-weight', name: 'Nhập dữ liệu tăng trọng', component: './AgriGate/TableListSlot' },
-    ],
-  },
-
-  {
-    name: 'Web-Aleger',
-    icon: 'table',
-    path: '/web-aleger',
-    routes: [
-      { path: '/web-aleger/mega',name: 'Danh sách Aleger', component: './Web-Aleger/TableListMega' },
-      { path: '/web-aleger/plans', name: 'Phương án hợp tác', component: './Web-Aleger/TableListPlan' },
-      { path: '/web-aleger/wait-transaction', name: 'Trạng thái chờ giao dịch', component: './Web-Aleger/TableListStatusTransaction' },
-      { path: '/web-aleger/reason-settlements', name: 'Lý do thanh quyết toán Mega', component: './Web-Aleger/TableListReasonSettlement' },
-      { path: '/web-aleger/status-owner', name: 'Tình trạng sở hữu Mega', component: './Web-Aleger/TableListStatusOwner' },
-      { path: '/web-aleger/config-mega', name: 'Cài đặt Mega', component: './Web-Aleger/TableConfigMega' },
-      { path: '/web-aleger/config', name: 'Cài đặt chung', component: './Web-Aleger/TableListConfig'},
-      { path: '/web-aleger/config-warning', name: 'Cài đặt đo lường lường cảnh báo', component: './Web-Aleger/TableConfigWarning' },
-      { path: '/web-aleger/notify', name: 'Thông báo', component: './Web-Aleger/TableListConfigNotify' },
-    
-    ],
-  },
-
-  {
-    name: 'AgriOS',
-    icon: 'table',
-    path: '/agrios',
-    //component: './TableListFair',
-    menuHeaderRender: false,
-    routes: [
-      { path: '/agrios/transfer',hideInMenu: false,  name: 'Transfer', component: './AgriOS/TableListTransfer' },
-      { path: '/agrios/buy-ale',hideInMenu: false,  name: 'Mua Ale từ PL', component: './AgriOS/TableListBuyAle' },
-      { path: '/agrios/sell-ale',hideInMenu: false,  name: 'Bán Ale cho PL', component: './AgriOS/TableListSellAle' },
-      { path: '/agrios/confirm',hideInMenu: false,  name: 'Xác nhận giao dịch mua/bán Ale', component: './AgriOS/TableListConfirmAleTransaction' },
-      { path: '/agrios/follow',hideInMenu: false,  name: 'Theo dõi giao dịch Ale', component: './AgriOS/TableListFollowTransactionAle' },
-      { path: '/agrios/config',hideInMenu: false,  name: 'Cấu hình chung', component: './AgriOS/TableListConfig' },
-      { path: '/agrios/dashboard',hideInMenu: false,  name: 'Dashboard', component: './AgriOS/TableListDashboard' },
-      { path: '/agrios/ale',hideInMenu: false,  name: 'Ale', component: './AgriOS/TableListAle' },
-      { path: '/agrios/product-kind-code',hideInMenu: false,  name: 'Chủng loại sản phẩm', component: './AgriOS/TableListProductKindCode' },
-      { path: '/agrios/log-transaction-ale',hideInMenu: false,  name: 'Log giao dịch Ale', component: './AgriOS/TableListLogTransactionAle' },
-    ],
-  },
-  {
-    path: '/web-aleger/c-pass-mega/slot-c-pass/:id',
-    component: './Web-Aleger/TableListHistorySlotOfMega',
-  },
-
-  {
-    path: '/web-aleger/mega/my-ale/:id',
-    component: './Web-Aleger/TableListMyAle',
-  },
-
-  {
-    path: '/web-aleger/mega/my-c-pass/:id',
-    component: './Web-Aleger/TableListMyCPassMega',
-  },
-
-  {
-    path: '/web-aleger/mega/slot-c-pass/:id',
-    component: './Web-Aleger/TableListHistoryOfMega',
-  },
-
-  {
-    path: '/web-c-pass/fairs/:id',
-    component: './Web-cPass/TableListFairDetail',
-  },
-
-  {
-    path: '/web-c-pass/fairs/add-mega-assign/:id',
-    component: './Web-cPass/TableListAddMegaAndAssignCPass',
-  },
-
-  {
-    path: '/web-c-pass/fairs/manager/:id',
-    component: './Web-cPass/TableListManagerCPassPayment',
-  },
-
-  {
-    path: 'cpasses/history-slot/:id',
-    component: './TableListHistorySlot',
-  },
-
-  {
-    path: '/web-c-pass/fairs/add-cpass/:id',
-    component: './Web-cPass/TableListAddCPassInFair',
-  },
+  // {
+  //   path: '/web-c-pass/fairs/add-cpass/:id',
+  //   component: './Web-cPass/TableListAddCPassInFair',
+  // },
 
 
+  // {
+  //   name: 'Giao dịch',
+  //   icon: 'table',
+  //   path: '/transactions',
+  //   routes: [
+  //     { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
+  //     { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
+  //     { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' },
+  //     { path: '/transactions/log-transaction', name: 'Log giao dịch', component: './Web-Transaction/TableListLogTransaction' }
+  //   ],
+  // },
+
+  ///-------------------------------------------------------------------------------------------
   {
-    name: 'Giao dịch',
-    icon: 'table',
-    path: '/transactions',
-    routes: [
-      { path: '/transactions/settlement', name: 'Danh sách thanh quyết toán', component: './Web-Transaction/TableListTransactionSettlement' },
-      { path: '/transactions/confirm', name: 'Xác nhận giao dịch VNĐ', component: './Web-Transaction/TableListTransactionConfirmVnd' },
-      { path: '/transactions/follow', name: 'Theo dõi giao dịch', component: './Web-Transaction/TableListFollwTransaction' },
-      { path: '/transactions/log-transaction', name: 'Log giao dịch', component: './Web-Transaction/TableListLogTransaction' }
-    ],
-  },
-  {
-    name: 'Quản lý viên chức',
+    name: 'Quản lý',
     icon: 'table',
     path: '/hr-manager',
-    menuHeaderRender: false,
+    // menuHeaderRender: false,
     routes: [
-      { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/TableListFarm' },
+      { path: '/hr-manager/manager', name: 'Quản lý CBCCVC', component: './Hr-Manager/PageHr' },
+      { path: '/hr-manager/document', name: 'Document', component: './Hr-Manager/Document' },
+      { path: '/hr-manager/bonus', name: 'bonus', component: './Hr-Manager/Bonus' },
+      { path: '/hr-manager/discipline', name: 'discipline', component: './Hr-Manager/Discipline' },
+      { path: '/hr-manager/go-on-buss', name: 'goOnBuss', component: './Hr-Manager/GoOnBuss' },
+      { path: '/hr-manager/cer-lang', name: 'cerLang', component: './Hr-Manager/CerLang' },
+      { path: '/hr-manager/cer-tech', name: 'cerTech', component: './Hr-Manager/CerTech' },
+      { path: '/hr-manager/professional', name: 'professionalKnowledge', component: './Hr-Manager/ProfessionalKnowledge' },
+      { path: '/hr-manager/politicalTheory', name: 'politicalTheory', component: './Hr-Manager/PoliticalTheory' },
+      { path: '/hr-manager/working-abroad', name: 'workingAbroad', component: './Hr-Manager/WorkingAbroad' },
+      { path: '/hr-manager/army', name: 'army', component: './Hr-Manager/Army' },
+      { path: '/hr-manager/relate', name: 'relate', component: './Hr-Manager/RelateFamily' },
+      { path: '/hr-manager/allowance', name: 'allowance', component: './Hr-Manager/Allowance' },
+      { path: '/hr-manager/salary', name: 'salary', component: './Hr-Manager/Salary' },
+      { path: '/hr-manager/work-model-old', name: 'workModelOld', component: './Hr-Manager/WorkModelOld' },
     ],
+    access: 'admin'
+  },
+  {
+    name: 'Cấu hình',
+    icon: 'setting',
+    path: '/config',
+    // menuHeaderRender: false,
+    routes: [
+      { path: '/config/nation', name: 'menu.nation', component: './PageConfig/Nation' },
+      // { path: '/config/nationf', name: 'menu.nationff', component: './PageConfig/NationFake' },
+      { path: '/config/policy-object', name: 'menu.policyObject', component: './PageConfig/PolicyObject' },
+      { path: '/config/state-rank', name: 'menu.stateRank', component: './PageConfig/StateRank' },
+      // { path: '/config/sex', name: 'menu.sex', component: './PageConfig/Sex' },
+      {
+        path: '/config/academic-degrees', name: 'menu.academicDegrees', component: './PageConfig/AcademicDegrees',
+      },
+      { path: '/config/member-family', name: 'menu.memberFamily', component: './PageConfig/MemberFamily' },
+      // { path: '/config/health-status', name: 'menu.healthStatus', component: './PageConfig/HealthStatus' },
+      { path: '/config/religion', name: 'menu.religion', component: './PageConfig/Religion' },
+      { path: '/config/secondary-education-level', name: 'menu.secondaryEducationLevel', component: './PageConfig/SecondaryEducationLevel' },
+      { path: '/config/professional-level', name: 'menu.professionalLevel', component: './PageConfig/ProfessionalLevel' },
+      { path: '/config/rank-salary', name: 'menu.rankSalary', component: './PageConfig/RankSalary' },
+      { path: '/config/group-blood', name: 'menu.groupBlood', component: './PageConfig/GroupBlood' },
+      { path: '/config/military-ranks', name: 'menu.militaryRanks', component: './PageConfig/MilitaryRanks' },
+      { path: '/config/position', name: 'menu.position', component: './PageConfig/Position' },
+      { path: '/config/civil-servant', name: 'menu.civilServant', component: './PageConfig/CivilServant' },
+      // { path: '/config/civil-servant-rank', name: 'menu.civilServantRank', component: './PageConfig/CivilServantRank' },
+      { path: '/config/officer', name: 'menu.officer', component: './PageConfig/Officer' },
+      // { path: '/config/officer-rank', name: 'menu.officerRank', component: './PageConfig/OfficerRank' },
+      { path: '/config/organ', name: 'menu.organ', component: './PageConfig/Organ' },
+      // { path: '/config/group-rank-communist-party', name: 'menu.groupRankCommunistParty', component: './PageConfig/GroupRankCommunistParty' },
+      { path: '/config/rank-communist-party', name: 'menu.rankCommunistParty', component: './PageConfig/RankCommunistParty' },
+      // { path: '/config/group-communist-party', name: 'menu.groupCommunistParty', component: './PageConfig/GroupCommunistParty' },
+      { path: '/config/type-bonus', name: 'menu.typeBonus', component: './PageConfig/TypeBonus' },
+      { path: '/config/job-position', name: 'menu.jobPosition', component: './PageConfig/JobPosition' },
+      { path: '/config/relationship', name: 'menu.relationship', component: './PageConfig/Relationship' },
+      { path: '/config/allowance-type', name: 'menu.allowanceType', component: './PageConfig/AllowanceType' },
+      { path: '/config/type-of-public-servant', name: 'menu.typeOfPublicServant', component: './PageConfig/TypeOfPublicServant' },
+      { path: '/config/civil-servant-group', name: 'menu.civilServantGroup', component: './PageConfig/CivilServantGroup' },
+      { path: '/config/number-salary-civil-servant', name: 'menu.numberSalaryCivilServant', component: './PageConfig/NumberSalaryCivilServant' },
+      { path: '/config/type-of-officials', name: 'menu.typeOfOfficials', component: './PageConfig/TypeOfOfficials' },
+      { path: '/config/group-of-officials', name: 'menu.groupOfOfficials', component: './PageConfig/GroupOfOfficials' },
+      { path: '/config/number-salary-officials', name: 'menu.numberSalaryOfficials', component: './PageConfig/NumberSalaryOfficials' },
+      // {
+      //   path: '/config',
+      //   redirect: '/config/nation',
+      // }
+    ],
+     access: 'admin'
+  },
+
+
+  {
+    name: 'Thông tin',
+    icon: 'home',
+    path: '/profile',
+    // menuHeaderRender: true,
+    routes: [
+      { path: '/profile/basic', name: 'menu.basic', component: './Profile/Basic' },
+      { path: '/profile/work-old', name: 'menu.workOld', component: './Profile/WorkOld' },
+       { path: '/profile/lang', name: 'menu.lang', component: './Profile/Languages' },
+       { path: '/profile/techno', name: 'menu.tech', component: './Profile/Techno' },
+       { path: '/profile/relate-family', name: 'menu.relateFamily', component: './Profile/RelateFamily' },
+       { path: '/profile/go-on-bussiness', name: 'menu.goOnBussiness', component: './Profile/GoOnBuss' },
+       { path: '/profile/other-allownce', name: 'menu.otherAllownce', component: './Profile/Allowance' },
+      //  { path: '/profile/marjor-bussiness', name: 'menu.majorBuz', component: './Profile/MajorBuz' },
+       { path: '/profile/political-theory', name: 'menu.politicalTheory', component: './Profile/PoliticalTheory' },
+       { path: '/profile/my-salary', name: 'menu.mySalary', component: './Profile/MySalary' },
+       { path: '/profile/working-abroad', name: 'menu.workingAbroad', component: './Profile/WorkingAbroad' },
+       { path: '/profile/know-army', name: 'menu.knowArmy', component: './Profile/KnowArmy' },
+       { path: '/profile/bonus', name: 'menu.bonus', component: './Profile/Bonus' },
+       { path: '/profile/discipline', name: 'menu.discipline', component: './Profile/Discipline' },
+       { path: '/profile/professional-knowledge', name: 'menu.professionalKnowledge', component: './Profile/ProfessionalKnowledge' },
+    ],
+     access: 'employee'
+  },
+
+
+  {
+    name: 'Tài khoản',
+    icon: 'user',
+    path: '/account',
+    menuHeaderRender: false,
+    component: './Account',
+    access: 'admin'
   },
   {
     path: '/',
-    redirect: '/web-c-pass/fairs',
+    redirect: '/config/nation',
+    access: 'admin'
   },
+  // {
+  //   path: '/',
+  //   redirect: '/profile/basic',
+  //   access: 'employee'
+  // },
   {
     path: '*',
     layout: false,
@@ -176,5 +179,5 @@
     path: '/403',
     component: '@/pages/403',
   }
- 
+
 ];

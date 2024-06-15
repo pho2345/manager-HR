@@ -19,3 +19,10 @@ declare module 'bizcharts-plugin-slider';
 
 declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | false;
 declare const SERVERURL: string
+declare const SERVER_URL_ACCOUNT: string
+declare const ID_SAVE_INFO: string
+declare const FORMAT_DATE: string
+declare const SERVER_URL_CONFIG: string
+declare const SERVER_URL_PROFILE_DETAIL: string
+declare const SERVER_URL_PROFILE: string
+declare const PAGE_SIZE: number

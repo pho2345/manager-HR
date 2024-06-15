@@ -1,5 +1,5 @@
 import { outLogin } from '@/services/ant-design-pro/api';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, MailOutlined, SyncOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
 import { Avatar, Spin } from 'antd';
@@ -12,6 +12,8 @@ import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
+  setOpenApproval: (value: boolean) => void;
+  setOpenMail: (value: boolean) => void;
 };
 
 const Name = () => {
@@ -38,7 +40,7 @@ const Name = () => {
 const AvatarLogo = () => {
   const { initialState } = useModel('@@initialState');
   //const { currentUser } = initialState  || {};
-  
+
   const avatarClassName = useEmotionCss(({ token }) => {
     return {
       marginRight: '8px',
@@ -51,18 +53,20 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size="small" className={avatarClassName} src={ '/uploads/sarahbaker_strapi_8623ac80da.jpg?updated_at=2022-12-26T11:16:45.281Z'} alt="avatar" />;
+  return <Avatar size="small" className={avatarClassName} src={'https://imgupscaler.com/images/samples/animal-after.webp'} alt="avatar" />;
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, setOpenApproval, setOpenMail }) => {
+
 
   const loginOut = async () => {
     await outLogin();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
-   
+
     const redirect = urlParams.get('redirect');
-    
+
+
     if (window.location.pathname !== '/user/login' && !redirect) {
       history.replace({
         pathname: '/user/login',
@@ -72,6 +76,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       });
     }
   };
+
   const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
@@ -87,6 +92,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       },
     };
   });
+
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
@@ -94,7 +100,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       const { key } = event;
       if (key === 'logout') {
         flushSync(() => {
-          setInitialState((s : any) => ({ ...s, currentUser: undefined }));
+          setInitialState((s: any) => ({ ...s, currentUser: undefined }));
         });
         loginOut();
         return;
@@ -127,27 +133,29 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   }
 
   const menuItems = [
-    ...(menu
+    ...(currentUser.role === 'EMPLOYEE'
       ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: 'Center',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: 'Setting',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
+        {
+          key: 'center',
+          icon: <SyncOutlined />,
+          label: 'Đổi mật khẩu',
+          onClick: () => setOpenApproval(true),
+        },
+
+        {
+          key: 'center',
+          icon: <MailOutlined />,
+          label: 'Đổi email',
+          onClick: () => setOpenMail(true),
+        },
+
+      ]
       : []),
     {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: 'Đăng xuất',
+      onClick: onMenuClick,
     },
   ];
 
@@ -155,14 +163,15 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     <HeaderDropdown
       menu={{
         selectedKeys: [],
-        onClick: onMenuClick,
-        items: menuItems,
+        // onClick: onMenuClick,
+        items: menuItems
       }}
     >
       <span className={actionClassName}>
         <AvatarLogo />
         <Name />
       </span>
+      
     </HeaderDropdown>
   );
 };

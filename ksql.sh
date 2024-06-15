@@ -1,1 +1,0 @@
-confluent-ksqldb-0.29.0/bin/ksql-server-start confluent-ksqldb-0.29.0/etc/ksqldb/ksql-server.properties
